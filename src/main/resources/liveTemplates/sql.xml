@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templateSet group="Mybatis/SQL">
+    <template resource-bundle="messages.CodeInsightBundle" key="livetemplate.description.surround.cdata.in.xmlorhtmlorjsp"
+              name="CD" toReformat="false" toShortenFQNames="false" value="&lt;![CDATA[&#10;$SELECTION$&#10;]]&gt;">
+        <variable name="SELECTION" expression="" defaultValue="" alwaysStopAt="false" />
+        <context>
+            <option name="SQL" value="true" />
+        </context>
+    </template>
+</templateSet>

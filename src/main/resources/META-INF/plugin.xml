@@ -1,0 +1,57 @@
+<idea-plugin version="2" url="https://gitee.com/baomidou/mybatis-plus">
+    <id>com.baomidou.plugin.idea.mybatisx</id>
+    <name>MyBatisX</name>
+    <version>0.1.0</version>
+    <vendor email="jobob@qq.com" url="https://mp.baomidou.com">MybatisX</vendor>
+
+    <description><![CDATA[
+          MybatisX plugin
+      ]]>
+    </description>
+
+    <change-notes><![CDATA[
+      <h4>2017.10.20</h4>
+      <ul>
+          <li>mybatisx-0.1.0</li>
+      </ul>
+      ]]>
+    </change-notes>
+
+    <idea-version since-build="145.0"/>
+    <depends optional="true">com.intellij.sql</depends>
+    <depends optional="true">com.intellij.spring</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <dom.fileDescription implementation="com.baomidou.plugin.idea.mybatisx.dom.description.MapperDescription"/>
+        <dom.fileDescription implementation="com.baomidou.plugin.idea.mybatisx.dom.description.ConfigurationDescription"/>
+        <definitionsSearch implementation="com.baomidou.plugin.idea.mybatisx.definitionsearch.MapperDefinitionSearch"/>
+        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.JavaService"/>
+        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.AnnotationService"/>
+        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.EditorService"/>
+        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.alias.AliasFacade"/>
+        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.locator.MapperLocator"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.baomidou.plugin.idea.mybatisx.provider.MapperLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.baomidou.plugin.idea.mybatisx.provider.StatementLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.baomidou.plugin.idea.mybatisx.provider.InjectionLineMarkerProvider"/>
+        <applicationConfigurable instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
+        <applicationService serviceInterface="com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting" serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting"/>
+        <completion.contributor language="XML" implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.TestParamContributor"/>
+        <completion.contributor language="SQL" implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.SqlParamCompletionContributor" order="first"/>
+        <fileTemplateGroup implementation="com.baomidou.plugin.idea.mybatisx.template.MybatisFileTemplateDescriptorFactory"/>
+        <typedHandler implementation="com.baomidou.plugin.idea.mybatisx.action.MybatisTypedHandler" id="mybatis" order="first"/>
+        <defaultLiveTemplatesProvider implementation="com.baomidou.plugin.idea.mybatisx.template.SqlLiveTemplateProvider"/>
+        <refactoring.elementListenerProvider implementation="com.baomidou.plugin.idea.mybatisx.refactoring.MapperRefactoringProvider"/>
+        <localInspection language="JAVA" shortName="MybatisMapperMethodInspection" displayName="Mapper method inspection"
+                         groupName="Mybatis" enabledByDefault="true" level="ERROR" implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperMethodInspection"/>
+        <localInspection language="XML" shortName="MybatisMapperXmlInspection" enabledByDefault="true" level="ERROR"
+                         displayName="Mapper xml inspection" groupName="Mybatis" implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperXmlInspection"/>
+        <intentionAction>
+            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateParamAnnotationIntention</className>
+        </intentionAction>
+        <intentionAction>
+            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateStatementIntention</className>
+        </intentionAction>
+        <intentionAction order="first">
+            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperIntention</className>
+        </intentionAction>
+    </extensions>
+</idea-plugin>
