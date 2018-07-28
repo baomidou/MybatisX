@@ -20,7 +20,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 // https://github.com/JetBrains/gradle-intellij-plugin/
 // http://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/prerequisites.html
 intellij {
-    version '2017.2.6'
+    version '2018.1.5'
     type 'IU'
     plugins = ['coverage', 'spring','DatabaseTools'] //Bundled plugin dependencies
     pluginName 'MybatisX'
@@ -33,7 +33,7 @@ intellij {
 }
 
 group 'com.baomidou.plugin.idea.mybatisx'
-version '.0.1.0'
+version '1.0.0'
 
 repositories {
     jcenter()

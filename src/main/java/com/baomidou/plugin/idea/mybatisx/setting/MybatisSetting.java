@@ -27,7 +27,7 @@ import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.UPDA
  */
 @State(
         name = "MybatisSettings",
-        storages = @Storage(id = "other", file = "$APP_CONFIG$/mybatis.xml"))
+        storages = @Storage(file = "$APP_CONFIG$/mybatis.xml"))
 public class MybatisSetting implements PersistentStateComponent<Element> {
 
     private GenerateModel statementGenerateModel;

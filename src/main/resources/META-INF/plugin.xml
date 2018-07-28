@@ -1,8 +1,8 @@
-<idea-plugin version="2" url="https://gitee.com/baomidou/mybatis-plus">
+<idea-plugin url="https://gitee.com/baomidou/mybatis-plus">
     <id>com.baomidou.plugin.idea.mybatisx</id>
     <name>MyBatisX</name>
-    <version>0.1.0</version>
-    <vendor email="jobob@qq.com" url="https://mp.baomidou.com">MybatisX</vendor>
+    <version>1.0.0</version>
+    <vendor email="jobob@qq.com" url="http://mp.baomidou.com">MybatisX</vendor>
 
     <description><![CDATA[
           MybatisX plugin
@@ -12,7 +12,7 @@
     <change-notes><![CDATA[
       <h4>2017.10.20</h4>
       <ul>
-          <li>mybatisx-0.1.0</li>
+          <li>mybatisx-1.0.0</li>
       </ul>
       ]]>
     </change-notes>
