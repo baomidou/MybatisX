@@ -7,7 +7,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.intellij" version "0.3.4"
+    id "org.jetbrains.intellij" version "0.3.5"
 }
 
 apply plugin: 'idea'
@@ -22,7 +22,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 intellij {
     version '2018.1.5'
     type 'IU'
-    plugins = ['coverage', 'spring','DatabaseTools'] //Bundled plugin dependencies
+    plugins = ['coverage', 'spring', 'DatabaseTools'] //Bundled plugin dependencies
     pluginName 'MybatisX'
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
     publish {
