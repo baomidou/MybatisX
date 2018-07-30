@@ -44,3 +44,7 @@ dependencies {
     testCompile "junit:junit:4.12"
 //    compile fileTree(dir:'lib',include:['*.jar'])
 }
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
