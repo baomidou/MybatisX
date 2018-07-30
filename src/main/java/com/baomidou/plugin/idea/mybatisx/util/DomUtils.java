@@ -1,8 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -11,13 +17,6 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomService;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
 
 public final class DomUtils {
 
@@ -38,6 +37,14 @@ public final class DomUtils {
         });
     }
 
+    /**
+     * <p>
+     * 判断是否为 Mybatis XML 文件
+     * </p>
+     *
+     * @param file 判断文件
+     * @return
+     */
     public static boolean isMybatisFile(@Nullable PsiFile file) {
         if (!isXmlFile(file)) {
             return false;

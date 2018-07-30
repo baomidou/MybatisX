@@ -13,57 +13,62 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * @author yanglin
+ * <p>
+ * Mapper 元素接口
+ * </p>
+ *
+ * @author yanglin jobob
+ * @since 2018-07-30
  */
 public interface Mapper extends DomElement {
 
     @NotNull
     @SubTagsList({"insert", "update", "delete", "select"})
-    public List<IdDomElement> getDaoElements();
+    List<IdDomElement> getDaoElements();
 
     @Required
     @NameValue
     @NotNull
     @Attribute("namespace")
-    public GenericAttributeValue<String> getNamespace();
+    GenericAttributeValue<String> getNamespace();
 
     @NotNull
     @SubTagList("resultMap")
-    public List<ResultMap> getResultMaps();
+    List<ResultMap> getResultMaps();
 
     @NotNull
     @SubTagList("parameterMap")
-    public List<ParameterMap> getParameterMaps();
+    List<ParameterMap> getParameterMaps();
 
     @NotNull
     @SubTagList("sql")
-    public List<Sql> getSqls();
+    List<Sql> getSqls();
 
     @NotNull
     @SubTagList("insert")
-    public List<Insert> getInserts();
+    List<Insert> getInserts();
 
     @NotNull
     @SubTagList("update")
-    public List<Update> getUpdates();
+    List<Update> getUpdates();
 
     @NotNull
     @SubTagList("delete")
-    public List<Delete> getDeletes();
+    List<Delete> getDeletes();
 
     @NotNull
     @SubTagList("select")
-    public List<Select> getSelects();
+    List<Select> getSelects();
 
     @SubTagList("select")
-    public Select addSelect();
+    Select addSelect();
 
     @SubTagList("update")
-    public Update addUpdate();
+    Update addUpdate();
 
     @SubTagList("insert")
-    public Insert addInsert();
+    Insert addInsert();
 
     @SubTagList("delete")
-    public Delete addDelete();
+    Delete addDelete();
 }

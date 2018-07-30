@@ -10,7 +10,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @author yanglin
+ * <p>
+ * mapper.xml 文件属性提示
+ * </p>
+ *
+ * @author yanglin jobob
+ * @since 2018-07-30
  */
 public class MapperDescription extends DomFileDescription<Mapper> {
 
