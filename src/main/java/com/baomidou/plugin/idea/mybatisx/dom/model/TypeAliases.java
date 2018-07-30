@@ -14,10 +14,10 @@ public interface TypeAliases extends DomElement {
 
     @NotNull
     @SubTagList("typeAlias")
-    public List<TypeAlias> getTypeAlias();
+    List<TypeAlias> getTypeAlias();
 
     @NotNull
     @SubTagList("package")
-    public List<Package> getPackages();
+    List<Package> getPackages();
 
 }

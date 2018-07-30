@@ -9,7 +9,12 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * <p>
+ * ResultType 检查
+ * </p>
+ *
  * @author yanglin
+ * @since 2018-07-30
  */
 public class ResultTypeQuickFix extends GenericQuickFix {
 

@@ -16,9 +16,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Simple implementation
+ * <p>
+ * Mybatis 相关注解定义
+ * </p>
  *
  * @author yanglin
+ * @since 2018-07-30
  */
 public class Annotation implements Cloneable {
 

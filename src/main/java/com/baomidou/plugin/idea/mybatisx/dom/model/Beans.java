@@ -14,6 +14,6 @@ public interface Beans extends DomElement {
 
     @NotNull
     @SubTagList("bean")
-    public List<Bean> getBeans();
+    List<Bean> getBeans();
 
 }

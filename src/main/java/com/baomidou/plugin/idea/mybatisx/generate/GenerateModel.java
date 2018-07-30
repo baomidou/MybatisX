@@ -3,7 +3,12 @@ package com.baomidou.plugin.idea.mybatisx.generate;
 import java.util.Collection;
 
 /**
- * @author yanglin
+ * <p>
+ * Model 代码生成器
+ * </p>
+ *
+ * @author yanglin jobob
+ * @since 2018-07-30
  */
 public abstract class GenerateModel {
 

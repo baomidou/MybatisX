@@ -18,11 +18,11 @@ public interface ResultMap extends GroupFour, IdDomElement {
     @NotNull
     @Attribute("extends")
     @Convert(ResultMapConverter.class)
-    public GenericAttributeValue<XmlAttributeValue> getExtends();
+    GenericAttributeValue<XmlAttributeValue> getExtends();
 
     @NotNull
     @Attribute("type")
     @Convert(AliasConverter.class)
-    public GenericAttributeValue<PsiClass> getType();
+    GenericAttributeValue<PsiClass> getType();
 
 }

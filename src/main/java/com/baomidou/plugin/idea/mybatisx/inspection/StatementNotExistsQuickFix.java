@@ -3,12 +3,17 @@ package com.baomidou.plugin.idea.mybatisx.inspection;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
-import com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * <p>
+ * Statement 是否存在 检查
+ * </p>
+ *
  * @author yanglin
+ * @since 2018-07-30
  */
 public class StatementNotExistsQuickFix extends GenericQuickFix {
 
@@ -26,7 +31,7 @@ public class StatementNotExistsQuickFix extends GenericQuickFix {
 
     @Override
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-        StatementGenerator.applyGenerate(method);
+        AbstractStatementGenerator.applyGenerate(method);
     }
 
     @NotNull

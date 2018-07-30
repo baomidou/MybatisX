@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -9,7 +8,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.baomidou.plugin.idea.mybatisx.generate.GenerateModel;
-import com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 
 import org.jdom.Element;
 import org.jetbrains.annotations.Nullable;
@@ -17,10 +16,10 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.DELETE_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.INSERT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.SELECT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.UPDATE_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.DELETE_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.INSERT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.SELECT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
 
 /**
  * @author yanglin
@@ -66,7 +65,7 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
         statementGenerateModel = GenerateModel.getInstance(state.getAttributeValue("statementGenerateModel"));
     }
 
-    private void loadState(Element state, StatementGenerator generator) {
+    private void loadState(Element state, AbstractStatementGenerator generator) {
         String attribute = state.getAttributeValue(generator.getId());
         if (null != attribute) {
             generator.setPatterns((Set<String>) gson.fromJson(attribute, gsonTypeToken));

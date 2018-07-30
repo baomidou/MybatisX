@@ -14,6 +14,6 @@ public interface Configuration extends DomElement {
 
     @NotNull
     @SubTagList("typeAliases")
-    public List<TypeAliases> getTypeAliases();
+    List<TypeAliases> getTypeAliases();
 
 }

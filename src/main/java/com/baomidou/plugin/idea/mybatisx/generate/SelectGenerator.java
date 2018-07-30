@@ -11,9 +11,14 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author yanglin
+ * <p>
+ * Select 代码生成器
+ * </p>
+ *
+ * @author yanglin jobob
+ * @since 2018-07-30
  */
-public class SelectGenerator extends StatementGenerator {
+public class SelectGenerator extends AbstractStatementGenerator {
 
     public SelectGenerator(@NotNull String... patterns) {
         super(patterns);
@@ -28,7 +33,7 @@ public class SelectGenerator extends StatementGenerator {
     }
 
     private void setupResultType(PsiMethod method, Select select) {
-        Optional<PsiClass> clazz = StatementGenerator.getSelectResultType(method);
+        Optional<PsiClass> clazz = AbstractStatementGenerator.getSelectResultType(method);
         if (clazz.isPresent()) {
             select.getResultType().setValue(clazz.get());
         }

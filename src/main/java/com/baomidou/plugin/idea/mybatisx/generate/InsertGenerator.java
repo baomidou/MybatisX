@@ -7,9 +7,14 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author yanglin
+ * <p>
+ * Insert 代码生成器
+ * </p>
+ *
+ * @author yanglin jobob
+ * @since 2018-07-30
  */
-public class InsertGenerator extends StatementGenerator {
+public class InsertGenerator extends AbstractStatementGenerator {
 
     public InsertGenerator(@NotNull String... patterns) {
         super(patterns);

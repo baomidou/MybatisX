@@ -16,6 +16,6 @@ public interface Collection extends GroupFour, ResultMapGroup, PropertyGroup {
     @NotNull
     @Attribute("ofType")
     @Convert(AliasConverter.class)
-    public GenericAttributeValue<PsiClass> getOfType();
+    GenericAttributeValue<PsiClass> getOfType();
 
 }

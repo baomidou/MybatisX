@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.DELETE_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.INSERT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.SELECT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator.UPDATE_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.DELETE_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.INSERT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.SELECT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
 
 /**
  * @author yanglin
