@@ -18,7 +18,7 @@
     </change-notes>
 
     <idea-version since-build="145.0"/>
-    <depends optional="true">com.intellij.sql</depends>
+    <depends optional="true">com.intellij.database</depends>
     <depends optional="true">com.intellij.spring</depends>
     <extensions defaultExtensionNs="com.intellij">
 
