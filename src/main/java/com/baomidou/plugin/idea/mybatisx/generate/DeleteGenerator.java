@@ -7,9 +7,14 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author yanglin
+ * <p>
+ * 删除生成器
+ * </p>
+ *
+ * @author yanglin jobob
+ * @since 2018-07-30
  */
-public class DeleteGenerator extends StatementGenerator {
+public class DeleteGenerator extends AbstractStatementGenerator {
 
     public DeleteGenerator(@NotNull String... patterns) {
         super(patterns);

@@ -11,8 +11,8 @@ import java.util.List;
 public interface Constructor extends DomElement {
 
     @SubTagList("arg")
-    public List<Arg> getArgs();
+    List<Arg> getArgs();
 
     @SubTagList("idArg")
-    public List<IdArg> getIdArgs();
+    List<IdArg> getIdArgs();
 }

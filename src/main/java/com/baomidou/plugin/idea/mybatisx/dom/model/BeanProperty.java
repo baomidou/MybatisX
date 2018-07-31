@@ -13,9 +13,9 @@ public interface BeanProperty extends DomElement {
 
     @NotNull
     @Attribute("name")
-    public GenericAttributeValue<String> getName();
+    GenericAttributeValue<String> getName();
 
     @NotNull
     @Attribute("value")
-    public GenericAttributeValue<String> getValue();
+    GenericAttributeValue<String> getValue();
 }

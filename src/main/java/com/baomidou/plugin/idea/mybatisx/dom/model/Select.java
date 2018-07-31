@@ -16,5 +16,5 @@ public interface Select extends GroupTwo, ResultMapGroup {
     @NotNull
     @Attribute("resultType")
     @Convert(AliasConverter.class)
-    public GenericAttributeValue<PsiClass> getResultType();
+    GenericAttributeValue<PsiClass> getResultType();
 }

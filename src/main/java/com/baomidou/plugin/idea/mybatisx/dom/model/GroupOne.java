@@ -14,30 +14,30 @@ public interface GroupOne extends DomElement {
 
     @NotNull
     @SubTagList("include")
-    public List<Include> getIncludes();
+    List<Include> getIncludes();
 
     @NotNull
     @SubTagList("trim")
-    public List<Trim> getTrims();
+    List<Trim> getTrims();
 
     @NotNull
     @SubTagList("where")
-    public List<Where> getWheres();
+    List<Where> getWheres();
 
     @NotNull
     @SubTagList("set")
-    public List<Set> getSets();
+    List<Set> getSets();
 
     @NotNull
     @SubTagList("foreach")
-    public List<Foreach> getForeachs();
+    List<Foreach> getForeachs();
 
     @NotNull
     @SubTagList("choose")
-    public List<Choose> getChooses();
+    List<Choose> getChooses();
 
     @NotNull
     @SubTagList("if")
-    public List<If> getIfs();
+    List<If> getIfs();
 
 }

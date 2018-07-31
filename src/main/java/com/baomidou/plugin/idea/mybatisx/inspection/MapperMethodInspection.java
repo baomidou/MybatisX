@@ -13,7 +13,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.util.xml.DomElement;
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
-import com.baomidou.plugin.idea.mybatisx.generate.StatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.locator.MapperLocator;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
@@ -57,7 +57,7 @@ public class MapperMethodInspection extends MapperInspection {
             DomElement domElement = ele.get();
             if (domElement instanceof Select) {
                 Select select = (Select) domElement;
-                Optional<PsiClass> target = StatementGenerator.getSelectResultType(method);
+                Optional<PsiClass> target = AbstractStatementGenerator.getSelectResultType(method);
                 PsiClass clazz = select.getResultType().getValue();
                 PsiIdentifier ide = method.getNameIdentifier();
                 if (null != ide && null == select.getResultMap().getValue()) {

@@ -13,6 +13,6 @@ public interface Discriminator extends DomElement {
 
     @Required
     @SubTagList("case")
-    public List<Case> getCases();
+    List<Case> getCases();
 
 }

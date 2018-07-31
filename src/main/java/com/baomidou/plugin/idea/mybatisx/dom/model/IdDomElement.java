@@ -14,7 +14,7 @@ public interface IdDomElement extends DomElement {
     @Required
     @NameValue
     @Attribute("id")
-    public GenericAttributeValue<String> getId();
+    GenericAttributeValue<String> getId();
 
-    public void setValue(String content);
+    void setValue(String content);
 }

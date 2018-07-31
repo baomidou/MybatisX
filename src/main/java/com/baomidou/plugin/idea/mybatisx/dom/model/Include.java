@@ -14,6 +14,6 @@ public interface Include extends DomElement {
 
     @Attribute("refid")
     @Convert(SqlConverter.class)
-    public GenericAttributeValue<XmlTag> getRefId();
+    GenericAttributeValue<XmlTag> getRefId();
 
 }

@@ -6,7 +6,12 @@ import com.intellij.util.xml.highlighting.DomElementAnnotationHolder;
 import com.intellij.util.xml.highlighting.DomHighlightingHelper;
 
 /**
+ * <p>
+ * Mapper XML 检查
+ * </p>
+ *
  * @author yanglin
+ * @since 2018-07-30
  */
 public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> {
 

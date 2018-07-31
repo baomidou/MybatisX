@@ -10,6 +10,6 @@ import java.util.List;
 public interface GroupThree extends GroupTwo {
 
     @SubTagList("selectKey")
-    public List<SelectKey> getSelectKey();
+    List<SelectKey> getSelectKey();
 
 }

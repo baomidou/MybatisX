@@ -12,20 +12,20 @@ import java.util.List;
 public interface GroupFour extends DomElement {
 
     @SubTag("constructor")
-    public Constructor getConstructor();
+    Constructor getConstructor();
 
     @SubTagList("id")
-    public List<Id> getIds();
+    List<Id> getIds();
 
     @SubTagList("result")
-    public List<Result> getResults();
+    List<Result> getResults();
 
     @SubTagList("association")
-    public List<Association> getAssociations();
+    List<Association> getAssociations();
 
     @SubTagList("collection")
-    public List<Collection> getCollections();
+    List<Collection> getCollections();
 
     @SubTag("discriminator")
-    public Discriminator getDiscriminator();
+    Discriminator getDiscriminator();
 }

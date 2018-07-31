@@ -16,5 +16,5 @@ public interface Association extends GroupFour, ResultMapGroup, PropertyGroup {
     @NotNull
     @Attribute("javaType")
     @Convert(AliasConverter.class)
-    public GenericAttributeValue<PsiClass> getJavaType();
+    GenericAttributeValue<PsiClass> getJavaType();
 }

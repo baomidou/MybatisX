@@ -11,6 +11,6 @@ import java.util.List;
 public interface Cache extends DomElement {
 
     @SubTagList("property")
-    public List<Property> getProperties();
+    List<Property> getProperties();
 
 }
