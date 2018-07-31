@@ -42,6 +42,7 @@ repositories {
 
 dependencies {
     testCompile "junit:junit:4.12"
+    compileOnly "org.projectlombok:lombok:1.18.0"
 //    compile fileTree(dir:'lib',include:['*.jar'])
 }
 
