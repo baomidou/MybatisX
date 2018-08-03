@@ -86,4 +86,9 @@
 
         <!--提示动作 end-->
     </extensions>
+    <actions>
+        <action id="MybatisX.Test.Action" class="com.baomidou.plugin.idea.mybatisx.action.TestAction" text="Test" description="测试">
+            <add-to-group group-id="OtherMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
