@@ -32,6 +32,9 @@ intellij {
     updateSinceUntilBuild = false
 }
 
+// 各种版本去这里找
+// https://www.jetbrains.com/intellij-repository/releases
+
 group 'com.baomidou.plugin.idea.mybatisx'
 version '1.0.0'
 
