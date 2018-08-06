@@ -20,8 +20,9 @@ public abstract class JavaFileIntentionChooser implements IntentionChooser {
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-        if (!(file instanceof PsiJavaFile))
+        if (!(file instanceof PsiJavaFile)) {
             return false;
+        }
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
         return null != element && JavaUtils.isElementWithinInterface(element) && isAvailable(element);
     }
