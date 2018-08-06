@@ -32,8 +32,10 @@ public class MapperMethodInspection extends MapperInspection {
     @Nullable
     @Override
     public ProblemDescriptor[] checkMethod(@NotNull PsiMethod method, @NotNull InspectionManager manager, boolean isOnTheFly) {
-        if (!MapperLocator.getInstance(method.getProject()).process(method) || JavaUtils.isAnyAnnotationPresent(method, Annotation.STATEMENT_SYMMETRIES))
+        if (!MapperLocator.getInstance(method.getProject()).process(method)
+            || JavaUtils.isAnyAnnotationPresent(method, Annotation.STATEMENT_SYMMETRIES)) {
             return EMPTY_ARRAY;
+        }
         List<ProblemDescriptor> res = createProblemDescriptors(method, manager, isOnTheFly);
         return res.toArray(new ProblemDescriptor[res.size()]);
     }
