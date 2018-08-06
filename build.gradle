@@ -22,7 +22,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 intellij {
     version '2018.1.5'
     type 'IU'
-    plugins = ['coverage', 'spring', 'DatabaseTools'] //Bundled plugin dependencies
+    plugins = ['spring', 'springboot', 'DatabaseTools'] //Bundled plugin dependencies
     pluginName 'MybatisX'
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
     publish {

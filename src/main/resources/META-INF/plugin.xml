@@ -18,8 +18,9 @@
     </change-notes>
 
     <idea-version since-build="145.0"/>
-    <depends optional="true">com.intellij.database</depends>
     <depends optional="true">com.intellij.spring</depends>
+    <depends optional="true">com.intellij.spring.boot</depends>
+    <depends optional="true">com.intellij.database</depends>
     <extensions defaultExtensionNs="com.intellij">
 
         <!--文件描述-->
@@ -37,6 +38,7 @@
         <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.EditorService"/>
         <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.alias.AliasFacade"/>
         <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.locator.MapperLocator"/>
+        <projectService serviceInterface="com.baomidou.plugin.idea.mybatisx.core.MapperManager" serviceImplementation="com.baomidou.plugin.idea.mybatisx.core.impl.MapperManagerImpl"/>
 
         <!--代码行插件，实现代码导航功能-->
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.baomidou.plugin.idea.mybatisx.provider.MapperLineMarkerProvider"/>
