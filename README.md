@@ -10,5 +10,5 @@ Jar 安装： File -> Settings -> Plugins -> Install plugin from disk.. 选中 m
 
 [Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 简化开发
 
-使用文档：http://mp.baomidou.com/#/mybatisx-idea-plugin
+使用文档：https://mp.baomidou.com/guide/mybatisx-idea-plugin.html
 
