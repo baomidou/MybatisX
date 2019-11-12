@@ -19,7 +19,6 @@
 
     <idea-version since-build="145.0"/>
     <depends optional="true">com.intellij.spring</depends>
-    <depends optional="true">com.intellij.spring.boot</depends>
     <depends optional="true">com.intellij.database</depends>
     <extensions defaultExtensionNs="com.intellij">
 
@@ -72,11 +71,6 @@
         <localInspection language="XML" shortName="MybatisMapperXmlInspection" enabledByDefault="true" level="ERROR"
                          displayName="Mapper xml inspection" groupName="Mybatis" implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperXmlInspection"/>
         <!--实体类属性检测-->
-
-
-        <!--spring自定义本地组件发现器,用于添加一些自定义bean到spring容器中-->
-        <spring.customLocalComponentsDiscoverer implementation="com.baomidou.plugin.idea.mybatisx.inspection.EntityPropInspection"/>
-
 
         <!--代码检测抑制器,用于过滤一些spring自带的校验规则-->
         <lang.inspectionSuppressor language="JAVA" implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.SpringInspectionsFilter"/>
