@@ -50,6 +50,7 @@ public class BeanAliasResolver extends PackageAliasResolver {
     }
 
     private void addPackages(Set<String> res, CommonSpringModel springModel) {
+        //TODO 这里要适配MP的话就改动一下。
         Optional sqlSessionFactoryClazzOpt = JavaUtils.findClazz(project, MAPPER_ALIAS_PACKAGE_CLASS);
         if (sqlSessionFactoryClazzOpt.isPresent()) {
             Collection domBeans = springModel.getAllDomBeans();
