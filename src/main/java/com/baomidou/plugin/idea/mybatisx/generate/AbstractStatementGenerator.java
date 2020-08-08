@@ -99,22 +99,21 @@ public abstract class AbstractStatementGenerator {
         if (1 == generators.length) {
             generators[0].execute(method);
         } else {
-            JBPopupFactory.getInstance().createListPopup(
-                new BaseListPopupStep("[ Statement type for method: " + method.getName() + "]", generators) {
-                    @Override
-                    public PopupStep onChosen(Object selectedValue, boolean finalChoice) {
-                        return this.doFinalStep(new Runnable() {
-                            public void run() {
-                                WriteCommandAction.runWriteCommandAction(project, new Runnable() {
-                                    public void run() {
-                                        AbstractStatementGenerator.doGenerate((AbstractStatementGenerator) selectedValue, method);
-                                    }
-                                });
-                            }
-                        });
-                    }
+            BaseListPopupStep<AbstractStatementGenerator> step = new BaseListPopupStep<AbstractStatementGenerator>("[ Statement type for method: " + method.getName() + "]", generators) {
+                @Override
+                public PopupStep onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
+                    return this.doFinalStep(new Runnable() {
+                        public void run() {
+                            WriteCommandAction.runWriteCommandAction(project, new Runnable() {
+                                public void run() {
+                                    AbstractStatementGenerator.doGenerate(selectedValue, method);
+                                }
+                            });
+                        }
+                    });
                 }
-            ).showInFocusCenter();
+            };
+            JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
         }
     }
 

@@ -7,6 +7,8 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.injected.editor.DocumentWindow;
+import com.intellij.lang.injection.InjectedLanguageManager;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
@@ -27,7 +29,9 @@ public class SqlParamCompletionContributor extends CompletionContributor {
         }
 
         PsiElement position = parameters.getPosition();
-        PsiFile topLevelFile = InjectedLanguageUtil.getTopLevelFile(position);
+        Editor editor = parameters.getEditor();
+        InjectedLanguageManager injectedLanguageManager = InjectedLanguageManager.getInstance(editor.getProject());
+        PsiFile topLevelFile = injectedLanguageManager.getTopLevelFile(position);
         if (DomUtils.isMybatisFile(topLevelFile)) {
             if (shouldAddElement(position.getContainingFile(), parameters.getOffset())) {
                 process(topLevelFile, result, position);
