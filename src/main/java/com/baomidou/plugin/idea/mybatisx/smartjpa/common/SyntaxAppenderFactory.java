@@ -3,7 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderTreeUtil;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
@@ -52,13 +51,6 @@ public interface SyntaxAppenderFactory {
                                    LinkedList<TreeWrapper<SyntaxAppender>> collector) {
         return "";
     }
-
-    SyntaxAppenderTreeUtil treeUtil = new SyntaxAppenderTreeUtil();
-
-
-
-
-
 
     void findPriority(PriorityQueue<SyntaxAppender> priorityQueue, LinkedList<SyntaxAppender> syntaxAppenderList, String splitStr);
 }

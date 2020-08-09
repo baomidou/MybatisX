@@ -116,19 +116,22 @@ public class CustomAreaAppender implements SyntaxAppender {
 
 
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, Stack<SyntaxAppender> treeHelp, TreeWrapper<SyntaxAppender> treeWrapper) {
-        SyntaxAppender currentAppender = jpaStringList.poll();
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
+        SyntaxAppender currentAppender = jpaStringList.peek();
+
         while (currentAppender != null) {
-            currentAppender.toTree(jpaStringList, treeHelp, treeWrapper);
             if (jpaStringList.peek() == null || jpaStringList.peek().getType() == AppendTypeEnum.AREA) {
                 break;
             }
             currentAppender = jpaStringList.poll();
+            if (currentAppender != null) {
+                currentAppender.toTree(jpaStringList, treeWrapper);
+            }
         }
     }
 
 
-    AreaSequence childAreaSequence;
+    private AreaSequence childAreaSequence;
 
     public AreaSequence getChildAreaSequence() {
         return childAreaSequence;

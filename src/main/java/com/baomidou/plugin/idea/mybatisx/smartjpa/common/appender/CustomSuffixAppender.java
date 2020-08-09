@@ -138,22 +138,21 @@ public class CustomSuffixAppender implements SyntaxAppender {
      * 对于前一个追加器是字段类型的,  就把字段弹出来, 加到自己里面
      *
      * @param jpaStringList
-     * @param treeHelp
      * @param treeWrapper
      */
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, Stack<SyntaxAppender> treeHelp, TreeWrapper<SyntaxAppender> treeWrapper) {
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
         LinkedList<TreeWrapper<SyntaxAppender>> collector = new LinkedList<>();
 
-        final SyntaxAppender peek = treeHelp.peek();
-        if (peek.getType() == AppendTypeEnum.FIELD) {
-            final SyntaxAppender pop = treeHelp.pop();
+        TreeWrapper<SyntaxAppender> peek = treeWrapper.getCollector().peek();
+        if (peek.getAppender().getType() == AppendTypeEnum.FIELD) {
 
             TreeWrapper<SyntaxAppender> lastField = treeWrapper.getCollector().pop();
             collector.add(lastField);
-            treeWrapper.addWrapper(new TreeWrapper<>(this,collector));
+
         }
-        treeHelp.push(this);
+
+        treeWrapper.addWrapper(new TreeWrapper<>(this, collector));
     }
 
     @Override

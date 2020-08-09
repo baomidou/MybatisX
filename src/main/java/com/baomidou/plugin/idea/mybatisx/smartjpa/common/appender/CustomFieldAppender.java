@@ -142,12 +142,10 @@ public class CustomFieldAppender implements SyntaxAppender {
     /**
      * 啥也做不了,  只能把自己加到树里面
      * @param jpaStringList
-     * @param treeHelp
      * @param treeWrapper
      */
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, Stack<SyntaxAppender> treeHelp, TreeWrapper<SyntaxAppender> treeWrapper) {
-        treeHelp.push(this);
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
         treeWrapper.getCollector().add(new TreeWrapper<>(this));
     }
 

@@ -40,7 +40,7 @@ public interface SyntaxAppender {
 
 
         @Override
-        public void toTree(LinkedList<SyntaxAppender> jpaStringList, Stack<SyntaxAppender> treeHelp, TreeWrapper<SyntaxAppender> treeWrapper) {
+        public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
         }
 
         @Override
@@ -120,10 +120,9 @@ public interface SyntaxAppender {
     /**
      * 转成树
      * @param jpaStringList
-     * @param treeHelp
      * @param treeWrapper
      */
-    void toTree(LinkedList<SyntaxAppender> jpaStringList, Stack<SyntaxAppender> treeHelp, TreeWrapper<SyntaxAppender> treeWrapper);
+    void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper);
 
 
     default AreaSequence getAreaSequence() {

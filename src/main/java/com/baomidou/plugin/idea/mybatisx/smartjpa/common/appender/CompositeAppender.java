@@ -1,9 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 
 
-
-
-
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.TemplateResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
@@ -96,11 +93,11 @@ public class CompositeAppender implements SyntaxAppender {
         StringBuilder stringBuilder = new StringBuilder();
         // 第一个是 and, or
         if (appenderList.peek().getType() == AppendTypeEnum.JOIN
-                || appenderList.peek().getType() == AppendTypeEnum.AREA) {
+            || appenderList.peek().getType() == AppendTypeEnum.AREA) {
             SyntaxAppender lastAppender = appenderList.poll();
             // 先执行 连接符的获取模板文本, 然后把后续的内容拼接起来
             String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector);
-            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters,collector);
+            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector);
         }
         // 最后一个是后缀
         if (appenderList.peekLast().getType() == AppendTypeEnum.SUFFIX) {
@@ -119,9 +116,12 @@ public class CompositeAppender implements SyntaxAppender {
     }
 
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, Stack<SyntaxAppender> treeHelp, TreeWrapper<SyntaxAppender> treeWrapper) {
-        for (SyntaxAppender syntaxAppender : appenderList) {
-             syntaxAppender.toTree(jpaStringList, treeHelp, treeWrapper);
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
+        SyntaxAppender syntaxAppender;
+        while ((syntaxAppender = jpaStringList.poll()) != null) {
+            TreeWrapper treeWrapperItem = new TreeWrapper(syntaxAppender);
+            syntaxAppender.toTree(jpaStringList, treeWrapperItem);
+            treeWrapper.addWrapper(treeWrapperItem);
         }
     }
 
@@ -131,8 +131,8 @@ public class CompositeAppender implements SyntaxAppender {
     @Override
     public String toString() {
         return "CompositeAppender{" +
-                "appenders=" + appenderList +
-                ", templateResolver=" + templateResolver +
-                '}';
+            "appenders=" + appenderList +
+            ", templateResolver=" + templateResolver +
+            '}';
     }
 }

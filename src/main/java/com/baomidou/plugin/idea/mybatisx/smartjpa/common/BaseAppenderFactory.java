@@ -1,10 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
 
-
-
-
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
@@ -27,14 +25,17 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         }
         StringBuilder stringBuilder = new StringBuilder();
 
-        final List<TreeWrapper<SyntaxAppender>> list = treeUtil.toTree(jpaStringList);
+        CompositeAppender compositeAppender = new CompositeAppender();
+        TreeWrapper<SyntaxAppender> rootSyntaxWrapper = new TreeWrapper<>(null);
+        compositeAppender.toTree(jpaStringList, rootSyntaxWrapper);
 
-        for (TreeWrapper<SyntaxAppender> treeWrapper : list) {
+
+        for (TreeWrapper<SyntaxAppender> treeWrapper : rootSyntaxWrapper.getCollector()) {
             LinkedList<TreeWrapper<SyntaxAppender>> collector = treeWrapper
                 .getCollector();
             String templateText = treeWrapper.getAppender().getTemplateText(tableName,
-                    entityClass,
-                    parameters,
+                entityClass,
+                parameters,
                 collector);
             stringBuilder.append(templateText).append("\n");
         }
@@ -144,7 +145,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         // 把自己内部的符号加入候选
         for (final SyntaxAppender syntaxAppender : getSyntaxAppenderList()) {
             if (lastSyntaxAppender == null
-                    || lastSyntaxAppender.checkAfter(syntaxAppender, getAreaSequence())) {
+                || lastSyntaxAppender.checkAfter(syntaxAppender, getAreaSequence())) {
                 syntaxAppender.findPriority(priorityQueue, splitStr);
             }
         }
@@ -152,10 +153,10 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         final String factorySyntaxPrefix = getTipText();
         if (StringUtils.isNotBlank(factorySyntaxPrefix) && splitStr.startsWith(factorySyntaxPrefix)) {
             CustomAreaAppender customAreaAppender = CustomAreaAppender.createCustomAreaAppender(factorySyntaxPrefix,
-                    getTipText(),
-                    AreaSequence.AREA,
-                    getAreaSequence(),
-                    this);
+                getTipText(),
+                AreaSequence.AREA,
+                getAreaSequence(),
+                this);
             priorityQueue.add(customAreaAppender);
         }
     }

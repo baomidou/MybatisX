@@ -71,8 +71,7 @@ public class CustomJoinAppender implements SyntaxAppender {
     }
 
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, Stack<SyntaxAppender> treeHelp, TreeWrapper<SyntaxAppender> treeWrapper) {
-        treeHelp.push(this);
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
         treeWrapper.addWrapper(new TreeWrapper<>(this));
     }
 
