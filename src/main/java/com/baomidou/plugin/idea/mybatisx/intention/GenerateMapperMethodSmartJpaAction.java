@@ -46,12 +46,12 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             }
 
             final String text = statementElement.getText();
-            EditorAutoCompletion editorAutoCompletion = EditorAutoCompletion.createEditorAutoCompletion(entityClass);
+            EditorAutoCompletion editorAutoCompletion = EditorAutoCompletion.createEditorAutoCompletion(entityClass,text);
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
-            MxParameterManager parameterManager = editorAutoCompletion.getParameter(text);
+            MxParameterManager parameterManager = editorAutoCompletion.getParameter();
 
             // 插入到编辑器
-            ReturnWrapper returnWrapper = editorAutoCompletion.getReturn(text);
+            ReturnWrapper returnWrapper = editorAutoCompletion.getReturn();
             Document document = editor.getDocument();
             String newMethodString = returnWrapper.getSimpleName() + " " + statementElement.getText() + parameterManager.getContent();
             TextRange textRange = statementElement.getTextRange();
@@ -74,7 +74,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
 
                 PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
                 final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
-                MapperTagInfo processor = editorAutoCompletion.generateMapperXml(psiMethod, text);
+                MapperTagInfo processor = editorAutoCompletion.generateMapperXml(psiMethod);
                 // 赶时间, 后续优化
                 if ("select".equals(processor.getTagType())) {
                     Select select = mapper.addSelect();

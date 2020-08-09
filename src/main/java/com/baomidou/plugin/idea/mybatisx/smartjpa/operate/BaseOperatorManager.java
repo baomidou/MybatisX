@@ -75,21 +75,19 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
     protected abstract String getTagType();
 
     @Override
-    public MapperTagInfo generateMapperXml(String text,
+    public MapperTagInfo generateMapperXml(LinkedList<SyntaxAppender> jpaList,
                                            PsiClass entityClass,
                                            PsiMethod psiMethod,
                                            String tableNameByEntityName) {
 
 
-        LinkedList<SyntaxAppender> jpaStringList = getJpaList(text);
-
-        String mapperXml = syntaxAppenderFactoryManager.generateMapperXml(jpaStringList,
+        String mapperXml = syntaxAppenderFactoryManager.generateMapperXml(jpaList,
             entityClass,
             psiMethod,
             tableNameByEntityName);
 
         MapperTagInfo mapperTagProcessor = new MapperTagInfo();
-        mapperTagProcessor.setId(text);
+
         mapperTagProcessor.setMapperXml(mapperXml);
         mapperTagProcessor.setTagType(getTagType());
         return mapperTagProcessor;

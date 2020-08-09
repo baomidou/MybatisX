@@ -76,7 +76,7 @@ public class UpdateOperator extends BaseOperatorManager {
     }
 
     @Override
-    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass) {
+    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
         return ReturnWrapper.createByOrigin(null, "int");
     }
 

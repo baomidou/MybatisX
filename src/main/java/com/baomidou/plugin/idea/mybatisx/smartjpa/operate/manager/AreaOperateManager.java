@@ -32,18 +32,18 @@ public interface AreaOperateManager {
 
     List<MxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
 
-    ReturnWrapper getReturnWrapper(String text, PsiClass entityClass);
+    ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList);
 
     boolean support(String text);
 
     /**
      *
-     * @param text 输入的文本
+     * @param jpaList 输入的文本
      * @param entityClass 类
      * @param psiMethod 方法
      * @param tableName 表名
      * @return
      */
-    MapperTagInfo generateMapperXml(String text, PsiClass entityClass, PsiMethod psiMethod, String tableName);
+    MapperTagInfo generateMapperXml(LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName);
 
 }

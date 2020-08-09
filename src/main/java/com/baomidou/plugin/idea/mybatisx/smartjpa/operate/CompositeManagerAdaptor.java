@@ -72,16 +72,15 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
     }
 
     @Override
-    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass) {
-        LinkedList<SyntaxAppender> jpaStringList = getJpaList(text);
-        if (jpaStringList.size() == 0 || jpaStringList.get(0).getType() != AppendTypeEnum.AREA) {
+    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
+        if (linkedList.size() == 0 || linkedList.get(0).getType() != AppendTypeEnum.AREA) {
             return null;
         }
-        SyntaxAppender syntaxAppender = jpaStringList.peek();
+        SyntaxAppender syntaxAppender = linkedList.peek();
 
         for (AreaOperateManager typeManager : this.typeManagers) {
             if (typeManager.support(syntaxAppender.getText())) {
-                return typeManager.getReturnWrapper(text, entityClass);
+                return typeManager.getReturnWrapper(text, entityClass, linkedList);
             }
         }
         return null;
@@ -93,16 +92,15 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
     }
 
     @Override
-    public MapperTagInfo generateMapperXml(String text, PsiClass entityClass, PsiMethod psiMethod, String tableNameByEntityName) {
-        LinkedList<SyntaxAppender> jpaStringList = getJpaList(text);
-        if (jpaStringList.size() == 0 || jpaStringList.get(0).getType() != AppendTypeEnum.AREA) {
+    public MapperTagInfo generateMapperXml(LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableNameByEntityName) {
+        if (jpaList.size() == 0 || jpaList.get(0).getType() != AppendTypeEnum.AREA) {
             return null;
         }
-        SyntaxAppender syntaxAppender = jpaStringList.peek();
+        SyntaxAppender syntaxAppender = jpaList.peek();
 
         for (AreaOperateManager typeManager : this.typeManagers) {
             if (typeManager.support(syntaxAppender.getText())) {
-                return typeManager.generateMapperXml(text, entityClass, psiMethod, tableNameByEntityName);
+                return typeManager.generateMapperXml(jpaList, entityClass, psiMethod, tableNameByEntityName);
             }
         }
         return null;
