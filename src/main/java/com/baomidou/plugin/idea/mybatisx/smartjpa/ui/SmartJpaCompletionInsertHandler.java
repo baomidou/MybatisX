@@ -1,24 +1,22 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 
 import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.editorActions.CompletionAutoPopupHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DaoCompletionInsertHandler implements InsertHandler<LookupElement> {
+public class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
     private Editor editor;
     private Project project;
     private CompletionParameters completionParameters;
 
-    public DaoCompletionInsertHandler(Editor editor,
-                                      Project project,
-                                      CompletionParameters completionParameters) {
+    public SmartJpaCompletionInsertHandler(Editor editor,
+                                           Project project,
+                                           CompletionParameters completionParameters) {
 
         this.editor = editor;
         this.project = project;
@@ -50,5 +48,5 @@ public class DaoCompletionInsertHandler implements InsertHandler<LookupElement> 
 
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(DaoCompletionInsertHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionInsertHandler.class);
 }

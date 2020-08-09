@@ -124,7 +124,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
     private static final Logger logger = LoggerFactory.getLogger(ConditionAppenderFactory.class);
 
     @Override
-    public List<MxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
+    public List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
         SyntaxAppender area = jpaStringList.peek();
         if (area == null) {
             return Collections.emptyList();

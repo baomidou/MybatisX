@@ -10,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppend
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
@@ -33,9 +34,11 @@ public class DeleteOperator extends BaseOperatorManager {
         // 没有结果集字段
         final ResultAppenderFactory resultAppenderFactory = new DeleteResultAppenderFactory();
 //        resultAppenderFactory.registerAppender(new CustomAreaAppender(DeleteOperator.DELETE, "Result", resultAppenderFactory));
-
-        this.registerAppenderFactory(resultAppenderFactory);
-        this.registerAppenderFactory(new ConditionAppenderFactory(DeleteOperator.DELETE, mappingField));
+        StatementBlock statementBlock = new StatementBlock();
+        statementBlock.setResultAppenderFactory(resultAppenderFactory);
+        statementBlock.setTagName(getTagName());
+        statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(DeleteOperator.DELETE, mappingField));
+        this.registerStatementBlock(statementBlock);
     }
 
     private class DeleteResultAppenderFactory extends ResultAppenderFactory {
@@ -58,7 +61,7 @@ public class DeleteOperator extends BaseOperatorManager {
     }
 
     @Override
-    public String getTagType() {
+    public String getTagName() {
         return "delete";
     }
 }

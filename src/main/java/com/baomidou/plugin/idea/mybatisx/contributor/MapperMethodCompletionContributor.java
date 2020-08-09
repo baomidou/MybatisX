@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.contributor;
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.DaoCompletionProvider;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.SmartJpaCompletionProvider;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -31,7 +31,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
         try {
 
-            DaoCompletionProvider daoCompletionProvider = new DaoCompletionProvider();
+            SmartJpaCompletionProvider daoCompletionProvider = new SmartJpaCompletionProvider();
             daoCompletionProvider.addCompletion(parameters, result);
         } catch (Throwable e) {
             logger.error("自动提示异常", e);

@@ -42,7 +42,7 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
 
 
     @Override
-    public List<MxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
+    public List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
         SyntaxAppender peek = jpaStringList.poll();
         if (peek == null) {
             return Collections.emptyList();

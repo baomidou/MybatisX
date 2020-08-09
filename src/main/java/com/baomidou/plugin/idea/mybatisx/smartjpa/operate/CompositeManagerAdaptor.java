@@ -1,11 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-
-
-
-
-
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
@@ -36,23 +31,34 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
 
     @NotNull
     @Override
-    public LinkedList<SyntaxAppender> getJpaList(final String splitParam) {
+    public LinkedList<SyntaxAppender> splitAppenderByText(final String splitParam) {
         final LinkedList<SyntaxAppender> results = new LinkedList<>();
         for (final AreaOperateManager typeManager : this.typeManagers) {
-            results.addAll(typeManager.getJpaList(splitParam));
+            results.addAll(typeManager.splitAppenderByText(splitParam));
         }
         return results;
     }
 
 
     @Override
-    public Set<String> getCompletionContent(final LinkedList<SyntaxAppender> splitList) {
-        final Set<String> results = new ArrayListSet<>();
+    public List<String> getCompletionContent(final LinkedList<SyntaxAppender> splitList) {
+        final List<String> results = new ArrayList<>();
         for (final AreaOperateManager typeManager : this.typeManagers) {
-            results.addAll(typeManager.getCompletionContent(splitList));
+            if (splitList.size() > 0) {
+                results.addAll(typeManager.getCompletionContent(splitList));
+            }
         }
         return results;
     }
+
+    @Override
+    public List<String> getCompletionContent() {
+        final List<String> results = new ArrayList<>();
+        for (final AreaOperateManager typeManager : this.typeManagers) {
+            results.addAll(typeManager.getCompletionContent());
+        }
+        return results;
+}
 
     @Override
     public List<MxParameter> getParameters(PsiClass entityClass,
@@ -72,7 +78,7 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
     }
 
     @Override
-    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
+    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, @NotNull LinkedList<SyntaxAppender> linkedList) {
         if (linkedList.size() == 0 || linkedList.get(0).getType() != AppendTypeEnum.AREA) {
             return null;
         }

@@ -34,7 +34,7 @@ public class EditorAutoCompletion {
 
 
         appenderManager = new CompositeManagerAdaptor(mappingField);
-        jpaList = appenderManager.getJpaList(text);
+        jpaList = appenderManager.splitAppenderByText(text);
     }
 
     static Map<PsiClass, EditorAutoCompletion> map = new ConcurrentHashMap<>();

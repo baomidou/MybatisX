@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 
 
+import com.baomidou.plugin.idea.mybatisx.contributor.TestParamContributor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.FixedSuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.ParamAroundSuffixOperator;
@@ -14,6 +15,8 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -123,11 +126,15 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return false;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomSuffixAppender.class);
 
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
                                   LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+        if (collector.size() == 0) {
+            logger.info("这个后缀没有参数, suffix: {}", this.getText());
+        }
         TreeWrapper<SyntaxAppender> treeWrapper = collector.get(0);
         CustomFieldAppender field = (CustomFieldAppender) treeWrapper.getAppender();
         String templateText = suffixOperator.getTemplateText(field.getFieldName(), parameters);

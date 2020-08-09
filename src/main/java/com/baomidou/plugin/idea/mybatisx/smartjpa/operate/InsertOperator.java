@@ -11,6 +11,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffi
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
@@ -34,7 +35,10 @@ public class InsertOperator extends BaseOperatorManager {
         for (final String areaName : this.getOperatorNameList()) {
             final ResultAppenderFactory insertResultAppenderFactory = new InsertResultAppenderFactory(areaName);
             this.initResultAppender(insertResultAppenderFactory, areaName, mappingField);
-            this.registerAppenderFactory(insertResultAppenderFactory);
+            StatementBlock statementBlock = new StatementBlock();
+            statementBlock.setResultAppenderFactory(insertResultAppenderFactory);
+            statementBlock.setTagName(getTagName());
+            this.registerStatementBlock(statementBlock);
 
         }
     }
@@ -87,7 +91,7 @@ public class InsertOperator extends BaseOperatorManager {
 
 
     @Override
-    public String getTagType() {
+    public String getTagName() {
         return "insert";
     }
 

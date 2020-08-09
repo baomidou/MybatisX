@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
 
-
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
 import com.intellij.psi.PsiClass;
@@ -15,14 +14,10 @@ import java.util.*;
 public interface SyntaxAppenderFactory {
     List<SyntaxAppender> getSyntaxAppenderList();
 
-    default List<String> getAppendNames(final List<SyntaxAppender> splitList) {
+    default List<String> getCompletionContent(final List<SyntaxAppender> splitList) {
         final List<String> result = new ArrayList<>();
         for (final SyntaxAppender syntaxAppender : this.getSyntaxAppenderList()) {
-            final Optional<String> stringOptional =
-                    this.mappingAppend(syntaxAppender, splitList);
-            if (stringOptional.isPresent()) {
-                result.add(stringOptional.get());
-            }
+            this.mappingAppend(syntaxAppender, splitList).ifPresent(result::add);
         }
         return result;
     }
@@ -41,9 +36,7 @@ public interface SyntaxAppenderFactory {
     String getTipText();
 
 
-
-
-    List<MxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass);
+    List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
 
     default String getTemplateText(String tableName,
                                    PsiClass entityClass,

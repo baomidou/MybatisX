@@ -10,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.SortAppenderFac
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
@@ -27,17 +28,22 @@ public class SelectOperator extends BaseOperatorManager {
     }
 
     public void init(final List<TxField> mappingField) {
+        SortAppenderFactory sortAppenderFactory = new SortAppenderFactory(mappingField);
         for (String areaName : this.getOperatorNameList()) {
-            // select + field
-            ResultAppenderFactory select = new SelectResultAppenderFactory(areaName);
-            this.initResultAppender(select, mappingField, areaName);
-            this.registerAppenderFactory(select);
-            // select + by
-            this.registerAppenderFactory(new ConditionAppenderFactory(areaName, mappingField));
+            StatementBlock statementBlock = new StatementBlock();
+
+            // 结果集区域
+            ResultAppenderFactory resultAppenderFactory = new SelectResultAppenderFactory(areaName);
+            this.initResultAppender(resultAppenderFactory, mappingField, areaName);
+
+            statementBlock.setResultAppenderFactory(resultAppenderFactory);
+            //条件区域
+            statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(areaName, mappingField));
+            statementBlock.setSortAppenderFactory(sortAppenderFactory);
+            statementBlock.setTagName(getTagName());
+            this.registerStatementBlock(statementBlock);
         }
 
-
-        this.registerAppenderFactory(new SortAppenderFactory(mappingField));
     }
 
 
@@ -53,15 +59,15 @@ public class SelectOperator extends BaseOperatorManager {
         /**
          * 查询的结果不需要添加到参数中
          *
-         * @param jpaStringList
          * @param entityClass
+         * @param jpaStringList
          * @return
          */
         @Override
-        public List<MxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
+        public List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
 
             // 移除select 标签
-            List<MxParameter> mxParameter = super.getMxParameter(jpaStringList, entityClass);
+            List<MxParameter> mxParameter = super.getMxParameter(entityClass, jpaStringList);
             return Collections.emptyList();
         }
 
@@ -94,27 +100,27 @@ public class SelectOperator extends BaseOperatorManager {
             // field
             // and + field
             CompositeAppender andAppender = new SelectCompositeAppender(
-                    new CustomJoinAppender("And", ",", AreaSequence.RESULT),
-                    new SelectFieldAppender(field));
+                new CustomJoinAppender("And", ",", AreaSequence.RESULT),
+                new SelectFieldAppender(field));
             selectFactory.registerAppender(andAppender);
 
             // selectFactory + field
             CompositeAppender areaAppender =
-                    new SelectCompositeAppender(
-                            new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, selectFactory),
-                            new SelectFieldAppender(field)
-                    );
+                new SelectCompositeAppender(
+                    new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, selectFactory),
+                    new SelectFieldAppender(field)
+                );
             selectFactory.registerAppender(areaAppender);
 
         }
 
         // selectFactory + All
         CompositeAppender areaAppender =
-                new CompositeAppender(
-                        new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT,
-                                selectFactory),
-                        new SelectAllFieldAppender("All")
-                );
+            new CompositeAppender(
+                new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT,
+                    selectFactory),
+                new SelectAllFieldAppender("All")
+            );
         selectFactory.registerAppender(areaAppender);
     }
 
@@ -161,9 +167,6 @@ public class SelectOperator extends BaseOperatorManager {
     // 查询类型的结果集区域,  字段拼接部分, 只需要字段名称就可以了
     private static class SelectFieldAppender extends CustomFieldAppender {
 
-        private SelectFieldAppender(CustomFieldAppender customFieldAppender) {
-            super(customFieldAppender, AreaSequence.RESULT);
-        }
 
         private SelectFieldAppender(TxField txField) {
             super(txField, AreaSequence.RESULT);
@@ -183,7 +186,7 @@ public class SelectOperator extends BaseOperatorManager {
 
 
     @Override
-    public String getTagType() {
+    public String getTagName() {
         return "select";
     }
 }

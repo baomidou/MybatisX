@@ -20,7 +20,7 @@ public interface AreaOperateManager {
      * @return
      */
     @NotNull
-    LinkedList<SyntaxAppender> getJpaList(String splitParam);
+    LinkedList<SyntaxAppender> splitAppenderByText(String splitParam);
 
     /**
      * 获取生成的内容
@@ -28,7 +28,9 @@ public interface AreaOperateManager {
      * @param splitList
      * @return
      */
-    Set<String> getCompletionContent(LinkedList<SyntaxAppender> splitList);
+    List<String> getCompletionContent(LinkedList<SyntaxAppender> splitList);
+
+    List<String> getCompletionContent();
 
     List<MxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
 

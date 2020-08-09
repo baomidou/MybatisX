@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DaoCompletionProvider {
+public class SmartJpaCompletionProvider {
 
 
     public void addCompletion(@NotNull final CompletionParameters parameters,
@@ -48,12 +48,12 @@ public class DaoCompletionProvider {
         // 添加排序
         CompletionResultSet completionResultSet = JavaCompletionSorting.addJavaSorting(parameters, result);
         completionResultSet = this.doCompletion(completionResultSet, project, editor, mapperClass, prefix, parameters);
-        WordCompletionContributor.addWordCompletionVariants(completionResultSet, parameters, Collections.emptySet());
+//        WordCompletionContributor.addWordCompletionVariants(completionResultSet, parameters, Collections.emptySet());
 
     }
 
 
-    private static final Logger logger = LoggerFactory.getLogger(DaoCompletionProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionProvider.class);
 
     private CompletionResultSet doCompletion(@NotNull final CompletionResultSet resultSet,
                                              Project project,
@@ -71,7 +71,7 @@ public class DaoCompletionProvider {
             final AreaOperateManager appenderManager = new CompositeManagerAdaptor(mappingField);
 
             logger.info("提示前缀:{} ", prefix);
-            final LinkedList<SyntaxAppender> splitList = appenderManager.getJpaList(prefix);
+            final LinkedList<SyntaxAppender> splitList = appenderManager.splitAppenderByText(prefix);
             if (splitList.size() > 0) {
                 final SyntaxAppender last = splitList.getLast();
                 last.pollLast(splitList);
@@ -83,10 +83,15 @@ public class DaoCompletionProvider {
             final CompletionResultSet completionResultSet = this.getCompletionResultSet(resultSet, prefix, splitString);
 
             // 获得提示列表
-            final Set<String> appendList = appenderManager.getCompletionContent(splitList);
+            List<String> appendList = null;
+            if (splitList.size() > 0) {
+                appendList = appenderManager.getCompletionContent(splitList);
+            } else {
+                appendList = appenderManager.getCompletionContent();
+            }
             // 自动提示
-            DaoCompletionInsertHandler daoCompletionInsertHandler =
-                new DaoCompletionInsertHandler(editor, project, parameters);
+            SmartJpaCompletionInsertHandler daoCompletionInsertHandler =
+                new SmartJpaCompletionInsertHandler(editor, project, parameters);
             // 通用字段
             List<LookupElement> lookupElementList = appendList.stream()
                 .map(x -> buildLookupElement(x, daoCompletionInsertHandler))
@@ -100,12 +105,6 @@ public class DaoCompletionProvider {
         return resultSet;
     }
 
-    private Optional<ResultMap> findPrimaryResultMap(List<ResultMap> resultMaps) {
-        if (resultMaps.size() == 0) {
-            return Optional.absent();
-        }
-        return Optional.of(resultMaps.get(0));
-    }
 
     @NotNull
     private CompletionResultSet getCompletionResultSet(@NotNull final CompletionResultSet resultSet,
@@ -127,7 +126,6 @@ public class DaoCompletionProvider {
         return LookupElementBuilder.create(str)
             .withIcon(Icons.MAPPER_LINE_MARKER_ICON)
             .bold()
-//                        .withTypeIconRightAligned(true)
             .withInsertHandler(insertHandler);
 
     }
