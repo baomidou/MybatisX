@@ -144,7 +144,9 @@ public class CustomAreaAppender implements SyntaxAppender {
 
     @Override
     public boolean checkAfter(SyntaxAppender secondAppender, AreaSequence areaSequence) {
+        // TODO 用哪个序列呢?
         boolean hasAreaCheck = areaSequence.getSequence() >= getChildAreaSequence().getSequence();
+//        boolean hasAreaCheck = getAreaSequence().getSequence() >= getChildAreaSequence().getSequence();
         boolean typeCheck = getType().checkAfter(secondAppender.getType());
         boolean sequenceCheck = (getAreaSequence() == areaSequence);
         return hasAreaCheck || (typeCheck && sequenceCheck);

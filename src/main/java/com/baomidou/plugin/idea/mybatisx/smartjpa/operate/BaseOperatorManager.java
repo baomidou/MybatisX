@@ -22,19 +22,20 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class BaseOperatorManager implements AreaOperateManager {
 
-    List<String> operatorNameList = new ArrayList<>();
+    Set<String> operatorNameList;
     private final StatementBlockFactory syntaxAppenderFactoryManager = new StatementBlockFactory();
 
-    protected List<String> getOperatorNameList() {
+    protected Set<String> getOperatorNameList() {
         return operatorNameList;
     }
 
-    protected void setOperatorNameList(final String nameList) {
-        operatorNameList = Arrays.asList(nameList.split(","));
+    protected void setOperatorNameList(final Set<String> nameSet) {
+        operatorNameList = nameSet;
     }
 
     @NotNull
@@ -85,8 +86,8 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
     }
 
     @Override
-    public boolean support(String text) {
-        return operatorNameList.contains(text);
+    public boolean support(String operatorText) {
+        return operatorNameList.contains(operatorText);
     }
 
 
@@ -119,7 +120,7 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
                 parameters,
                 tableName,
                 mybatisXmlGenerator);
-            stringBuilder.append(factoryTemplateText);
+            stringBuilder.append("\n").append(factoryTemplateText);
         }
         return stringBuilder.toString();
 

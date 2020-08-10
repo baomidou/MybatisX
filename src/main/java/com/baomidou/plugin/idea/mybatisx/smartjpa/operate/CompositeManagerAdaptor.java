@@ -95,7 +95,7 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
     }
 
     @Override
-    public boolean support(String text) {
+    public boolean support(String operatorText) {
         return true;
     }
 

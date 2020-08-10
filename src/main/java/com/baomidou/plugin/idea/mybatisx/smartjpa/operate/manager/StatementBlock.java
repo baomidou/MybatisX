@@ -8,13 +8,21 @@ import java.util.LinkedList;
 
 public class StatementBlock {
 
-
+    /**
+     * 标签名称
+     */
     private String tagName;
-
+    /**
+     * 结果集区域
+     */
     private SyntaxAppenderFactory resultAppenderFactory;
-
+    /**
+     * 条件区域
+     */
     private SyntaxAppenderFactory conditionAppenderFactory;
-
+    /**
+     * 排序区域
+     */
     private SyntaxAppenderFactory sortAppenderFactory;
 
     public SyntaxAppenderFactory getResultAppenderFactory() {

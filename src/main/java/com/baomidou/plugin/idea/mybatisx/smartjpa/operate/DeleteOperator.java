@@ -1,11 +1,13 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-
-
-
-
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
@@ -19,34 +21,59 @@ import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class DeleteOperator extends BaseOperatorManager {
 
 
-    private static final String DELETE = "delete";
-
-
     public DeleteOperator(final List<TxField> mappingField) {
+        super.setOperatorNameList(AbstractStatementGenerator.DELETE_GENERATOR.getPatterns());
         this.init(mappingField);
-        super.setOperatorNameList(DELETE);
     }
 
 
     public void init(final List<TxField> mappingField) {
-        // 没有结果集字段
-        final ResultAppenderFactory resultAppenderFactory = new DeleteResultAppenderFactory();
-//        resultAppenderFactory.registerAppender(new CustomAreaAppender(DeleteOperator.DELETE, "Result", resultAppenderFactory));
-        StatementBlock statementBlock = new StatementBlock();
-        statementBlock.setResultAppenderFactory(resultAppenderFactory);
-        statementBlock.setTagName(getTagName());
-        statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(DeleteOperator.DELETE, mappingField));
-        this.registerStatementBlock(statementBlock);
+        for (String areaName : getOperatorNameList()) {
+            // 没有结果集字段
+            final ResultAppenderFactory resultAppenderFactory = new DeleteResultAppenderFactory(areaName);
+            ConditionAppenderFactory conditionAppenderFactory = new ConditionAppenderFactory(areaName, mappingField);
+            for (TxField field : mappingField) {
+                // 区域条件 : delete + By + field
+                CompositeAppender areaByAppender = new CompositeAppender(
+                    CustomAreaAppender.createCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, AreaSequence.AREA, AreaSequence.RESULT, resultAppenderFactory),
+                    CustomAreaAppender.createCustomAreaAppender("By", "By", AreaSequence.AREA, AreaSequence.CONDITION, conditionAppenderFactory),
+                    new CustomFieldAppender(field, AreaSequence.CONDITION)
+                );
+                resultAppenderFactory.registerAppender(areaByAppender);
+
+                // 区域条件 : delete  By : and + field
+                CompositeAppender andAppender = new CompositeAppender(
+                    new CustomJoinAppender("And", "AND", AreaSequence.CONDITION),
+                    new CustomFieldAppender(field, AreaSequence.CONDITION)
+                );
+                resultAppenderFactory.registerAppender(andAppender);
+
+                // 区域条件 : delete  By : or + field
+                CompositeAppender orAppender = new CompositeAppender(
+                    new CustomJoinAppender("Or", "OR", AreaSequence.CONDITION),
+                    new CustomFieldAppender(field, AreaSequence.CONDITION)
+                );
+                resultAppenderFactory.registerAppender(orAppender);
+            }
+
+            StatementBlock statementBlock = new StatementBlock();
+            statementBlock.setTagName(areaName);
+            statementBlock.setResultAppenderFactory(resultAppenderFactory);
+            statementBlock.setConditionAppenderFactory(conditionAppenderFactory);
+            this.registerStatementBlock(statementBlock);
+        }
+
     }
 
     private class DeleteResultAppenderFactory extends ResultAppenderFactory {
 
-        public DeleteResultAppenderFactory() {
-            super(DeleteOperator.DELETE);
+        public DeleteResultAppenderFactory(String pattern) {
+            super(pattern);
         }
 
         @Override

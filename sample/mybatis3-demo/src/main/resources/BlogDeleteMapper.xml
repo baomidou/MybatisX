@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis3.mapper.BlogDeleteMapper">
+	<resultMap id="BaseResultMap"
+		type="com.baomidou.mybatis3.domain.Blog">
+		<id column="id" property="id"  />
+		<result column="age" property="age"/>
+		<result column="content" property="content"/>
+		<result column="title" property="title"/>
+		<result column="money" property="money"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,age,content,title,money
+	</sql>
+
+	<delete id="delByIdBetween">
+delete from t_blog
+where id between #{beginId,jdbcType=NUMERIC} and #{endId,jdbcType=NUMERIC}
+
+</delete>
+	<delete id="delByIdLike">
+delete from t_blog
+where id like #{id,jdbcType=NUMERIC}
+
+</delete>
+	<delete id="delByIdNotLike">
+delete from t_blog
+where id not like #{id,jdbcType=NUMERIC}
+
+</delete>
+	<delete id="delByIdStartWith">
+delete from t_blog
+where id like CONCAT('%', #{id,jdbcType=NUMERIC})
+
+</delete>
+	<delete id="delByIdEndWith">
+delete from t_blog
+where id like CONCAT( #{id,jdbcType=NUMERIC},'%')
+
+</delete>
+	<delete id="delByIdContaining">
+delete from t_blog
+where id like CONCAT('%', #{id,jdbcType=NUMERIC},'%')
+
+</delete>
+	<delete id="delByIdTrue">
+delete from t_blog
+where id = true
+
+</delete>
+	<delete id="delByIdFalse">
+delete from t_blog
+where id = false
+
+</delete>
+	<delete id="delByIdIgnoreCase">
+delete from t_blog
+where UPPER(id) = UPPER(#{id,jdbcType=NUMERIC})
+
+</delete>
+	<delete id="delByIdIs">
+delete from t_blog
+where id = #{id,jdbcType=NUMERIC}
+
+</delete>
+
+
+</mapper>

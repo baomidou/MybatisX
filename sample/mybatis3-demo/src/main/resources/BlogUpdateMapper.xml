@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis3.mapper.BlogUpdateMapper">
+    <update id="updateAgeByIdAndAgeAfter"><![CDATA[
+
+        update t_blog
+         set
+        where id = #{age,jdbcType=NUMERIC}
+        AND age > #{id,jdbcType=NUMERIC}
+
+
+        ]]></update>
+    <update id="updateAgeAndContentByIdBetween">
+update t_blog
+ set
+where id between #{age,jdbcType=NUMERIC} and #{content,jdbcType=VARCHAR}
+
+</update>
+    <update id="updateAgeAndContentByIdLike">
+update t_blog
+ set
+where id like #{age,jdbcType=NUMERIC}
+
+</update>
+    <update id="updateAgeAndContentByIdNotLike">
+update t_blog
+ set
+where id not like #{age,jdbcType=NUMERIC}
+
+</update>
+    <update id="updateAgeAndContentByIdStartWith">
+update t_blog
+ set
+where id like CONCAT('%', #{age,jdbcType=NUMERIC})
+
+</update>
+    <update id="updateAgeAndContentByIdEndWith">
+update t_blog
+ set
+where id like CONCAT( #{age,jdbcType=NUMERIC},'%')
+
+</update>
+    <update id="updateAgeAndContentByIdContaining">
+update t_blog
+ set
+where id like CONCAT('%', #{age,jdbcType=NUMERIC},'%')
+
+</update>
+    <update id="updateAgeAndContentByIdTrue">
+update t_blog
+ set
+where id = true
+
+</update>
+    <update id="updateAgeAndContentByIdFalse">
+update t_blog
+ set
+where id = false
+
+</update>
+    <update id="updateAgeAndContentByIdIgnoreCase">
+update t_blog
+ set
+where UPPER(id) = UPPER(#{age,jdbcType=NUMERIC})
+
+</update>
+    <update id="updateAgeAndContentByIdGreaterThan"><![CDATA[
+
+        update t_blog
+         set
+        where id > #{age,jdbcType=NUMERIC}
+
+
+        ]]></update>
+    <update id="updateAgeAndContentByIdGreaterThanEqual"><![CDATA[
+
+        update t_blog
+         set
+        where id >= #{age,jdbcType=NUMERIC}
+
+
+        ]]></update>
+    <update id="updateAgeAndContentByIdIs">
+update t_blog
+ set
+where id = #{age,jdbcType=NUMERIC}
+
+</update>
+</mapper>

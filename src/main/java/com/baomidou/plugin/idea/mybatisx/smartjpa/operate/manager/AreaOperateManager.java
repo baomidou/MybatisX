@@ -35,7 +35,12 @@ public interface AreaOperateManager {
 
     TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList);
 
-    boolean support(String text);
+    /**
+     * 当前区域是否支持这个操作
+     * @param operatorText 操作区文本
+     * @return
+     */
+    boolean support(String operatorText);
 
     /**
      *

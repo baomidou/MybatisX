@@ -16,6 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 常用的生成器
+ */
 public class CommonGenerator implements PlatformGenerator {
     private @NotNull LinkedList<SyntaxAppender> jpaList;
     private List<TxField> mappingField;

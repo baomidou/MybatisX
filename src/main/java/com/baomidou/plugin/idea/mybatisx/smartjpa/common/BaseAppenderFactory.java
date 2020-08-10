@@ -120,12 +120,14 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         if (!checkSameArea(appendTypes, syntaxAppenders)) {
             return false;
         }
+        AreaSequence areaSequence = getAreaSequence();
         // 检查当前标签允许的方式
         for (SyntaxAppender currentAppender : appendTypes) {
-            if (!lastAppender.checkAfter(currentAppender, getAreaSequence())) {
+            if (!lastAppender.checkAfter(currentAppender, areaSequence)) {
                 return false;
             }
             lastAppender = currentAppender;
+            areaSequence = currentAppender.getAreaSequence();
         }
         return true;
     }

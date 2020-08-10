@@ -43,10 +43,8 @@ public class CustomFieldAppender implements SyntaxAppender {
         this.tipName = tipName;
     }
 
-    public CustomFieldAppender(TxField field) {
-        this.fieldName = field.getFieldName();
-        this.tipName = field.getTipName();
-        this.columnName = field.getColumnName();
+    public void setAreaSequence(AreaSequence areaSequence) {
+        this.areaSequence = areaSequence;
     }
 
 
@@ -122,7 +120,7 @@ public class CustomFieldAppender implements SyntaxAppender {
             logger.info("查找映射字段失败, text: {}", text);
             return Collections.emptyList();
         }
-        return Arrays.asList(TxParameter.createByPsiField(psiField));
+        return Collections.singletonList(TxParameter.createByPsiField(psiField));
     }
 
     private static final Logger logger = LoggerFactory.getLogger(CustomFieldAppender.class);

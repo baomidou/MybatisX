@@ -48,12 +48,6 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
 
         for (final TxField field : mappingField) {
 
-            // 区域条件 : select + By + field
-            final CompositeAppender areaByAppender = new CompositeAppender(
-                CustomAreaAppender.createCustomAreaAppender(resultAreaName, "Result", AreaSequence.AREA, AreaSequence.CONDITION, this),
-                CustomAreaAppender.createCustomAreaAppender(this.getTipText(), getTipText(), AreaSequence.AREA, AreaSequence.CONDITION, this),
-                new CustomFieldAppender(field, AreaSequence.CONDITION));
-            syntaxAppenderArrayList.add(areaByAppender);
             // 区域 :  By + field
             final CompositeAppender areaFieldAppender = new CompositeAppender(
                 CustomAreaAppender.createCustomAreaAppender(this.getTipText(), getTipText(), AreaSequence.AREA, AreaSequence.CONDITION, this),

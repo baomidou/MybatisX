@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
@@ -32,7 +33,7 @@ public class InsertOperator extends BaseOperatorManager {
 
 
     public InsertOperator(final List<TxField> mappingField) {
-        this.setOperatorNameList("insert");
+        this.setOperatorNameList(AbstractStatementGenerator.INSERT_GENERATOR.getPatterns());
         this.init(mappingField);
     }
 
@@ -44,7 +45,7 @@ public class InsertOperator extends BaseOperatorManager {
             this.initOneResultAppender(insertResultAppenderFactory, areaName, mappingField);
             StatementBlock statementBlock = new StatementBlock();
             statementBlock.setResultAppenderFactory(insertResultAppenderFactory);
-            statementBlock.setTagName(getTagName());
+            statementBlock.setTagName(areaName);
             this.registerStatementBlock(statementBlock);
 
 
@@ -53,7 +54,7 @@ public class InsertOperator extends BaseOperatorManager {
             this.initBatchResultAppender(batch, areaName, mappingField);
             StatementBlock statementBlockBatch = new StatementBlock();
             statementBlockBatch.setResultAppenderFactory(batch);
-            statementBlockBatch.setTagName(getTagName());
+            statementBlockBatch.setTagName(areaName);
             this.registerStatementBlock(statementBlockBatch);
         }
     }

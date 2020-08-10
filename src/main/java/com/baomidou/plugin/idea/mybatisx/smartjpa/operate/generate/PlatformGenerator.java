@@ -3,6 +3,9 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.intellij.psi.PsiMethod;
 
+/**
+ * 平台生成器, 为后续生成 注解, springjpa注解等方式预留
+ */
 public interface PlatformGenerator {
     /**
      * 获取参数

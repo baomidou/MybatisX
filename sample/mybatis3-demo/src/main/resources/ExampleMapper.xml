@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis3.mapper.ExampleMapper">
+    <resultMap id="BaseResultMap"
+               type="com.baomidou.mybatis3.domain.Blog">
+        <id column="id" property="id"/>
+        <result column="age" property="age"/>
+        <result column="content" property="content"/>
+        <result column="title" property="title"/>
+        <result column="money" property="money"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		id,age,content,title,money
+	</sql>
+    <insert id="insertAll">
+	insert into Blog(id,title,content,money,age)
+	values
+	(#{id,jdbcType=NUMERIC},#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{money},#{age,jdbcType=NUMERIC}
+	)
+	</insert>
+    <insert id="insertSelective">
+        insert into Blog(<if test="id!= null">id</if>,<if test="title!= null">title</if>,<if test="content!= null">
+        content</if>,<if test="money!= null">money</if>,<if test="age!= null">age</if>)
+        values
+        (<if test="id!= null">#{id,jdbcType=NUMERIC}</if>,<if test="title!= null">#{title,jdbcType=VARCHAR}</if>,<if
+            test="content!= null">#{content,jdbcType=VARCHAR}</if>,<if test="money!= null">#{money}</if>,
+        <if test="age!= null">#{age,jdbcType=NUMERIC}</if>
+        )
+
+    </insert>
+
+
+    <select id="selectIdOrderByAgeAndTitleDesc">
+select id
+from Blog
+order by age
+,  title desc
+</select>
+    <select id="selectContentById">select content
+from Blog
+where id = #{id,jdbcType=NUMERIC}
+</select>
+    <select id="selectContentByIdAndTitle">select content
+from Blog
+where id = #{id,jdbcType=NUMERIC}
+AND title = #{title,jdbcType=VARCHAR}
+</select>
+
+    <select id="selectContentByIdInAndTitleAfterAndContentBetween">
+        select content
+        from Blog
+        where id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+        AND title > #{title,jdbcType=VARCHAR}
+        AND content between #{beginContent,jdbcType=VARCHAR} and #{endContent,jdbcType=VARCHAR}
+
+    </select>
+    <select id="selectAgeAndContentByIdAndCreateTimeBetween">
+select age
+, content
+from t_blog
+where id = #{id,jdbcType=NUMERIC}
+AND createTime between #{beginCreateTime} and #{endCreateTime}
+
+
+</select>
+    <select id="selectByAgeAndCreateTimeLessThanOrderById"><![CDATA[
+
+        select <include refid="Base_Column_List"/> from t_blog
+        where age = #{age,jdbcType=NUMERIC}
+        AND createTime < #{createTime}
+        order by id
+
+
+
+        ]]></select>
+
+
+</mapper>

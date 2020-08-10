@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
@@ -29,7 +30,7 @@ public class UpdateOperator extends BaseOperatorManager {
 
 
     public UpdateOperator(final List<TxField> mappingField) {
-        this.setOperatorNameList("update,modify");
+        this.setOperatorNameList(AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns());
         this.init(mappingField);
     }
 
@@ -39,7 +40,7 @@ public class UpdateOperator extends BaseOperatorManager {
             this.initResultAppender(updateFactory, mappingField, areaName);
 
             StatementBlock statementBlock = new StatementBlock();
-            statementBlock.setTagName(getTagName());
+            statementBlock.setTagName(areaName);
             statementBlock.setResultAppenderFactory(updateFactory);
             statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(areaName, mappingField));
             this.registerStatementBlock(statementBlock);
@@ -66,14 +67,14 @@ public class UpdateOperator extends BaseOperatorManager {
             // and + field
             final CompositeAppender andAppender = new CompositeAppender(
                 new CustomJoinAppender("And", ",", AreaSequence.RESULT),
-                new CustomFieldAppender(field));
+                new CustomFieldAppender(field, AreaSequence.RESULT));
             updateFactory.registerAppender(andAppender);
 
             // update + field
             final CompositeAppender areaAppender =
                 new CompositeAppender(
                     CustomAreaAppender.createCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, AreaSequence.AREA, AreaSequence.RESULT, updateFactory),
-                    new CustomFieldAppender(field)
+                    new CustomFieldAppender(field, AreaSequence.RESULT)
                 );
             updateFactory.registerAppender(areaAppender);
 

@@ -35,6 +35,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
     @Override
     public List<SyntaxAppender> getSyntaxAppenderList() {
         final List<SyntaxAppender> syntaxAppenderArrayList = new ArrayList<>();
+        // order by field : desc
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("Desc", "desc", AreaSequence.SORT));
         for (final TxField field : this.mappingField) {
             // order by: field

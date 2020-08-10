@@ -77,8 +77,12 @@ public class StatementBlockFactory {
         SyntaxAppender peek = jpaList.peek();
         StatementBlock statementBlock = appenderFactoryMap.get(peek.getText());
         appenderFactories.add(statementBlock.getResultAppenderFactory());
-        appenderFactories.add(statementBlock.getConditionAppenderFactory());
-        appenderFactories.add(statementBlock.getSortAppenderFactory());
+        if(statementBlock.getConditionAppenderFactory()!=null){
+            appenderFactories.add(statementBlock.getConditionAppenderFactory());
+        }
+        if(statementBlock.getSortAppenderFactory()!=null){
+            appenderFactories.add(statementBlock.getSortAppenderFactory());
+        }
         return appenderFactories;
     }
 

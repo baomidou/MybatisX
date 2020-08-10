@@ -5,7 +5,16 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Insert;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Update;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.psi.xml.XmlElement;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.DomElement;
 
+/**
+ * 生成mybatis的xml文件内容.
+ * 第一版在这里预留一个形式
+ * 后续可以加入:  springjpa提示, 生成mybatis注解
+ */
 public class MybatisXmlGenerator {
 
     private Mapper mapper;
@@ -14,11 +23,9 @@ public class MybatisXmlGenerator {
         this.mapper = mapper;
     }
 
-    public void generateSelect(String id,String value){
+    public void generateSelect(String id, String value) {
         Select select = mapper.addSelect();
         select.getId().setStringValue(id);
-//        select.getXmlElement().add(LookupElementBuilder.create("--TEST--").getPsiElement());
-//        select.getXmlElement().add(LookupElementBuilder.create(value).getPsiElement());
         select.setValue(value);
     }
 
