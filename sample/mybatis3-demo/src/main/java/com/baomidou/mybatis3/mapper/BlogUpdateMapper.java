@@ -7,11 +7,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
 public interface BlogUpdateMapper extends BaseMapper<Blog> {
-    // TODO CDATA
-    int updateAgeByIdAndAgeAfter(@Param("age") Integer age,@Param("id") Long id, @Param("oldAge") Integer oldAge);
-    // TODO CDATA
-    int updateAgeAndContentByIdIn(@Param("age") Integer age, @Param("content") String content, @Param("idList") Collection<Long> idList);
-    // TODO CDATA
+
+    int updateAgeAndContentByIdIn(@Param("age")Integer age,@Param("content")String content,@Param("idList")Collection<Long> idList);
+
     int updateAgeAndContentByIdNotIn(@Param("age") Integer age, @Param("content") String content, @Param("idList") Collection<Long> idList);
 
     int updateAgeAndContentByIdBetween(@Param("age")Integer age,@Param("content")String content,@Param("beginId")Long beginId,@Param("endId")Long endId);
@@ -30,11 +28,14 @@ public interface BlogUpdateMapper extends BaseMapper<Blog> {
 
     int updateAgeAndContentByIdFalse(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
 
-    int updateAgeAndContentByIdIgnoreCase(@Param("age") Integer age, @Param("content") String content, @Param("id") Long id);
-    // TODO CDATA
+    int updateAgeAndContentByIdIgnoreCase(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
+
     int updateAgeAndContentByIdGreaterThan(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
-    // TODO CDATA
+
     int updateAgeAndContentByIdGreaterThanEqual(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
 
     int updateAgeAndContentByIdIs(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
+
+    int updateAgeByIdAndAgeAfter(@Param("age")Integer age,@Param("id")Long id,@Param("oldAge")Integer oldAge);
+
 }

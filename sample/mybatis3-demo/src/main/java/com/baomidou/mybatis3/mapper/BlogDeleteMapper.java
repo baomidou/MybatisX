@@ -7,12 +7,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Collection;
 
 public interface BlogDeleteMapper extends BaseMapper<Blog> {
-    // TODO CDATA
-    int deleteByIdAndAgeAfter(@Param("id")Long id, @Param("age")Integer age);
-    // TODO CDATA
-    int deleteByIdIn(@Param("idList") Collection<Long> idList);
-    // TODO CDATA
-    int deleteByIdNotIn(@Param("idList")Collection<Long> idList);
+
+    int delByIdAndAgeAfter(@Param("id")Long id,@Param("age")Integer age);
+
+    int delByIdIn(@Param("idList")Collection<Long> idList);
+
+    int delByIdNotIn(@Param("idList")Collection<Long> idList);
 
     int delByIdBetween(@Param("beginId")Long beginId,@Param("endId")Long endId);
 
@@ -31,10 +31,10 @@ public interface BlogDeleteMapper extends BaseMapper<Blog> {
     int delByIdFalse(@Param("id")Long id);
 
     int delByIdIgnoreCase(@Param("id")Long id);
-    // TODO CDATA
-    int delByIdGreaterThan(@Param("id")Long id);
-    // TODO CDATA
-    int delByIdGreaterThanEqual(@Param("id")Long id);
 
     int delByIdIs(@Param("id")Long id);
+
+    int delByIdGreaterThan(@Param("id")Long id);
+
+    int delByIdGreaterThanEqual(@Param("id")Long id);
 }

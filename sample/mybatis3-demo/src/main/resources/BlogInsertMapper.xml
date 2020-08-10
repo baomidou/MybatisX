@@ -18,23 +18,24 @@ values
 (#{id,jdbcType=NUMERIC},#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{money},#{age,jdbcType=NUMERIC},#{createTime}
 )
 </insert>
-	<insert id="insertSelective"><![CDATA[
-
-        insert into t_blog(<if test="id!= null">id</if>,<if test="title!= null">title</if>,<if test="content!= null">content</if>,<if test="money!= null">money</if>,<if test="age!= null">age</if>,<if test="createTime!= null">createTime</if>)
+    <insert id="insertSelective">
+        insert into t_blog(<if test="id!= null">id</if>,<if test="title!= null">title</if>,<if test="content!= null">
+        content</if>,<if test="money!= null">money</if>,<if test="age!= null">age</if>,<if test="createTime!= null">
+        createTime</if>)
         values
-        (<if test="id!= null">#{id,jdbcType=NUMERIC}</if>,<if test="title!= null">#{title,jdbcType=VARCHAR}</if>,<if test="content!= null">#{content,jdbcType=VARCHAR}</if>,<if test="money!= null">#{money}</if>,<if test="age!= null">#{age,jdbcType=NUMERIC}</if>,<if test="createTime!= null">#{createTime}</if>
+        (<if test="id!= null">#{id,jdbcType=NUMERIC}</if>,<if test="title!= null">#{title,jdbcType=VARCHAR}</if>,<if
+        test="content!= null">#{content,jdbcType=VARCHAR}</if>,<if test="money!= null">#{money}</if>,<if
+        test="age!= null">#{age,jdbcType=NUMERIC}</if>,
+        <if test="createTime!= null">#{createTime}</if>
         )
-
-		]]></insert>
-	<insert id="insertBatch"><![CDATA[
-
+    </insert>
+    <insert id="insertBatch">
         insert into t_blog(id,title,content,money,age,createTime)
         values
         <foreach collection="blogCollection" item="item" separator="," open="(" close=")">
-        #{id,jdbcType=NUMERIC},#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{money},#{age,jdbcType=NUMERIC},#{createTime}
+            #{id,jdbcType=NUMERIC},#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{money},#{age,jdbcType=NUMERIC},#{createTime}
         </foreach>
-
-		]]></insert>
+    </insert>
 
 
 </mapper>

@@ -63,6 +63,36 @@ delete from t_blog
 where id = #{id,jdbcType=NUMERIC}
 
 </delete>
+    <delete id="delByIdGreaterThan">
+delete from t_blog
+where id > #{id,jdbcType=NUMERIC}
+</delete>
+    <delete id="delByIdGreaterThanEqual">
+delete from t_blog
+where id >= #{id,jdbcType=NUMERIC}
+</delete>
+    <delete id="deleteByIdAndAgeAfter">
+delete from t_blog
+</delete>
+    <delete id="delByIdAndAgeAfter">
+delete from t_blog
+where id = #{id,jdbcType=NUMERIC}
+AND age > #{age,jdbcType=NUMERIC}
+</delete>
+    <delete id="delByIdIn">
+        delete from t_blog
+        where id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </delete>
+    <delete id="delByIdNotIn">
+        delete from t_blog
+        where id not in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </delete>
 
 
 </mapper>

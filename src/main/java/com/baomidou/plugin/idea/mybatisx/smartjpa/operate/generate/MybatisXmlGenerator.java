@@ -24,26 +24,28 @@ public class MybatisXmlGenerator {
     }
 
     public void generateSelect(String id, String value) {
-        Select select = mapper.addSelect();
-        select.getId().setStringValue(id);
-        select.setValue(value);
+        XmlTag select = mapper.ensureTagExists().createChildTag("select", null, value, false);
+        select.setAttribute("id",id);
+        select.setAttribute("resultMap","BaseResultMap");
+        mapper.ensureTagExists().addSubTag(select,false);
     }
 
     public void generateDelete(String id, String value) {
-        Delete delete = mapper.addDelete();
-        delete.getId().setStringValue(id);
-        delete.setValue(value);
+
+        XmlTag delete = mapper.ensureTagExists().createChildTag("delete", null, value, false);
+        delete.setAttribute("id",id);
+        mapper.ensureTagExists().addSubTag(delete,false);
     }
 
     public void generateInsert(String id, String value) {
-        Insert insert = mapper.addInsert();
-        insert.getId().setStringValue(id);
-        insert.setValue(value);
+        XmlTag insert = mapper.ensureTagExists().createChildTag("insert", null, value, false);
+        insert.setAttribute("id",id);
+        mapper.ensureTagExists().addSubTag(insert,false);
     }
 
     public void generateUpdate(String id, String value) {
-        Update update = mapper.addUpdate();
-        update.getId().setStringValue(id);
-        update.setValue(value);
+        XmlTag update = mapper.ensureTagExists().createChildTag("update", null, value, false);
+        update.setAttribute("id",id);
+        mapper.ensureTagExists().addSubTag(update,false);
     }
 }

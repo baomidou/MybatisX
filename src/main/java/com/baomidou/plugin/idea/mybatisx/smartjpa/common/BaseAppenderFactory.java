@@ -30,25 +30,21 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         if (jpaStringList.isEmpty()) {
             return "";
         }
-        StringBuilder stringBuilder = new StringBuilder();
         // 按照区域维度转换成一棵树
         CompositeAppender compositeAppender = new CompositeAppender();
         SyntaxAppenderWrapper rootSyntaxWrapper = new SyntaxAppenderWrapper(null);
         compositeAppender.toTree(jpaStringList, rootSyntaxWrapper);
 
         // 遍历区域, 生成字符串
-        for (SyntaxAppenderWrapper syntaxAppenderWrapper : rootSyntaxWrapper.getCollector()) {
+        return "\n" + rootSyntaxWrapper.getCollector().stream().map(syntaxAppenderWrapper -> {
             LinkedList<SyntaxAppenderWrapper> collector = syntaxAppenderWrapper
                 .getCollector();
-            String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName,
+            return syntaxAppenderWrapper.getAppender().getTemplateText(tableName,
                 entityClass,
                 parameters,
                 collector,
                 mybatisXmlGenerator);
-            stringBuilder.append(templateText).append("\n");
-        }
-
-        return stringBuilder.toString();
+        }).collect(Collectors.joining("\n"));
     }
 
 

@@ -183,7 +183,7 @@ public class InsertOperator extends BaseOperatorManager {
 
     @Override
     public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
-        String mapperXml = super.generateXml(id, jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
         mybatisXmlGenerator.generateInsert(id, mapperXml);
     }
 
@@ -245,6 +245,7 @@ public class InsertOperator extends BaseOperatorManager {
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("values").append("\n");
+            final PsiParameter collection = parameters.poll();
             final String fields = mappingField.stream()
                 .map(field -> FieldWrapperUtils.wrapperField(field.getFieldName(), field.getFieldType()))
                 .collect(Collectors.joining(","));

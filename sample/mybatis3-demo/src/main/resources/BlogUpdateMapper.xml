@@ -1,89 +1,102 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.baomidou.mybatis3.mapper.BlogUpdateMapper">
-    <update id="updateAgeByIdAndAgeAfter"><![CDATA[
 
+
+    <update id="updateAgeAndContentByIdIn">
         update t_blog
-         set
-        where id = #{age,jdbcType=NUMERIC}
-        AND age > #{id,jdbcType=NUMERIC}
-
-
-        ]]></update>
+        set age = #{age,jdbcType=NUMERIC}
+        , content = #{content,jdbcType=VARCHAR}
+        where id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </update>
+    <update id="updateAgeAndContentByIdNotIn">
+        update t_blog
+        set age = #{age,jdbcType=NUMERIC}
+        , content = #{content,jdbcType=VARCHAR}
+        where id not in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </update>
     <update id="updateAgeAndContentByIdBetween">
 update t_blog
- set
-where id between #{age,jdbcType=NUMERIC} and #{content,jdbcType=VARCHAR}
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id between #{beginId,jdbcType=NUMERIC} and #{endId,jdbcType=NUMERIC}
 </update>
     <update id="updateAgeAndContentByIdLike">
 update t_blog
- set
-where id like #{age,jdbcType=NUMERIC}
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id like #{id,jdbcType=NUMERIC}
 </update>
     <update id="updateAgeAndContentByIdNotLike">
 update t_blog
- set
-where id not like #{age,jdbcType=NUMERIC}
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id not like #{id,jdbcType=NUMERIC}
 </update>
     <update id="updateAgeAndContentByIdStartWith">
 update t_blog
- set
-where id like CONCAT('%', #{age,jdbcType=NUMERIC})
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id like CONCAT('%', #{id,jdbcType=NUMERIC})
 </update>
     <update id="updateAgeAndContentByIdEndWith">
 update t_blog
- set
-where id like CONCAT( #{age,jdbcType=NUMERIC},'%')
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id like CONCAT( #{id,jdbcType=NUMERIC},'%')
 </update>
     <update id="updateAgeAndContentByIdContaining">
 update t_blog
- set
-where id like CONCAT('%', #{age,jdbcType=NUMERIC},'%')
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id like CONCAT('%', #{id,jdbcType=NUMERIC},'%')
 </update>
     <update id="updateAgeAndContentByIdTrue">
 update t_blog
- set
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
 where id = true
-
 </update>
     <update id="updateAgeAndContentByIdFalse">
 update t_blog
- set
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
 where id = false
-
 </update>
     <update id="updateAgeAndContentByIdIgnoreCase">
 update t_blog
- set
-where UPPER(id) = UPPER(#{age,jdbcType=NUMERIC})
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where UPPER(id) = UPPER(#{id,jdbcType=NUMERIC})
 </update>
-    <update id="updateAgeAndContentByIdGreaterThan"><![CDATA[
-
-        update t_blog
-         set
-        where id > #{age,jdbcType=NUMERIC}
-
-
-        ]]></update>
-    <update id="updateAgeAndContentByIdGreaterThanEqual"><![CDATA[
-
-        update t_blog
-         set
-        where id >= #{age,jdbcType=NUMERIC}
-
-
-        ]]></update>
+    <update id="updateAgeAndContentByIdGreaterThan">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id > #{id,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeAndContentByIdGreaterThanEqual">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id >= #{id,jdbcType=NUMERIC}
+</update>
     <update id="updateAgeAndContentByIdIs">
 update t_blog
- set
-where id = #{age,jdbcType=NUMERIC}
-
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id = #{id,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeByIdAndAgeAfter">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+where id = #{id,jdbcType=NUMERIC}
+AND age > #{oldAge,jdbcType=NUMERIC}
 </update>
 </mapper>

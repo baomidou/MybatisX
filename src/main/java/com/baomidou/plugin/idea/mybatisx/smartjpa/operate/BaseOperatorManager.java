@@ -61,9 +61,9 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
     @Override
     public List<String> getCompletionContent() {
         Collection<StatementBlock> allBlock = syntaxAppenderFactoryManager.getAllBlock();
-        return allBlock.stream().map(x->x.getResultAppenderFactory())
+        return allBlock.stream().map(x -> x.getResultAppenderFactory())
             .filter(Objects::nonNull)
-            .flatMap(x->x.getCompletionContent(new ArrayList<>()).stream())
+            .flatMap(x -> x.getCompletionContent(new ArrayList<>()).stream())
             .collect(Collectors.toList());
     }
 
@@ -100,29 +100,40 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
 
     protected abstract String getTagName();
 
-    protected String generateXml(String id, LinkedList<SyntaxAppender> jpaList,
-                                  PsiClass entityClass,
-                                  PsiMethod psiMethod,
-                                  String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
+    /**
+     * 生成xml
+     *
+     * @param jpaList
+     * @param entityClass
+     * @param psiMethod
+     * @param tableName
+     * @param mybatisXmlGenerator
+     * @return
+     */
+    protected String generateXml(LinkedList<SyntaxAppender> jpaList,
+                                 PsiClass entityClass,
+                                 PsiMethod psiMethod,
+                                 String tableName,
+                                 MybatisXmlGenerator mybatisXmlGenerator) {
         SyntaxAppender firstAreaAppender = jpaList.peek();
         if (firstAreaAppender != null && !this.canExecute(firstAreaAppender.getText())) {
             return null;
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
         List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
-        for (SyntaxAppenderFactory syntaxAppenderFactory : areaListByJpa) {
-            LinkedList<PsiParameter> parameters = Arrays.stream(psiMethod.getParameterList().getParameters())
-                .collect(Collectors.toCollection(LinkedList::new));
+
+        LinkedList<PsiParameter> parameters = Arrays.stream(psiMethod.getParameterList().getParameters())
+            .collect(Collectors.toCollection(LinkedList::new));
+
+        return areaListByJpa.stream().map(syntaxAppenderFactory -> {
+
             // 区域生成的xml内容
-            String factoryTemplateText = syntaxAppenderFactory.getFactoryTemplateText(jpaList,
+            return syntaxAppenderFactory.getFactoryTemplateText(jpaList,
                 entityClass,
                 parameters,
                 tableName,
                 mybatisXmlGenerator);
-            stringBuilder.append("\n").append(factoryTemplateText);
-        }
-        return stringBuilder.toString();
+        }).collect(Collectors.joining("\n"));
 
     }
 

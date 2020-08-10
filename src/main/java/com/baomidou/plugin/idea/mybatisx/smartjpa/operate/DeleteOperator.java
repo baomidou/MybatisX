@@ -21,7 +21,6 @@ import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class DeleteOperator extends BaseOperatorManager {
 
@@ -99,7 +98,7 @@ public class DeleteOperator extends BaseOperatorManager {
 
     @Override
     public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
-        String mapperXml = super.generateXml(id, jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
         mybatisXmlGenerator.generateDelete(id, mapperXml);
     }
 }

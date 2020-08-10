@@ -87,7 +87,8 @@ public class SelectOperator extends BaseOperatorManager {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                      LinkedList<SyntaxAppenderWrapper> collector,
+                                      MybatisXmlGenerator mybatisXmlGenerator) {
             if (collector.isEmpty()) {
                 return "select <include refid=\"Base_Column_List\"/> from " + tableName;
             }
@@ -217,7 +218,7 @@ public class SelectOperator extends BaseOperatorManager {
                                   PsiClass entityClass,
                                   PsiMethod psiMethod, String tableName,
                                   MybatisXmlGenerator mybatisXmlGenerator) {
-        String mapperXml = super.generateXml(id, jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
         mybatisXmlGenerator.generateSelect(id, mapperXml);
     }
 

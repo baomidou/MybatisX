@@ -10,11 +10,8 @@ public interface BlogInsertMapper extends BaseMapper<Blog> {
 
     int insertAll(@Param("blogCollection") Collection<Blog> blogCollection);
 
-    //TODO CDATA
-    int insertSelective(@Param("blogCollection") Collection<Blog> blogCollection);
+    int insertSelective(@Param("blogCollection")Collection<Blog> blogCollection);
 
-    //TODO CDATA
-    int insertBatch(@Param("blogCollection") Collection<Blog> blogCollection);
-
+    int insertBatch(@Param("blogCollection")Collection<Blog> blogCollection);
 
 }

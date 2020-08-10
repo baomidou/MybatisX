@@ -8,41 +8,36 @@ import java.util.Collection;
 
 // TODO CDATA
 public interface BlogSelectMapper extends BaseMapper<Blog> {
+
     Blog selectByIdAndAgeAfter(@Param("id") Long id, @Param("age") Integer age);
 
-    // TODO CDATA
-    int selectByIdAndAgeAfter(@Param("id") Long id, @Param("age") Integer age);
+    Blog selectByIdIn(@Param("idList")Collection<Long> idList);
 
-    // TODO CDATA
-    int selectByIdIn(@Param("idList") Collection<Long> idList);
+    Blog selectByIdNotIn(@Param("idList")Collection<Long> idList);
 
-    // TODO CDATA
-    int selectByIdNotIn(@Param("idList") Collection<Long> idList);
+    Blog selectByIdBetween(@Param("beginId")Long beginId,@Param("endId")Long endId);
 
-    // TODO CDATA
-    Blog selectByIdBetween(@Param("beginId") Long beginId, @Param("endId") Long endId);
+    Blog selectByIdLike(@Param("id")Long id);
 
-    int selectByIdLike(@Param("id") Long id);
+    Blog selectByIdNotLike(@Param("id")Long id);
 
-    int selectByIdNotLike(@Param("id") Long id);
+    Blog selectByIdStartWith(@Param("id")Long id);
 
-    int selectByIdStartWith(@Param("id") Long id);
+    Blog selectByIdEndWith(@Param("id")Long id);
 
-    int selectByIdEndWith(@Param("id") Long id);
+    Blog selectByIdContaining(@Param("id")Long id);
 
-    int selectByIdContaining(@Param("id") Long id);
+    Blog selectByIdTrue(@Param("id")Long id);
 
-    int selectByIdTrue(@Param("id") Long id);
+    Blog selectByIdFalse(@Param("id")Long id);
 
-    int selectByIdFalse(@Param("id") Long id);
+    Blog selectByIdIgnoreCase(@Param("id")Long id);
 
-    int selectByIdIgnoreCase(@Param("id") Long id);
+    Blog selectByIdGreaterThan(@Param("id")Long id);
 
-    int selectByIdGreaterThan(@Param("id") Long id);
+    Blog selectByIdGreaterThanEqual(@Param("id")Long id);
 
-    int selectByIdGreaterThanEqual(@Param("id") Long id);
-
-    int selectByIdIs(@Param("id") Long id);
+    Blog selectByIdIs(@Param("id")Long id);
 
 
 }

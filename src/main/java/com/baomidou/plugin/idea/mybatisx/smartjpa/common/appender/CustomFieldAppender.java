@@ -86,12 +86,14 @@ public class CustomFieldAppender implements SyntaxAppender {
     public boolean getCandidateAppender(LinkedList<SyntaxAppender> result) {
         SyntaxAppender lastAppender = result.peekLast();
         if (result.isEmpty() || lastAppender != null
-                && lastAppender.getType() == AppendTypeEnum.JOIN) {
+            && lastAppender.getType() == AppendTypeEnum.JOIN) {
             result.add(this);
             return true;
         }
         return false;
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomFieldAppender.class);
 
     @Override
     public String getTemplateText(String tableName,
@@ -99,6 +101,7 @@ public class CustomFieldAppender implements SyntaxAppender {
                                   LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         PsiParameter parameter = parameters.poll();
         if (parameter == null) {
+            logger.info("字段参数为空, 什么也不做, fieldName: {}", fieldName);
             return "";
         }
         return columnName + " = " + FieldWrapperUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
@@ -108,7 +111,7 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public List<TxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
         Map<String, PsiField> fieldMap =
-                Arrays.stream(entityClass.getAllFields()).collect(Collectors.toMap(PsiField::getName, x -> x));
+            Arrays.stream(entityClass.getAllFields()).collect(Collectors.toMap(PsiField::getName, x -> x));
 
         // 移除字段符号
         final SyntaxAppender peek = jpaStringList.poll();
@@ -123,21 +126,20 @@ public class CustomFieldAppender implements SyntaxAppender {
         return Collections.singletonList(TxParameter.createByPsiField(psiField));
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomFieldAppender.class);
-
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("tipName", tipName)
-                .append("fieldName", fieldName)
-                .append("columnName", columnName)
-                .append("areaSequence", areaSequence)
-                .toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
+            .append("tipName", tipName)
+            .append("fieldName", fieldName)
+            .append("columnName", columnName)
+            .append("areaSequence", areaSequence)
+            .toString();
     }
 
     /**
      * 啥也做不了,  只能把自己加到树里面
+     *
      * @param jpaStringList
      * @param syntaxAppenderWrapper
      */

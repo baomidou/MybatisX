@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UpdateOperator extends BaseOperatorManager {
 
@@ -55,8 +56,16 @@ public class UpdateOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
-            return "update " + tableName + "\n set";
+        public String getTemplateText(String tableName,
+                                      PsiClass entityClass,
+                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<SyntaxAppenderWrapper> collector,
+                                      MybatisXmlGenerator mybatisXmlGenerator) {
+            String operatorXml = "update " + tableName + "\n set ";
+
+            return operatorXml + collector.stream().map(syntaxAppenderWrapper -> {
+                return syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
+            }).collect(Collectors.joining());
         }
     }
 
@@ -108,7 +117,7 @@ public class UpdateOperator extends BaseOperatorManager {
 
     @Override
     public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
-        String mapperXml = super.generateXml(id, jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
         mybatisXmlGenerator.generateUpdate(id, mapperXml);
     }
 }

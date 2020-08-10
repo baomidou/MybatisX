@@ -30,6 +30,8 @@ public class FieldWrapperUtils {
     static {
         fieldJdbcType.put("java.lang.Long", "NUMERIC");
         fieldJdbcType.put("java.lang.Integer", "NUMERIC");
+        fieldJdbcType.put("java.lang.Short", "NUMERIC");
         fieldJdbcType.put("java.lang.String", "VARCHAR");
+        fieldJdbcType.put("java.lang.Date", "Timestamp");
     }
 }
