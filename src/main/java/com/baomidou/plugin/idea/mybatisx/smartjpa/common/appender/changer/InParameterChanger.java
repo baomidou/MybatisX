@@ -5,7 +5,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.FieldWrapperUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +16,9 @@ import java.util.List;
 
 public class InParameterChanger implements MxParameterChanger {
     @Override
-    public List<MxParameter> getParameter(MxParameter mxParameter) {
-        MxParameter collectionParameter = MxParameter.createByOrigin(mxParameter.getName() + "List",
-                "Collection<" + mxParameter.getTypeText() + ">",
+    public List<TxParameter> getParameter(TxParameter txParameter) {
+        TxParameter collectionParameter = TxParameter.createByOrigin(txParameter.getName() + "List",
+                "Collection<" + txParameter.getTypeText() + ">",
                 "java.util.Collection");
         return Arrays.asList(collectionParameter);
     }

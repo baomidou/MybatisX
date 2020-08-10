@@ -1,10 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.*;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameterManager;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.EditorAutoCompletion;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.MapperTagInfo;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.CommonGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.Importer;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.MapperSearch;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
@@ -38,7 +38,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
                 statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
             }
             MapperSearch mapperSearch = new MapperSearch();
-            PsiClass mapperClass = mapperSearch.searchMapper(statementElement);
+            PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
             PsiClass entityClass = mapperSearch.searchEntity(project, mapperClass);
             if (entityClass == null) {
                 logger.info("未找到实体类");
@@ -46,14 +46,14 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             }
 
             final String text = statementElement.getText();
-            EditorAutoCompletion editorAutoCompletion = EditorAutoCompletion.createEditorAutoCompletion(entityClass,text);
+            PlatformGenerator platformGenerator = CommonGenerator.createEditorAutoCompletion(entityClass, text);
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
-            MxParameterManager parameterManager = editorAutoCompletion.getParameter();
+            TypeDescriptor parameterDescriptor = platformGenerator.getParameter();
 
             // 插入到编辑器
-            ReturnWrapper returnWrapper = editorAutoCompletion.getReturn();
+            TypeDescriptor returnDescriptor = platformGenerator.getReturn();
             Document document = editor.getDocument();
-            String newMethodString = returnWrapper.getSimpleName() + " " + statementElement.getText() + parameterManager.getContent();
+            String newMethodString = returnDescriptor.getContent() + " " + statementElement.getText() + parameterDescriptor.getContent();
             TextRange textRange = statementElement.getTextRange();
             WriteCommandAction.runWriteCommandAction(project, () -> {
                 document.replaceString(textRange.getStartOffset(), textRange.getEndOffset(), newMethodString);
@@ -62,7 +62,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             // 导入对象
             PsiDocumentManager psiDocumentManager = PsiDocumentManager
                 .getInstance(project);
-            Importer importer = Importer.create(parameterManager.getImports());
+            Importer importer = Importer.create(parameterDescriptor.getImportList());
             importer.addImportToFile(psiDocumentManager,
                 (PsiJavaFile) element.getContainingFile(),
                 document);
@@ -74,33 +74,13 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
 
                 PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
                 final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
-                MapperTagInfo processor = editorAutoCompletion.generateMapperXml(psiMethod);
-                // 赶时间, 后续优化
-                if ("select".equals(processor.getTagType())) {
-                    Select select = mapper.addSelect();
-                    select.getId().setStringValue(processor.getId());
-                    select.setValue(processor.getMapperXml());
-                } else if ("insert".equals(processor.getTagType())) {
-                    Insert insert = mapper.addInsert();
-                    insert.getId().setStringValue(processor.getId());
-                    insert.setValue(processor.getMapperXml());
-                } else if ("update".equals(processor.getTagType())) {
-                    Update update = mapper.addUpdate();
-                    update.getId().setStringValue(processor.getId());
-                    update.setValue(processor.getMapperXml());
-                } else if ("delete".equals(processor.getTagType())) {
-                    Delete delete = mapper.addDelete();
-                    delete.getId().setStringValue(processor.getId());
-                    delete.setValue(processor.getMapperXml());
-                }
-
-                logger.info("生成的mapper内容: {}", processor.getMapperXml());
+                // 生成完整版的内容
+                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper));
             }
-//            Messages.showMultilineInputDialog(project, "复制下面的内容", "生成的xml内容", xmlContent, null, null);
 
 
         } catch (Throwable e) {
-            logger.error("聪明的JPA失败了, 真笨", e);
+            logger.error("聪明的JPA失败了", e);
         }
     }
 

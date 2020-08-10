@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 
 
-import com.baomidou.plugin.idea.mybatisx.contributor.TestParamContributor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.FixedSuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.ParamAroundSuffixOperator;
@@ -9,26 +8,35 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffi
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.FieldSuffixAppendTypeService;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CustomSuffixAppender implements SyntaxAppender {
 
     private final String tipName;
-    private SuffixOperator suffixOperator;
+    protected SuffixOperator suffixOperator;
     private MxParameterChanger mxParameterFinder;
 
 
-    private CustomSuffixAppender(String tipName) {
+    protected CustomSuffixAppender(String tipName) {
         this.tipName = tipName;
+    }
+
+    protected CustomSuffixAppender(String tipName, SuffixOperator suffixOperator, AreaSequence areaSequence) {
+        this.tipName = tipName;
+        this.suffixOperator = suffixOperator;
+        this.areaSequence = areaSequence;
     }
 
 
@@ -82,7 +90,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return customSuffixAppender;
     }
 
-    AreaSequence areaSequence;
+    private AreaSequence areaSequence;
 
 
     @Override
@@ -101,11 +109,11 @@ public class CustomSuffixAppender implements SyntaxAppender {
     }
 
     @Override
-    public List<MxParameter> getParameter(MxParameter mxParameter) {
+    public List<TxParameter> getParameter(TxParameter txParameter) {
         if (mxParameterFinder == null) {
-            return Arrays.asList(mxParameter);
+            return Arrays.asList(txParameter);
         }
-        return mxParameterFinder.getParameter(mxParameter);
+        return mxParameterFinder.getParameter(txParameter);
     }
 
     /**
@@ -131,35 +139,40 @@ public class CustomSuffixAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         if (collector.size() == 0) {
             logger.info("这个后缀没有参数, suffix: {}", this.getText());
         }
-        TreeWrapper<SyntaxAppender> treeWrapper = collector.get(0);
-        CustomFieldAppender field = (CustomFieldAppender) treeWrapper.getAppender();
-        String templateText = suffixOperator.getTemplateText(field.getFieldName(), parameters);
-        return templateText;
+        SyntaxAppenderWrapper syntaxAppenderWrapper = collector.get(0);
+        SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
+        String fieldName = null;
+        // 兼容insert 语句生成,后缀没有字段的情况
+        if (appender instanceof CustomFieldAppender) {
+            CustomFieldAppender field = (CustomFieldAppender) appender;
+            fieldName = field.getFieldName();
+        }
+        return suffixOperator.getTemplateText(fieldName, parameters);
     }
 
     /**
      * 对于前一个追加器是字段类型的,  就把字段弹出来, 加到自己里面
      *
      * @param jpaStringList
-     * @param treeWrapper
+     * @param syntaxAppenderWrapper
      */
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
-        LinkedList<TreeWrapper<SyntaxAppender>> collector = new LinkedList<>();
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
+        LinkedList<SyntaxAppenderWrapper> collector = new LinkedList<>();
 
-        TreeWrapper<SyntaxAppender> peek = treeWrapper.getCollector().peek();
+        SyntaxAppenderWrapper peek = syntaxAppenderWrapper.getCollector().peekLast();
         if (peek.getAppender().getType() == AppendTypeEnum.FIELD) {
 
-            TreeWrapper<SyntaxAppender> lastField = treeWrapper.getCollector().pop();
+            SyntaxAppenderWrapper lastField = syntaxAppenderWrapper.getCollector().pollLast();
             collector.add(lastField);
 
         }
 
-        treeWrapper.addWrapper(new TreeWrapper<>(this, collector));
+        syntaxAppenderWrapper.addWrapper(new SyntaxAppenderWrapper(this, collector));
     }
 
     @Override
@@ -178,5 +191,9 @@ public class CustomSuffixAppender implements SyntaxAppender {
         boolean typeCheck = getType().checkAfter(secondAppender.getType());
         boolean sequenceCheck = getAreaSequence().getSequence() == secondAppender.getAreaSequence().getSequence();
         return hasAreaCheck || (typeCheck && sequenceCheck);
+    }
+
+    public SuffixOperator getSuffixOperator() {
+        return suffixOperator;
     }
 }

@@ -4,14 +4,19 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.JoinAppendTypeCommand;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public class CustomJoinAppender implements SyntaxAppender {
 
@@ -66,13 +71,13 @@ public class CustomJoinAppender implements SyntaxAppender {
     }
 
     @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         return "\n" + sqlText + SPACE;
     }
 
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
-        treeWrapper.addWrapper(new TreeWrapper<>(this));
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
+        syntaxAppenderWrapper.addWrapper(new SyntaxAppenderWrapper(this));
     }
 
     private static final Logger logger = LoggerFactory.getLogger(CustomJoinAppender.class);
@@ -80,11 +85,11 @@ public class CustomJoinAppender implements SyntaxAppender {
 
     @Override
     public String toString() {
-        return "CustomJoinAppender{" +
-            "tipText='" + tipText + '\'' +
-            ", sqlText='" + sqlText + '\'' +
-            ", areaSequence=" + areaSequence +
-            '}';
+        return new ToStringBuilder(this)
+            .append("tipText", tipText)
+            .append("sqlText", sqlText)
+            .append("areaSequence", areaSequence)
+            .toString();
     }
 
     @Override

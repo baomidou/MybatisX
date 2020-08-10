@@ -1,15 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.util;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.PsiReferenceList;
+import com.intellij.psi.PsiType;
 
 public class MapperSearch {
 
-    public PsiClass searchMapper(PsiElement psiElement) {
-        PsiJavaFile psiJavaFile = (PsiJavaFile) psiElement.getContainingFile();
-        PsiClass mapperClass = psiJavaFile.getClasses()[0];
-        return mapperClass;
-    }
 
     public PsiClass searchEntity(Project project, PsiClass mapperClass) {
         PsiReferenceList extendsList = mapperClass.getExtendsList();
@@ -31,7 +30,5 @@ public class MapperSearch {
         return null;
     }
 
-    public void searchMapperXml(PsiClass mapperClass) {
 
-    }
 }

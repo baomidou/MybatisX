@@ -2,18 +2,20 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.MapperTagInfo;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.util.containers.ArrayListSet;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CompositeManagerAdaptor implements AreaOperateManager {
     List<AreaOperateManager> typeManagers = new ArrayList<>();
@@ -61,14 +63,14 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
 }
 
     @Override
-    public List<MxParameter> getParameters(PsiClass entityClass,
+    public List<TxParameter> getParameters(PsiClass entityClass,
                                            LinkedList<SyntaxAppender> jpaStringList) {
         if (jpaStringList.size() == 0 || jpaStringList.get(0).getType() != AppendTypeEnum.AREA) {
             return Collections.emptyList();
         }
         SyntaxAppender syntaxAppender = jpaStringList.peek();
 
-        final List<MxParameter> results = new ArrayList<>();
+        final List<TxParameter> results = new ArrayList<>();
         for (final AreaOperateManager typeManager : this.typeManagers) {
             if (typeManager.support(syntaxAppender.getText())) {
                 results.addAll(typeManager.getParameters(entityClass, jpaStringList));
@@ -78,7 +80,7 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
     }
 
     @Override
-    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, @NotNull LinkedList<SyntaxAppender> linkedList) {
+    public TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, @NotNull LinkedList<SyntaxAppender> linkedList) {
         if (linkedList.size() == 0 || linkedList.get(0).getType() != AppendTypeEnum.AREA) {
             return null;
         }
@@ -98,18 +100,19 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
     }
 
     @Override
-    public MapperTagInfo generateMapperXml(LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableNameByEntityName) {
+    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableNameByEntityName, MybatisXmlGenerator mybatisXmlGenerator) {
         if (jpaList.size() == 0 || jpaList.get(0).getType() != AppendTypeEnum.AREA) {
-            return null;
+            return;
         }
         SyntaxAppender syntaxAppender = jpaList.peek();
 
         for (AreaOperateManager typeManager : this.typeManagers) {
             if (typeManager.support(syntaxAppender.getText())) {
-                return typeManager.generateMapperXml(jpaList, entityClass, psiMethod, tableNameByEntityName);
+                typeManager.generateMapperXml(id, jpaList, entityClass, psiMethod, tableNameByEntityName, mybatisXmlGenerator);
+                return;
             }
         }
-        return null;
+        return;
     }
 
 

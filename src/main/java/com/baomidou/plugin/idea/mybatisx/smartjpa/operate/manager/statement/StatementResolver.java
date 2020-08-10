@@ -5,7 +5,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.statement;
 
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 
 import java.util.ArrayList;
@@ -48,8 +48,8 @@ public class StatementResolver {
      * 获得参数列表
      * @return
      */
-    public List<MxParameter> getParameters() {
-        List<MxParameter> parameters = new ArrayList<>();
+    public List<TxParameter> getParameters() {
+        List<TxParameter> parameters = new ArrayList<>();
         for (Statement statement : result) {
             parameters.addAll(statement.getParameters());
         }

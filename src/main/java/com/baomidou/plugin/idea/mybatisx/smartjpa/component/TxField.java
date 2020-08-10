@@ -1,6 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter;
-
-import com.intellij.psi.PsiType;
+package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 public class TxField {
     /**

@@ -5,7 +5,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.FieldWrapperUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.github.hypfvieh.util.StringUtil;
 import com.intellij.psi.PsiParameter;
 
@@ -14,17 +14,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BetweenParameterChanger implements MxParameterChanger {
-    @Override
-    public List<MxParameter> getParameter(MxParameter mxParameter) {
-        MxParameter beginParameter = MxParameter.createByOrigin(
-                "begin" + StringUtil.upperCaseFirstChar(mxParameter.getName()),
-                mxParameter.getTypeText(),
-                mxParameter.getCanonicalTypeText());
 
-        MxParameter endParameter = MxParameter.createByOrigin(
-                "end" + StringUtil.upperCaseFirstChar(mxParameter.getName()),
-                mxParameter.getTypeText(),
-                mxParameter.getCanonicalTypeText());
+    public static final String SPACE = " ";
+
+    @Override
+    public List<TxParameter> getParameter(TxParameter txParameter) {
+        TxParameter beginParameter = TxParameter.createByOrigin(
+                "begin" + StringUtil.upperCaseFirstChar(txParameter.getName()),
+                txParameter.getTypeText(),
+                txParameter.getCanonicalTypeText());
+
+        TxParameter endParameter = TxParameter.createByOrigin(
+                "end" + StringUtil.upperCaseFirstChar(txParameter.getName()),
+                txParameter.getTypeText(),
+                txParameter.getCanonicalTypeText());
 
         return Arrays.asList(beginParameter, endParameter);
     }
@@ -35,6 +38,6 @@ public class BetweenParameterChanger implements MxParameterChanger {
         final PsiParameter end = parameters.poll();
         final String beginStr = FieldWrapperUtils.wrapperField(begin.getName(), begin.getType().getCanonicalText());
         final String endStr = FieldWrapperUtils.wrapperField(end.getName(), end.getType().getCanonicalText());
-        return fieldName + " " + "between" + " " + beginStr  + " and " + endStr;
+        return fieldName + SPACE + "between" + SPACE + beginStr  + " and " + endStr;
     }
 }

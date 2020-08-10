@@ -1,10 +1,9 @@
-package com.baomidou.plugin.idea.mybatisx.smartjpa.mapping;
+package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
 import com.intellij.lang.jvm.annotation.JvmAnnotationAttribute;
-import com.intellij.lang.jvm.annotation.JvmAnnotationConstantValue;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiNameValuePair;
@@ -31,7 +30,7 @@ public class TableMappingResolver implements EntityMappingResolver {
     private List<TxField> txFields;
 
     public TableMappingResolver(PsiClass psiClass) {
-        tableName = determineTableName(psiClass.getAnnotation(TABLE_NAME), psiClass.getText());
+        tableName = determineTableName(psiClass.getAnnotation(TABLE_NAME), psiClass.getName());
         txFields = determineFields(psiClass);
     }
 
@@ -95,10 +94,12 @@ public class TableMappingResolver implements EntityMappingResolver {
         return field.getName();
     }
 
+    @Override
     public List<TxField> getFields() {
         return txFields;
     }
 
+    @Override
     public String getTableName() {
         return tableName;
     }

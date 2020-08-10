@@ -3,11 +3,17 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.BaseAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.*;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 
@@ -50,7 +56,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
     }
 
     @Override
-    public List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
         return Collections.emptyList();
     }
 
@@ -65,16 +71,16 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                      LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
             return getFieldName();
         }
     }
 
     @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (TreeWrapper<SyntaxAppender> syntaxAppender : collector) {
-            String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector());
+        for (SyntaxAppenderWrapper syntaxAppender : collector) {
+            String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), mybatisXmlGenerator);
             stringBuilder.append(templateText).append(" ");
         }
         return "order by " + stringBuilder.toString();

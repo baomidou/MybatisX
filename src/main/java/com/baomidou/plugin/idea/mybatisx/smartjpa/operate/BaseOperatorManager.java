@@ -3,11 +3,11 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlockFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.MapperTagInfo;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
@@ -15,7 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class BaseOperatorManager implements AreaOperateManager {
@@ -67,7 +73,7 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
      * @return
      */
     @Override
-    public List<MxParameter> getParameters(PsiClass entityClass,
+    public List<TxParameter> getParameters(PsiClass entityClass,
                                            LinkedList<SyntaxAppender> jpaList) {
         SyntaxAppender firstAreaAppender = jpaList.peek();
         if (firstAreaAppender != null && !this.canExecute(firstAreaAppender.getText())) {
@@ -93,11 +99,10 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
 
     protected abstract String getTagName();
 
-    @Override
-    public MapperTagInfo generateMapperXml(LinkedList<SyntaxAppender> jpaList,
-                                           PsiClass entityClass,
-                                           PsiMethod psiMethod,
-                                           String tableNameByEntityName) {
+    protected String generateXml(String id, LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod,
+                                  String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
         SyntaxAppender firstAreaAppender = jpaList.peek();
         if (firstAreaAppender != null && !this.canExecute(firstAreaAppender.getText())) {
             return null;
@@ -112,16 +117,11 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
             String factoryTemplateText = syntaxAppenderFactory.getFactoryTemplateText(jpaList,
                 entityClass,
                 parameters,
-                tableNameByEntityName);
+                tableName,
+                mybatisXmlGenerator);
             stringBuilder.append(factoryTemplateText);
         }
-
-
-        MapperTagInfo mapperTagProcessor = new MapperTagInfo();
-
-        mapperTagProcessor.setMapperXml(stringBuilder.toString());
-        mapperTagProcessor.setTagType(getTagName());
-        return mapperTagProcessor;
+        return stringBuilder.toString();
 
     }
 

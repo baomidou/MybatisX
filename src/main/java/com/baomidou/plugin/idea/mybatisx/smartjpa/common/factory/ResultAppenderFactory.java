@@ -8,7 +8,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.BaseAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.intellij.psi.PsiClass;
 import org.slf4j.Logger;
@@ -42,22 +42,18 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
 
 
     @Override
-    public List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
         SyntaxAppender peek = jpaStringList.poll();
         if (peek == null) {
             return Collections.emptyList();
         }
 
-        LinkedList<MxParameter> mxParameters = new LinkedList<>();
+        LinkedList<TxParameter> txParameters = new LinkedList<>();
 
-//        final List<SyntaxAppender> list = toTree(jpaStringList);
-//        for (SyntaxAppender syntaxAppender : list) {
-//            syntaxAppender.getMxParameter(jpaStringList,entityClass);
-//        }
         while ((peek = jpaStringList.peek()) != null && peek.getType() != AppendTypeEnum.AREA) {
-            mxParameters.addAll(peek.getMxParameter(jpaStringList, entityClass));
+            txParameters.addAll(peek.getMxParameter(jpaStringList, entityClass));
         }
-        return mxParameters;
+        return txParameters;
     }
 
     //    private List<SyntaxAppender> toTree(LinkedList<SyntaxAppender> jpaStringList) {

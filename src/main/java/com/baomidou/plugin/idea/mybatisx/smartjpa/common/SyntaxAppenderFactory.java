@@ -1,12 +1,17 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.PriorityQueue;
 
 /**
  * 符号追加器工厂
@@ -24,7 +29,7 @@ public interface SyntaxAppenderFactory {
 
     String getFactoryTemplateText(LinkedList<SyntaxAppender> jpaStringList,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, String tableName);
+                                  LinkedList<PsiParameter> parameters, String tableName, MybatisXmlGenerator mybatisXmlGenerator);
 
     Optional<String> mappingAppend(SyntaxAppender syntaxAppender, List<SyntaxAppender> splitList);
 
@@ -36,12 +41,12 @@ public interface SyntaxAppenderFactory {
     String getTipText();
 
 
-    List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
+    List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
 
     default String getTemplateText(String tableName,
                                    PsiClass entityClass,
                                    LinkedList<PsiParameter> parameters,
-                                   LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                   LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         return "";
     }
 

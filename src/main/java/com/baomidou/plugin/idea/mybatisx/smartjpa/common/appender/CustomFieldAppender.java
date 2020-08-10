@@ -1,20 +1,15 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 
 
-
-
-
-
-
-
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.FieldAppendTypeCommand;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiParameter;
@@ -23,7 +18,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CustomFieldAppender implements SyntaxAppender {
@@ -99,7 +98,7 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         PsiParameter parameter = parameters.poll();
         if (parameter == null) {
             return "";
@@ -109,7 +108,7 @@ public class CustomFieldAppender implements SyntaxAppender {
 
 
     @Override
-    public List<MxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
+    public List<TxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
         Map<String, PsiField> fieldMap =
                 Arrays.stream(entityClass.getAllFields()).collect(Collectors.toMap(PsiField::getName, x -> x));
 
@@ -123,7 +122,7 @@ public class CustomFieldAppender implements SyntaxAppender {
             logger.info("查找映射字段失败, text: {}", text);
             return Collections.emptyList();
         }
-        return Arrays.asList(MxParameter.createByPsiField(psiField));
+        return Arrays.asList(TxParameter.createByPsiField(psiField));
     }
 
     private static final Logger logger = LoggerFactory.getLogger(CustomFieldAppender.class);
@@ -142,11 +141,11 @@ public class CustomFieldAppender implements SyntaxAppender {
     /**
      * 啥也做不了,  只能把自己加到树里面
      * @param jpaStringList
-     * @param treeWrapper
+     * @param syntaxAppenderWrapper
      */
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
-        treeWrapper.getCollector().add(new TreeWrapper<>(this));
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
+        syntaxAppenderWrapper.getCollector().add(new SyntaxAppenderWrapper(this));
     }
 
     @Override

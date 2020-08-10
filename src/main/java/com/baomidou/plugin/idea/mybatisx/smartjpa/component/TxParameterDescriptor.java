@@ -1,23 +1,23 @@
-package com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter;
+package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 参数管理器
+ * 参数描述符
  */
-public class MxParameterManager {
+public class TxParameterDescriptor implements TypeDescriptor{
 
     public static final String SPACE = " ";
-    List<MxParameter> parameterList = new ArrayList<>();
+    List<TxParameter> parameterList = new ArrayList<>();
 
-    public MxParameterManager(final List<MxParameter> parameterList) {
+    public TxParameterDescriptor(final List<TxParameter> parameterList) {
         this.parameterList = parameterList;
     }
 
-    public boolean add(MxParameter mxParameter) {
-        return parameterList.add(mxParameter);
+    public boolean add(TxParameter txParameter) {
+        return parameterList.add(txParameter);
     }
 
     /**
@@ -29,9 +29,9 @@ public class MxParameterManager {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("(");
         String paramString = parameterList.stream()
-                .filter(x -> x.getTypeText() != null)
-                .map(x -> "@Param(\"" + x.getName() + "\")" + x.getTypeText() + SPACE + x.getName())
-                .collect(Collectors.joining(","));
+            .filter(x -> x.getTypeText() != null)
+            .map(x -> "@Param(\"" + x.getName() + "\")" + x.getTypeText() + SPACE + x.getName())
+            .collect(Collectors.joining(","));
         stringBuilder.append(paramString);
         stringBuilder.append(");");
         return stringBuilder.toString();
@@ -42,14 +42,16 @@ public class MxParameterManager {
      *
      * @return
      */
-    public List<String> getImports() {
+    public List<String> getImportList() {
         List<String> collect = parameterList.stream()
-                .filter(x -> x.getCanonicalTypeText() != null)
-                .map(x -> x.getCanonicalTypeText())
-                .collect(Collectors.toList());
+            .filter(x -> x.getCanonicalTypeText() != null)
+            .map(x -> x.getCanonicalTypeText())
+            .collect(Collectors.toList());
         if (collect.size() > 0) {
             collect.add("org.apache.ibatis.annotations.Param");
         }
         return collect;
     }
+
+
 }

@@ -4,14 +4,20 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.TemplateResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CompositeAppender implements SyntaxAppender {
@@ -89,26 +95,29 @@ public class CompositeAppender implements SyntaxAppender {
     TemplateResolver templateResolver = new TemplateResolver();
 
     @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+    public String getTemplateText(String tableName,
+                                  PsiClass entityClass,
+                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         StringBuilder stringBuilder = new StringBuilder();
         // 第一个是 and, or
         if (appenderList.peek().getType() == AppendTypeEnum.JOIN
             || appenderList.peek().getType() == AppendTypeEnum.AREA) {
             SyntaxAppender lastAppender = appenderList.poll();
             // 先执行 连接符的获取模板文本, 然后把后续的内容拼接起来
-            String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector);
-            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector);
+            String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
+            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector,mybatisXmlGenerator);
         }
         // 最后一个是后缀
         if (appenderList.peekLast().getType() == AppendTypeEnum.SUFFIX) {
             SyntaxAppender lastAppender = appenderList.pollLast();
             // 由后缀去处理前面所有的内容
-            return lastAppender.getTemplateText(tableName, entityClass, parameters, collector);
+            return lastAppender.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
 
         }
         logger.info("组合字段操作: {}", appenderList.size());
         for (SyntaxAppender appender : appenderList) {
-            String templateText = appender.getTemplateText(tableName, entityClass, parameters, collector);
+            String templateText = appender.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
             stringBuilder.append(templateText);
         }
 
@@ -116,12 +125,12 @@ public class CompositeAppender implements SyntaxAppender {
     }
 
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
         SyntaxAppender syntaxAppender;
         while ((syntaxAppender = jpaStringList.poll()) != null) {
-            TreeWrapper treeWrapperItem = new TreeWrapper(syntaxAppender);
-            syntaxAppender.toTree(jpaStringList, treeWrapperItem);
-            treeWrapper.addWrapper(treeWrapperItem);
+            SyntaxAppenderWrapper syntaxAppenderWrapperItem = new SyntaxAppenderWrapper(syntaxAppender);
+            syntaxAppender.toTree(jpaStringList, syntaxAppenderWrapperItem);
+            syntaxAppenderWrapper.addWrapper(syntaxAppenderWrapperItem);
         }
     }
 

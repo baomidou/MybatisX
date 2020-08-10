@@ -2,7 +2,8 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 
@@ -12,7 +13,9 @@ public class TemplateResolver {
 
     public String getTemplateText(LinkedList<SyntaxAppender> current,
                                   String tableName, PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<SyntaxAppenderWrapper> collector,
+                                  MybatisXmlGenerator mybatisXmlGenerator) {
         SyntaxAppender syntaxAppender = null;
         if (current.size() == 1) {
             syntaxAppender = current.poll();
@@ -21,7 +24,7 @@ public class TemplateResolver {
         } else {
             return "";
         }
-        return syntaxAppender.getTemplateText(tableName, entityClass, parameters, collector);
+        return syntaxAppender.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
 
     }
 

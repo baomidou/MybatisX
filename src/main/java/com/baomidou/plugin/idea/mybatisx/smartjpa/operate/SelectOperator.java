@@ -3,19 +3,27 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.*;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.SortAppenderFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SelectOperator extends BaseOperatorManager {
@@ -64,10 +72,10 @@ public class SelectOperator extends BaseOperatorManager {
          * @return
          */
         @Override
-        public List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
 
             // 移除select 标签
-            List<MxParameter> mxParameter = super.getMxParameter(entityClass, jpaStringList);
+            List<TxParameter> txParameter = super.getMxParameter(entityClass, jpaStringList);
             return Collections.emptyList();
         }
 
@@ -76,15 +84,16 @@ public class SelectOperator extends BaseOperatorManager {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                      LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
             if (collector.isEmpty()) {
                 return "select <include refid=\"Base_Column_List\"/> from " + tableName;
             }
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("select").append(" ");
-            for (TreeWrapper<SyntaxAppender> syntaxAppender : collector) {
+            for (SyntaxAppenderWrapper syntaxAppender : collector) {
                 // 列名 或者 逗号
-                String columnName = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector());
+                String columnName = syntaxAppender.getAppender()
+                    .getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), mybatisXmlGenerator);
                 stringBuilder.append(columnName);
             }
             stringBuilder.append("\n").append("from").append(" ").append(tableName);
@@ -141,7 +150,7 @@ public class SelectOperator extends BaseOperatorManager {
         }
 
         @Override
-        public List<MxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
+        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
             // 把All 移除
             jpaStringList.poll();
             return Collections.emptyList();
@@ -156,10 +165,10 @@ public class SelectOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
             return appenderList
                 .stream()
-                .map(x -> x.getTemplateText(tableName, entityClass, parameters, collector))
+                .map(x -> x.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator))
                 .collect(Collectors.joining(","));
         }
     }
@@ -174,16 +183,24 @@ public class SelectOperator extends BaseOperatorManager {
 
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
             return columnName;
         }
     }
 
     @Override
-    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
-        return ReturnWrapper.createByPsiClass(entityClass);
+    public TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
+        return TxReturnDescriptor.createByPsiClass(entityClass);
     }
 
+    @Override
+    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod, String tableName,
+                                  MybatisXmlGenerator mybatisXmlGenerator) {
+        String mapperXml = super.generateXml(id, jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+        mybatisXmlGenerator.generateSelect(id, mapperXml);
+    }
 
     @Override
     public String getTagName() {

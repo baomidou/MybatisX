@@ -2,7 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.statement;
 
 
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +17,7 @@ public class ResultStatement implements Statement {
      * @return
      */
     @Override
-    public List<MxParameter> getParameters() {
+    public List<TxParameter> getParameters() {
         return Collections.emptyList();
     }
 }

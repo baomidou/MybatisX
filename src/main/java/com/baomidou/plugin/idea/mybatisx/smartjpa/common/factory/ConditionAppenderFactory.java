@@ -3,23 +3,34 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.BaseAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.*;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.BetweenParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.InParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.NotInParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.ParamIgnoreCaseSuffixOperator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -124,7 +135,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
     private static final Logger logger = LoggerFactory.getLogger(ConditionAppenderFactory.class);
 
     @Override
-    public List<MxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
         SyntaxAppender area = jpaStringList.peek();
         if (area == null) {
             return Collections.emptyList();
@@ -139,7 +150,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
 
         Map<String, PsiField> fieldMap =
             Arrays.stream(entityClass.getAllFields()).collect(Collectors.toMap(PsiField::getName, x -> x));
-        LinkedList<MxParameter> mxParameters = new LinkedList<>();
+        LinkedList<TxParameter> txParameters = new LinkedList<>();
         SyntaxAppender currentAppender = null;
         // 拉到下一个区域
         while ((currentAppender = jpaStringList.poll()) != null
@@ -153,28 +164,28 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                     continue;
                 }
                 // 把字段添加到队尾
-                mxParameters.add(MxParameter.createByPsiField(psiField));
+                txParameters.add(TxParameter.createByPsiField(psiField));
 
             } else if (currentAppender.getType() == AppendTypeEnum.SUFFIX) {
                 // 拿到后缀前面的字段
-                MxParameter last = mxParameters.pollLast();
-                List<MxParameter> suffixParameters = currentAppender.getParameter(last);
-                mxParameters.addAll(suffixParameters);
+                TxParameter last = txParameters.pollLast();
+                List<TxParameter> suffixParameters = currentAppender.getParameter(last);
+                txParameters.addAll(suffixParameters);
             }
         }
 
-        return mxParameters;
+        return txParameters;
     }
 
     @Override
     public String getTemplateText(String tableName, PsiClass entityClass,
                                   LinkedList<PsiParameter> parameters,
-                                  LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                  LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
         final String where = "where";
         final String condition = collector
             .stream()
             .map(x -> x.getAppender()
-                .getTemplateText(tableName, entityClass, parameters, x.getCollector()))
+                .getTemplateText(tableName, entityClass, parameters, x.getCollector(), mybatisXmlGenerator))
             .collect(Collectors.joining());
         return where + " " + condition;
     }

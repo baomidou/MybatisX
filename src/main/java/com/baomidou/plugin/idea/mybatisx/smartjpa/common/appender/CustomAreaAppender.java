@@ -5,12 +5,17 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AreaPrefixAppendTypeCommand;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class CustomAreaAppender implements SyntaxAppender {
     @Override
@@ -110,13 +115,13 @@ public class CustomAreaAppender implements SyntaxAppender {
     }
 
     @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<TreeWrapper<SyntaxAppender>> collector) {
-        return syntaxAppenderFactory.getTemplateText(tableName, entityClass, parameters, collector);
+    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+        return syntaxAppenderFactory.getTemplateText(tableName, entityClass, parameters, collector,mybatisXmlGenerator);
     }
 
 
     @Override
-    public void toTree(LinkedList<SyntaxAppender> jpaStringList, TreeWrapper<SyntaxAppender> treeWrapper) {
+    public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
         SyntaxAppender currentAppender = jpaStringList.peek();
 
         while (currentAppender != null) {
@@ -125,7 +130,7 @@ public class CustomAreaAppender implements SyntaxAppender {
             }
             currentAppender = jpaStringList.poll();
             if (currentAppender != null) {
-                currentAppender.toTree(jpaStringList, treeWrapper);
+                currentAppender.toTree(jpaStringList, syntaxAppenderWrapper);
             }
         }
     }

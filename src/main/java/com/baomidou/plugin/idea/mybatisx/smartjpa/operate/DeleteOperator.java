@@ -8,11 +8,13 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.TxField;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
@@ -50,18 +52,27 @@ public class DeleteOperator extends BaseOperatorManager {
         @Override
         public String getTemplateText(String tableName, PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<TreeWrapper<SyntaxAppender>> collector) {
+                                      LinkedList<SyntaxAppenderWrapper> collector,
+                                      MybatisXmlGenerator mybatisXmlGenerator) {
+
+
             return "delete from " + tableName;
         }
     }
 
     @Override
-    public ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
-        return ReturnWrapper.createByOrigin(null, "int");
+    public TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
+        return TxReturnDescriptor.createByOrigin(null, "int");
     }
 
     @Override
     public String getTagName() {
         return "delete";
+    }
+
+    @Override
+    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
+        String mapperXml = super.generateXml(id, jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+        mybatisXmlGenerator.generateDelete(id, mapperXml);
     }
 }

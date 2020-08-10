@@ -8,7 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -70,16 +76,13 @@ public class StatementBlockFactory {
         List<SyntaxAppenderFactory> appenderFactories = new ArrayList<>();
         SyntaxAppender peek = jpaList.peek();
         StatementBlock statementBlock = appenderFactoryMap.get(peek.getText());
-        for (SyntaxAppender syntaxAppender : jpaList) {
-            if (syntaxAppender.getType() == AppendTypeEnum.AREA) {
-                SyntaxAppenderFactory appenderFactoryByJpa = statementBlock.getSyntaxAppenderFactoryByStr(syntaxAppender.getText());
-                appenderFactories.add(appenderFactoryByJpa);
-            }
-        }
+        appenderFactories.add(statementBlock.getResultAppenderFactory());
+        appenderFactories.add(statementBlock.getConditionAppenderFactory());
+        appenderFactories.add(statementBlock.getSortAppenderFactory());
         return appenderFactories;
     }
 
     public Collection<StatementBlock> getAllBlock() {
-        return appenderFactoryMap.values();
+        return blockList;
     }
 }

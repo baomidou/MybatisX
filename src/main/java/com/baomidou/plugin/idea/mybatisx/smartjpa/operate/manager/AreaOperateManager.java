@@ -1,16 +1,15 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.parameter.MxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.completion.res.ReturnWrapper;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.MapperTagInfo;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public interface AreaOperateManager {
     /**
@@ -32,20 +31,22 @@ public interface AreaOperateManager {
 
     List<String> getCompletionContent();
 
-    List<MxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
+    List<TxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
 
-    ReturnWrapper getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList);
+    TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList);
 
     boolean support(String text);
 
     /**
      *
+     *
+     * @param id
      * @param jpaList 输入的文本
      * @param entityClass 类
      * @param psiMethod 方法
      * @param tableName 表名
-     * @return
+     * @param mybatisXmlGenerator
      */
-    MapperTagInfo generateMapperXml(LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName);
+    void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator);
 
 }

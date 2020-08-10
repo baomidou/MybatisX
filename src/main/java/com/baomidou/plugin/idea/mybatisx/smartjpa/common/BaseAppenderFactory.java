@@ -5,12 +5,19 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.TreeWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
@@ -19,27 +26,27 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
     @Override
     public String getFactoryTemplateText(LinkedList<SyntaxAppender> jpaStringList,
                                          PsiClass entityClass,
-                                         LinkedList<PsiParameter> parameters, String tableName) {
+                                         LinkedList<PsiParameter> parameters, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
         if (jpaStringList.isEmpty()) {
             return "";
         }
         StringBuilder stringBuilder = new StringBuilder();
-
+        // 按照区域维度转换成一棵树
         CompositeAppender compositeAppender = new CompositeAppender();
-        TreeWrapper<SyntaxAppender> rootSyntaxWrapper = new TreeWrapper<>(null);
+        SyntaxAppenderWrapper rootSyntaxWrapper = new SyntaxAppenderWrapper(null);
         compositeAppender.toTree(jpaStringList, rootSyntaxWrapper);
 
-
-        for (TreeWrapper<SyntaxAppender> treeWrapper : rootSyntaxWrapper.getCollector()) {
-            LinkedList<TreeWrapper<SyntaxAppender>> collector = treeWrapper
+        // 遍历区域, 生成字符串
+        for (SyntaxAppenderWrapper syntaxAppenderWrapper : rootSyntaxWrapper.getCollector()) {
+            LinkedList<SyntaxAppenderWrapper> collector = syntaxAppenderWrapper
                 .getCollector();
-            String templateText = treeWrapper.getAppender().getTemplateText(tableName,
+            String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName,
                 entityClass,
                 parameters,
-                collector);
+                collector,
+                mybatisXmlGenerator);
             stringBuilder.append(templateText).append("\n");
         }
-
 
         return stringBuilder.toString();
     }
