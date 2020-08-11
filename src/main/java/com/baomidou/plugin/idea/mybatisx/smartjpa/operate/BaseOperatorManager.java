@@ -4,6 +4,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 
 public abstract class BaseOperatorManager implements AreaOperateManager {
 
-    Set<String> operatorNameList;
+    Set<String> operatorNameList = new HashSet<>();
     private final StatementBlockFactory syntaxAppenderFactoryManager = new StatementBlockFactory();
 
     protected Set<String> getOperatorNameList() {
@@ -38,6 +40,21 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         operatorNameList = nameSet;
     }
 
+
+    @Override
+    public boolean support(String operatorText) {
+        return operatorNameList.contains(operatorText);
+    }
+
+    @Override
+    public TypeDescriptor getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
+        StatementBlock statementBlock = syntaxAppenderFactoryManager.findBlockByText(text);
+        return statementBlock.getReturnDescriptor();
+    }
+
+    protected void addOperatorName(String operatorName){
+        operatorNameList.add(operatorName);
+    }
     @NotNull
     @Override
     public LinkedList<SyntaxAppender> splitAppenderByText(final String splitParam) {
@@ -47,6 +64,7 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
     protected boolean canExecute(final String areaName) {
         return this.operatorNameList.contains(areaName);
     }
+
 
     @Override
     public List<String> getCompletionContent(final LinkedList<SyntaxAppender> jpaList) {
@@ -85,10 +103,6 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         return areaListByJpa.stream().flatMap(x -> x.getMxParameter(entityClass, jpaList).stream()).collect(Collectors.toList());
     }
 
-    @Override
-    public boolean support(String operatorText) {
-        return operatorNameList.contains(operatorText);
-    }
 
 
     private static final Logger logger = LoggerFactory.getLogger(BaseOperatorManager.class);
@@ -126,7 +140,6 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
             .collect(Collectors.toCollection(LinkedList::new));
 
         return areaListByJpa.stream().map(syntaxAppenderFactory -> {
-
             // 区域生成的xml内容
             return syntaxAppenderFactory.getFactoryTemplateText(jpaList,
                 entityClass,

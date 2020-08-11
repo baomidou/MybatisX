@@ -8,6 +8,8 @@ import java.util.Collection;
 
 public interface BlogDeleteMapper extends BaseMapper<Blog> {
 
+    int delById(Long id);
+
     int delByIdAndAgeAfter(@Param("id")Long id,@Param("age")Integer age);
 
     int delByIdIn(@Param("idList")Collection<Long> idList);
@@ -16,25 +18,30 @@ public interface BlogDeleteMapper extends BaseMapper<Blog> {
 
     int delByIdBetween(@Param("beginId")Long beginId,@Param("endId")Long endId);
 
-    int delByIdLike(@Param("id")Long id);
+    int delByTitleLike(@Param("title")String title);
 
-    int delByIdNotLike(@Param("id")Long id);
+    int delByTitleNotLike(@Param("title")String title);
 
-    int delByIdStartWith(@Param("id")Long id);
+    int delByTitleStartWith(@Param("title")String title);
 
-    int delByIdEndWith(@Param("id")Long id);
+    int delByTitleEndWith(@Param("title")String title);
 
-    int delByIdContaining(@Param("id")Long id);
+    int delByTitleContaining(@Param("title")String title);
 
-    int delByIdTrue(@Param("id")Long id);
+    int delByAgeTrue();
 
-    int delByIdFalse(@Param("id")Long id);
+    int delByAgeFalse();
 
-    int delByIdIgnoreCase(@Param("id")Long id);
+    int delByTitleIgnoreCase(@Param("title")String title);
 
-    int delByIdIs(@Param("id")Long id);
+    int delByTitleIs(@Param("title")String title);
 
     int delByIdGreaterThan(@Param("id")Long id);
 
     int delByIdGreaterThanEqual(@Param("id")Long id);
+
+    int delByIdLessThan(@Param("id")Long id);
+    // 测试用的,不是生成的
+    int deleteAll();
+
 }

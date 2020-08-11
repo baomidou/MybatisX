@@ -13,111 +13,12 @@
     <sql id="Base_Column_List">
 		id,age,content,title,money
 	</sql>
-
     <select id="selectByIdAndAgeAfter" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_blog
         where id = #{id,jdbcType=NUMERIC}
         AND age > #{age,jdbcType=NUMERIC}
-
-
-    </select>
-    <select id="selectByIdNotIn" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id not in
-        <foreach collection="idList" item="item" open="(" close=")" separator=",">
-            #{item,jdbcType=NUMERIC}
-        </foreach>
-
-
-    </select>
-    <select id="selectByIdBetween" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id between #{beginId,jdbcType=NUMERIC} and #{endId,jdbcType=NUMERIC}
-
-
-    </select>
-    <select resultMap="BaseResultMap" id="selectByIdLike">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id like #{id,jdbcType=NUMERIC}
-
-
-    </select>
-    <select resultMap="BaseResultMap" id="selectByIdNotLike">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id not like #{id,jdbcType=NUMERIC}
-
-
-    </select>
-    <select resultMap="BaseResultMap" id="selectByIdStartWith">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id like CONCAT('%', #{id,jdbcType=NUMERIC})
-
-
-    </select>
-    <select id="selectByIdEndWith" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id like CONCAT( #{id,jdbcType=NUMERIC},'%')
-
-    </select>
-    <select id="selectByIdContaining" resultMap="BaseResultMap">select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id like CONCAT('%', #{id,jdbcType=NUMERIC},'%')
-
-    </select>
-    <select id="selectByIdTrue" resultMap="BaseResultMap">select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id = true
-
-    </select>
-    <select id="selectByIdFalse" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id = false
-
-    </select>
-    <select id="selectByIdIgnoreCase" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where UPPER(id) = UPPER(#{id,jdbcType=NUMERIC})
-
-    </select>
-    <select id="selectByIdGreaterThan" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id > #{id,jdbcType=NUMERIC}
-
-    </select>
-    <select id="selectByIdGreaterThanEqual" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id >= #{id,jdbcType=NUMERIC}
-
-    </select>
-    <select id="selectByIdIs" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id = #{id,jdbcType=NUMERIC}
 
     </select>
     <select id="selectByIdIn" resultMap="BaseResultMap">
@@ -130,4 +31,115 @@
         </foreach>
 
     </select>
+    <select id="selectByIdNotIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where id not in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+
+    </select>
+    <select id="selectByAgeBetween" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age between #{beginAge,jdbcType=NUMERIC} and #{endAge,jdbcType=NUMERIC}
+
+    </select>
+    <select id="selectByIdLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where id like #{id,jdbcType=NUMERIC}
+
+    </select>
+    <select id="selectByIdNotLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where id not like #{id,jdbcType=NUMERIC}
+
+    </select>
+    <select id="selectByIdStartWith" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where id like CONCAT('%', #{id,jdbcType=NUMERIC})
+
+    </select>
+    <select id="selectByTitleEndWith" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where title like CONCAT( #{title,jdbcType=VARCHAR},'%')
+
+    </select>
+
+    <select id="selectByTitleIgnoreCase" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where UPPER(title) = UPPER(#{title,jdbcType=VARCHAR})
+
+    </select>
+    <select id="selectByAgeGreaterThan" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age > #{age,jdbcType=NUMERIC}
+
+    </select>
+    <select id="selectByAgeIs" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age = #{age,jdbcType=NUMERIC}
+
+    </select>
+    <select id="selectByAgeGreaterThanEqual" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age >= #{age,jdbcType=NUMERIC}
+
+    </select>
+    <select id="selectByTitleContaining" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
+
+    </select>
+    <select id="selectByAgeTrue" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age = true
+
+    </select>
+    <select id="selectByAgeFalse" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age = false
+
+    </select>
+    <select id="selectByAgeLessThan" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age <![CDATA[  < ]]> #{age,jdbcType=NUMERIC}
+
+    </select>
+    <select id="selectByAgeLessThanEqual" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age <![CDATA[  <= ]]> #{age,jdbcType=NUMERIC}
+
+    </select>
+
+
 </mapper>

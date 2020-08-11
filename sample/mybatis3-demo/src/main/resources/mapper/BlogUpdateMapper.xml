@@ -33,42 +33,6 @@ update t_blog
 , content = #{content,jdbcType=VARCHAR}
 where id like #{id,jdbcType=NUMERIC}
 </update>
-    <update id="updateAgeAndContentByIdNotLike">
-update t_blog
- set age = #{age,jdbcType=NUMERIC}
-, content = #{content,jdbcType=VARCHAR}
-where id not like #{id,jdbcType=NUMERIC}
-</update>
-    <update id="updateAgeAndContentByIdStartWith">
-update t_blog
- set age = #{age,jdbcType=NUMERIC}
-, content = #{content,jdbcType=VARCHAR}
-where id like CONCAT('%', #{id,jdbcType=NUMERIC})
-</update>
-    <update id="updateAgeAndContentByIdEndWith">
-update t_blog
- set age = #{age,jdbcType=NUMERIC}
-, content = #{content,jdbcType=VARCHAR}
-where id like CONCAT( #{id,jdbcType=NUMERIC},'%')
-</update>
-    <update id="updateAgeAndContentByIdContaining">
-update t_blog
- set age = #{age,jdbcType=NUMERIC}
-, content = #{content,jdbcType=VARCHAR}
-where id like CONCAT('%', #{id,jdbcType=NUMERIC},'%')
-</update>
-    <update id="updateAgeAndContentByIdTrue">
-update t_blog
- set age = #{age,jdbcType=NUMERIC}
-, content = #{content,jdbcType=VARCHAR}
-where id = true
-</update>
-    <update id="updateAgeAndContentByIdFalse">
-update t_blog
- set age = #{age,jdbcType=NUMERIC}
-, content = #{content,jdbcType=VARCHAR}
-where id = false
-</update>
     <update id="updateAgeAndContentByIdIgnoreCase">
 update t_blog
  set age = #{age,jdbcType=NUMERIC}
@@ -98,5 +62,53 @@ update t_blog
  set age = #{age,jdbcType=NUMERIC}
 where id = #{id,jdbcType=NUMERIC}
 AND age > #{oldAge,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeAndContentByTitleNotLike">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title not like #{title,jdbcType=VARCHAR}
+</update>
+    <update id="updateAgeAndContentByTitleStartWith">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title like CONCAT( #{title,jdbcType=VARCHAR},'%')
+</update>
+    <update id="updateAgeAndContentByTitleEndWith">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title like CONCAT('%', #{title,jdbcType=VARCHAR})
+</update>
+    <update id="updateAgeAndContentByTitleContaining">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
+</update>
+    <update id="updateAgeAndContentByTitleIgnoreCase">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where UPPER(title) = UPPER(#{title,jdbcType=VARCHAR})
+</update>
+    <update id="updateAgeByAgeAfter">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+where age > #{oldAge,jdbcType=NUMERIC}
+</update>
+
+    <update id="updateAgeAndContentByAgeFalse">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where age = false
+</update>
+    <update id="updateAgeAndContentByAgeTrue">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where age = true
 </update>
 </mapper>

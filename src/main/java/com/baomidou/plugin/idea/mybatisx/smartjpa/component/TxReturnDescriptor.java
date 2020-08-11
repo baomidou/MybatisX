@@ -14,22 +14,40 @@ public class TxReturnDescriptor implements TypeDescriptor {
     private TxReturnDescriptor() {
     }
 
+    public static TxReturnDescriptor createCollectionByPsiClass(PsiClass psiClass) {
+        TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
+        txReturnDescriptor.qualifiedName = Arrays.asList("java.util.List", psiClass.getQualifiedName());
+        txReturnDescriptor.simpleName = "List<" + psiClass.getName() + ">";
+        return txReturnDescriptor;
+    }
+
     public static TxReturnDescriptor createByPsiClass(PsiClass psiClass) {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
-        txReturnDescriptor.qualifiedName = psiClass.getQualifiedName();
+        txReturnDescriptor.qualifiedName = Collections.singletonList(psiClass.getQualifiedName());
         txReturnDescriptor.simpleName = psiClass.getName();
         return txReturnDescriptor;
     }
 
     public static TxReturnDescriptor createByOrigin(String qualifiedName, String simpleName) {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
-        txReturnDescriptor.qualifiedName = qualifiedName;
+        txReturnDescriptor.qualifiedName = Collections.singletonList(qualifiedName);
         txReturnDescriptor.simpleName = simpleName;
         return txReturnDescriptor;
     }
 
-
-    private String qualifiedName;
+    /**
+     * 返回类型的导入全称
+     * 例如方法:
+     * public Collection<User> selectByTitle(String title);
+     * simpleName 指的是:  java.util.Collection
+     */
+    private List<String> qualifiedName;
+    /**
+     * 返回类型的简单名称;
+     * 例如方法:
+     * public Collection<User> selectByTitle(String title);
+     * simpleName 指的是:   Collection<User>
+     */
     private String simpleName;
 
     @Override
@@ -37,7 +55,7 @@ public class TxReturnDescriptor implements TypeDescriptor {
         if (qualifiedName == null) {
             return Collections.emptyList();
         }
-        return Arrays.asList(qualifiedName);
+        return qualifiedName;
     }
 
     @Override

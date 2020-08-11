@@ -44,6 +44,7 @@ public class UpdateOperator extends BaseOperatorManager {
             statementBlock.setTagName(areaName);
             statementBlock.setResultAppenderFactory(updateFactory);
             statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(areaName, mappingField));
+            statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
             this.registerStatementBlock(statementBlock);
         }
 
@@ -90,10 +91,6 @@ public class UpdateOperator extends BaseOperatorManager {
         }
     }
 
-    @Override
-    public TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
-        return TxReturnDescriptor.createByOrigin(null, "int");
-    }
 
     @Override
     public List<TxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {

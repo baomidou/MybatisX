@@ -1,10 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager;
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-
-import java.util.LinkedList;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 
 public class StatementBlock {
 
@@ -24,6 +21,10 @@ public class StatementBlock {
      * 排序区域
      */
     private SyntaxAppenderFactory sortAppenderFactory;
+    /**
+     * 返回值类型
+     */
+    private TypeDescriptor returnDescriptor;
 
     public SyntaxAppenderFactory getResultAppenderFactory() {
         return resultAppenderFactory;
@@ -57,23 +58,6 @@ public class StatementBlock {
         this.tagName = tagName;
     }
 
-    public SyntaxAppenderFactory getAppenderFactoryByJpa(LinkedList<SyntaxAppender> jpaList) {
-        for (int index = jpaList.size() - 1; index >= 0; index--) {
-            SyntaxAppender syntaxAppender = jpaList.get(index);
-            if (syntaxAppender.getType() == AppendTypeEnum.AREA) {
-                if (existCurrentArea(getResultAppenderFactory(), syntaxAppender.getText())) {
-                    return getResultAppenderFactory();
-                }
-                if (existCurrentArea(getConditionAppenderFactory(), syntaxAppender.getText())) {
-                    return getConditionAppenderFactory();
-                }
-                if (existCurrentArea(getSortAppenderFactory(), syntaxAppender.getText())) {
-                    return getSortAppenderFactory();
-                }
-            }
-        }
-        return getResultAppenderFactory();
-    }
 
     public SyntaxAppenderFactory getSyntaxAppenderFactoryByStr(String text) {
         if (existCurrentArea(getResultAppenderFactory(), text)) {
@@ -96,5 +80,13 @@ public class StatementBlock {
             return true;
         }
         return false;
+    }
+
+    public void setReturnWrapper(TypeDescriptor typeDescriptor) {
+        this.returnDescriptor = typeDescriptor;
+    }
+
+    public TypeDescriptor getReturnDescriptor() {
+        return returnDescriptor;
     }
 }

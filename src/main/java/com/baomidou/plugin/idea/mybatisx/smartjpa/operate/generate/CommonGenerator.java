@@ -35,7 +35,7 @@ public class CommonGenerator implements PlatformGenerator {
         mappingField = tableMappingResolver.getFields();
 
 
-        appenderManager = new CompositeManagerAdaptor(mappingField);
+        appenderManager = new CompositeManagerAdaptor(mappingField,entityClass);
         jpaList = appenderManager.splitAppenderByText(text);
     }
 

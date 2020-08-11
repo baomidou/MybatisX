@@ -64,6 +64,7 @@ public class DeleteOperator extends BaseOperatorManager {
             statementBlock.setTagName(areaName);
             statementBlock.setResultAppenderFactory(resultAppenderFactory);
             statementBlock.setConditionAppenderFactory(conditionAppenderFactory);
+            statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
             this.registerStatementBlock(statementBlock);
         }
 
@@ -86,10 +87,6 @@ public class DeleteOperator extends BaseOperatorManager {
         }
     }
 
-    @Override
-    public TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, LinkedList<SyntaxAppender> linkedList) {
-        return TxReturnDescriptor.createByOrigin(null, "int");
-    }
 
     @Override
     public String getTagName() {

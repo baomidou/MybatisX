@@ -4,7 +4,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
@@ -20,12 +20,12 @@ import java.util.List;
 public class CompositeManagerAdaptor implements AreaOperateManager {
     List<AreaOperateManager> typeManagers = new ArrayList<>();
 
-    public CompositeManagerAdaptor(final List<TxField> mappingField) {
-        this.init(mappingField);
+    public CompositeManagerAdaptor(final List<TxField> mappingField, PsiClass entityClass) {
+        this.init(mappingField,entityClass);
     }
 
-    protected void init(final List<TxField> mappingField) {
-        this.typeManagers.add(new SelectOperator(mappingField));
+    protected void init(final List<TxField> mappingField, PsiClass entityClass) {
+        this.typeManagers.add(new SelectOperator(mappingField,entityClass));
         this.typeManagers.add(new InsertOperator(mappingField));
         this.typeManagers.add(new UpdateOperator(mappingField));
         this.typeManagers.add(new DeleteOperator(mappingField));
@@ -80,7 +80,7 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
     }
 
     @Override
-    public TxReturnDescriptor getReturnWrapper(String text, PsiClass entityClass, @NotNull LinkedList<SyntaxAppender> linkedList) {
+    public TypeDescriptor getReturnWrapper(String text, PsiClass entityClass, @NotNull LinkedList<SyntaxAppender> linkedList) {
         if (linkedList.size() == 0 || linkedList.get(0).getType() != AppendTypeEnum.AREA) {
             return null;
         }
@@ -88,7 +88,7 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
 
         for (AreaOperateManager typeManager : this.typeManagers) {
             if (typeManager.support(syntaxAppender.getText())) {
-                return typeManager.getReturnWrapper(text, entityClass, linkedList);
+                return typeManager.getReturnWrapper(syntaxAppender.getText(), entityClass, linkedList);
             }
         }
         return null;

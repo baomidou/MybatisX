@@ -10,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldApp
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.BetweenParameterChanger;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.BooleanParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.InParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.NotInParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.ParamIgnoreCaseSuffixOperator;
@@ -35,6 +36,9 @@ import java.util.stream.Collectors;
 
 /**
  * 条件追加区
+ *
+ * jpa 条件规范:
+ * https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation
  */
 public class ConditionAppenderFactory extends BaseAppenderFactory {
     List<SyntaxAppender> syntaxAppenderArrayList;
@@ -72,10 +76,10 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
         // where x.startDate between ?1 and ?2
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParameterChanger("Between", new BetweenParameterChanger(), AreaSequence.CONDITION));
         // where x.age < ?1
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("LessThan", "<", AreaSequence.CONDITION));
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("Before", "<", AreaSequence.CONDITION));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("LessThan", "<![CDATA[  < ]]>", AreaSequence.CONDITION));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("Before", "<![CDATA[  < ]]>", AreaSequence.CONDITION));
         // where x.age <= ?1
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("LessThanEqual", "<=", AreaSequence.CONDITION));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("LessThanEqual", "<![CDATA[  <= ]]>", AreaSequence.CONDITION));
         // where x.age > ?1
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("GreaterThan", ">", AreaSequence.CONDITION));
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("After", ">", AreaSequence.CONDITION));
@@ -106,9 +110,9 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParameterChanger("NotIn", new NotInParameterChanger(), AreaSequence.CONDITION));
 
         // where x.active = true
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("True", "= true", AreaSequence.CONDITION));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParameterChanger("True", new BooleanParameterChanger(Boolean.TRUE), AreaSequence.CONDITION));
         // where x.active = false
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("False", "= false", AreaSequence.CONDITION));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByParameterChanger("False", new BooleanParameterChanger(Boolean.FALSE), AreaSequence.CONDITION));
         // where UPPER(x.firstame) = UPPER(?1)
         syntaxAppenderArrayList.add(CustomSuffixAppender.createBySuffixOperator("IgnoreCase", new ParamIgnoreCaseSuffixOperator(), AreaSequence.CONDITION));
 

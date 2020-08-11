@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis3.mapper.BlogInsertMapper">
+	<resultMap id="BaseResultMap"
+		type="com.baomidou.mybatis3.domain.Blog">
+		<id column="id" property="id"  />
+		<result column="age" property="age"/>
+		<result column="content" property="content"/>
+		<result column="title" property="title"/>
+		<result column="money" property="money"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,age,content,title,money
+	</sql>
+    <insert id="insertAll">
+insert into t_blog(id,title,content,money,age,create_time)
+values
+(#{id,jdbcType=NUMERIC},#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{money,jdbcType=DECIMAL},#{age,jdbcType=NUMERIC},#{createTime,jdbcType=TIMESTAMP}
+)</insert>
+    <insert id="insertSelective">
+        insert into t_blog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!= null">id,</if>
+            <if test="title!= null">title,</if>
+            <if test="content!= null">content,</if>
+            <if test="money!= null">money,</if>
+            <if test="age!= null">age,</if>
+            <if test="createTime!= null">create_time,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!= null">#{id,jdbcType=NUMERIC},</if>
+            <if test="title!= null">#{title,jdbcType=VARCHAR},</if>
+            <if test="content!= null">#{content,jdbcType=VARCHAR},</if>
+            <if test="money!= null">#{money,jdbcType=DECIMAL},</if>
+            <if test="age!= null">#{age,jdbcType=NUMERIC},</if>
+            <if test="createTime!= null">#{createTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <insert id="insertBatch">
+        insert into t_blog(id,title,content,money,age,create_time)
+        values
+        <foreach collection="blogCollection" item="item" separator=",">
+            (#{item.id,jdbcType=NUMERIC},#{item.title,jdbcType=VARCHAR},#{item.content,jdbcType=VARCHAR},#{item.money,jdbcType=DECIMAL},#{item.age,jdbcType=NUMERIC},#{item.createTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+
+</mapper>

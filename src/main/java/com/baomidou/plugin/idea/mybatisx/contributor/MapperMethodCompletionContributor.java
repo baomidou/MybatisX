@@ -1,6 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.contributor;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.SmartJpaCompletionProvider;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.google.common.base.Optional;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -34,12 +37,19 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         }
         // 验证当前类必须是接口
         PsiElement originalPosition = parameters.getOriginalPosition();
+
+
+
         PsiClass mapperClass = PsiTreeUtil.getParentOfType(originalPosition, PsiClass.class);
         if (!mapperClass.isInterface()) {
             logger.info("当前类不是接口, 不提示");
             return;
         }
-        //TODO 验证当前所在的位置不在 interface 的默认方法里面
+        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
+        if (!firstMapper.isPresent()) {
+            logger.info("当前类不是mapper接口, 不提示");
+            return;
+        }
         logger.info("DaoCompletionContributor.fillCompletionVariants start");
 
         try {

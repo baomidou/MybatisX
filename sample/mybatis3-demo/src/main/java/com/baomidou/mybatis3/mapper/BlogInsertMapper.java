@@ -6,12 +6,14 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 
+/**
+ * insert 只支持这三种提示和代码生成
+ */
 public interface BlogInsertMapper extends BaseMapper<Blog> {
 
-    int insertAll(@Param("blogCollection") Collection<Blog> blogCollection);
+    int insertAll(Blog blog);
 
-    int insertSelective(@Param("blogCollection")Collection<Blog> blogCollection);
+    int insertSelective(Blog blog);
 
     int insertBatch(@Param("blogCollection")Collection<Blog> blogCollection);
-
 }

@@ -10,6 +10,11 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
-    compile group: 'com.baomidou', name: 'mybatis-plus', version: '3.3.2'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.2.RELEASE'
+    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.2'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.2.RELEASE'
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
 }

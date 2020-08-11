@@ -55,7 +55,7 @@ public class SmartJpaCompletionProvider {
         TableMappingResolver tableMappingResolver = new TableMappingResolver(entityClass);
         List<TxField> mappingField = tableMappingResolver.getFields();
 
-        final AreaOperateManager appenderManager = new CompositeManagerAdaptor(mappingField);
+        final AreaOperateManager appenderManager = new CompositeManagerAdaptor(mappingField, entityClass);
 
         logger.info("提示前缀:{} ", prefix);
         final LinkedList<SyntaxAppender> splitList = appenderManager.splitAppenderByText(prefix);

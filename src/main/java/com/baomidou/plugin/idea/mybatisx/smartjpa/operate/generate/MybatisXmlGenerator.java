@@ -1,14 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
-import com.baomidou.plugin.idea.mybatisx.dom.model.Delete;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Insert;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Update;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
-import com.intellij.util.xml.DomElement;
 
 /**
  * 生成mybatis的xml文件内容.

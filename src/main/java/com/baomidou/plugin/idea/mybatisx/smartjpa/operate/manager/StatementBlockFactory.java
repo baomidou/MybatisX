@@ -3,7 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,30 +56,16 @@ public class StatementBlockFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(StatementBlockFactory.class);
 
-    public SyntaxAppenderFactory findAppenderFactoryByJpa(LinkedList<SyntaxAppender> jpaList) {
-        SyntaxAppender peek = jpaList.peek();
-        String operatorName = peek.getText();
-        StatementBlock statementBlock = appenderFactoryMap.get(operatorName);
-        if (statementBlock != null) {
-            return statementBlock.getAppenderFactoryByJpa(jpaList);
-        }
-        return null;
-    }
-
-    public StatementBlock findStatementBlockByJpa(LinkedList<SyntaxAppender> jpaList) {
-        String operatorName = jpaList.peek().getText();
-        return appenderFactoryMap.get(operatorName);
-    }
-
     public List<SyntaxAppenderFactory> findAreaListByJpa(LinkedList<SyntaxAppender> jpaList) {
         List<SyntaxAppenderFactory> appenderFactories = new ArrayList<>();
         SyntaxAppender peek = jpaList.peek();
+
         StatementBlock statementBlock = appenderFactoryMap.get(peek.getText());
         appenderFactories.add(statementBlock.getResultAppenderFactory());
-        if(statementBlock.getConditionAppenderFactory()!=null){
+        if (statementBlock.getConditionAppenderFactory() != null) {
             appenderFactories.add(statementBlock.getConditionAppenderFactory());
         }
-        if(statementBlock.getSortAppenderFactory()!=null){
+        if (statementBlock.getSortAppenderFactory() != null) {
             appenderFactories.add(statementBlock.getSortAppenderFactory());
         }
         return appenderFactories;
@@ -88,5 +73,9 @@ public class StatementBlockFactory {
 
     public Collection<StatementBlock> getAllBlock() {
         return blockList;
+    }
+
+    public StatementBlock findBlockByText(String text) {
+        return appenderFactoryMap.get(text);
     }
 }

@@ -52,6 +52,10 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
 
             // 插入到编辑器
             TypeDescriptor returnDescriptor = platformGenerator.getReturn();
+            if (returnDescriptor == null) {
+                logger.info("不支持的语法");
+                return;
+            }
             Document document = editor.getDocument();
             String newMethodString = returnDescriptor.getContent() + " " + statementElement.getText() + parameterDescriptor.getContent();
             TextRange textRange = statementElement.getTextRange();
@@ -64,6 +68,10 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
                 .getInstance(project);
             Importer importer = Importer.create(parameterDescriptor.getImportList());
             importer.addImportToFile(psiDocumentManager,
+                (PsiJavaFile) element.getContainingFile(),
+                document);
+            Importer importerReturn = Importer.create(returnDescriptor.getImportList());
+            importerReturn.addImportToFile(psiDocumentManager,
                 (PsiJavaFile) element.getContainingFile(),
                 document);
 

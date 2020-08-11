@@ -29,6 +29,10 @@ public class CustomAreaAppender implements SyntaxAppender {
             '}';
     }
 
+    public SyntaxAppenderFactory getSyntaxAppenderFactory() {
+        return syntaxAppenderFactory;
+    }
+
     private final String area;
 
     private final String areaType;

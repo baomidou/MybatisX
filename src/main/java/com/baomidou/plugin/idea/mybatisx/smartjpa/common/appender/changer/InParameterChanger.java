@@ -3,7 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.FieldWrapperUtils;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.intellij.psi.PsiParameter;
@@ -34,7 +34,7 @@ public class InParameterChanger implements MxParameterChanger {
             final @NotNull PsiType[] typeParameters = collection.getTypeElement().getInnermostComponentReferenceElement().getTypeParameters();
             if (typeParameters.length > 0) {
                 final PsiType typeParameter = typeParameters[0];
-                itemContent = FieldWrapperUtils.wrapperField("item", typeParameter.getCanonicalText());
+                itemContent = JdbcTypeUtils.wrapperField("item", typeParameter.getCanonicalText());
             }
         }
         StringBuilder stringBuilder = new StringBuilder();

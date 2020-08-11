@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" debug="true">
+    <contextName>smartJpa</contextName>
+
+    <property name="logPattern"
+              value="%date|%thread|%level{8}|%logger:%line|%msg %ex %n"/>
+    <appender name="stdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${logPattern}</pattern>
+        </encoder>
+    </appender>
+    <!--  level="INFO" -->
+    <root>
+        <level>INFO</level>
+        <appender-ref ref="stdoutAppender"/>
+    </root>
+</configuration>

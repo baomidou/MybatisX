@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix;
 
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.FieldWrapperUtils;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
@@ -29,7 +29,7 @@ public class ParamAroundSuffixOperator implements SuffixOperator {
                 + " "
                 + prefix
                 + " "
-                + FieldWrapperUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText())
+                + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText())
                 + suffix;
     }
 }

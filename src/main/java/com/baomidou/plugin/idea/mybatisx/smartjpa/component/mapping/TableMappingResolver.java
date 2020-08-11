@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TableMappingResolver implements EntityMappingResolver {
 
-    public static final String TABLE_FIELD = "com.baomidou.mybatisplus.annotations.TableField";
+    public static final String TABLE_FIELD = "com.baomidou.mybatisplus.annotation.TableField";
     public static final String TABLE_NAME = "com.baomidou.mybatisplus.annotation.TableName";
     public static final String VALUE = "value";
     /**
@@ -43,9 +43,11 @@ public class TableMappingResolver implements EntityMappingResolver {
                 txField.setFieldType(field.getType().getCanonicalText());
 
                 PsiAnnotation annotation = field.getAnnotation(TABLE_FIELD);
-                String fieldName = findFieldName(field, annotation);
-                txField.setFieldName(fieldName);
-                txField.setColumnName(field.getName());
+                String columnName = findFieldName(field, annotation);
+                // 实体的字段名称
+                txField.setFieldName(field.getName());
+                // 表的列名
+                txField.setColumnName(columnName);
                 return txField;
             }).collect(Collectors.toList());
     }

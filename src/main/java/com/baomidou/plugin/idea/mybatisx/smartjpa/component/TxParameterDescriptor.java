@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  * 参数描述符
  */
-public class TxParameterDescriptor implements TypeDescriptor{
+public class TxParameterDescriptor implements TypeDescriptor {
 
     public static final String SPACE = " ";
     List<TxParameter> parameterList = new ArrayList<>();
@@ -30,11 +30,22 @@ public class TxParameterDescriptor implements TypeDescriptor{
         stringBuilder.append("(");
         String paramString = parameterList.stream()
             .filter(x -> x.getTypeText() != null)
-            .map(x -> "@Param(\"" + x.getName() + "\")" + x.getTypeText() + SPACE + x.getName())
+            .map(x -> getParameterName(x))
             .collect(Collectors.joining(","));
         stringBuilder.append(paramString);
         stringBuilder.append(");");
         return stringBuilder.toString();
+    }
+
+    /**
+     * 根据是否需要生成注解字段, 生成注解字段
+     * @param x
+     * @return
+     */
+    private String getParameterName(TxParameter x) {
+        String defineAnnotation = "@Param(\"" + x.getName() + "\")";
+        String defineParam = x.getTypeText() + SPACE + x.getName();
+        return x.isParamAnnotation() ? defineAnnotation + defineParam : defineParam;
     }
 
     /**

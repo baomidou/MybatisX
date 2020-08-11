@@ -16,19 +16,15 @@ public interface BlogUpdateMapper extends BaseMapper<Blog> {
 
     int updateAgeAndContentByIdLike(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
 
-    int updateAgeAndContentByIdNotLike(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
+    int updateAgeAndContentByTitleNotLike(@Param("age")Integer age,@Param("content")String content,@Param("title")String title);
 
-    int updateAgeAndContentByIdStartWith(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
+    int updateAgeAndContentByTitleStartWith(@Param("age")Integer age,@Param("content")String content,@Param("title")String title);
 
-    int updateAgeAndContentByIdEndWith(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
+    int updateAgeAndContentByTitleEndWith(@Param("age")Integer age,@Param("content")String content,@Param("title")String title);
 
-    int updateAgeAndContentByIdContaining(@Param("age") Integer age, @Param("content") String content, @Param("id") Long id);
+    int updateAgeAndContentByTitleContaining(@Param("age")Integer age,@Param("content")String content,@Param("title")String title);
 
-    int updateAgeAndContentByIdTrue(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
-
-    int updateAgeAndContentByIdFalse(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
-
-    int updateAgeAndContentByIdIgnoreCase(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
+    int updateAgeAndContentByTitleIgnoreCase(@Param("age")Integer age,@Param("content")String content,@Param("title")String title);
 
     int updateAgeAndContentByIdGreaterThan(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
 
@@ -36,6 +32,10 @@ public interface BlogUpdateMapper extends BaseMapper<Blog> {
 
     int updateAgeAndContentByIdIs(@Param("age")Integer age,@Param("content")String content,@Param("id")Long id);
 
-    int updateAgeByIdAndAgeAfter(@Param("age")Integer age,@Param("id")Long id,@Param("oldAge")Integer oldAge);
 
+    int updateAgeByAgeAfter(@Param("age")Integer age,@Param("oldAge")Integer oldAge);
+
+    int updateAgeAndContentByAgeTrue(@Param("age")Integer age,@Param("content")String content);
+
+    int updateAgeAndContentByAgeFalse(@Param("age")Integer age,@Param("content")String content);
 }

@@ -1,43 +1,48 @@
 package com.baomidou.mybatis3.mapper;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.baomidou.mybatis3.domain.Blog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
 
-// TODO CDATA
 public interface BlogSelectMapper extends BaseMapper<Blog> {
 
-    Blog selectByIdAndAgeAfter(@Param("id") Long id, @Param("age") Integer age);
+    List<Blog> selectByIdAndAgeAfter(@Param("id") Long id, @Param("age") Integer age);
 
-    Blog selectByIdIn(@Param("idList")Collection<Long> idList);
+    List<Blog> selectByIdIn(@Param("idList") Collection<Long> idList);
 
-    Blog selectByIdNotIn(@Param("idList")Collection<Long> idList);
+    List<Blog> selectByIdNotIn(@Param("idList") Collection<Long> idList);
 
-    Blog selectByIdBetween(@Param("beginId")Long beginId,@Param("endId")Long endId);
+    List<Blog> selectByAgeBetween(@Param("beginAge") Integer beginAge, @Param("endAge") Integer endAge);
 
-    Blog selectByIdLike(@Param("id")Long id);
+    List<Blog> selectByIdLike(@Param("id") Long id);
 
-    Blog selectByIdNotLike(@Param("id")Long id);
+    List<Blog> selectByIdNotLike(@Param("id") Long id);
 
-    Blog selectByIdStartWith(@Param("id")Long id);
+    List<Blog> selectByIdStartWith(@Param("id") Long id);
 
-    Blog selectByIdEndWith(@Param("id")Long id);
+    List<Blog> selectByTitleEndWith(@Param("title") String title);
 
-    Blog selectByIdContaining(@Param("id")Long id);
+    List<Blog> selectByTitleContaining(@Param("title") String title);
 
-    Blog selectByIdTrue(@Param("id")Long id);
+    List<Blog> selectByAgeTrue();
 
-    Blog selectByIdFalse(@Param("id")Long id);
+    List<Blog> selectByAgeFalse();
 
-    Blog selectByIdIgnoreCase(@Param("id")Long id);
+    List<Blog> selectByTitleIgnoreCase(@Param("title") String title);
 
-    Blog selectByIdGreaterThan(@Param("id")Long id);
+    List<Blog> selectByAgeGreaterThan(@Param("age") Integer age);
 
-    Blog selectByIdGreaterThanEqual(@Param("id")Long id);
+    List<Blog> selectByAgeGreaterThanEqual(@Param("age") Integer age);
 
-    Blog selectByIdIs(@Param("id")Long id);
+    List<Blog> selectByAgeLessThan(@Param("age") Integer age);
+
+    List<Blog> selectByAgeLessThanEqual(@Param("age") Integer age);
+
+    List<Blog> selectByAgeIs(@Param("age") Integer age);
 
 
 }

@@ -104,7 +104,7 @@ public class CustomFieldAppender implements SyntaxAppender {
             logger.info("字段参数为空, 什么也不做, fieldName: {}", fieldName);
             return "";
         }
-        return columnName + " = " + FieldWrapperUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
+        return columnName + " = " + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
     }
 
 

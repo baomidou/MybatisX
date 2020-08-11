@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FieldWrapperUtils {
+public class JdbcTypeUtils {
     public static String wrapperField(String paramName, @NotNull String canonicalText) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("#{").append(paramName);
@@ -28,10 +28,15 @@ public class FieldWrapperUtils {
     private static Map<String, String> fieldJdbcType = new ConcurrentHashMap<>();
 
     static {
-        fieldJdbcType.put("java.lang.Long", "NUMERIC");
-        fieldJdbcType.put("java.lang.Integer", "NUMERIC");
+        fieldJdbcType.put("java.lang.Byte","NUMERIC");
         fieldJdbcType.put("java.lang.Short", "NUMERIC");
+        fieldJdbcType.put("java.lang.Integer", "NUMERIC");
+        fieldJdbcType.put("java.lang.Long", "NUMERIC");
+        fieldJdbcType.put("java.lang.Float", "DECIMAL");
+        fieldJdbcType.put("java.lang.Double", "DECIMAL");
+        fieldJdbcType.put("java.lang.Boolean", "BOOLEAN");
         fieldJdbcType.put("java.lang.String", "VARCHAR");
-        fieldJdbcType.put("java.lang.Date", "Timestamp");
+        fieldJdbcType.put("java.util.Date", "TIMESTAMP");
+        fieldJdbcType.put("java.math.BigDecimal", "DECIMAL");
     }
 }
