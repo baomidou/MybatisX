@@ -69,13 +69,7 @@ public abstract class AbstractMybatisPlusMappingResolver implements EntityMappin
         if (annotation == null) {
             return text;
         }
-        PsiAnnotationMemberValue attributeValue = annotation.findAttributeValue(VALUE);
-
-        // 如果 value 为空, 直接退出, 返回字段的名称
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(attributeValue.getText())) {
-            return attributeValue.getText();
-        }
-        return text;
+        return getAttributeValue(annotation,VALUE);
     }
 
     protected String getAttributeValue(PsiAnnotation fieldAnnotation, String value) {
@@ -97,12 +91,14 @@ public abstract class AbstractMybatisPlusMappingResolver implements EntityMappin
         for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
             String qualifiedName = referenceElement.getQualifiedName();
             if (getBaseMapperClassName().equals(qualifiedName)) {
-                initDatas(mapperClass);
+
 
                 PsiType typeParameter = referenceElement.getTypeParameters()[0];
 
                 PsiClass entityClass = JavaPsiFacade.getInstance(mapperClass.getProject())
                     .findClass(typeParameter.getCanonicalText(), mapperClass.getResolveScope());
+
+                initDatas(entityClass);
 
                 return Optional.of(entityClass);
             }

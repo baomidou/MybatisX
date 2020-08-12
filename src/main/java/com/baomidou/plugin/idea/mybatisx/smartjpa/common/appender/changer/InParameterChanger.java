@@ -23,7 +23,6 @@ public class InParameterChanger implements MxParameterChanger {
         return Arrays.asList(collectionParameter);
     }
 
-    // TODO 在遍历的时候,给item加入 jdbcType
     @Override
     public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
         final PsiParameter collection = parameters.poll();

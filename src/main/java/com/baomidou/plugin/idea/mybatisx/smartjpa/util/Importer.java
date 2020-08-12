@@ -36,7 +36,7 @@ public class Importer {
             Iterator<String> iterator = newImportList.iterator();
             while (iterator.hasNext()) {
                 String u = iterator.next();
-                if (u.startsWith("java.lang")) {
+                if (u == null || u.startsWith("java.lang")) {
                     iterator.remove();
                 }
             }

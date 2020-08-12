@@ -3,7 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.MybatisPlus3MappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CompositeManagerAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.EntityMappingResolverFactory;
@@ -34,7 +33,6 @@ public class SmartJpaCompletionProvider {
 
     public void addCompletion(@NotNull final CompletionParameters parameters,
                               @NotNull final CompletionResultSet result, PsiClass mapperClass) {
-        logger.info("DaoCompletionProvider.addCompletions, result: {},hashCode:{}", result, parameters.hashCode());
         PsiElement originalPosition = parameters.getOriginalPosition();
         assert originalPosition != null;
 
@@ -76,7 +74,7 @@ public class SmartJpaCompletionProvider {
         }
         // 自动提示
         SmartJpaCompletionInsertHandler daoCompletionInsertHandler =
-            new SmartJpaCompletionInsertHandler(editor, project, parameters);
+            new SmartJpaCompletionInsertHandler(editor, project);
         // 通用字段
         List<LookupElement> lookupElementList = appendList.stream()
             .map(x -> buildLookupElement(x, daoCompletionInsertHandler))

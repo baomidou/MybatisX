@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis2.mapper.BlogDeleteMapper">
+	<resultMap id="BaseResultMap"
+		type="com.baomidou.mybatis2.domain.Blog">
+		<id column="id" property="id"  />
+		<result column="age" property="age"/>
+		<result column="content" property="content"/>
+		<result column="title" property="title"/>
+		<result column="money" property="money"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,age,content,title,money
+	</sql>
+
+	<delete id="delByIdBetween">
+delete from t_blog
+where id between #{beginId,jdbcType=NUMERIC} and #{endId,jdbcType=NUMERIC}
+
+</delete>
+
+    <delete id="delByIdAndAgeAfter">
+delete from t_blog
+where id = #{id,jdbcType=NUMERIC}
+AND age > #{age,jdbcType=NUMERIC}
+</delete>
+    <delete id="delByIdIn">
+        delete from t_blog
+        where id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </delete>
+    <delete id="delByIdNotIn">
+        delete from t_blog
+        where id not in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </delete>
+    <delete id="delById">
+delete from t_blog
+where id = #{id,jdbcType=NUMERIC}
+</delete>
+    <delete id="delByTitleLike">
+delete from t_blog
+where title like #{title,jdbcType=VARCHAR}
+</delete>
+    <delete id="delByTitleNotLike">
+delete from t_blog
+where title not like #{title,jdbcType=VARCHAR}
+</delete>
+    <delete id="delByTitleStartWith">
+delete from t_blog
+where title like CONCAT('%', #{title,jdbcType=VARCHAR})
+</delete>
+    <delete id="delByTitleEndWith">
+delete from t_blog
+where title like CONCAT( #{title,jdbcType=VARCHAR},'%')
+</delete>
+    <delete id="delByTitleContaining">
+delete from t_blog
+where title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
+</delete>
+
+    <delete id="delByTitleIgnoreCase">
+delete from t_blog
+where UPPER(title) = UPPER(#{title,jdbcType=VARCHAR})
+</delete>
+    <delete id="delByTitleIs">
+delete from t_blog
+where title = #{title,jdbcType=VARCHAR}
+</delete>
+    <delete id="delByIdGreaterThan">
+delete from t_blog
+where id > #{id,jdbcType=NUMERIC}
+</delete>
+    <delete id="delByIdGreaterThanEqual">
+delete from t_blog
+where id >= #{id,jdbcType=NUMERIC}
+</delete>
+
+    <delete id="deleteAll">
+        DELETE FROM T_BLOG
+    </delete>
+    <delete id="delByAgeTrue">
+delete from t_blog
+where age = true
+</delete>
+    <delete id="delByAgeFalse">
+delete from t_blog
+where age = false
+</delete>
+    <delete id="delByIdLessThan">
+delete from t_blog
+where id <![CDATA[  < ]]> #{id,jdbcType=NUMERIC}
+</delete>
+
+
+</mapper>

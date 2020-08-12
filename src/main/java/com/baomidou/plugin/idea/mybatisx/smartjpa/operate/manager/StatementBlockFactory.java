@@ -8,15 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * 符号追加器 工厂管理器
@@ -32,16 +28,7 @@ public class StatementBlockFactory {
 
     @NotNull
     public LinkedList<SyntaxAppender> splitAppenderByText(String splitParam) {
-
-        Set<SyntaxAppenderFactory> syntaxAppenderFactoryList = this.blockList.stream()
-            .flatMap(x -> {
-                return Arrays.stream(new SyntaxAppenderFactory[]{x.getResultAppenderFactory(),
-                    x.getConditionAppenderFactory(),
-                    x.getSortAppenderFactory()});
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
-        SyntaxSplitHelper syntaxSplitHelper = new SyntaxSplitHelper(syntaxAppenderFactoryList);
+        SyntaxSplitHelper syntaxSplitHelper = new SyntaxSplitHelper(this.blockList);
         return syntaxSplitHelper.splitAppenderByText(splitParam);
 
     }

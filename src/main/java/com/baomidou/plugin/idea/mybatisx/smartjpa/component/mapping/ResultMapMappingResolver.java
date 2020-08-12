@@ -48,7 +48,7 @@ public class ResultMapMappingResolver implements EntityMappingResolver {
                 GenericAttributeValue<PsiClass> type = resultMap.getType();
                 // 实体类的名字
                 PsiClass entityClass = type.getValue();
-                tableName = entityClass.getQualifiedName();
+                tableName = entityClass.getName().toUpperCase();
 
                 List<TxField> txFields = new ArrayList<>();
                 txFields.addAll(determineIds(resultMap.getIds(), entityClass));

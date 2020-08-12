@@ -26,6 +26,8 @@ import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+
 /**
  * @author yanglin
  */
@@ -66,7 +68,8 @@ public class JavaService {
         PsiClass psiClass = psiMethod.getContainingClass();
         if (null == psiClass) return;
         String id = psiClass.getQualifiedName() + "." + psiMethod.getName();
-        for (Mapper mapper : MapperUtils.findMappers(psiMethod.getProject())) {
+        Collection<Mapper> mappers = MapperUtils.findMappers(psiMethod.getProject());
+        for (Mapper mapper : mappers) {
             for (IdDomElement idDomElement : mapper.getDaoElements()) {
                 if (MapperUtils.getIdSignature(idDomElement).equals(id)) {
                     processor.process(idDomElement);

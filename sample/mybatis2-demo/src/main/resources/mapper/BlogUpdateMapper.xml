@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis2.mapper.BlogUpdateMapper">
+
+
+    <update id="updateAgeAndContentByIdIn">
+        update t_blog
+        set age = #{age,jdbcType=NUMERIC}
+        , content = #{content,jdbcType=VARCHAR}
+        where id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </update>
+    <update id="updateAgeAndContentByIdNotIn">
+        update t_blog
+        set age = #{age,jdbcType=NUMERIC}
+        , content = #{content,jdbcType=VARCHAR}
+        where id not in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+    </update>
+    <update id="updateAgeAndContentByIdBetween">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id between #{beginId,jdbcType=NUMERIC} and #{endId,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeAndContentByIdLike">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id like #{id,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeAndContentByIdIgnoreCase">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where UPPER(id) = UPPER(#{id,jdbcType=NUMERIC})
+</update>
+    <update id="updateAgeAndContentByIdGreaterThan">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id > #{id,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeAndContentByIdGreaterThanEqual">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id >= #{id,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeAndContentByIdIs">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where id = #{id,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeByIdAndAgeAfter">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+where id = #{id,jdbcType=NUMERIC}
+AND age > #{oldAge,jdbcType=NUMERIC}
+</update>
+    <update id="updateAgeAndContentByTitleNotLike">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title not like #{title,jdbcType=VARCHAR}
+</update>
+    <update id="updateAgeAndContentByTitleStartWith">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title like CONCAT( #{title,jdbcType=VARCHAR},'%')
+</update>
+    <update id="updateAgeAndContentByTitleEndWith">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title like CONCAT('%', #{title,jdbcType=VARCHAR})
+</update>
+    <update id="updateAgeAndContentByTitleContaining">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
+</update>
+    <update id="updateAgeAndContentByTitleIgnoreCase">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where UPPER(title) = UPPER(#{title,jdbcType=VARCHAR})
+</update>
+    <update id="updateAgeByAgeAfter">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+where age > #{oldAge,jdbcType=NUMERIC}
+</update>
+
+    <update id="updateAgeAndContentByAgeFalse">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where age = false
+</update>
+    <update id="updateAgeAndContentByAgeTrue">
+update t_blog
+ set age = #{age,jdbcType=NUMERIC}
+, content = #{content,jdbcType=VARCHAR}
+where age = true
+</update>
+
+</mapper>

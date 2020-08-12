@@ -44,26 +44,27 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             logger.info("当前类不是接口, 不提示");
             return;
         }
-        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
-        if (!firstMapper.isPresent()) {
-            logger.info("当前类不是mapper接口, 不提示");
-            return;
-        }
         PsiMethod currentMethod = PsiTreeUtil.getParentOfType(originalPosition, PsiMethod.class);
         if(currentMethod != null){
             logger.info("当前位置在方法体内部, 不提示");
             return;
         }
-        logger.info("DaoCompletionContributor.fillCompletionVariants start");
+        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
+        if (!firstMapper.isPresent()) {
+            logger.info("当前类不是mapper接口, 不提示");
+            return;
+        }
+
+        logger.info("MapperMethodCompletionContributor.fillCompletionVariants start");
 
         try {
-            SmartJpaCompletionProvider daoCompletionProvider = new SmartJpaCompletionProvider();
-            daoCompletionProvider.addCompletion(parameters, result, mapperClass);
+            SmartJpaCompletionProvider smartJpaCompletionProvider = new SmartJpaCompletionProvider();
+            smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (Throwable e) {
             logger.error("自动提示异常", e);
         }
 
-        logger.info("DaoCompletionContributor.fillCompletionVariants end");
+        logger.info("MapperMethodCompletionContributor.fillCompletionVariants end");
 
     }
 

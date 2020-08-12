@@ -8,18 +8,26 @@
         <result column="content" property="content"/>
         <result column="title" property="title"/>
         <result column="money" property="money"/>
+        <result column="create_time" property="createTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-		id,age,content,title,money
+		id,age,content,title,money,create_time
 	</sql>
-    <select id="selectIdAndAgeByIdLessThanOrderByIdDesc" resultMap="BaseResultMap">
-select id
-, age
-from com.baomidou.mybatis3.domain.Blog
-where id <![CDATA[  < ]]> #{id,jdbcType=NUMERIC}
-order by id desc
+    <select id="selectAllByAgeAndTitleContainingAndCreateTimeBetweenAndIdInOrderByCreateTimeDesc"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from BLOG
+        where age = #{age,jdbcType=NUMERIC}
+        AND title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
+        AND createTime between #{beginCreateTime,jdbcType=TIMESTAMP} and #{endCreateTime,jdbcType=TIMESTAMP}
+        AND id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+        order by createTime desc
 
-</select>
+    </select>
 
 
 </mapper>
