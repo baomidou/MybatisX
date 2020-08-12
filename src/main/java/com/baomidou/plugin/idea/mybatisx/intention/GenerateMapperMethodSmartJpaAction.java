@@ -2,11 +2,12 @@ package com.baomidou.plugin.idea.mybatisx.intention;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.*;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.CommonGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.Importer;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.MapperSearch;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.EntityMappingResolverFactory;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.google.common.base.Optional;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -37,16 +38,17 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             if (statementElement == null) {
                 statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
             }
-            MapperSearch mapperSearch = new MapperSearch();
             PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
-            PsiClass entityClass = mapperSearch.searchEntity(project, mapperClass);
+            EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
+            PsiClass entityClass = entityMappingResolverFactory.searchEntity();
+            EntityMappingResolver entityMappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
             if (entityClass == null) {
                 logger.info("未找到实体类");
                 return;
             }
 
             final String text = statementElement.getText();
-            PlatformGenerator platformGenerator = CommonGenerator.createEditorAutoCompletion(entityClass, text);
+            PlatformGenerator platformGenerator = CommonGenerator.createEditorAutoCompletion(entityClass, text,entityMappingResolver);
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
             TypeDescriptor parameterDescriptor = platformGenerator.getParameter();
 

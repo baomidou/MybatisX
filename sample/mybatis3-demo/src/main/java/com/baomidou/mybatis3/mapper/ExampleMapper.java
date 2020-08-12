@@ -16,4 +16,7 @@ public interface ExampleMapper extends BaseMapper<Blog> {
         @Param("beginCreateTime")Date beginCreateTime,@Param("endCreateTime")Date endCreateTime);
 
     List<Blog> selectTitleAndContentByIdIn(@Param("idList")Collection<Long> idList);
+
+
+    List<Blog> selectByIdAndCreateTime(@Param("id")Long id,@Param("createTime")Date createTime);
 }

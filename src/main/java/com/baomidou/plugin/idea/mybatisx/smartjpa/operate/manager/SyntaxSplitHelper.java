@@ -7,16 +7,18 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * 分割符号帮助
  */
 class SyntaxSplitHelper {
 
-    private final List<SyntaxAppenderFactory> syntaxAppenderFactoryList;
+    private final Set<SyntaxAppenderFactory> syntaxAppenderFactoryList;
     // 文本长度优先排序, 其次按照区域顺序排序
     Comparator<SyntaxAppender> stringLengthComparator = (o1, o2) ->
     {
@@ -28,16 +30,20 @@ class SyntaxSplitHelper {
         return compare;
     };
 
-    public SyntaxSplitHelper(final List<SyntaxAppenderFactory> syntaxAppenderFactoryList) {
+    public SyntaxSplitHelper(final Set<SyntaxAppenderFactory> syntaxAppenderFactoryList) {
         this.syntaxAppenderFactoryList = syntaxAppenderFactoryList;
     }
 
+    /**
+     * TODO 算法性能问题
+     * @param splitText
+     * @return
+     */
     @NotNull
     public LinkedList<SyntaxAppender> splitAppenderByText(final String splitText) {
         String splitStr = splitText;
 
         final LinkedList<SyntaxAppender> syntaxAppenderList = new LinkedList<>();
-
         // 找到一个合适的前缀
         while (splitStr.length() > 0) {
             PriorityQueue<SyntaxAppender> priorityQueue = new PriorityQueue<>(stringLengthComparator);

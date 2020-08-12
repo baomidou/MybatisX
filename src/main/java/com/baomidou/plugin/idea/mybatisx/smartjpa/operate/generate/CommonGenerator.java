@@ -6,7 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameterDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.TableMappingResolver;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.MybatisPlus3MappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CompositeManagerAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.intellij.psi.PsiClass;
@@ -21,22 +21,20 @@ import java.util.List;
  */
 public class CommonGenerator implements PlatformGenerator {
     private @NotNull LinkedList<SyntaxAppender> jpaList;
+    private EntityMappingResolver entityMappingResolver;
     private List<TxField> mappingField;
     private PsiClass entityClass;
     final AreaOperateManager appenderManager;
-    EntityMappingResolver tableMappingResolver;
     private String text;
 
 
-    private CommonGenerator(PsiClass entityClass, String text) {
+    private CommonGenerator(PsiClass entityClass, String text, EntityMappingResolver entityMappingResolver) {
         this.entityClass = entityClass;
-        tableMappingResolver = new TableMappingResolver(entityClass);
         this.text = text;
-        mappingField = tableMappingResolver.getFields();
-
-
+        mappingField = entityMappingResolver.getFields();
         appenderManager = new CompositeManagerAdaptor(mappingField,entityClass);
         jpaList = appenderManager.splitAppenderByText(text);
+        this.entityMappingResolver = entityMappingResolver;
     }
 
     /**
@@ -44,10 +42,11 @@ public class CommonGenerator implements PlatformGenerator {
      *
      * @param entityClass
      * @param text
+     * @param entityMappingResolver
      * @return
      */
-    public static CommonGenerator createEditorAutoCompletion(PsiClass entityClass, String text) {
-        return new CommonGenerator(entityClass, text);
+    public static CommonGenerator createEditorAutoCompletion(PsiClass entityClass, String text, EntityMappingResolver entityMappingResolver) {
+        return new CommonGenerator(entityClass, text,entityMappingResolver);
     }
 
     public TypeDescriptor getParameter() {
@@ -68,7 +67,7 @@ public class CommonGenerator implements PlatformGenerator {
             new LinkedList<>(jpaList),
             entityClass,
             psiMethod,
-            tableMappingResolver.getTableName()
+            entityMappingResolver.getTableName()
             , mybatisXmlGenerator);
 
     }

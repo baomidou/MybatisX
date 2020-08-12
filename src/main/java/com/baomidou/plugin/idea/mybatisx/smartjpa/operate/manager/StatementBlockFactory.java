@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -32,14 +33,14 @@ public class StatementBlockFactory {
     @NotNull
     public LinkedList<SyntaxAppender> splitAppenderByText(String splitParam) {
 
-        List<SyntaxAppenderFactory> syntaxAppenderFactoryList = this.blockList.stream()
+        Set<SyntaxAppenderFactory> syntaxAppenderFactoryList = this.blockList.stream()
             .flatMap(x -> {
                 return Arrays.stream(new SyntaxAppenderFactory[]{x.getResultAppenderFactory(),
                     x.getConditionAppenderFactory(),
                     x.getSortAppenderFactory()});
             })
             .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
         SyntaxSplitHelper syntaxSplitHelper = new SyntaxSplitHelper(syntaxAppenderFactoryList);
         return syntaxSplitHelper.splitAppenderByText(splitParam);
 

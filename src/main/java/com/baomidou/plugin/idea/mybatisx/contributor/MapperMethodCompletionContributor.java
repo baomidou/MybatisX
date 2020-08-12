@@ -13,6 +13,7 @@ import com.intellij.openapi.editor.highlighter.HighlighterIterator;
 import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -38,10 +39,8 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         // 验证当前类必须是接口
         PsiElement originalPosition = parameters.getOriginalPosition();
 
-
-
         PsiClass mapperClass = PsiTreeUtil.getParentOfType(originalPosition, PsiClass.class);
-        if (!mapperClass.isInterface()) {
+        if (mapperClass == null || !mapperClass.isInterface()) {
             logger.info("当前类不是接口, 不提示");
             return;
         }
@@ -50,11 +49,16 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             logger.info("当前类不是mapper接口, 不提示");
             return;
         }
+        PsiMethod currentMethod = PsiTreeUtil.getParentOfType(originalPosition, PsiMethod.class);
+        if(currentMethod != null){
+            logger.info("当前位置在方法体内部, 不提示");
+            return;
+        }
         logger.info("DaoCompletionContributor.fillCompletionVariants start");
 
         try {
             SmartJpaCompletionProvider daoCompletionProvider = new SmartJpaCompletionProvider();
-            daoCompletionProvider.addCompletion(parameters, result);
+            daoCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (Throwable e) {
             logger.error("自动提示异常", e);
         }

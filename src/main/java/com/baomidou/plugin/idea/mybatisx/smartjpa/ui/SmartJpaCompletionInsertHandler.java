@@ -1,13 +1,17 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 
+import com.intellij.codeInsight.completion.CodeCompletionHandlerBase;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResult;
 import com.intellij.codeInsight.completion.CompletionService;
+import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.editorActions.CompletionAutoPopupHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -35,16 +39,16 @@ public class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElem
             public void consume(CompletionResult completionResult) {
                 LookupElement lookupElement = completionResult.getLookupElement();
                 logger.info("InsertHandler.handleInsert, lookupElement: {}", lookupElement);
-//                CompletionAutoPopupHandler.runLaterWithCommitted(project, editor.getDocument(), new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        boolean committed = PsiDocumentManager.getInstance(project).isCommitted(editor.getDocument());
-//                        logger.info("document committed: {}", committed);
-//                        if (committed) {
-//                            new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(project, editor, 1);
-//                        }
-//                    }
-//                });
+                CompletionAutoPopupHandler.runLaterWithCommitted(project, editor.getDocument(), new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean committed = PsiDocumentManager.getInstance(project).isCommitted(editor.getDocument());
+                        logger.info("document committed: {}", committed);
+                        if (committed) {
+                            new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(project, editor, 1);
+                        }
+                    }
+                });
 
             }
         });

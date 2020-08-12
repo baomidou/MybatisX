@@ -2,10 +2,11 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.TableMappingResolver;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.MybatisPlus3MappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CompositeManagerAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.MapperSearch;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.EntityMappingResolverFactory;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -18,7 +19,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,32 +33,29 @@ public class SmartJpaCompletionProvider {
 
 
     public void addCompletion(@NotNull final CompletionParameters parameters,
-                              @NotNull final CompletionResultSet result) {
+                              @NotNull final CompletionResultSet result, PsiClass mapperClass) {
         logger.info("DaoCompletionProvider.addCompletions, result: {},hashCode:{}", result, parameters.hashCode());
         PsiElement originalPosition = parameters.getOriginalPosition();
         assert originalPosition != null;
-        Project project = originalPosition.getProject();
-        PsiClass mapperClass = PsiTreeUtil.getParentOfType(originalPosition, PsiClass.class);
 
         Editor editor = parameters.getEditor();
-
+        Project project = editor.getProject();
         String prefix = CompletionUtil.findJavaIdentifierPrefix(parameters);
 
 
         // 添加排序
         CompletionResultSet completionResultSet = JavaCompletionSorting.addJavaSorting(parameters, result);
-
-        MapperSearch mapperSearch = new MapperSearch();
-
-        assert mapperClass != null;
-        PsiClass entityClass = mapperSearch.searchEntity(project, mapperClass);
-        TableMappingResolver tableMappingResolver = new TableMappingResolver(entityClass);
-        List<TxField> mappingField = tableMappingResolver.getFields();
+        // 按照 mybatisplus3 > mybatisplus2 > resultMap 的顺序查找映射关系
+        EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
+        PsiClass entityClass = entityMappingResolverFactory.searchEntity();
+        EntityMappingResolver mybatisPlus3MappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
+        List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
 
         final AreaOperateManager appenderManager = new CompositeManagerAdaptor(mappingField, entityClass);
 
-        logger.info("提示前缀:{} ", prefix);
+        logger.info("tip prefix:{} ", prefix);
         final LinkedList<SyntaxAppender> splitList = appenderManager.splitAppenderByText(prefix);
+        logger.info("split completion ");
         if (splitList.size() > 0) {
             final SyntaxAppender last = splitList.getLast();
             last.pollLast(splitList);
@@ -66,9 +63,10 @@ public class SmartJpaCompletionProvider {
         // 将语句划分为可以划分的字符串
         final String splitString = splitList.stream().map(x -> x.getText()).collect(Collectors.joining());
 
+        logger.info("split join :{} ", splitString);
         // 获得一个完成结果集,  可能是原先的也可能是新的
         completionResultSet = this.getCompletionResultSet(completionResultSet, prefix, splitString);
-
+        logger.info("completion result success");
         // 获得提示列表
         List<String> appendList = null;
         if (splitList.size() > 0) {
