@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 
+import a.h.B;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
@@ -16,14 +17,17 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SmartJpaCompletionProvider {
@@ -36,27 +40,20 @@ public class SmartJpaCompletionProvider {
         PsiElement originalPosition = parameters.getOriginalPosition();
         assert originalPosition != null;
 
-        Editor editor = parameters.getEditor();
-        Project project = editor.getProject();
+
         String prefix = CompletionUtil.findJavaIdentifierPrefix(parameters);
-
-
-        // 添加排序
-        CompletionResultSet completionResultSet = JavaCompletionSorting.addJavaSorting(parameters, result);
         // 按照 mybatisplus3 > mybatisplus2 > resultMap 的顺序查找映射关系
-        EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
-        PsiClass entityClass = entityMappingResolverFactory.searchEntity();
-        EntityMappingResolver mybatisPlus3MappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
-        if(mybatisPlus3MappingResolver == null){
-            logger.info("not support :{} ", prefix);
+        final Optional<AreaOperateManager> appenderManagerOptional = getAreaOperateManager(mapperClass, parameters.getEditor());
+        if (!appenderManagerOptional.isPresent()) {
+            logger.info("not support, prefix: {} ", prefix);
             return;
         }
-        List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
-
-        final AreaOperateManager appenderManager = new CompositeManagerAdaptor(mappingField, entityClass);
+        AreaOperateManager areaOperateManager = appenderManagerOptional.get();
+        // 添加排序
+        CompletionResultSet completionResultSet = JavaCompletionSorting.addJavaSorting(parameters, result);
 
         logger.info("tip prefix:{} ", prefix);
-        final LinkedList<SyntaxAppender> splitList = appenderManager.splitAppenderByText(prefix);
+        final LinkedList<SyntaxAppender> splitList = areaOperateManager.splitAppenderByText(prefix);
         logger.info("split completion ");
         if (splitList.size() > 0) {
             final SyntaxAppender last = splitList.getLast();
@@ -72,13 +69,13 @@ public class SmartJpaCompletionProvider {
         // 获得提示列表
         List<String> appendList = null;
         if (splitList.size() > 0) {
-            appendList = appenderManager.getCompletionContent(splitList);
+            appendList = areaOperateManager.getCompletionContent(splitList);
         } else {
-            appendList = appenderManager.getCompletionContent();
+            appendList = areaOperateManager.getCompletionContent();
         }
         // 自动提示
         SmartJpaCompletionInsertHandler daoCompletionInsertHandler =
-            new SmartJpaCompletionInsertHandler(editor, project);
+            new SmartJpaCompletionInsertHandler(parameters.getEditor(), parameters.getEditor().getProject());
         // 通用字段
         List<LookupElement> lookupElementList = appendList.stream()
             .map(x -> buildLookupElement(x, daoCompletionInsertHandler))
@@ -86,6 +83,42 @@ public class SmartJpaCompletionProvider {
         // 添加到提示
         completionResultSet.addAllElements(lookupElementList);
 
+
+    }
+
+    private Key<Boolean> FOUND_OPERATOR_MANAGER = Key.create("FOUND_OPERATOR_MANAGER");
+    private Key<AreaOperateManager> OPERATOR_MANAGER = Key.create("OPERATOR_MANAGER");
+
+    /**
+     * 在editor级别做初始化字段的缓存
+     * @param mapperClass
+     * @param editor
+     * @return
+     */
+    @Nullable
+    private Optional<AreaOperateManager> getAreaOperateManager(PsiClass mapperClass, @NotNull Editor editor) {
+        Boolean foundAreaOperateManager = editor.getUserData(FOUND_OPERATOR_MANAGER);
+        if (foundAreaOperateManager != null && !foundAreaOperateManager) {
+            return Optional.empty();
+        }
+        AreaOperateManager areaOperateManager = null;
+        EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(editor.getProject(), mapperClass);
+        PsiClass entityClass = entityMappingResolverFactory.searchEntity();
+        EntityMappingResolver mybatisPlus3MappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
+        if (mybatisPlus3MappingResolver == null) {
+            foundAreaOperateManager = false;
+            editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
+            return Optional.empty();
+        }
+        // 第一次初始化
+        List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
+        areaOperateManager = new CompositeManagerAdaptor(mappingField, entityClass);
+        foundAreaOperateManager = true;
+
+        editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
+        editor.putUserData(OPERATOR_MANAGER, areaOperateManager);
+
+        return Optional.ofNullable(areaOperateManager);
     }
 
 

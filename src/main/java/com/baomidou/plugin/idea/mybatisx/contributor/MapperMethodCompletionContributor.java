@@ -36,24 +36,35 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
     public static final Key<PsiClass> MAPPER = Key.create("mapper.finder");
 
+    /**
+     * 填充变量
+     * <p>
+     * 这一层做验证
+     *
+     * @param parameters
+     * @param result
+     */
     @Override
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
         super.fillCompletionVariants(parameters, result);
         Editor editor = parameters.getEditor();
 
         Boolean found = editor.getUserData(FOUND);
-        if (found == null || !found) {
+        if (found != null && !found) {
             return;
         }
         PsiClass mapperClass = editor.getUserData(MAPPER);
         if (mapperClass == null) {
-            mapperClass = findMapperClass(parameters);
-            if (mapperClass == null) {
+            Optional<PsiClass> mapperClassOptional = findMapperClass(parameters);
+            if (mapperClassOptional.isPresent()) {
+                mapperClass = mapperClassOptional.get();
+                editor.putUserData(MAPPER, mapperClass);
+                editor.putUserData(FOUND, true);
+            }else{
                 editor.putUserData(FOUND, false);
                 return;
             }
-            editor.putUserData(MAPPER, mapperClass);
-            editor.putUserData(FOUND, true);
+
         }
 
         logger.info("MapperMethodCompletionContributor.fillCompletionVariants start");
@@ -69,15 +80,15 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
     }
 
-    @Nullable
-    protected PsiClass findMapperClass(@NotNull CompletionParameters parameters) {
+    @NotNull
+    protected Optional<PsiClass> findMapperClass(@NotNull CompletionParameters parameters) {
         if (parameters.getCompletionType() != CompletionType.BASIC) {
             logger.info("类型不是 BASIC");
-            return null;
+            return Optional.empty();
         }
         if (inCommentOrLiteral(parameters)) {
             logger.info("注释区间不提示");
-            return null;
+            return Optional.empty();
         }
         // 验证当前类必须是接口
         PsiElement originalPosition = parameters.getOriginalPosition();
@@ -85,32 +96,29 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         PsiMethod currentMethod = PsiTreeUtil.getParentOfType(originalPosition, PsiMethod.class);
         if (currentMethod != null) {
             logger.info("当前位置在方法体内部, 不提示");
-            return null;
+            return Optional.empty();
         }
 
         PsiClass mapperClass = PsiTreeUtil.getParentOfType(originalPosition, PsiClass.class);
         if (mapperClass == null || !mapperClass.isInterface()) {
             logger.info("当前类不是接口, 不提示");
-            return null;
+            return Optional.empty();
         }
 
-        boolean found = false;
         Optional<PsiClass> entityClassByMapperClass = JpaAnnotationMappingResolver.findEntityClassByMapperClass(mapperClass);
         if (entityClassByMapperClass.isPresent()) {
-            found = true;
+            return entityClassByMapperClass;
         }
-        if (!found) {
-            Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
-            if (!firstMapper.isPresent()) {
-                logger.info("当前类不是mapper接口, 不提示");
-                // 支持 mapper 接口上面写 @Entity 注解
-                PsiDocComment docComment = mapperClass.getDocComment();
-                if (docComment != null && docComment.findTagByName(CommentAnnotationMappingResolver.TABLE_ENTITY) == null) {
-                    return null;
-                }
+        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
+        if (!firstMapper.isPresent()) {
+            logger.info("当前类不是mapper接口, 不提示");
+            // 支持 mapper 接口上面写 @Entity 注解
+            PsiDocComment docComment = mapperClass.getDocComment();
+            if (docComment != null && docComment.findTagByName(CommentAnnotationMappingResolver.TABLE_ENTITY) == null) {
+                return Optional.empty();
             }
         }
-        return mapperClass;
+        return Optional.ofNullable(mapperClass);
     }
 
     private static boolean inCommentOrLiteral(CompletionParameters parameters) {

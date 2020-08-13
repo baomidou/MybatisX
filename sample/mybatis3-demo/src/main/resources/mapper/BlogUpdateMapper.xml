@@ -111,4 +111,5 @@ update t_blog
 , content = #{content,jdbcType=VARCHAR}
 where age = true
 </update>
+
 </mapper>
