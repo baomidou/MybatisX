@@ -131,7 +131,7 @@
         <include refid="Base_Column_List"/>
         from t_blog
         where age <![CDATA[  < ]]> #{age,jdbcType=NUMERIC}
-
+a
     </select>
     <select id="selectByAgeLessThanEqual" resultMap="BaseResultMap">
         select
@@ -139,6 +139,14 @@
         from t_blog
         where age <![CDATA[  <= ]]> #{age,jdbcType=NUMERIC}
 
+    </select>
+    <select id="selectByAgeAndTitle" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where age = #{age,jdbcType=NUMERIC}
+        AND title = #{title,jdbcType=VARCHAR}
+and titleB = #{}
     </select>
 
 

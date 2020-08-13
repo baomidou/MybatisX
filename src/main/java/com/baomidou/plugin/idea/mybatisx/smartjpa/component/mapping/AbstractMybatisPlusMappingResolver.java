@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMybatisPlusMappingResolver implements EntityMappingResolver {
+public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResolver implements EntityMappingResolver {
 
     public static final String VALUE = "value";
     /**
@@ -34,12 +34,10 @@ public abstract class AbstractMybatisPlusMappingResolver implements EntityMappin
     private List<TxField> txFields;
 
 
-
-    protected void initDatas(PsiClass psiClass){
-        tableName = determineTableName(psiClass.getAnnotation(getTableNameAnnotation()), psiClass.getName());
-        txFields = determineFields(psiClass);
+    protected void initDatas(PsiClass entityClass) {
+        tableName = determineTableName(entityClass);
+        txFields = determineFields(entityClass);
     }
-
 
 
     @NotNull
@@ -65,11 +63,19 @@ public abstract class AbstractMybatisPlusMappingResolver implements EntityMappin
     @NotNull
     protected abstract String getTableFieldAnnotation(@NotNull PsiField field);
 
-    private String determineTableName(PsiAnnotation annotation, String text) {
+    private String determineTableName(PsiClass psiClass) {
+        PsiAnnotation annotation = psiClass.getAnnotation(getTableNameAnnotation());
         if (annotation == null) {
-            return text;
+            return psiClass.getName();
         }
-        return getAttributeValue(annotation,VALUE);
+        String tableName = null;
+        // 获取 mp 的注解
+        tableName = getAttributeValue(annotation, VALUE);
+        // 获取 jpa 注解
+        if (tableName == null) {
+            tableName = getTableNameByJpaOrCamel(psiClass);
+        }
+        return tableName;
     }
 
     protected String getAttributeValue(PsiAnnotation fieldAnnotation, String value) {
@@ -91,7 +97,6 @@ public abstract class AbstractMybatisPlusMappingResolver implements EntityMappin
         for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
             String qualifiedName = referenceElement.getQualifiedName();
             if (getBaseMapperClassName().equals(qualifiedName)) {
-
 
                 PsiType typeParameter = referenceElement.getTypeParameters()[0];
 

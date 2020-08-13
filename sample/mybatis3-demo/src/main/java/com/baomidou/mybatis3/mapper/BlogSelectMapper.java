@@ -44,5 +44,6 @@ public interface BlogSelectMapper extends BaseMapper<Blog> {
 
     List<Blog> selectByAgeIs(@Param("age") Integer age);
 
+    List<Blog> selectByAgeAndTitle(@Param("age")Integer age,@Param("title")String title);
 
 }

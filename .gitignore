@@ -1,6 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
-/build/
-/idea-sandbox/
+build
+idea-sandbox
 /out/
 /MybatisX.iml
 .gradle

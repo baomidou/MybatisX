@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.baomidou.mybatis3.mapper.ExampleMapper">
+<mapper namespace="com.baomidou.mybatis3.mapper.BlogNoXmlMapper">
     <resultMap id="BaseResultMap"
                type="com.baomidou.mybatis3.domain.Blog">
         <id column="id" property="id"/>
@@ -12,15 +12,8 @@
     <sql id="Base_Column_List">
 		id,age,content,title,money
 	</sql>
-    <select id="selectByIdAndCreateTimeBetweenAndTitleContainingOrderByAge" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where id = #{id,jdbcType=NUMERIC}
-        AND createTime between #{beginCreateTime,jdbcType=TIMESTAMP} and #{endCreateTime,jdbcType=TIMESTAMP}
-        AND title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
-        order by age
-    </select>
+
+
 
 
 </mapper>

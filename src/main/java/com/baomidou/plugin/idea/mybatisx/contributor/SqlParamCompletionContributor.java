@@ -45,6 +45,7 @@ public class SqlParamCompletionContributor extends CompletionContributor {
             int offset = documentWindow.injectedToHost(position.getTextOffset());
             Optional<IdDomElement> idDomElement = MapperUtils.findParentIdDomElement(xmlFile.findElementAt(offset));
             if (idDomElement.isPresent()) {
+                // TODO 加入 jdbcType 的提示, 例如: #{age,jdbcType=NUMERIC}
                 TestParamContributor.addElementForPsiParameter(position.getProject(), result, idDomElement.get());
                 result.stopHere();
             }

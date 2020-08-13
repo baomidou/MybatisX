@@ -5,7 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CompositeManagerAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.EntityMappingResolverFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -47,6 +47,10 @@ public class SmartJpaCompletionProvider {
         EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
         PsiClass entityClass = entityMappingResolverFactory.searchEntity();
         EntityMappingResolver mybatisPlus3MappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
+        if(mybatisPlus3MappingResolver == null){
+            logger.info("not support :{} ", prefix);
+            return;
+        }
         List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
 
         final AreaOperateManager appenderManager = new CompositeManagerAdaptor(mappingField, entityClass);

@@ -24,19 +24,21 @@ public class MybatisPlus2MappingResolver extends AbstractMybatisPlusMappingResol
     @Override
     protected @NotNull String getTableFieldAnnotation(@NotNull PsiField field) {
         String columnName = null;
+        // 获取 mp 的 TableField 注解
         PsiAnnotation fieldAnnotation = field.getAnnotation(TABLE_FIELD);
         if (fieldAnnotation != null) {
             columnName = getAttributeValue(fieldAnnotation, "value");
         }
-
+        //  获取 mp 的 id 注解
         if (StringUtils.isBlank(columnName)) {
             PsiAnnotation idAnnotation = field.getAnnotation(TABLE_ID);
-            if(idAnnotation != null){
+            if (idAnnotation != null) {
                 columnName = getAttributeValue(idAnnotation, "value");
             }
         }
+        // 获取 jpa 注解
         if (StringUtils.isBlank(columnName)) {
-            columnName = field.getName();
+            columnName = getColumnNameByJpaOrCamel(field);
         }
         return columnName;
     }

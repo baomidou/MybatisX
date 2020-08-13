@@ -7,7 +7,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.CommonGenerat
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.Importer;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.EntityMappingResolverFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.google.common.base.Optional;
 import com.intellij.codeInsight.intention.IntentionAction;
