@@ -18,6 +18,7 @@
     </change-notes>
 
     <idea-version since-build="192.6817.14"/>
+    <depends>com.intellij.java</depends>
     <depends optional="true">com.intellij.spring</depends>
     <depends optional="true">com.intellij.database</depends>
     <extensions defaultExtensionNs="com.intellij">
@@ -51,8 +52,8 @@
         <applicationConfigurable instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
 
         <!--应用服务-->
-        <applicationService serviceInterface="com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting"
-                            serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting"/>
+        <applicationService
+            serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting"/>
 
 
         <!--自动完成提示-->

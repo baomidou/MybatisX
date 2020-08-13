@@ -44,7 +44,8 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
                     JavaPsiFacade instance = JavaPsiFacade.getInstance(mapperClass.getProject());
                     PsiClass entityClass = instance.findClass(entityText, mapperClass.getResolveScope());
                     if (entityClass != null) {
-                        initDataByCamel(entityClass);
+                        fieldList = initDataByCamel(entityClass);
+                        tableName = getTableNameByJpaOrCamel(entityClass);
                         return Optional.of(entityClass);
                     }
                 }
@@ -63,23 +64,6 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
      */
     private String tableName;
 
-    private void initDataByCamel(PsiClass entityClass) {
-        fieldList = Arrays.stream(entityClass.getAllFields()).map(field -> {
-            TxField txField = new TxField();
-            txField.setTipName(com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils.upperCaseFirstChar(field.getName()));
-            txField.setFieldType(field.getType().getCanonicalText());
-
-            String columnName = getColumnNameByJpaOrCamel(field);
-            // 实体的字段名称
-            txField.setFieldName(field.getName());
-            // 表的列名
-            txField.setColumnName(columnName);
-
-            return txField;
-        }).collect(Collectors.toList());
-
-        tableName = getTableNameByJpaOrCamel(entityClass);
-    }
 
 
 }

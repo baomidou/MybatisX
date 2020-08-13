@@ -37,7 +37,8 @@ public class JpaAnnotationMappingResolver extends JpaMappingResolver implements 
         Optional<PsiClass> entityClassOption = findEntityClassByMapperClass(mapperClass);
         if (entityClassOption.isPresent()) {
             PsiClass entityClass = entityClassOption.get();
-            initDataByCamel(entityClass);
+            fieldList = initDataByCamel(entityClass);
+            tableName = getTableNameByJpaOrCamel(entityClass);
             return Optional.of(entityClass);
         }
         return Optional.empty();
@@ -52,23 +53,7 @@ public class JpaAnnotationMappingResolver extends JpaMappingResolver implements 
      */
     private String tableName;
 
-    private void initDataByCamel(PsiClass entityClass) {
-        fieldList = Arrays.stream(entityClass.getAllFields()).map(field -> {
-            TxField txField = new TxField();
-            txField.setTipName(com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils.upperCaseFirstChar(field.getName()));
-            txField.setFieldType(field.getType().getCanonicalText());
 
-            String columnName = getColumnNameByJpaOrCamel(field);
-            // 实体的字段名称
-            txField.setFieldName(field.getName());
-            // 表的列名
-            txField.setColumnName(columnName);
-
-            return txField;
-        }).collect(Collectors.toList());
-
-        tableName = getTableNameByJpaOrCamel(entityClass);
-    }
 
 
 }

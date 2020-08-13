@@ -37,7 +37,6 @@ class SyntaxSplitHelper {
     }
 
     /**
-     * TODO 算法性能问题
      *
      * @param splitText
      * @return

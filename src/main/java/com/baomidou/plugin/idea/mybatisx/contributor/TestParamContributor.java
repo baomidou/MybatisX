@@ -1,7 +1,11 @@
 package com.baomidou.plugin.idea.mybatisx.contributor;
 
-import com.google.common.base.Optional;
-
+import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
+import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
+import com.baomidou.plugin.idea.mybatisx.util.Icons;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -15,17 +19,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.util.ProcessingContext;
-import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
-import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 /**
  * @author yanglin
@@ -40,7 +39,7 @@ public class TestParamContributor extends CompletionContributor {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();
-                        addElementForPsiParameter(position.getProject(), result, MapperUtils.findParentIdDomElement(position).orNull());
+                        addElementForPsiParameter(position.getProject(), result, MapperUtils.findParentIdDomElement(position).orElse(null));
                     }
                 });
     }
@@ -49,7 +48,7 @@ public class TestParamContributor extends CompletionContributor {
         if (null == element) {
             return;
         }
-        PsiMethod psiMethod= JavaUtils.findMethod(project, element).orNull();
+        PsiMethod psiMethod= JavaUtils.findMethod(project, element).orElse(null);
         if(null == psiMethod ) {
             logger.info("psiMethod null");
             return;

@@ -1,14 +1,13 @@
 package com.baomidou.plugin.idea.mybatisx.generate;
 
-import com.google.common.base.Optional;
-
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
 import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
-
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * <p>

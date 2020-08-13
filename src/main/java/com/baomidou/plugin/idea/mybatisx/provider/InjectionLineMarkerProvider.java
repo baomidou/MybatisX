@@ -1,7 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.provider;
 
-import com.google.common.base.Optional;
-
+import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.util.Icons;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
@@ -13,16 +16,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
-import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author yanglin

@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
+import com.baomidou.plugin.idea.mybatisx.service.JavaService;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -8,9 +10,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
-import com.baomidou.plugin.idea.mybatisx.service.JavaService;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

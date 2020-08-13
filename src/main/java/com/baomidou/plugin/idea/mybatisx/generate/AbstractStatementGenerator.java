@@ -1,23 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.generate;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.PopupStep;
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.PsiClassReferenceType;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.util.CommonProcessors.CollectProcessor;
 import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.service.EditorService;
@@ -27,12 +9,32 @@ import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
 import com.baomidou.plugin.idea.mybatisx.ui.UiComponentFacade;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.PopupStep;
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiPrimitiveType;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.impl.source.PsiClassReferenceType;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.CommonProcessors.CollectProcessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -66,10 +68,10 @@ public abstract class AbstractStatementGenerator {
 
     public static Optional<PsiClass> getSelectResultType(@Nullable PsiMethod method) {
         if (null == method) {
-            return Optional.absent();
+            return Optional.empty();
         }
         PsiType returnType = method.getReturnType();
-        if (returnType instanceof PsiPrimitiveType && returnType != PsiType.VOID) {
+        if (returnType instanceof PsiPrimitiveType && !PsiType.VOID.equals(returnType)) {
             return JavaUtils.findClazz(method.getProject(), ((PsiPrimitiveType) returnType).getBoxedTypeName());
         } else if (returnType instanceof PsiClassReferenceType) {
             PsiClassReferenceType type = (PsiClassReferenceType) returnType;
@@ -79,17 +81,9 @@ public abstract class AbstractStatementGenerator {
                     type = (PsiClassReferenceType) parameters[0];
                 }
             }
-            return Optional.fromNullable(type.resolve());
+            return Optional.ofNullable(type.resolve());
         }
-        return Optional.absent();
-    }
-
-    private static void doGenerate(@NotNull final AbstractStatementGenerator generator, @NotNull final PsiMethod method) {
-        (new WriteCommandAction.Simple(method.getProject(), new PsiFile[]{method.getContainingFile()}) {
-            protected void run() throws Throwable {
-                generator.execute(method);
-            }
-        }).execute();
+        return Optional.empty();
     }
 
     public static void applyGenerate(@Nullable final PsiMethod method) {
@@ -104,11 +98,7 @@ public abstract class AbstractStatementGenerator {
                 public PopupStep onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
                     return this.doFinalStep(new Runnable() {
                         public void run() {
-                            WriteCommandAction.runWriteCommandAction(project, new Runnable() {
-                                public void run() {
-                                    AbstractStatementGenerator.doGenerate(selectedValue, method);
-                                }
-                            });
+                            WriteCommandAction.writeCommandAction(project).run(()-> selectedValue.execute(method));
                         }
                     });
                 }

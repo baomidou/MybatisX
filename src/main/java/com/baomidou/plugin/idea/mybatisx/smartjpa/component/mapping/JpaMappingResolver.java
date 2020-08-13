@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -93,5 +95,21 @@ public abstract class JpaMappingResolver {
         return Optional.empty();
     }
 
+
+    protected List<TxField> initDataByCamel(PsiClass entityClass) {
+        return Arrays.stream(entityClass.getAllFields()).map(field -> {
+            TxField txField = new TxField();
+            txField.setTipName(com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils.upperCaseFirstChar(field.getName()));
+            txField.setFieldType(field.getType().getCanonicalText());
+
+            String columnName = getColumnNameByJpaOrCamel(field);
+            // 实体的字段名称
+            txField.setFieldName(field.getName());
+            // 表的列名
+            txField.setColumnName(columnName);
+
+            return txField;
+        }).collect(Collectors.toList());
+    }
 
 }

@@ -1,12 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.contributor;
 
-import a.h.K;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.CommentAnnotationMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.JpaAnnotationMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.SmartJpaCompletionProvider;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.google.common.base.Optional;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -27,33 +25,36 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * mapper的jpa方法提示
  */
 public class MapperMethodCompletionContributor extends CompletionContributor {
 
-    public static final @NotNull Key<Optional<PsiClass>> KEY = Key.create("mapper.finder");
+    public static final Key<Boolean> FOUND = Key.create("mapper.finder");
+
+    public static final Key<PsiClass> MAPPER = Key.create("mapper.finder");
 
     @Override
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
         super.fillCompletionVariants(parameters, result);
         Editor editor = parameters.getEditor();
-        PsiClass mapperClass = null;
-        Optional<PsiClass> mapperClassOption = editor.getUserData(KEY);
-        if (mapperClassOption!=null && !mapperClassOption.isPresent()) {
+
+        Boolean found = editor.getUserData(FOUND);
+        if (found == null || !found) {
             return;
         }
-        if (mapperClassOption == null) {
+        PsiClass mapperClass = editor.getUserData(MAPPER);
+        if (mapperClass == null) {
             mapperClass = findMapperClass(parameters);
             if (mapperClass == null) {
-                editor.putUserData(KEY, Optional.absent());
+                editor.putUserData(FOUND, false);
                 return;
             }
-            mapperClassOption = Optional.of(mapperClass);
-            editor.putUserData(KEY, mapperClassOption);
+            editor.putUserData(MAPPER, mapperClass);
+            editor.putUserData(FOUND, true);
         }
-        mapperClass = mapperClassOption.get();
-
 
         logger.info("MapperMethodCompletionContributor.fillCompletionVariants start");
 
@@ -94,7 +95,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         }
 
         boolean found = false;
-        java.util.Optional<PsiClass> entityClassByMapperClass = JpaAnnotationMappingResolver.findEntityClassByMapperClass(mapperClass);
+        Optional<PsiClass> entityClassByMapperClass = JpaAnnotationMappingResolver.findEntityClassByMapperClass(mapperClass);
         if (entityClassByMapperClass.isPresent()) {
             found = true;
         }

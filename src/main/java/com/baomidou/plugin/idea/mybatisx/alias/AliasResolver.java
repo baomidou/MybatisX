@@ -1,15 +1,13 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
-import com.google.common.base.Optional;
-
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -23,10 +21,9 @@ public abstract class AliasResolver {
         this.project = project;
     }
 
-    @NotNull
     protected Optional<AliasDesc> addAliasDesc(@NotNull Set<AliasDesc> descs, @Nullable PsiClass clazz, @Nullable String alias) {
         if (null == alias || !JavaUtils.isModelClazz(clazz)) {
-            return Optional.absent();
+            return Optional.empty();
         }
         AliasDesc desc = new AliasDesc();
         descs.add(desc);

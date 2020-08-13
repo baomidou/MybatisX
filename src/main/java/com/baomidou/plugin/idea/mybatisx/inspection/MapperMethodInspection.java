@@ -1,8 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.inspection;
 
-import com.google.common.base.Optional;
+import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.locator.MapperLocator;
+import com.baomidou.plugin.idea.mybatisx.service.JavaService;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.google.common.collect.Lists;
-
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -11,18 +15,12 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
 import com.intellij.util.xml.DomElement;
-import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
-import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
-import com.baomidou.plugin.idea.mybatisx.locator.MapperLocator;
-import com.baomidou.plugin.idea.mybatisx.service.JavaService;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author yanglin
@@ -37,19 +35,15 @@ public class MapperMethodInspection extends MapperInspection {
             return EMPTY_ARRAY;
         }
         List<ProblemDescriptor> res = createProblemDescriptors(method, manager, isOnTheFly);
-        return res.toArray(new ProblemDescriptor[res.size()]);
+        return res.toArray(new ProblemDescriptor[0]);
     }
 
     private List<ProblemDescriptor> createProblemDescriptors(PsiMethod method, InspectionManager manager, boolean isOnTheFly) {
         ArrayList<ProblemDescriptor> res = Lists.newArrayList();
         Optional<ProblemDescriptor> p1 = checkStatementExists(method, manager, isOnTheFly);
-        if (p1.isPresent()) {
-            res.add(p1.get());
-        }
+        p1.ifPresent(res::add);
         Optional<ProblemDescriptor> p2 = checkResultType(method, manager, isOnTheFly);
-        if (p2.isPresent()) {
-            res.add(p2.get());
-        }
+        p2.ifPresent(res::add);
         return res;
     }
 
@@ -73,7 +67,7 @@ public class MapperMethodInspection extends MapperInspection {
                 }
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private Optional<ProblemDescriptor> checkStatementExists(PsiMethod method, InspectionManager manager, boolean isOnTheFly) {
@@ -82,7 +76,7 @@ public class MapperMethodInspection extends MapperInspection {
             return Optional.of(manager.createProblemDescriptor(ide, "Statement with id=\"#ref\" not defined in mapper xml",
                     new StatementNotExistsQuickFix(method), ProblemHighlightType.GENERIC_ERROR, isOnTheFly));
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
 }

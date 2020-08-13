@@ -7,7 +7,6 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.google.common.base.Optional;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +38,7 @@ public class ResultMapMappingResolver implements EntityMappingResolver {
     private List<TxField> fieldList;
 
     @Override
-    public java.util.Optional<PsiClass> findEntity(PsiClass mapperClass) {
+    public Optional<PsiClass> findEntity(PsiClass mapperClass) {
         Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
         if (firstMapper.isPresent()) {
             Mapper mapper = firstMapper.get();
@@ -54,10 +54,10 @@ public class ResultMapMappingResolver implements EntityMappingResolver {
                 txFields.addAll(determineIds(resultMap.getIds(), entityClass));
                 txFields.addAll(determineResults(resultMap.getResults(), entityClass));
                 this.fieldList = txFields;
-                return java.util.Optional.of(entityClass);
+                return Optional.of(entityClass);
             }
         }
-        return java.util.Optional.empty();
+        return Optional.empty();
     }
 
     private Collection<? extends TxField> determineResults(List<Result> results, PsiClass mapperClass) {
@@ -102,7 +102,7 @@ public class ResultMapMappingResolver implements EntityMappingResolver {
      */
     private Optional<ResultMap> findResultMap(List<ResultMap> resultMaps) {
         if (resultMaps.size() == 1) {
-            return Optional.fromNullable(resultMaps.get(0));
+            return Optional.ofNullable(resultMaps.get(0));
         }
         ResultMap mostShortResultMap = null;
         for (ResultMap resultMap : resultMaps) {
@@ -116,6 +116,6 @@ public class ResultMapMappingResolver implements EntityMappingResolver {
                 }
             }
         }
-        return Optional.fromNullable(mostShortResultMap);
+        return Optional.ofNullable(mostShortResultMap);
     }
 }

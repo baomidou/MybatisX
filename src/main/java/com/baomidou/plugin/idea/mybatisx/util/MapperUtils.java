@@ -1,10 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.Configuration;
+import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Package;
+import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAlias;
+import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAliases;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.fileTemplates.FileTemplateUtil;
@@ -18,12 +22,6 @@ import com.intellij.psi.xml.XmlElement;
 import com.intellij.util.Processor;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Configuration;
-import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAlias;
-import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAliases;
-
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +29,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
 
@@ -43,16 +43,15 @@ public final class MapperUtils {
         throw new UnsupportedOperationException();
     }
 
-    @NotNull
     public static Optional<IdDomElement> findParentIdDomElement(@Nullable PsiElement element) {
         DomElement domElement = DomUtil.getDomElement(element);
         if (null == domElement) {
-            return Optional.absent();
+            return Optional.empty();
         }
         if (domElement instanceof IdDomElement) {
             return Optional.of((IdDomElement) domElement);
         }
-        return Optional.fromNullable(DomUtil.getParentOfType(domElement, IdDomElement.class, true));
+        return Optional.ofNullable(DomUtil.getParentOfType(domElement, IdDomElement.class, true));
     }
 
     public static PsiElement createMapperFromFileTemplate(@NotNull String fileTemplateName,
@@ -99,7 +98,7 @@ public final class MapperUtils {
 
     @NotNull
     public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull PsiClass clazz) {
-        return JavaUtils.isElementWithinInterface(clazz) ? findMappers(project, clazz.getQualifiedName()) : Collections.<Mapper>emptyList();
+        return JavaUtils.isElementWithinInterface(clazz) ? findMappers(project, Objects.requireNonNull(clazz.getQualifiedName())) : Collections.emptyList();
     }
 
     @NotNull
@@ -108,32 +107,29 @@ public final class MapperUtils {
         return null == clazz ? Collections.<Mapper>emptyList() : findMappers(project, clazz);
     }
 
-    @NotNull
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull String namespace) {
         Collection<Mapper> mappers = findMappers(project, namespace);
-        return CollectionUtils.isEmpty(mappers) ? Optional.<Mapper>absent() : Optional.of(mappers.iterator().next());
+        return CollectionUtils.isEmpty(mappers) ? Optional.<Mapper>empty() : Optional.of(mappers.iterator().next());
     }
 
-    @NotNull
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull PsiClass clazz) {
         String qualifiedName = clazz.getQualifiedName();
-        return null != qualifiedName ? findFirstMapper(project, qualifiedName) : Optional.<Mapper>absent();
+        return null != qualifiedName ? findFirstMapper(project, qualifiedName) : Optional.<Mapper>empty();
     }
 
-    @NotNull
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull PsiMethod method) {
         PsiClass containingClass = method.getContainingClass();
-        return null != containingClass ? findFirstMapper(project, containingClass) : Optional.<Mapper>absent();
+        return null != containingClass ? findFirstMapper(project, containingClass) : Optional.empty();
     }
 
     @SuppressWarnings("unchecked")
     @NotNull
     @NonNls
     public static Mapper getMapper(@NotNull DomElement element) {
-        Optional<Mapper> optional = Optional.fromNullable(DomUtil.getParentOfType(element, Mapper.class, true));
+        Optional<Mapper> optional = Optional.ofNullable(DomUtil.getParentOfType(element, Mapper.class, true));
         if (optional.isPresent()) {
             return optional.get();
         } else {
@@ -202,10 +198,10 @@ public final class MapperUtils {
     }
 
     public static void processConfiguredPackage(@NotNull Project project,
-                                                @NotNull Processor<com.baomidou.plugin.idea.mybatisx.dom.model.Package> processor) {
+                                                @NotNull Processor<Package> processor) {
         for (Configuration conf : getMybatisConfigurations(project)) {
             for (TypeAliases tas : conf.getTypeAliases()) {
-                for (com.baomidou.plugin.idea.mybatisx.dom.model.Package pkg : tas.getPackages()) {
+                for (Package pkg : tas.getPackages()) {
                     if (!processor.process(pkg)) {
                         return;
                     }
