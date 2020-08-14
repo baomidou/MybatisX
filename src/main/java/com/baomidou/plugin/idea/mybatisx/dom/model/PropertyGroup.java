@@ -1,7 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.dom.model;
 
-import com.baomidou.plugin.idea.mybatisx.dom.converter.ColumnConverter;
-import com.baomidou.plugin.idea.mybatisx.dom.converter.JdbcTypeConverter;
 import com.baomidou.plugin.idea.mybatisx.dom.converter.PropertyConverter;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.xml.Attribute;

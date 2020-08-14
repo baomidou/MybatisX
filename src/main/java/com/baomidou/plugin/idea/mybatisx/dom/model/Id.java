@@ -16,11 +16,9 @@ public interface Id extends PropertyGroup {
     GenericAttributeValue<XmlAttributeValue> getProperty();
 
     @Attribute("column")
-    @Convert(PropertyConverter.class)
     GenericAttributeValue<XmlAttributeValue> getColumn();
 
     @Attribute("jdbcType")
-    @Convert(PropertyConverter.class)
     GenericAttributeValue<XmlAttributeValue> getJdbcType();
 
 }
