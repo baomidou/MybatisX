@@ -73,7 +73,7 @@ public class InsertOperator extends BaseOperatorManager {
         StatementBlock statementBlock = new StatementBlock();
         statementBlock.setResultAppenderFactory(appenderFactory);
         statementBlock.setTagName(newAreaName);
-        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
+        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null, "int"));
         this.registerStatementBlock(statementBlock);
 
         this.addOperatorName(newAreaName);
@@ -91,7 +91,8 @@ public class InsertOperator extends BaseOperatorManager {
                                       LinkedList<PsiParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector,
                                       MybatisXmlGenerator mybatisXmlGenerator) {
-            StringBuilder mapperXml = new StringBuilder("insert into " + tableName);
+            StringBuilder mapperXml = new StringBuilder();
+            mapperXml.append("insert into " + tableName).append("\n");
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
                 String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
                 mapperXml.append(templateText);
@@ -168,7 +169,7 @@ public class InsertOperator extends BaseOperatorManager {
         StatementBlock statementBlock = new StatementBlock();
         statementBlock.setResultAppenderFactory(insertResultAppenderFactory);
         statementBlock.setTagName(newAreaName);
-        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
+        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null, "int"));
         this.registerStatementBlock(statementBlock);
 
         this.addOperatorName(newAreaName);
@@ -203,7 +204,7 @@ public class InsertOperator extends BaseOperatorManager {
         StatementBlock statementBlock = new StatementBlock();
         statementBlock.setResultAppenderFactory(insertResultAppenderFactory);
         statementBlock.setTagName(newAreaName);
-        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
+        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null, "int"));
         this.registerStatementBlock(statementBlock);
 
         this.addOperatorName(newAreaName);
@@ -226,7 +227,6 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
     }
-
 
 
     @Override
@@ -265,11 +265,11 @@ public class InsertOperator extends BaseOperatorManager {
             final PsiParameter collection = parameters.poll();
             final String collectionName = collection.getName();
             final String fields = mappingField.stream()
-                .map(field -> JdbcTypeUtils.wrapperField(itemName+"."+field.getFieldName(), field.getFieldType()))
+                .map(field -> JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType()))
                 .collect(Collectors.joining(",\n"));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
-            stringBuilder.append(" item=\""+itemName+"\"");
+            stringBuilder.append(" item=\"" + itemName + "\"");
             stringBuilder.append(" separator=\",\">").append("\n");
             stringBuilder.append("(").append(fields).append(")").append("\n");
             stringBuilder.append("</foreach>");
@@ -277,10 +277,6 @@ public class InsertOperator extends BaseOperatorManager {
             return stringBuilder.toString();
         }
 
-        @Override
-        public boolean needField() {
-            return false;
-        }
     }
 
     private class InsertAllSuffixOperator implements SuffixOperator {
@@ -297,7 +293,7 @@ public class InsertOperator extends BaseOperatorManager {
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()
-                .map(field -> field.getColumnName())
+                .map(TxField::getColumnName)
                 .collect(Collectors.joining(",\n"));
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
@@ -305,17 +301,13 @@ public class InsertOperator extends BaseOperatorManager {
             final String fields = mappingField.stream()
                 .map(field -> JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType()))
                 .collect(Collectors.joining(",\n"));
-            stringBuilder.append("(");
+            stringBuilder.append("(\n");
             stringBuilder.append(fields).append("\n");
-            stringBuilder.append(")");
+            stringBuilder.append(")").append("\n");
 
             return stringBuilder.toString();
         }
 
-        @Override
-        public boolean needField() {
-            return false;
-        }
     }
 
     private class InsertSelectiveSuffixOperator implements SuffixOperator {
@@ -366,10 +358,6 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
 
-        @Override
-        public boolean needField() {
-            return false;
-        }
     }
 
     private static final Logger logger = LoggerFactory.getLogger(InsertOperator.class);

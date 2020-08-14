@@ -11,9 +11,10 @@ import java.util.Collection;
  */
 public interface BlogInsertMapper extends BaseMapper<Blog> {
 
-    int insertAll(Blog blog);
 
     int insertSelective(Blog blog);
 
     int insertBatch(@Param("blogCollection")Collection<Blog> blogCollection);
+
+    int insertAll(Blog blog);
 }

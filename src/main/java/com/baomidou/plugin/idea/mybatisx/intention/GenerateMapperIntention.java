@@ -65,11 +65,11 @@ public class GenerateMapperIntention extends GenericIntention {
         if (CollectionUtils.isEmpty(directories)) {
             handleChooseNewFolder(project, editor, clazz);
         } else {
-            handleMutilDirectories(project, editor, clazz, directories);
+            handleMultiDirectories(project, editor, clazz, directories);
         }
     }
 
-    private void handleMutilDirectories(Project project,
+    private void handleMultiDirectories(Project project,
                                         final Editor editor,
                                         final PsiClass clazz,
                                         Collection<PsiDirectory> directories) {
@@ -143,7 +143,7 @@ public class GenerateMapperIntention extends GenericIntention {
         return result;
     }
 
-    private void processGenerate(Editor editor, PsiClass clazz, PsiDirectory directory) {
+    private void processGenerate(Editor editor, PsiClass mapperClass, PsiDirectory directory) {
         if (null == directory) {
             return;
         }
@@ -153,11 +153,11 @@ public class GenerateMapperIntention extends GenericIntention {
         }
         try {
             Properties properties = new Properties();
-            properties.setProperty("NAMESPACE", clazz.getQualifiedName());
+            properties.setProperty("NAMESPACE", mapperClass.getQualifiedName());
 
             PsiElement psiFile = MapperUtils.createMapperFromFileTemplate(MybatisFileTemplateDescriptorFactory.MYBATIS_MAPPER_XML_TEMPLATE,
-                    clazz.getName(), directory, properties,editor.getProject());
-            EditorService.getInstance(clazz.getProject()).scrollTo(psiFile, 0);
+                    mapperClass.getName(), directory, properties,editor.getProject());
+            EditorService.getInstance(mapperClass.getProject()).scrollTo(psiFile, 0);
         } catch (Exception e) {
             HintManager.getInstance().showErrorHint(editor, "Failed: " + e.getCause());
         }

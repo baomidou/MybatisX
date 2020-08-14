@@ -147,7 +147,15 @@ a
         from t_blog
         where age = #{age,jdbcType=NUMERIC}
         AND title = #{title,jdbcType=VARCHAR}
-and titleB = #{}
+        AND TB = #{title}
+    </select>
+    <select id="selectIdAndTitleAndCreateTimeAndContentById" resultMap="BaseResultMap">
+        select id
+        , title
+        , create_time
+        , content
+        from t_blog
+        where id = #{id,jdbcType=NUMERIC}
     </select>
 
 

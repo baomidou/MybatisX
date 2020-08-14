@@ -93,7 +93,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
                 PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
                 final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
                 // 生成完整版的内容
-                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper));
+                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper,project));
             }
 
 
