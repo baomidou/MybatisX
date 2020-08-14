@@ -132,5 +132,8 @@
         </intentionAction>
 
         <!--提示动作 end-->
+
+        <!-- mybatis的xml和mapper类 文件图标都改成一只鸟-->
+        <iconProvider implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
     </extensions>
 </idea-plugin>
