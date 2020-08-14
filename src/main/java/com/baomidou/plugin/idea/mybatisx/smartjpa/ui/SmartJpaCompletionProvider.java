@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 
-import a.h.B;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
@@ -16,7 +15,6 @@ import com.intellij.codeInsight.completion.JavaCompletionSorting;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -86,7 +84,13 @@ public class SmartJpaCompletionProvider {
 
     }
 
+    /**
+     * 是否找到区域管理器
+     */
     private Key<Boolean> FOUND_OPERATOR_MANAGER = Key.create("FOUND_OPERATOR_MANAGER");
+    /**
+     * 实际上缓存的区域管理器
+     */
     private Key<AreaOperateManager> OPERATOR_MANAGER = Key.create("OPERATOR_MANAGER");
 
     /**
@@ -101,7 +105,6 @@ public class SmartJpaCompletionProvider {
         if (foundAreaOperateManager != null && !foundAreaOperateManager) {
             return Optional.empty();
         }
-        AreaOperateManager areaOperateManager = null;
         EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(editor.getProject(), mapperClass);
         PsiClass entityClass = entityMappingResolverFactory.searchEntity();
         EntityMappingResolver mybatisPlus3MappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
@@ -112,13 +115,13 @@ public class SmartJpaCompletionProvider {
         }
         // 第一次初始化
         List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
-        areaOperateManager = new CompositeManagerAdaptor(mappingField, entityClass);
+        AreaOperateManager  areaOperateManager = new CompositeManagerAdaptor(mappingField, entityClass);
         foundAreaOperateManager = true;
 
         editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
         editor.putUserData(OPERATOR_MANAGER, areaOperateManager);
 
-        return Optional.ofNullable(areaOperateManager);
+        return Optional.of(areaOperateManager);
     }
 
 

@@ -10,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -27,50 +28,43 @@ import java.util.Optional;
  */
 public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag, PsiElement> {
 
-    private static final ImmutableList<Class<?>> TARGET_TYPES = ImmutableList.of(
-        Mapper.class,
-        Select.class,
-        Update.class,
-        Insert.class,
-        Delete.class
+    private static final ImmutableSet<String> TARGET_TYPES = ImmutableSet.of(
+        Mapper.class.getSimpleName().toLowerCase(),
+        Select.class.getSimpleName().toLowerCase(),
+        Insert.class.getSimpleName().toLowerCase(),
+        Update.class.getSimpleName().toLowerCase(),
+        Delete.class.getSimpleName().toLowerCase()
     );
 
     @Override
     public boolean isTheElement(@NotNull PsiElement element) {
         return element instanceof XmlTag
-            && MapperUtils.isElementWithinMybatisFile(element)
-            && isTargetType(element);
+            && isTargetType((XmlTag)element)
+            && MapperUtils.isElementWithinMybatisFile(element);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Optional<PsiElement> apply(@NotNull XmlTag from) {
+    public Optional<? extends PsiElement> apply(@NotNull XmlTag from) {
         DomElement domElement = DomUtil.getDomElement(from);
         if (null == domElement) {
             return Optional.empty();
         }
         // 方法
         else if (domElement instanceof IdDomElement) {
-            Optional<PsiMethod> method = JavaUtils.findMethod(from.getProject(), (IdDomElement) domElement);
-            return method.map(m -> (PsiElement) m);
+            return JavaUtils.findMethod(from.getProject(), (IdDomElement) domElement);
         } else {
             XmlTag xmlTag = domElement.getXmlTag();
             if (xmlTag == null) {
                 return Optional.empty();
             }
             String namespace = xmlTag.getAttributeValue("namespace");
-            Optional<PsiClass> psiClass = JavaUtils.findClazz(from.getProject(), namespace);
-            return psiClass.map(m -> (PsiElement) m);
+            return JavaUtils.findClazz(from.getProject(), namespace);
         }
     }
 
-    private boolean isTargetType(PsiElement element) {
-        DomElement domElement = DomUtil.getDomElement(element);
-        for (Class<?> clazz : TARGET_TYPES) {
-            if (clazz.isInstance(domElement))
-                return true;
-        }
-        return false;
+    private boolean isTargetType(XmlTag element) {
+        return TARGET_TYPES.contains(element.getName());
     }
 
     @NotNull
@@ -87,7 +81,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
             PsiMethod psiMethod = (PsiMethod) target;
             PsiClass containingClass = psiMethod.getContainingClass();
             if (containingClass != null) {
-                text = containingClass.getQualifiedName();
+                text = containingClass.getQualifiedName() + "#" +psiMethod.getName();
             }
         }
         if (text == null && target instanceof PsiClass) {

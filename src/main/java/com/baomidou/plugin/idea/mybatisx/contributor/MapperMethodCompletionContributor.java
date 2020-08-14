@@ -32,9 +32,9 @@ import java.util.Optional;
  */
 public class MapperMethodCompletionContributor extends CompletionContributor {
 
-    public static final Key<Boolean> FOUND = Key.create("mapper.finder");
+    public static final Key<Boolean> FOUND = Key.create("mapper.found");
 
-    public static final Key<PsiClass> MAPPER = Key.create("mapper.finder");
+    public static final Key<PsiClass> MAPPER = Key.create("mapper.mapper");
 
     /**
      * 填充变量

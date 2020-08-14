@@ -9,7 +9,11 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlAttributeValue;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.GenericAttributeValue;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * 根据xml文件的 BaseResultMap 获取字段对应的 列名
  */
-public class ResultMapMappingResolver implements EntityMappingResolver {
+public class ResultMapMappingResolver extends JpaMappingResolver implements EntityMappingResolver {
 
     @Override
     public List<TxField> getFields() {
@@ -51,7 +55,7 @@ public class ResultMapMappingResolver implements EntityMappingResolver {
                 tableName = entityClass.getName().toUpperCase();
 
                 List<TxField> txFields = new ArrayList<>();
-                txFields.addAll(determineIds(resultMap.getIds(), entityClass));
+                txFields.addAll(determineIds(entityClass, resultMap.getIds()));
                 txFields.addAll(determineResults(resultMap.getResults(), entityClass));
                 this.fieldList = txFields;
                 return Optional.of(entityClass);
@@ -61,37 +65,54 @@ public class ResultMapMappingResolver implements EntityMappingResolver {
     }
 
     private Collection<? extends TxField> determineResults(List<Result> results, PsiClass mapperClass) {
-        return results.stream().map(result -> {
-            String column = result.getColumn().getStringValue();
-            String property = result.getProperty().getStringValue();
-            PsiField field = mapperClass.findFieldByName(property, true);
-            if (field != null) {
-                TxField txField = new TxField();
-                txField.setColumnName(column);
-                txField.setFieldName(field.getName());
-                txField.setFieldType(field.getType().getCanonicalText());
-                txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
-                return txField;
-            }
-            return null;
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        return results.stream().map(result -> determineField(mapperClass, result.getProperty(), result.getXmlTag())).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private Collection<? extends TxField> determineIds(List<Id> ids, PsiClass mapperClass) {
-        return ids.stream().map(id -> {
-            String column = id.getColumn().getStringValue();
-            String property = id.getProperty().getStringValue();
-            PsiField field = mapperClass.findFieldByName(property, true);
-            if (field != null) {
-                TxField txField = new TxField();
-                txField.setColumnName(column);
-                txField.setFieldName(field.getName());
-                txField.setFieldType(field.getType().getCanonicalText());
-                txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
-                return txField;
+    @Nullable
+    private TxField determineField(PsiClass mapperClass, GenericAttributeValue<XmlAttributeValue> property, final XmlTag xmlTag) {
+        String propertyValue = property.getStringValue();
+        PsiField field = mapperClass.findFieldByName(propertyValue, true);
+
+        String column = null;
+        if (xmlTag != null) {
+            XmlAttribute columnAttr = xmlTag.getAttribute("column");
+            if (columnAttr != null) {
+                column = columnAttr.getValue();
             }
-            return null;
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        }
+        if (field != null) {
+            if (column == null) {
+                column = getColumnNameByJpaOrCamel(field);
+            }
+            TxField txField = new TxField();
+            txField.setColumnName(column);
+            txField.setFieldName(field.getName());
+            txField.setFieldType(field.getType().getCanonicalText());
+            txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
+            return txField;
+        }
+        return null;
+    }
+
+    /**
+     * resultMap 的子标签<id/>
+     * @param mapperClass
+     * @param ids
+     * @return
+     */
+    private Collection<? extends TxField> determineIds(PsiClass mapperClass, List<Id> ids) {
+        return ids.stream().map(id -> getTxField(mapperClass, id)).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    /**
+     * resultMap 的 id
+     * @param mapperClass
+     * @param id
+     * @return
+     */
+    @Nullable
+    private TxField getTxField(PsiClass mapperClass, Id id) {
+        return determineField(mapperClass, id.getProperty(), id.getXmlTag());
     }
 
     /**

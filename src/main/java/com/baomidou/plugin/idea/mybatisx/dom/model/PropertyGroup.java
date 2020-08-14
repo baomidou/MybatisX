@@ -16,9 +16,9 @@ public interface PropertyGroup extends DomElement {
     @Convert(PropertyConverter.class)
     GenericAttributeValue<XmlAttributeValue> getProperty();
 
-    @Attribute("column")
-    GenericAttributeValue<XmlAttributeValue> getColumn();
-
-    @Attribute("jdbcType")
-    GenericAttributeValue<XmlAttributeValue> getJdbcType();
+//    @Attribute("column")
+//    GenericAttributeValue<XmlAttributeValue> getColumn();
+//
+//    @Attribute("jdbcType")
+//    GenericAttributeValue<XmlAttributeValue> getJdbcType();
 }

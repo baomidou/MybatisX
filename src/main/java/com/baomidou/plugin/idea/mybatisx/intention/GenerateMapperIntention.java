@@ -154,6 +154,7 @@ public class GenerateMapperIntention extends GenericIntention {
         try {
             Properties properties = new Properties();
             properties.setProperty("NAMESPACE", clazz.getQualifiedName());
+
             PsiElement psiFile = MapperUtils.createMapperFromFileTemplate(MybatisFileTemplateDescriptorFactory.MYBATIS_MAPPER_XML_TEMPLATE,
                     clazz.getName(), directory, properties,editor.getProject());
             EditorService.getInstance(clazz.getProject()).scrollTo(psiFile, 0);
