@@ -23,7 +23,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 // https://github.com/JetBrains/gradle-intellij-plugin/
 // http://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/prerequisites.html
 intellij {
-    version '201.8743.12'
+    version '2019.2.3'
     type 'IU'
     plugins = ['java', 'Spring', 'DatabaseTools'] //Bundled plugin dependencies
     pluginName 'MybatisX'

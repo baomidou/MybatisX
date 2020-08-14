@@ -28,13 +28,13 @@ public class XmlAndMapperIconProvider extends IconProvider {
                 PsiClass mayMapperClass = (PsiClass) element;
                 Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(element.getProject(), mayMapperClass);
                 if (firstMapper.isPresent()) {
-                    return Icons.STATEMENT_LINE_MARKER_ICON;
+                    return Icons.MAPPER_CLASS_ICON;
                 }
             }
             logger.info("icon , element: {}", element);
         }
         if (MapperUtils.isElementWithinMybatisFile(element)) {
-            return Icons.MAPPER_LINE_MARKER_ICON;
+            return Icons.MAPPER_XML_ICON;
         }
         return null;
     }
