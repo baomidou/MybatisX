@@ -3,6 +3,8 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 import java.util.Collection;
 
 import com.google.common.base.Function;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +40,9 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
-        if (element instanceof PsiNameIdentifierOwner && JavaUtils.isElementWithinInterface(element)) {
+        if (element instanceof PsiNameIdentifierOwner
+            && JavaUtils.isElementWithinInterface(element)
+        && !(element instanceof PsiParameter)) {
             CommonProcessors.CollectProcessor<IdDomElement> processor = new CommonProcessors.CollectProcessor<>();
             JavaService.getInstance(element.getProject()).process(element, processor);
             Collection<IdDomElement> results = processor.getResults();

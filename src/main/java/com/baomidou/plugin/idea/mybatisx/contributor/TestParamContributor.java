@@ -54,6 +54,7 @@ public class TestParamContributor extends CompletionContributor {
             return;
 
         }
+        logger.info("CompletionContributor xml start");
         PsiParameter[] psiParameters = psiMethod.getParameterList().getParameters();
 
         for (PsiParameter parameter : psiParameters ) {
@@ -63,5 +64,7 @@ public class TestParamContributor extends CompletionContributor {
                 result.addElement(PrioritizedLookupElement.withPriority(builder, MybatisConstants.PRIORITY));
             }
         }
+        logger.info("CompletionContributor xml end");
+
     }
 }

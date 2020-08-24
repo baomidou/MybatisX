@@ -35,7 +35,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
 
 
     protected void initDatas(PsiClass entityClass) {
-        tableName = determineTableName(entityClass);
+        tableName = determineTableName(entityClass, "value");
         txFields = determineFields(entityClass);
     }
 
@@ -63,10 +63,13 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     @NotNull
     protected abstract String getTableFieldAnnotation(@NotNull PsiField field);
 
-    private String determineTableName(PsiClass psiClass) {
+    private String determineTableName(PsiClass psiClass, String tableNameValue) {
         PsiAnnotation annotation = psiClass.getAnnotation(getTableNameAnnotation());
-        if (annotation == null) {
-            return psiClass.getName();
+        if (annotation != null) {
+            PsiAnnotationMemberValue attributeValue = annotation.findAttributeValue(tableNameValue);
+            if(attributeValue!=null){
+                return attributeValue.getText();
+            }
         }
         String tableName = null;
         // 获取 mp 的注解

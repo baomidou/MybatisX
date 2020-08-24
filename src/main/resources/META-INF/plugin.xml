@@ -9,8 +9,7 @@
           支持如下功能:
        <ul>
           <li>mapper类和xml跳转</li>
-          <li>mybatis.xml配置文件提示</li>
-          <li>mapper.xml提示</li>
+          <li>mybatis.xml,mapper.xml 配置文件提示</li>
           <li>mapper类智能填充方法名,以JPA的形式填充方法和xml</li>
       </ul>
       ]]>

@@ -9,7 +9,6 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Update;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiClass;
@@ -39,7 +38,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
     @Override
     public boolean isTheElement(@NotNull PsiElement element) {
         return element instanceof XmlTag
-            && isTargetType((XmlTag)element)
+            && isTargetType(((XmlTag)element).getName())
             && MapperUtils.isElementWithinMybatisFile(element);
     }
 
@@ -52,19 +51,25 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
         }
         // 方法
         else if (domElement instanceof IdDomElement) {
-            return JavaUtils.findMethod(from.getProject(), (IdDomElement) domElement);
+            logger.info("method 查找方法开始");
+            Optional<PsiMethod> method = JavaUtils.findMethod(from.getProject(), (IdDomElement) domElement);
+            logger.info("method  查找方法结束, {}", method.orElse(null));
+            return method;
         } else {
+            logger.info("clazz 查找类开始");
             XmlTag xmlTag = domElement.getXmlTag();
             if (xmlTag == null) {
                 return Optional.empty();
             }
             String namespace = xmlTag.getAttributeValue("namespace");
-            return JavaUtils.findClazz(from.getProject(), namespace);
+            Optional<PsiClass> clazz = JavaUtils.findClazz(from.getProject(), namespace);
+            logger.info("clazz 查找类结束, {}",clazz.orElse(null));
+            return clazz;
         }
     }
 
-    private boolean isTargetType(XmlTag element) {
-        return TARGET_TYPES.contains(element.getName());
+    private boolean isTargetType(@NotNull String name) {
+        return TARGET_TYPES.contains(name);
     }
 
     @NotNull

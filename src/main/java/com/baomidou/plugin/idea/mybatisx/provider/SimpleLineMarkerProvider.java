@@ -9,6 +9,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -22,24 +24,28 @@ import java.util.Optional;
 public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends MarkerProviderAdaptor {
 
     @Override
-    public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull Collection<LineMarkerInfo> result) {
+    public void collectSlowLineMarkers(@NotNull List<PsiElement> elements,
+                                       @NotNull Collection<LineMarkerInfo> result) {
     }
-
+Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
     @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public LineMarkerInfo<? extends PsiElement> getLineMarkerInfo(@NotNull PsiElement element) {
         if (!isTheElement(element)) return null;
-
+        logger.info("getLineMarkerInfo start, element: {}",element);
+        logger.info("xml加入跳转图标开始");
         Optional<? extends T> processResult = apply((F) element);
-        return processResult.map(t -> new LineMarkerInfo<>(
+        Optional<LineMarkerInfo<? extends PsiElement>> optional = processResult.map(t -> new LineMarkerInfo<>(
             (F) element,
             element.getTextRange(),
             getIcon(),
             getTooltipProvider(t),
             getNavigationHandler(t),
             GutterIconRenderer.Alignment.CENTER
-        )).orElse(null);
+        ));
+        logger.info("getLineMarkerInfo end");
+        return optional.orElse(null);
     }
 
     private Function<F, String> getTooltipProvider(final T target) {
