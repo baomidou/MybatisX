@@ -3,9 +3,9 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CompositeManagerAdaptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -18,8 +18,9 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.sql.dialects.SqlLanguageDialect;
+import com.intellij.sql.psi.SqlPsiFacade;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,8 @@ public class SmartJpaCompletionProvider {
 
 
     public void addCompletion(@NotNull final CompletionParameters parameters,
-                              @NotNull final CompletionResultSet result, PsiClass mapperClass) {
+                              @NotNull final CompletionResultSet result,
+                              PsiClass mapperClass) {
         PsiElement originalPosition = parameters.getOriginalPosition();
         assert originalPosition != null;
 
@@ -58,7 +60,7 @@ public class SmartJpaCompletionProvider {
             last.pollLast(splitList);
         }
         // 将语句划分为可以划分的字符串
-        final String splitString = splitList.stream().map(x -> x.getText()).collect(Collectors.joining());
+        final String splitString = splitList.stream().map(SyntaxAppender::getText).collect(Collectors.joining());
 
         logger.info("split join :{} ", splitString);
         // 获得一个完成结果集,  可能是原先的也可能是新的
@@ -99,7 +101,7 @@ public class SmartJpaCompletionProvider {
      * @param editor
      * @return
      */
-    @Nullable
+    @NotNull
     private Optional<AreaOperateManager> getAreaOperateManager(PsiClass mapperClass, @NotNull Editor editor) {
         Boolean foundAreaOperateManager = editor.getUserData(FOUND_OPERATOR_MANAGER);
         if (foundAreaOperateManager != null && !foundAreaOperateManager) {
@@ -115,7 +117,10 @@ public class SmartJpaCompletionProvider {
         }
         // 第一次初始化
         List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
-        AreaOperateManager  areaOperateManager = new CompositeManagerAdaptor(mappingField, entityClass);
+        // TODO 识别方言
+        SqlPsiFacade instance = SqlPsiFacade.getInstance(editor.getProject());
+        SqlLanguageDialect dialectMapping = instance.getDialectMapping(mapperClass.getContainingFile().getVirtualFile());
+        AreaOperateManager  areaOperateManager = AreaOperateManagerFactory.getByDbms(dialectMapping.getDbms(),mappingField, entityClass);
         foundAreaOperateManager = true;
 
         editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);

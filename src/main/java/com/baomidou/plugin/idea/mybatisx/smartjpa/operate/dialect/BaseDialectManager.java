@@ -1,10 +1,14 @@
-package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
+package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect;
 
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.UpdateOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
@@ -17,18 +21,25 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CompositeManagerAdaptor implements AreaOperateManager {
-    List<AreaOperateManager> typeManagers = new ArrayList<>();
+/**
+ * 基础方言管理器
+ */
+public class BaseDialectManager implements AreaOperateManager {
+    private List<AreaOperateManager> typeManagers = new ArrayList<>();
 
-    public CompositeManagerAdaptor(final List<TxField> mappingField, PsiClass entityClass) {
+    public BaseDialectManager(final List<TxField> mappingField, PsiClass entityClass) {
         this.init(mappingField,entityClass);
     }
 
     protected void init(final List<TxField> mappingField, PsiClass entityClass) {
-        this.typeManagers.add(new SelectOperator(mappingField,entityClass));
-        this.typeManagers.add(new InsertOperator(mappingField));
-        this.typeManagers.add(new UpdateOperator(mappingField));
-        this.typeManagers.add(new DeleteOperator(mappingField));
+        this.registerManagers(new SelectOperator(mappingField,entityClass));
+        this.registerManagers(new InsertOperator(mappingField));
+        this.registerManagers(new UpdateOperator(mappingField));
+        this.registerManagers(new DeleteOperator(mappingField));
+    }
+
+    protected void registerManagers(AreaOperateManager areaOperateManager){
+        this.typeManagers.add(areaOperateManager);
     }
 
     @NotNull
@@ -112,7 +123,6 @@ public class CompositeManagerAdaptor implements AreaOperateManager {
                 return;
             }
         }
-        return;
     }
 
 

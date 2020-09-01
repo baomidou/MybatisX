@@ -22,6 +22,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,7 @@ import java.util.stream.Collectors;
 
 /**
  * 条件追加区
- *
+ * <p>
  * jpa 条件规范:
  * https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation
  */
@@ -147,7 +149,18 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
         jpaStringList.poll();
 
         Map<String, PsiField> fieldMap =
-            Arrays.stream(entityClass.getAllFields()).collect(Collectors.toMap(PsiField::getName, x -> x));
+            new HashMap<>();
+        for (PsiField x : entityClass.getAllFields()) {
+            // 过滤掉静态字段, 非序列化字段
+            if (x.hasModifierProperty(PsiModifier.STATIC) ||
+                x.hasModifierProperty(PsiModifier.TRANSIENT)) {
+                continue;
+            }
+            // 有重复的列名时, 抛出异常
+            if (fieldMap.put(x.getName(), x) != null) {
+                throw new IllegalStateException("Duplicate key, fieldName:" + x.getName());
+            }
+        }
         LinkedList<TxParameter> txParameters = new LinkedList<>();
         SyntaxAppender currentAppender = null;
         // 拉到下一个区域

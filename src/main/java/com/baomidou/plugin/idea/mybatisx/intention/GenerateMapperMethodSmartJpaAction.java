@@ -35,7 +35,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * @author liushang
+ * 在mapper类中通过名字生成方法和xml内容
+ *
+ * @author ls9527
  */
 public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionAction implements IntentionAction {
 
@@ -47,6 +49,10 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
                 statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
             }
             PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
+            if (mapperClass == null) {
+                logger.info("未找到mapper类");
+                return;
+            }
             EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
             PsiClass entityClass = entityMappingResolverFactory.searchEntity();
             EntityMappingResolver entityMappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
@@ -56,7 +62,11 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             }
 
             final String text = statementElement.getText();
-            PlatformGenerator platformGenerator = CommonGenerator.createEditorAutoCompletion(entityClass, text,entityMappingResolver);
+
+            PlatformGenerator platformGenerator = CommonGenerator.createEditorAutoCompletion(entityClass,
+                text,
+                project,
+                element.getContainingFile().getVirtualFile(), entityMappingResolver.getTableName(), entityMappingResolver.getFields());
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
             TypeDescriptor parameterDescriptor = platformGenerator.getParameter();
 
@@ -93,7 +103,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
                 PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
                 final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
                 // 生成完整版的内容
-                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper,project));
+                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper, project));
             }
 
 

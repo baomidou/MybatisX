@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
@@ -29,7 +30,8 @@ import java.util.stream.Collectors;
 
 public abstract class BaseOperatorManager implements AreaOperateManager {
 
-    Set<String> operatorNameList = new HashSet<>();
+    private Set<String> operatorNameList = new HashSet<>();
+
     private final StatementBlockFactory syntaxAppenderFactoryManager = new StatementBlockFactory();
 
     protected Set<String> getOperatorNameList() {
@@ -149,6 +151,14 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         }).collect(Collectors.joining("\n"));
 
     }
+
+
+    protected void initCustomArea(String areaName, List<TxField> mappingField){
+
+    }
+
+
+
 
 
 }

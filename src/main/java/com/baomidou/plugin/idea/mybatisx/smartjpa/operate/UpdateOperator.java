@@ -15,6 +15,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.github.hypfvieh.util.StringUtil;
 import com.intellij.psi.PsiClass;
@@ -99,7 +100,7 @@ public class UpdateOperator extends BaseOperatorManager {
         for (TxParameter parameter : parameters) {
             String name = parameter.getName();
             if (!collection.add(name)) {
-                String newName = "old" + StringUtil.upperCaseFirstChar(name);
+                String newName = "old" + StringUtils.upperCaseFirstChar(name);
                 parameter.setName(newName);
             }
         }
