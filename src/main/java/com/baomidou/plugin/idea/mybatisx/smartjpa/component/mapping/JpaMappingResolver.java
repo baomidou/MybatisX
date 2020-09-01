@@ -24,13 +24,15 @@ public abstract class JpaMappingResolver {
 
     public static final String JAVAX_PERSISTENCE_TABLE = "javax.persistence.Table";
     public static final String JAVAX_PERSISTENCE_COLUMN = "javax.persistence.Column";
+    public static final String COLUMN_NAME = "name";
+    public static final String TABLE_NAME = "name";
 
     protected String getTableNameByJpaOrCamel(PsiClass entityClass) {
         String tableName = null;
         PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
         if (annotation != null) {
-            PsiAnnotationMemberValue name = annotation.findAttributeValue("name");
-            PsiLiteralExpression expression = (PsiLiteralExpression) name;
+            PsiAnnotationMemberValue originTable = annotation.findAttributeValue(TABLE_NAME);
+            PsiLiteralExpression expression = (PsiLiteralExpression) originTable;
             tableName = expression.getValue().toString();
         }
         if (tableName == null) {
@@ -44,8 +46,8 @@ public abstract class JpaMappingResolver {
         // 根据jpa的方式修改列名
         PsiAnnotation annotation = field.getAnnotation(JAVAX_PERSISTENCE_COLUMN);
         if (annotation != null) {
-            PsiAnnotationMemberValue name = annotation.findAttributeValue("name");
-            PsiLiteralExpression expression = (PsiLiteralExpression) name;
+            PsiAnnotationMemberValue originFieldAnnotation = annotation.findAttributeValue(COLUMN_NAME);
+            PsiLiteralExpression expression = (PsiLiteralExpression) originFieldAnnotation;
             columnName = expression.getValue().toString();
         }
         // 驼峰转下划线

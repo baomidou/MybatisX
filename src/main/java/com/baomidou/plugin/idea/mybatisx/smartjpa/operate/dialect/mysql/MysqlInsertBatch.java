@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
 
 public class MysqlInsertBatch implements CustomStatement {
 
-    public MysqlInsertBatch(String areaName, List<TxField> mappingField) {
-        initInsertBatch(areaName, mappingField);
+    public MysqlInsertBatch() {
+
     }
 
-    private void initInsertBatch(String areaName, List<TxField> mappingField) {
+    public void initInsertBatch(String areaName, List<TxField> mappingField) {
         String newAreaName = areaName + "Batch";
         // insertBatch
         ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {

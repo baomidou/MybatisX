@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
@@ -111,7 +112,8 @@ public class GenerateMapperIntention extends GenericIntention {
 
     private void handleChooseNewFolder(Project project, Editor editor, PsiClass clazz) {
         UiComponentFacade uiComponentFacade = UiComponentFacade.getInstance(project);
-        VirtualFile baseDir = project.getBaseDir();
+//      TODO old VirtualFile baseDir = project.getBasePath();
+        VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
         VirtualFile vf = uiComponentFacade.showSingleFolderSelectionDialog("Select target folder", baseDir, baseDir);
         if (null != vf) {
             processGenerate(editor, clazz, PsiManager.getInstance(project).findDirectory(vf));

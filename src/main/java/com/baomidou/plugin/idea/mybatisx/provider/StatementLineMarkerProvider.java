@@ -18,6 +18,8 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.Optional;
@@ -26,6 +28,8 @@ import java.util.Optional;
  * @author yanglin
  */
 public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag, PsiElement> {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
 
     private static final ImmutableSet<String> TARGET_TYPES = ImmutableSet.of(
         Mapper.class.getSimpleName().toLowerCase(),

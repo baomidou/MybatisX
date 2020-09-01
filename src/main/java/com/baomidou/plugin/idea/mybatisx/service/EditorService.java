@@ -36,7 +36,9 @@ public class EditorService {
     }
 
     public void format(@NotNull PsiFile file, @NotNull PsiElement element) {
-        this.codeFormatterFacade = new CodeFormatterFacade(CodeStyleSettingsManager.getSettings(element.getProject()), element.getLanguage());
+        CodeStyleSettingsManager instance = CodeStyleSettingsManager.getInstance(element.getProject());
+        CodeStyleSettings settings = instance.getMainProjectCodeStyle();
+        this.codeFormatterFacade = new CodeFormatterFacade(settings, element.getLanguage());
         codeFormatterFacade.processText(file, new FormatTextRanges(element.getTextRange(), true), true);
     }
 

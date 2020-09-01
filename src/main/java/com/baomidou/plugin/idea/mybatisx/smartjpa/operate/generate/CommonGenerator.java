@@ -8,6 +8,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
 import com.intellij.database.Dbms;
+import com.intellij.database.model.DasDataSource;
 import com.intellij.database.model.DasTable;
 import com.intellij.database.psi.DbDataSource;
 import com.intellij.database.psi.DbPsiFacade;
@@ -19,8 +20,10 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.sql.dialects.SqlLanguageDialect;
 import com.intellij.sql.psi.SqlPsiFacade;
 import com.intellij.util.containers.JBIterable;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import javax.sql.DataSource;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,13 +41,24 @@ public class CommonGenerator implements PlatformGenerator {
     private String text;
 
 
-    private CommonGenerator(PsiClass entityClass, String text, @NotNull Dbms dbms, String tableName, List<TxField> fields) {
+    private DasTable dasTable;
+
+    private CommonGenerator(PsiClass entityClass, String text,
+                            @NotNull Dbms dbms,
+                            String defaultTableName,
+                            List<TxField> fields,
+                            @NotNull Project project) {
         this.entityClass = entityClass;
         this.text = text;
         mappingField = fields;
+
+        DbPsiFacade dbPsiFacade = DbPsiFacade.getInstance(project);
+        String tableName = getTableName(entityClass, dbPsiFacade.getDataSources(), defaultTableName);
+
+
         this.tableName = tableName;
 
-        appenderManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass);
+        appenderManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass, dasTable, tableName);
         jpaList = appenderManager.splitAppenderByText(text);
     }
 
@@ -54,63 +68,56 @@ public class CommonGenerator implements PlatformGenerator {
      * @param entityClass
      * @param text
      * @param project
-     * @param virtualFile
+     * @param dbms
      * @param defaultTableName
      * @param fields
      * @return
      */
     public static CommonGenerator createEditorAutoCompletion(PsiClass entityClass, String text,
                                                              @NotNull Project project,
-                                                             VirtualFile virtualFile,
+                                                             @NotNull Dbms dbms,
                                                              String defaultTableName,
                                                              List<TxField> fields) {
-        SqlPsiFacade instance = SqlPsiFacade.getInstance(project);
-        SqlLanguageDialect dialectMapping = instance.getDialectMapping(virtualFile);
 
-        DbPsiFacade dbPsiFacade = DbPsiFacade.getInstance(project);
 
-        String tableName = getTableName(entityClass, dbPsiFacade);
-        if (tableName == null) {
-            tableName = defaultTableName;
-        }
-
-        return new CommonGenerator(entityClass, text, dialectMapping.getDbms(), tableName, fields);
+        return new CommonGenerator(entityClass, text, dbms, defaultTableName, fields, project);
     }
 
     /**
      * 遍历所有数据源的表名
+     *
      * @param entityClass
-     * @param dbPsiFacade
+     * @param dataSources
+     * @param foundTableName
      * @return
      */
-    protected static String getTableName(PsiClass entityClass, DbPsiFacade dbPsiFacade) {
-        List<DbDataSource> dataSources = dbPsiFacade.getDataSources();
+    protected String getTableName(PsiClass entityClass, @NotNull List<DbDataSource> dataSources, String foundTableName) {
+        if (StringUtils.isNotBlank(foundTableName)) {
+            return foundTableName;
+        }
         // 如果有多个候选值, 就选择长度最长的
-        PriorityQueue<String> priorityQueue = new PriorityQueue<>(Comparator.comparing(String::length,Comparator.reverseOrder()));
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>(Comparator.comparing(String::length, Comparator.reverseOrder()));
         if (dataSources.size() > 0) {
             for (DbDataSource dataSource : dataSources) {
                 JBIterable<? extends DasTable> tables = DasUtil.getTables(dataSource);
                 for (DasTable table : tables) {
                     String entityTableName = entityClass.getName();
                     String tableName = table.getName();
-                   String  guessTableName = tableName.replaceAll("_", "").toUpperCase();
-                   // 完全相等的情况下就不用候选了
+                    String guessTableName = tableName.replaceAll("_", "").toUpperCase();
+                    // 完全相等的情况下就不用候选了
                     if (guessTableName.equalsIgnoreCase(entityTableName)) {
+                        // 第一版的猜测数据源，只做绝对相等的情况
+                        dasTable = table;
                         return tableName;
-                    }
-                    // 进入候选
-                    assert entityTableName != null;
-                    if(guessTableName.contains(entityTableName.toUpperCase())){
-                        priorityQueue.add(tableName);
                     }
                 }
             }
         }
         // 存在候选的情况下, 返回表名最长的
-        if(priorityQueue.size() > 0){
+        if (priorityQueue.size() > 0) {
             return priorityQueue.peek();
         }
-        return null;
+        return entityClass.getName().toUpperCase();
     }
 
     public TypeDescriptor getParameter() {

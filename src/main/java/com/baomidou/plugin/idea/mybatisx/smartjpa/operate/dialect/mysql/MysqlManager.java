@@ -15,8 +15,11 @@ import java.util.List;
  * mysql 方言
  */
 public class MysqlManager extends BaseDialectManager {
+
+
     public MysqlManager(List<TxField> mappingField, PsiClass entityClass) {
-        super(mappingField, entityClass);
+        super();
+        init(mappingField, entityClass);
     }
 
     @Override
@@ -27,7 +30,8 @@ public class MysqlManager extends BaseDialectManager {
             @Override
             protected void initCustomArea(String areaName, List<TxField> mappingField) {
                 super.initCustomArea(areaName, mappingField);
-                CustomStatement customStatement = new MysqlInsertBatch(areaName, mappingField);
+                MysqlInsertBatch customStatement = new MysqlInsertBatch();
+                customStatement.initInsertBatch(areaName, mappingField);
                 this.registerStatementBlock(customStatement.getStatementBlock());
                 this.addOperatorName(customStatement.operatorName());
             }

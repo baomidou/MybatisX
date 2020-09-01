@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface BlogResultMapper {
 
-
     /**
      * 测试一长串的提示性能
      * @param age

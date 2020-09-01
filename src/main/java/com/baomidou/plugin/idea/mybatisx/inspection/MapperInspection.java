@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.inspection;
 
 import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool;
-import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
 import com.intellij.codeInspection.ProblemDescriptor;
 
 /**

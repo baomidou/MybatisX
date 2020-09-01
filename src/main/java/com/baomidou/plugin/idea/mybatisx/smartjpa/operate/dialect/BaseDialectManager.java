@@ -27,9 +27,7 @@ import java.util.List;
 public class BaseDialectManager implements AreaOperateManager {
     private List<AreaOperateManager> typeManagers = new ArrayList<>();
 
-    public BaseDialectManager(final List<TxField> mappingField, PsiClass entityClass) {
-        this.init(mappingField,entityClass);
-    }
+
 
     protected void init(final List<TxField> mappingField, PsiClass entityClass) {
         this.registerManagers(new SelectOperator(mappingField,entityClass));

@@ -25,11 +25,11 @@ public class MybatisPlus3MappingResolver extends AbstractMybatisPlusMappingResol
         String columnName = null;
         PsiAnnotation fieldAnnotation = field.getAnnotation(TABLE_FIELD);
         if (fieldAnnotation != null) {
-            columnName = getAttributeValue(fieldAnnotation, "value");
+            columnName = getAttributeValue(fieldAnnotation, AbstractMybatisPlusMappingResolver.VALUE);
         }
         PsiAnnotation idAnnotation = field.getAnnotation(TABLE_ID);
         if (columnName == null && idAnnotation != null) {
-            columnName = getAttributeValue(idAnnotation, "value");
+            columnName = getAttributeValue(idAnnotation, AbstractMybatisPlusMappingResolver.VALUE);
         }
         if (columnName == null) {
             columnName = field.getName();

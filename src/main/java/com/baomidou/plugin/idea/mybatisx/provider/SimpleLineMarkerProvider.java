@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.provider;
 
-import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -27,13 +25,15 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends 
     public void collectSlowLineMarkers(@NotNull List<PsiElement> elements,
                                        @NotNull Collection<LineMarkerInfo> result) {
     }
-Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
+
     @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public LineMarkerInfo<? extends PsiElement> getLineMarkerInfo(@NotNull PsiElement element) {
         if (!isTheElement(element)) return null;
-        logger.info("getLineMarkerInfo start, element: {}",element);
+        logger.info("getLineMarkerInfo start, element: {}", element);
         logger.info("xml加入跳转图标开始");
         Optional<? extends T> processResult = apply((F) element);
         Optional<LineMarkerInfo<? extends PsiElement>> optional = processResult.map(t -> new LineMarkerInfo<>(

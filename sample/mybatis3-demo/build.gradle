@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.2.RELEASE'
-    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.2'
+    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.0'
     // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.2.RELEASE'

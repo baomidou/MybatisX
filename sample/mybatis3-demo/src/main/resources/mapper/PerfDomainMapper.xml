@@ -20,44 +20,5 @@
         , down
 
     </select>
-    <select id="selectAllByTitleAfterAndAppearAfterOrderByAgeDescAndDown" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from PerfDomain
-        where title > #{title,jdbcType=VARCHAR}
-        AND appear > #{appear,jdbcType=VARCHAR}
-        order by age desc
-        , down
 
-    </select>
-    <select id="selectAllByTitleAfterAndAppearAfterOrderByAgeDescAndDown" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from PerfDomain
-        where title > #{title,jdbcType=VARCHAR}
-        AND appear > #{appear,jdbcType=VARCHAR}
-        order by age desc
-        , down
-
-    </select>
-    <select id="selectAllByTitleAfterAndAppearAfterOrderByAgeDescAndDown" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from PerfDomain
-        where title > #{title,jdbcType=VARCHAR}
-        AND appear > #{appear,jdbcType=VARCHAR}
-        order by age desc
-        , down
-
-    </select>
-    <select id="selectAllByTitleAfterAndAppearAfterOrderByAgeDescAndDown" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from PerfDomain
-        where title > #{title,jdbcType=VARCHAR}
-        AND appear > #{appear,jdbcType=VARCHAR}
-        order by age desc
-        , down
-
-    </select>
 </mapper>

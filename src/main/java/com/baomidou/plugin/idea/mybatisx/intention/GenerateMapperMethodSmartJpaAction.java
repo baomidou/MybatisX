@@ -26,6 +26,8 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiTypeElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.sql.dialects.SqlLanguageDialect;
+import com.intellij.sql.psi.SqlPsiFacade;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -63,10 +65,15 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
 
             final String text = statementElement.getText();
 
+
+            SqlPsiFacade instance = SqlPsiFacade.getInstance(project);
+            SqlLanguageDialect dialectMapping = instance.getDialectMapping(element.getContainingFile().getVirtualFile());
             PlatformGenerator platformGenerator = CommonGenerator.createEditorAutoCompletion(entityClass,
                 text,
                 project,
-                element.getContainingFile().getVirtualFile(), entityMappingResolver.getTableName(), entityMappingResolver.getFields());
+                dialectMapping.getDbms(),
+                entityMappingResolver.getTableName(),
+                entityMappingResolver.getFields());
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
             TypeDescriptor parameterDescriptor = platformGenerator.getParameter();
 
@@ -128,6 +135,16 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
         }
         PsiClass parentClassOfType = PsiTreeUtil.getParentOfType(element, PsiClass.class);
         if (parentClassOfType == null || (!parentClassOfType.isInterface())) {
+            return false;
+        }
+
+        // 空白
+        PsiTypeElement statementElement = PsiTreeUtil.getParentOfType(element, PsiTypeElement.class);
+        if (statementElement == null) {
+            statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
+        }
+        PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
+        if (mapperClass == null) {
             return false;
         }
         return true;

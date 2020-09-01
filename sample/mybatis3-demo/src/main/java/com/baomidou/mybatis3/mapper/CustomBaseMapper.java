@@ -1,5 +1,7 @@
 package com.baomidou.mybatis3.mapper;
 
-public interface CustomBaseMapper<P,T> {
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+public interface CustomBaseMapper<P,T>{
 
 }

@@ -52,7 +52,8 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
                 GenericAttributeValue<PsiClass> type = resultMap.getType();
                 // 实体类的名字
                 PsiClass entityClass = type.getValue();
-                tableName = entityClass.getName().toUpperCase();
+
+                tableName = getTableNameByJpaOrCamel(entityClass);
 
                 List<TxField> txFields = new ArrayList<>();
                 txFields.addAll(determineIds(entityClass, resultMap.getIds()));

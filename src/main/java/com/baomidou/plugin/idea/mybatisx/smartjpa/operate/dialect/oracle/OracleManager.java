@@ -6,8 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.UpdateOperator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.CustomStatement;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
+import com.intellij.database.model.DasTable;
 import com.intellij.psi.PsiClass;
 
 import java.util.List;
@@ -16,8 +15,13 @@ import java.util.List;
  * oracle 方言
  */
 public class OracleManager extends BaseDialectManager {
-    public OracleManager(List<TxField> mappingField, PsiClass entityClass) {
-        super(mappingField, entityClass);
+    private DasTable dasTable;
+    private String tableName;
+
+    public OracleManager(List<TxField> mappingField, PsiClass entityClass, DasTable dasTable, String tableName) {
+        this.dasTable = dasTable;
+        this.tableName = tableName;
+        init(mappingField, entityClass);
     }
 
     @Override
@@ -27,9 +31,12 @@ public class OracleManager extends BaseDialectManager {
             @Override
             protected void initCustomArea(String areaName, List<TxField> mappingField) {
                 super.initCustomArea(areaName, mappingField);
-                CustomStatement customStatement = new OracleInsertBatch(areaName, mappingField);
+                OracleInsertBatch customStatement = new OracleInsertBatch(dasTable, tableName);
+                customStatement.initInsertBatch(areaName, mappingField);
                 this.registerStatementBlock(customStatement.getStatementBlock());
                 this.addOperatorName(customStatement.operatorName());
+
+
             }
         });
         registerManagers(new UpdateOperator(mappingField));

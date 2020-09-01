@@ -3,19 +3,12 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiLiteralExpression;
-import com.intellij.psi.PsiReferenceList;
-import com.intellij.psi.PsiType;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,11 +28,15 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
 
 
     protected void initDatas(PsiClass entityClass) {
-        tableName = determineTableName(entityClass, "value");
+        tableName = determineTableName(entityClass);
         txFields = determineFields(entityClass);
     }
 
-
+    /**
+     * 获得表名注解
+     *
+     * @return
+     */
     @NotNull
     protected abstract String getTableNameAnnotation();
 
@@ -63,17 +60,10 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     @NotNull
     protected abstract String getTableFieldAnnotation(@NotNull PsiField field);
 
-    private String determineTableName(PsiClass psiClass, String tableNameValue) {
+    private String determineTableName(PsiClass psiClass) {
         PsiAnnotation annotation = psiClass.getAnnotation(getTableNameAnnotation());
-        if (annotation != null) {
-            PsiAnnotationMemberValue attributeValue = annotation.findAttributeValue(tableNameValue);
-            if(attributeValue!=null){
-                return attributeValue.getText();
-            }
-        }
-        String tableName = null;
         // 获取 mp 的注解
-        tableName = getAttributeValue(annotation, VALUE);
+        String tableName = getAttributeValue(annotation, VALUE);
         // 获取 jpa 注解
         if (tableName == null) {
             tableName = getTableNameByJpaOrCamel(psiClass);
@@ -82,6 +72,9 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     }
 
     protected String getAttributeValue(PsiAnnotation fieldAnnotation, String value) {
+        if (fieldAnnotation == null) {
+            return null;
+        }
         PsiAnnotationMemberValue attributeValue = fieldAnnotation.findAttributeValue(value);
         if (org.apache.commons.lang3.StringUtils.isNotBlank(attributeValue.getText())) {
             PsiLiteralExpression psiLiteralExpression = (PsiLiteralExpression) attributeValue;
@@ -94,11 +87,12 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     public Optional<PsiClass> findEntity(PsiClass mapperClass) {
         PsiReferenceList extendsList = mapperClass.getExtendsList();
         PsiJavaCodeReferenceElement[] referenceElements = extendsList.getReferenceElements();
-        if (referenceElements.length != 1) {
+        if (referenceElements.length == 0) {
             return Optional.empty();
         }
         for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
             String qualifiedName = referenceElement.getQualifiedName();
+
             if (getBaseMapperClassName().equals(qualifiedName)) {
 
                 PsiType typeParameter = referenceElement.getTypeParameters()[0];
@@ -108,7 +102,14 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
 
                 initDatas(entityClass);
 
-                return Optional.of(entityClass);
+                return Optional.ofNullable(entityClass);
+            } else {
+                // 递归查找，  通过父类找到entity
+                PsiElement resolve = referenceElement.resolve();
+                if (resolve instanceof PsiClass) {
+                    PsiClass extClass = (PsiClass) resolve;
+                    return findEntity(extClass);
+                }
             }
         }
         return Optional.empty();

@@ -18,7 +18,5 @@ public interface PerfDomainMapper extends BaseMapper<PerfDomain> {
      */
     List<PerfDomain> selectAllByTitleAfterAndAppearAfterOrderByAgeDescAndDown(@Param("title") String title, @Param("appear") String appear);
 
-    List<PerfDomain> selectAllByTitleAfterAndAppearAfterOrderByAgeDescAndDown(@Param("title")String title,@Param("appear")String appear);
-
 
 }

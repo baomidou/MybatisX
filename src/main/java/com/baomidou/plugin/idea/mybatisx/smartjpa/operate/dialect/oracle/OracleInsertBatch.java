@@ -4,11 +4,19 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
+import com.intellij.database.model.DasObject;
+import com.intellij.database.model.DasTable;
+import com.intellij.database.model.DasTableKey;
+import com.intellij.database.model.ObjectKind;
+import com.intellij.database.psi.DbDataSource;
+import com.intellij.database.psi.DbElement;
+import com.intellij.database.util.DasUtil;
+import com.intellij.database.util.DbUtil;
 import com.intellij.psi.PsiParameter;
+import com.intellij.util.containers.JBIterable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -17,8 +25,13 @@ import java.util.stream.Collectors;
 public class OracleInsertBatch extends MysqlInsertBatch {
 
 
-    public OracleInsertBatch(String areaName, List<TxField> mappingField) {
-        super(areaName, mappingField);
+    private DasTable dasTable;
+    private String tableName;
+
+    public OracleInsertBatch(DasTable dasTable, String tableName) {
+        this.dasTable = dasTable;
+        this.tableName = tableName;
+
     }
 
     @NotNull
@@ -39,6 +52,10 @@ public class OracleInsertBatch extends MysqlInsertBatch {
 
         @Override
         public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+// TODO oracle 批量插入选择合适的序列
+
+            Optional<String> sequenceName = findSequenceName();
+
             StringBuilder stringBuilder = new StringBuilder();
             String itemName = "item";
             // 追加列名
@@ -51,7 +68,20 @@ public class OracleInsertBatch extends MysqlInsertBatch {
             final PsiParameter collection = parameters.poll();
             final String collectionName = collection.getName();
             final String fields = mappingField.stream()
-                .map(field -> JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType()))
+                .map(field -> {
+                    String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
+                    if (sequenceName.isPresent() && dasTable != null) {
+                        DasTableKey primaryKey = DasUtil.getPrimaryKey(dasTable);
+                        // 当前字段是主键, 使用自定义函数替换主键
+                        if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
+                            String pkFieldName = primaryKey.getColumnsRef().iterate().next();
+                            if (pkFieldName.equals(field.getColumnName())) {
+                                fieldStr = "GET_SEQ_NO('" + sequenceName.get() + "')";
+                            }
+                        }
+                    }
+                    return fieldStr;
+                })
                 .collect(Collectors.joining(",\n"));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
@@ -64,5 +94,26 @@ public class OracleInsertBatch extends MysqlInsertBatch {
             return stringBuilder.toString();
         }
 
+    }
+
+    private Optional<String> findSequenceName() {
+        String foundSequenceName = null;
+        if (dasTable != null) {
+            DasObject schema = dasTable.getDasParent();
+            PriorityQueue<String> sequenceQueue = new PriorityQueue<>(Comparator.comparing(String::length, Comparator.reverseOrder()));
+
+            JBIterable<? extends DasObject> sequences = schema.getDasChildren(ObjectKind.SEQUENCE);
+            for (DasObject sequence : sequences) {
+                String sequenceName = sequence.getName();
+                if (sequenceName.contains(tableName)) {
+                    sequenceQueue.add(sequenceName);
+                }
+            }
+            if (sequenceQueue.size() > 0) {
+                foundSequenceName = sequenceQueue.peek();
+            }
+
+        }
+        return Optional.ofNullable(foundSequenceName);
     }
 }

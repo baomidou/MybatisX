@@ -97,6 +97,7 @@ public class SmartJpaCompletionProvider {
 
     /**
      * 在editor级别做初始化字段的缓存
+     *
      * @param mapperClass
      * @param editor
      * @return
@@ -120,7 +121,9 @@ public class SmartJpaCompletionProvider {
         // TODO 识别方言
         SqlPsiFacade instance = SqlPsiFacade.getInstance(editor.getProject());
         SqlLanguageDialect dialectMapping = instance.getDialectMapping(mapperClass.getContainingFile().getVirtualFile());
-        AreaOperateManager  areaOperateManager = AreaOperateManagerFactory.getByDbms(dialectMapping.getDbms(),mappingField, entityClass);
+        AreaOperateManager areaOperateManager = AreaOperateManagerFactory.getByDbms(dialectMapping.getDbms(), mappingField, entityClass,
+            null,
+            null);
         foundAreaOperateManager = true;
 
         editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);

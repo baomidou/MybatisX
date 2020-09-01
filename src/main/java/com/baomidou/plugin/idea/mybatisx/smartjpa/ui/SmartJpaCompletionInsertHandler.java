@@ -10,6 +10,7 @@ import com.intellij.openapi.application.AppUIExecutor;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
         this.editor = editor;
         this.project = project;
     }
-
+    @ApiStatus.Internal
     @Override
     public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
         AppUIExecutor.onUiThread().later().execute(()->{

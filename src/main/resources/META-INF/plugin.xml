@@ -10,7 +10,7 @@
        <ul>
           <li>mapper类和xml跳转</li>
           <li>mybatis.xml,mapper.xml 配置文件提示</li>
-          <li>mapper类智能填充方法名,以JPA的形式填充方法和xml</li>
+          <li>mapper类智能填充方法名,以JPA的形式填充方法和xml(参考了 MybatisCodeHelperPro插件)</li>
       </ul>
       ]]>
     </description>
@@ -75,7 +75,7 @@
         <!-- xml 标签提示 -->
         <completion.contributor language="XML"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.TestParamContributor"/>
-        <!-- 在xml内部, 进行智能提示, 例如: #{提示位置} -->
+        <!-- 在mapper.xml内部, 进行智能提示, 例如: #{提示位置} -->
         <completion.contributor language="SQL"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.SqlParamCompletionContributor"
                                 order="first"/>
@@ -135,4 +135,11 @@
         <!-- mybatis的xml和mapper类 文件图标都改成一只鸟-->
         <iconProvider implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
     </extensions>
+<!--    <actions>-->
+<!--        <group id="TestMybatisX" text="MybatisX" description="MxTest" >-->
+<!--            <action class="com.baomidou.plugin.idea.mybatisx.action.TestAction" id="TestAction" text="TestAction">-->
+<!--            </action>-->
+<!--            <add-to-group group-id="MainMenu" anchor="last"/>-->
+<!--        </group>-->
+<!--    </actions>-->
 </idea-plugin>
