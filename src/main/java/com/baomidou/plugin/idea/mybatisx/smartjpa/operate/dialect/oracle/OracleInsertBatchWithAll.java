@@ -159,14 +159,12 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                 .collect(Collectors.joining(",\n"));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
-            stringBuilder.append(">").append("\n");
-
+            stringBuilder.append(" item=\"").append(itemName).append("\"").append(">").append("\n");
             stringBuilder.append("INTO ").append(tableName).append("\n");
             stringBuilder.append("(").append(columns).append(")").append("\n");
             stringBuilder.append("VALUES").append("\n");
             // values 连接符
             stringBuilder.append("(").append("\n");
-            stringBuilder.append(" item=\"").append(itemName).append("\"").append("\n");
             stringBuilder.append(fields).append("\n").append(")").append("\n");
             stringBuilder.append("</foreach>").append("\n");
 
