@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 /**
  * oracle的批量插入
  */
-public class OracleInsertBatch extends MysqlInsertBatch {
+public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
 
 
     private DasTable dasTable;
     private String tableName;
 
-    public OracleInsertBatch(DasTable dasTable, String tableName) {
+    public OracleInsertBatchWithUnion(DasTable dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
 
@@ -40,6 +40,11 @@ public class OracleInsertBatch extends MysqlInsertBatch {
     @NotNull
     protected SuffixOperator getSuffixOperator(List<TxField> mappingField) {
         return new InsertBatchSuffixOperator(mappingField);
+    }
+
+    @Override
+    protected @NotNull String batchName() {
+        return "BatchWithUnion";
     }
 
     /**

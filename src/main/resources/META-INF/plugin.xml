@@ -37,110 +37,112 @@
 
         <!--文件描述-->
         <!--mapper.xml文件属性提示-->
-        <dom.fileDescription implementation="com.baomidou.plugin.idea.mybatisx.dom.description.MapperDescription"/>
+        <dom.fileDescription id="baomidou.MapperDescription" implementation="com.baomidou.plugin.idea.mybatisx.dom.description.MapperDescription"/>
         <!--mybatis配置文件属性提示-->
-        <dom.fileDescription
+        <dom.fileDescription id="baomidou.ConfigurationDescription"
             implementation="com.baomidou.plugin.idea.mybatisx.dom.description.ConfigurationDescription"/>
 
         <!--定义搜索，这个东西用来实现通过Mapper接口类搜索实现类时直接跳转至mapper.xml文件-->
-        <definitionsSearch implementation="com.baomidou.plugin.idea.mybatisx.definitionsearch.MapperDefinitionSearch"/>
+        <definitionsSearch id="baomidou.MapperDefinitionSearch" implementation="com.baomidou.plugin.idea.mybatisx.definitionsearch.MapperDefinitionSearch"/>
 
         <!--项目服务-->
-        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.JavaService"/>
-        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.AnnotationService"/>
-        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.EditorService"/>
-        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.alias.AliasFacade"/>
-        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.locator.MapperLocator"/>
-        <projectService serviceInterface="com.baomidou.plugin.idea.mybatisx.core.MapperManager"
+        <projectService id="baomidou.JavaService" serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.JavaService"/>
+        <projectService id="baomidou.AnnotationService" serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.AnnotationService"/>
+        <projectService id="baomidou.EditorService" serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.EditorService"/>
+        <projectService id="baomidou.AliasFacade" serviceImplementation="com.baomidou.plugin.idea.mybatisx.alias.AliasFacade"/>
+        <projectService id="baomidou.MapperLocator" serviceImplementation="com.baomidou.plugin.idea.mybatisx.locator.MapperLocator"/>
+        <projectService id="baomidou.MapperManager" serviceInterface="com.baomidou.plugin.idea.mybatisx.core.MapperManager"
                         serviceImplementation="com.baomidou.plugin.idea.mybatisx.core.impl.MapperManagerImpl"/>
 
 
         <!--代码行插件，实现代码导航功能-->
         <!-- java 跳转到 xml  -->
-        <codeInsight.lineMarkerProvider language="JAVA"
+        <codeInsight.lineMarkerProvider id="baomidou.MapperLineMarkerProvider" language="JAVA"
                                         implementationClass="com.baomidou.plugin.idea.mybatisx.provider.MapperLineMarkerProvider"/>
         <!-- xml 跳转到 java -->
-        <codeInsight.lineMarkerProvider language="XML"
+        <codeInsight.lineMarkerProvider id="baomidou.StatementLineMarkerProvider" language="XML"
                                         implementationClass="com.baomidou.plugin.idea.mybatisx.provider.StatementLineMarkerProvider"/>
         <!-- 在service层注入了mapper对象, 在这个对象进行跳转到 mapper 类-->
-        <codeInsight.lineMarkerProvider language="JAVA"
+        <codeInsight.lineMarkerProvider id="baomidou.InjectionLineMarkerProvider" language="JAVA"
                                         implementationClass="com.baomidou.plugin.idea.mybatisx.provider.InjectionLineMarkerProvider"/>
 
         <!--设置中的配置-->
         <applicationConfigurable dynamic="true" id="mybatisx.settings" instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
 
         <!--应用服务-->
-        <applicationService
+        <applicationService id="baomidou.MybatisSetting"
             serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting"/>
 
 
         <!--自动完成提示-->
         <!-- xml 标签提示 -->
-        <completion.contributor language="XML"
+        <completion.contributor id="baomidou.TestParamContributor" language="XML"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.TestParamContributor"/>
         <!-- 在mapper.xml内部, 进行智能提示, 例如: #{提示位置} -->
-        <completion.contributor language="SQL"
+        <completion.contributor id="baomidou.SqlParamCompletionContributor" language="SQL"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.SqlParamCompletionContributor"
                                 order="first"/>
         <!-- 在mapper类声明方法时, 进行jpa规范的提示, 提示字符串完成后, 后续可以根据字符串生成方法参数和XML内容 -->
-        <completion.contributor language="JAVA"
+        <completion.contributor id="baomidou.MapperMethodCompletionContributor" language="JAVA"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.MapperMethodCompletionContributor"/>
 
 
         <!--文件模板组，新建文件选择模板, 这里只是定义一个模板, 在mapper类方法定义完成后, 可以根据这个空模板生成一个文件 -->
-        <fileTemplateGroup id="BaomidouMybatisFileTemplateDescriptorFactory"
+        <fileTemplateGroup id="baomidou.MybatisFileTemplateDescriptorFactory"
             implementation="com.baomidou.plugin.idea.mybatisx.template.MybatisFileTemplateDescriptorFactory"/>
 
         <!--编辑mapper文件时，实现参数提示,  在第一次输入#{}的时候,延迟提示.  没必要 -->
         <!--        <typedHandler implementation="com.baomidou.plugin.idea.mybatisx.action.MybatisTypedHandler" id="mybatis" order="first"/>-->
 
         <!--附加的LiveTemplate模板-->
-        <defaultLiveTemplatesProvider
-            implementation="com.baomidou.plugin.idea.mybatisx.template.SqlLiveTemplateProvider"/>
-        <refactoring.elementListenerProvider
+        <defaultLiveTemplatesProvider id="baomidou.SqlLiveTemplateProvider"
+                                      implementation="com.baomidou.plugin.idea.mybatisx.template.SqlLiveTemplateProvider"/>
+        <refactoring.elementListenerProvider id="baomidou.MapperRefactoringProvider"
             implementation="com.baomidou.plugin.idea.mybatisx.refactoring.MapperRefactoringProvider"/>
 
         <!--语法校验，让没有生成代码的方法产生错误-->
         <localInspection language="JAVA" shortName="MybatisMapperMethodInspection"
+                         id="baomidou.MybatisMapperMethodInspection"
                          displayName="Mapper method inspection"
                          groupName="Mybatis" enabledByDefault="true" level="ERROR"
                          implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperMethodInspection"/>
         <localInspection language="XML" shortName="MybatisMapperXmlInspection" enabledByDefault="true" level="ERROR"
+                         id="baomidou.MybatisMapperXmlInspection"
                          displayName="Mapper xml inspection" groupName="Mybatis"
                          implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperXmlInspection"/>
         <!--实体类属性检测-->
 
         <!--代码检测抑制器,用于过滤一些spring自带的校验规则-->
-        <lang.inspectionSuppressor language="JAVA"
+        <lang.inspectionSuppressor language="JAVA" id="baomidou.SpringInspectionsFilter"
                                    implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.SpringInspectionsFilter"/>
 
         <!--提示动作 start-->
         <!--生成参数注解-->
-        <intentionAction>
+        <intentionAction id="baomidou.GenerateParamAnnotationIntention">
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateParamAnnotationIntention</className>
         </intentionAction>
         <!--通过方法名生成对应的 查询语句-->
-        <intentionAction>
+        <intentionAction id="baomidou.GenerateStatementIntention">
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateStatementIntention</className>
         </intentionAction>
         <!--生成mybatis mapper.xml文件-->
-        <intentionAction order="first">
+        <intentionAction order="first" id="baomidou.GenerateMapperIntention">
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperIntention</className>
         </intentionAction>
 
         <!-- 根据jpa名字生成方法和xml文件内容 -->
-        <intentionAction>
+        <intentionAction id="baomidou.GenerateMapperMethodSmartJpaAction">
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperMethodSmartJpaAction</className>
         </intentionAction>
 
         <!--提示动作 end-->
 
         <!-- mybatis的xml和mapper类 文件图标都改成一只鸟-->
-        <iconProvider  implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
+        <iconProvider id="baomidou.XmlAndMapperIconProvider"  implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
 
-        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>
+        <projectService id="baomidou.PersistentConfig" serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>
         <!-- 项目配置 -->
-        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting" id="bmd.mybatis.gene.id"
+        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting" id="baomidou.MybatisGeneratorConfigurable"
                              dynamic="true"
                              instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
     </extensions>

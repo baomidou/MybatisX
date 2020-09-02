@@ -29,18 +29,14 @@ import java.util.stream.Collectors;
 /**
  * oracle的批量插入
  */
-public class OracleInsertAllBatch extends MysqlInsertBatch {
+public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
 
     private DasTable dasTable;
     private String tableName;
 
-    @Override
-    protected @NotNull String getNewAreaName(String areaName) {
-        return areaName+"BatchWithAll";
-    }
 
-    public OracleInsertAllBatch(DasTable dasTable, String tableName) {
+    public OracleInsertBatchWithAll(DasTable dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
 
@@ -48,7 +44,7 @@ public class OracleInsertAllBatch extends MysqlInsertBatch {
 
     @Override
     protected @NotNull String batchName() {
-        return "BatchWithUnion";
+        return "BatchWithAll";
     }
 
     @NotNull
