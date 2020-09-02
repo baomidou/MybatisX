@@ -31,12 +31,17 @@ public class OracleManager extends BaseDialectManager {
             @Override
             protected void initCustomArea(String areaName, List<TxField> mappingField) {
                 super.initCustomArea(areaName, mappingField);
-                OracleInsertBatch customStatement = new OracleInsertBatch(dasTable, tableName);
-                customStatement.initInsertBatch(areaName, mappingField);
-                this.registerStatementBlock(customStatement.getStatementBlock());
-                this.addOperatorName(customStatement.operatorName());
+                // insert into 的方式批量插入
+                OracleInsertBatch oracleInsertBatch = new OracleInsertBatch(dasTable, tableName);
+                oracleInsertBatch.initInsertBatch(areaName, mappingField);
+                this.registerStatementBlock(oracleInsertBatch.getStatementBlock());
+                this.addOperatorName(oracleInsertBatch.operatorName());
 
-
+                // insert all into table 的方式批量插入
+                OracleInsertAllBatch oracleInsertAllBatch = new OracleInsertAllBatch(dasTable, tableName);
+                oracleInsertAllBatch.initInsertBatch(areaName, mappingField);
+                this.registerStatementBlock(oracleInsertAllBatch.getStatementBlock());
+                this.addOperatorName(oracleInsertAllBatch.operatorName());
             }
         });
         registerManagers(new UpdateOperator(mappingField));

@@ -13,6 +13,7 @@ import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -31,7 +32,6 @@ import com.intellij.sql.psi.SqlPsiFacade;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
@@ -120,8 +120,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
     }
 
 
-    private static final Logger logger = LoggerFactory.getLogger(GenerateMapperMethodSmartJpaAction.class);
-
+    private static final Logger logger = Logger.getInstance(GenerateMapperMethodSmartJpaAction.class);
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
@@ -138,11 +137,12 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             return false;
         }
 
-        // 空白
+        // 查找最近的有效节点
         PsiTypeElement statementElement = PsiTreeUtil.getParentOfType(element, PsiTypeElement.class);
         if (statementElement == null) {
             statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
         }
+        // 当前节点的父类不是mapper类就返回
         PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
         if (mapperClass == null) {
             return false;

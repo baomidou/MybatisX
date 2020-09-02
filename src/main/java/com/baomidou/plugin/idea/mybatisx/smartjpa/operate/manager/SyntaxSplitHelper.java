@@ -29,7 +29,11 @@ class SyntaxSplitHelper {
     Comparator<LinkedList<SyntaxAppender>> syntaxAppenderComparator = (o1, o2) ->
     {
         // 长度相等, 按照区域顺序排序
-        return o2.size() - o1.size();
+        int listComparor = o2.size() - o1.size();
+        if (listComparor == 0 && o2.size() == 1 && o1.size() == 1) {
+            return o2.get(0).getText().length() - o1.get(0).getText().length();
+        }
+        return listComparor;
     };
 
     public SyntaxSplitHelper(final List<StatementBlock> statementBlockList) {
@@ -37,7 +41,6 @@ class SyntaxSplitHelper {
     }
 
     /**
-     *
      * @param splitText
      * @return
      */

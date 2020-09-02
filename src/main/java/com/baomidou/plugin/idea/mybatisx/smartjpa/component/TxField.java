@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
+import org.jetbrains.annotations.NotNull;
+
 public class TxField {
     /**
      * 提示名称
@@ -21,7 +23,7 @@ public class TxField {
         return this.fieldType;
     }
 
-    public void setFieldType(final  String fieldType) {
+    public void setFieldType(final String fieldType) {
         this.fieldType = fieldType;
     }
 
@@ -41,6 +43,7 @@ public class TxField {
         this.fieldName = fieldName;
     }
 
+    @NotNull
     public String getColumnName() {
         return this.columnName;
     }
