@@ -3,19 +3,17 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.CustomStatement;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle.InsertCustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
@@ -56,7 +54,7 @@ public class MysqlInsertBatch implements CustomStatement {
             @Override
             public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
                 // 定制参数
-                SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator("Batch",
+                SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator(batchName(),
                     getSuffixOperator(mappingField),
                     AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
@@ -68,8 +66,13 @@ public class MysqlInsertBatch implements CustomStatement {
     }
 
     @NotNull
+    protected String batchName() {
+        return "Batch";
+    }
+
+    @NotNull
     protected String getNewAreaName(String areaName) {
-        return areaName + "Batch";
+        return areaName + batchName();
     }
 
     @NotNull

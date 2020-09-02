@@ -41,6 +41,8 @@ public class SqlParamCompletionContributor extends CompletionContributor {
     }
 
     private void process(PsiFile xmlFile, CompletionResultSet result, PsiElement position) {
+        InjectedLanguageManager injectedLanguageManager = InjectedLanguageManager.getInstance(null);
+
         DocumentWindow documentWindow = InjectedLanguageUtil.getDocumentWindow(position);
         if (null != documentWindow) {
             int offset = documentWindow.injectedToHost(position.getTextOffset());

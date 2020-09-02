@@ -1,4 +1,4 @@
-<idea-plugin url="https://gitee.com/baomidou/mybatis-plus">
+<idea-plugin url="https://gitee.com/baomidou/mybatis-plus" require-restart="false">
     <id>com.baomidou.plugin.idea.mybatisx</id>
     <name>MyBatisX</name>
     <version>1.0.0</version>
@@ -11,6 +11,7 @@
           <li>mapper类和xml跳转</li>
           <li>mybatis.xml,mapper.xml 配置文件提示</li>
           <li>mapper类智能填充方法名,以JPA的形式填充方法和xml(参考了 MybatisCodeHelperPro插件)</li>
+          <li>集成mybatis generator gui界面(copy from free mybatis plugin)</li>
       </ul>
       ]]>
     </description>
@@ -27,10 +28,11 @@
       ]]>
     </change-notes>
 
-    <idea-version since-build="192.0"/>
+    <idea-version since-build="193.0"/>
     <depends>com.intellij.java</depends>
     <depends>com.intellij.spring</depends>
     <depends>com.intellij.database</depends>
+
     <extensions defaultExtensionNs="com.intellij">
 
         <!--文件描述-->
@@ -52,6 +54,7 @@
         <projectService serviceInterface="com.baomidou.plugin.idea.mybatisx.core.MapperManager"
                         serviceImplementation="com.baomidou.plugin.idea.mybatisx.core.impl.MapperManagerImpl"/>
 
+
         <!--代码行插件，实现代码导航功能-->
         <!-- java 跳转到 xml  -->
         <codeInsight.lineMarkerProvider language="JAVA"
@@ -64,7 +67,7 @@
                                         implementationClass="com.baomidou.plugin.idea.mybatisx.provider.InjectionLineMarkerProvider"/>
 
         <!--设置中的配置-->
-        <applicationConfigurable instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
+        <applicationConfigurable dynamic="true" id="mybatisx.settings" instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
 
         <!--应用服务-->
         <applicationService
@@ -85,7 +88,7 @@
 
 
         <!--文件模板组，新建文件选择模板, 这里只是定义一个模板, 在mapper类方法定义完成后, 可以根据这个空模板生成一个文件 -->
-        <fileTemplateGroup
+        <fileTemplateGroup id="BaomidouMybatisFileTemplateDescriptorFactory"
             implementation="com.baomidou.plugin.idea.mybatisx.template.MybatisFileTemplateDescriptorFactory"/>
 
         <!--编辑mapper文件时，实现参数提示,  在第一次输入#{}的时候,延迟提示.  没必要 -->
@@ -133,13 +136,26 @@
         <!--提示动作 end-->
 
         <!-- mybatis的xml和mapper类 文件图标都改成一只鸟-->
-        <iconProvider implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
+        <iconProvider  implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
+
+        <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>
+        <!-- 项目配置 -->
+        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting" id="bmd.mybatis.gene.id"
+                             dynamic="true"
+                             instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
     </extensions>
-<!--    <actions>-->
+
+    <actions>
 <!--        <group id="TestMybatisX" text="MybatisX" description="MxTest" >-->
 <!--            <action class="com.baomidou.plugin.idea.mybatisx.action.TestAction" id="TestAction" text="TestAction">-->
 <!--            </action>-->
 <!--            <add-to-group group-id="MainMenu" anchor="last"/>-->
 <!--        </group>-->
-<!--    </actions>-->
+        <action id="bmd-mybatis-generate-action"
+                class="com.baomidou.plugin.idea.mybatisx.action.MybatisGeneratorMainAction"
+                text="Mybatis-Generator"
+                description="Mybatis generator idea plugin">
+            <add-to-group group-id="DatabaseViewPopupMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>

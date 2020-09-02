@@ -5,7 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Result;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;

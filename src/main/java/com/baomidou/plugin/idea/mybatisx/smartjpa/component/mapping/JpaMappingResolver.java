@@ -60,7 +60,7 @@ public abstract class JpaMappingResolver {
     @NotNull
     private String getUnderLineName(String camelName) {
         String[] strings = org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase(camelName);
-        return Arrays.stream(strings).map(x -> com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils.lowerCaseFirstChar(x))
+        return Arrays.stream(strings).map(x -> com.baomidou.plugin.idea.mybatisx.util.StringUtils.lowerCaseFirstChar(x))
             .collect(Collectors.joining("_"));
     }
 
@@ -101,7 +101,7 @@ public abstract class JpaMappingResolver {
     protected List<TxField> initDataByCamel(PsiClass entityClass) {
         return Arrays.stream(entityClass.getAllFields()).map(field -> {
             TxField txField = new TxField();
-            txField.setTipName(com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils.upperCaseFirstChar(field.getName()));
+            txField.setTipName(com.baomidou.plugin.idea.mybatisx.util.StringUtils.upperCaseFirstChar(field.getName()));
             txField.setFieldType(field.getType().getCanonicalText());
 
             String columnName = getColumnNameByJpaOrCamel(field);

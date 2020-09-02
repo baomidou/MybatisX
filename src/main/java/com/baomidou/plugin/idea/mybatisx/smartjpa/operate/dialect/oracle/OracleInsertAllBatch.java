@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
@@ -11,25 +10,20 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.StringUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
-import com.intellij.database.model.DasObject;
 import com.intellij.database.model.DasTable;
 import com.intellij.database.model.DasTableKey;
-import com.intellij.database.model.ObjectKind;
 import com.intellij.database.util.DasUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
-import com.intellij.util.containers.JBIterable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -43,13 +37,18 @@ public class OracleInsertAllBatch extends MysqlInsertBatch {
 
     @Override
     protected @NotNull String getNewAreaName(String areaName) {
-        return areaName+"AllBatch";
+        return areaName+"BatchWithAll";
     }
 
     public OracleInsertAllBatch(DasTable dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
 
+    }
+
+    @Override
+    protected @NotNull String batchName() {
+        return "BatchWithUnion";
     }
 
     @NotNull
@@ -63,7 +62,7 @@ public class OracleInsertAllBatch extends MysqlInsertBatch {
             @Override
             public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
                 // 定制参数
-                SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator("AllBatch",
+                SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator("BatchWithAll",
                     getSuffixOperator(mappingField),
                     AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
