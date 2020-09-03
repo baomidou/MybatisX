@@ -35,7 +35,7 @@ public class MybatisGeneratorConfigurable implements SearchableConfigurable {
     @NotNull
     @Override
     public String getId() {
-        return "free.mybatis.gene.id";
+        return "baomidou.MybatisGeneratorConfigurable";
     }
 
     @Nullable

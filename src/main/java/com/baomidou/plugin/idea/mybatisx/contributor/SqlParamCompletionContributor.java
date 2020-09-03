@@ -14,6 +14,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -35,23 +36,23 @@ public class SqlParamCompletionContributor extends CompletionContributor {
         PsiFile topLevelFile = injectedLanguageManager.getTopLevelFile(position);
         if (DomUtils.isMybatisFile(topLevelFile)) {
             if (shouldAddElement(position.getContainingFile(), parameters.getOffset())) {
-                process(topLevelFile, result, position);
+                Project project = editor.getProject();
+                if(project!=null){
+                    process(topLevelFile, result, position, project);
+                }
             }
         }
     }
 
-    private void process(PsiFile xmlFile, CompletionResultSet result, PsiElement position) {
-        InjectedLanguageManager injectedLanguageManager = InjectedLanguageManager.getInstance(null);
+    private void process(PsiFile xmlFile, CompletionResultSet result, PsiElement position,  Project project) {
+        InjectedLanguageManager injectedLanguageManager = InjectedLanguageManager.getInstance(project);
 
-        DocumentWindow documentWindow = InjectedLanguageUtil.getDocumentWindow(position);
-        if (null != documentWindow) {
-            int offset = documentWindow.injectedToHost(position.getTextOffset());
-            Optional<IdDomElement> idDomElement = MapperUtils.findParentIdDomElement(xmlFile.findElementAt(offset));
-            if (idDomElement.isPresent()) {
-                // TODO 加入 jdbcType 的提示, 例如: #{age,jdbcType=NUMERIC}
-                TestParamContributor.addElementForPsiParameter(position.getProject(), result, idDomElement.get());
-                result.stopHere();
-            }
+        int offset = injectedLanguageManager.injectedToHost(position, position.getTextOffset());
+        Optional<IdDomElement> idDomElement = MapperUtils.findParentIdDomElement(xmlFile.findElementAt(offset));
+        if (idDomElement.isPresent()) {
+            // TODO 加入 jdbcType 的提示, 例如: #{age,jdbcType=NUMERIC}
+            TestParamContributor.addElementForPsiParameter(position.getProject(), result, idDomElement.get());
+            result.stopHere();
         }
     }
 

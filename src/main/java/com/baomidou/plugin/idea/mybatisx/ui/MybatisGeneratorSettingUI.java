@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MybatisGeneratorSettingUI extends JDialog {
+public class MybatisGeneratorSettingUI  {
     public JPanel contentPanel = new JBPanel<>(new GridLayout(1, 1));
 
 
@@ -53,8 +53,8 @@ public class MybatisGeneratorSettingUI extends JDialog {
     private PersistentConfig config;
 
     public MybatisGeneratorSettingUI() {
-        setContentPane(contentPanel);
     }
+
 
 
     public void createUI(Project project) {
@@ -274,7 +274,6 @@ public class MybatisGeneratorSettingUI extends JDialog {
 
     }
 
-    @Override
     public JPanel getContentPane() {
         return contentPanel;
     }

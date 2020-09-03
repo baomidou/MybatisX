@@ -13,6 +13,7 @@ buildscript {
     }
 }
 
+
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'org.jetbrains.intellij'
@@ -58,4 +59,7 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+
+// -Djava.awt.headless=false
+    options.compilerArgs << "-Xlint:unchecked"
 }

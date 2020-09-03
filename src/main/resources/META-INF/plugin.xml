@@ -142,7 +142,8 @@
 
         <projectService id="baomidou.PersistentConfig" serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>
         <!-- 项目配置 -->
-        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting" id="baomidou.MybatisGeneratorConfigurable"
+        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting"
+                             id="baomidou.MybatisGeneratorConfigurable"
                              dynamic="true"
                              instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
     </extensions>
@@ -153,6 +154,7 @@
 <!--            </action>-->
 <!--            <add-to-group group-id="MainMenu" anchor="last"/>-->
 <!--        </group>-->
+
         <action id="bmd-mybatis-generate-action"
                 class="com.baomidou.plugin.idea.mybatisx.action.MybatisGeneratorMainAction"
                 text="Mybatis-Generator"
