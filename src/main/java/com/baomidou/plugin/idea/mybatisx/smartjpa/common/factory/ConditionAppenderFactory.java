@@ -18,6 +18,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
@@ -147,19 +148,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
         // 移除区域标识
         jpaStringList.poll();
 
-        Map<String, PsiField> fieldMap =
-            new HashMap<>();
-        for (PsiField x : entityClass.getAllFields()) {
-            // 过滤掉静态字段, 非序列化字段
-            if (x.hasModifierProperty(PsiModifier.STATIC) ||
-                x.hasModifierProperty(PsiModifier.TRANSIENT)) {
-                continue;
-            }
-            // 有重复的列名时, 抛出异常
-            if (fieldMap.put(x.getName(), x) != null) {
-                throw new IllegalStateException("Duplicate key, fieldName:" + x.getName());
-            }
-        }
+        Map<String, PsiField> fieldMap = FieldUtil.getStringPsiFieldMap(entityClass);
         LinkedList<TxParameter> txParameters = new LinkedList<>();
         SyntaxAppender currentAppender = null;
         // 拉到下一个区域

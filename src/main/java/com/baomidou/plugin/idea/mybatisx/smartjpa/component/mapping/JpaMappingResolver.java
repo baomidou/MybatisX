@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
@@ -99,7 +100,9 @@ public abstract class JpaMappingResolver {
 
 
     protected List<TxField> initDataByCamel(PsiClass entityClass) {
-        return Arrays.stream(entityClass.getAllFields()).map(field -> {
+        // 去除有 static, transient 标记的字段
+        List<PsiField> psiFieldList = FieldUtil.getPsiFieldList(entityClass);
+        return psiFieldList.stream().map(field -> {
             TxField txField = new TxField();
             txField.setTipName(com.baomidou.plugin.idea.mybatisx.util.StringUtils.upperCaseFirstChar(field.getName()));
             txField.setFieldType(field.getType().getCanonicalText());

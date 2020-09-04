@@ -17,23 +17,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author yanglin
  */
 public class AnnotationAliasResolver extends AliasResolver {
-
-    private static final Function FUN = new Function<PsiClass, AliasDesc>() {
-        @Override
-        public AliasDesc apply(PsiClass psiClass) {
-            Optional<String> txt = JavaUtils.getAnnotationValueText(psiClass, Annotation.ALIAS);
-            if (!txt.isPresent()) return null;
-            AliasDesc ad = new AliasDesc();
-            ad.setAlias(txt.get());
-            ad.setClazz(psiClass);
-            return ad;
-        }
-    };
 
     public AnnotationAliasResolver(Project project) {
         super(project);
@@ -49,7 +38,16 @@ public class AnnotationAliasResolver extends AliasResolver {
         Optional<PsiClass> clazz = Annotation.ALIAS.toPsiClass(project);
         if (clazz.isPresent()) {
             Collection<PsiClass> res = AnnotatedElementsSearch.searchPsiClasses(clazz.get(), GlobalSearchScope.allScope(project)).findAll();
-            return Sets.newHashSet(Collections2.transform(res, FUN));
+            return res.stream().map(psiClass-> {
+                Optional<String> txt = JavaUtils.getAnnotationValueText(psiClass, Annotation.ALIAS);
+                if (!txt.isPresent()){
+                    return null;
+                }
+                AliasDesc ad = new AliasDesc();
+                ad.setAlias(txt.get());
+                ad.setClazz(psiClass);
+                return ad;
+            }).collect(Collectors.toSet());
         }
         return Collections.emptySet();
     }

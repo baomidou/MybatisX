@@ -128,7 +128,9 @@ public abstract class AbstractStatementGenerator {
 
     public void execute(@NotNull final PsiMethod method) {
         PsiClass psiClass = method.getContainingClass();
-        if (null == psiClass) return;
+        if (null == psiClass){
+            return;
+        }
         CollectProcessor processor = new CollectProcessor();
         JavaService.getInstance(method.getProject()).process(psiClass, processor);
         final List<Mapper> mappers = Lists.newArrayList(processor.getResults());

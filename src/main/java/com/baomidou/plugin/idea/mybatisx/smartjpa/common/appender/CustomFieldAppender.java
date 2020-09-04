@@ -8,21 +8,27 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 public class CustomFieldAppender implements SyntaxAppender {
@@ -110,8 +116,7 @@ public class CustomFieldAppender implements SyntaxAppender {
 
     @Override
     public List<TxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
-        Map<String, PsiField> fieldMap =
-            Arrays.stream(entityClass.getAllFields()).collect(Collectors.toMap(PsiField::getName, x -> x));
+        Map<String, PsiField> fieldMap = FieldUtil.getStringPsiFieldMap(entityClass);
 
         // 移除字段符号
         final SyntaxAppender peek = jpaStringList.poll();
@@ -125,6 +130,8 @@ public class CustomFieldAppender implements SyntaxAppender {
         }
         return Collections.singletonList(TxParameter.createByPsiField(psiField));
     }
+
+
 
 
     @Override
