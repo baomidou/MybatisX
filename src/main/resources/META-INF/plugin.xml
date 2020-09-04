@@ -13,10 +13,17 @@
           <li>mapper类智能填充方法名,以JPA的形式填充方法和xml(参考了 MybatisCodeHelperPro插件)</li>
           <li>集成mybatis generator gui界面(copy from free mybatis plugin)</li>
       </ul>
+
+      QQ群号: 829161197
       ]]>
     </description>
 
     <change-notes><![CDATA[
+      <h4>2020.09.03</h4>
+      <ul>
+          <li>集成选择表名生成类文件</li>
+          <li>支持oracle的insertBatch的两种方式</li>
+      </ul>
        <h4>2020.08.12</h4>
       <ul>
           <li>加入智能jpa提示</li>
