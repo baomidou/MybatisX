@@ -89,6 +89,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         if (referenceElements.length == 0) {
             return Optional.empty();
         }
+        JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(mapperClass.getProject());
         for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
             String qualifiedName = referenceElement.getQualifiedName();
 
@@ -96,8 +97,8 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
 
                 PsiType typeParameter = referenceElement.getTypeParameters()[0];
 
-                PsiClass entityClass = JavaPsiFacade.getInstance(mapperClass.getProject())
-                    .findClass(typeParameter.getCanonicalText(), mapperClass.getResolveScope());
+
+                PsiClass entityClass = javaPsiFacade.findClass(typeParameter.getCanonicalText(), mapperClass.getResolveScope());
 
                 initDatas(entityClass);
 

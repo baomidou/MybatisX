@@ -37,8 +37,8 @@
 
     <idea-version since-build="193.0"/>
     <depends>com.intellij.java</depends>
-    <depends>com.intellij.spring</depends>
-    <depends>com.intellij.database</depends>
+    <depends optional="true" config-file="spring.xml">com.intellij.spring</depends>
+    <depends optional="true" config-file="database.xml">com.intellij.database</depends>
 
     <extensions defaultExtensionNs="com.intellij">
 

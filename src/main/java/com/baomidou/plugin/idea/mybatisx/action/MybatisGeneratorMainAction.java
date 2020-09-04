@@ -24,10 +24,11 @@ public class MybatisGeneratorMainAction extends AnAction {
             return;
         }
         for (PsiElement psiElement : psiElements) {
-            if (!(psiElement instanceof DbTable)) {
-                Messages.showMessageDialog("Please select one or more tables", "Notice", Messages.getInformationIcon());
-                return;
+            if (psiElement instanceof DbTable) {
+                continue;
             }
+            Messages.showMessageDialog("Please select one or more tables", "Notice", Messages.getInformationIcon());
+            return;
         }
         new MybatisGeneratorMainUI(e);
     }

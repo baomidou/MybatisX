@@ -10,5 +10,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 public interface ExampleMapper extends BaseMapper<Blog> {
 
-    List<Blog> selectByIdAndCreateTimeBetweenAndTitleContainingOrderByAge(@Param("id")Long id,@Param("beginCreateTime")Date beginCreateTime,@Param("endCreateTime")Date endCreateTime,@Param("title")String title);
+    List<Blog> selectByIdAndCreateTimeBetweenAndTitleContainingOrderByAge(@Param("id") Long id, @Param("beginCreateTime") Date beginCreateTime, @Param("endCreateTime") Date endCreateTime, @Param("title") String title);
+
 }

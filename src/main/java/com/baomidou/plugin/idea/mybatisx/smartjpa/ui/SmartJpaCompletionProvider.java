@@ -14,6 +14,7 @@ import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.JavaCompletionSorting;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.database.Dbms;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiClass;
@@ -119,9 +120,15 @@ public class SmartJpaCompletionProvider {
         // 第一次初始化
         List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
         // TODO 识别方言
-        SqlPsiFacade instance = SqlPsiFacade.getInstance(editor.getProject());
-        SqlLanguageDialect dialectMapping = instance.getDialectMapping(mapperClass.getContainingFile().getVirtualFile());
-        AreaOperateManager areaOperateManager = AreaOperateManagerFactory.getByDbms(dialectMapping.getDbms(), mappingField, entityClass,
+        Dbms dbms = Dbms.MYSQL;
+        try{
+            SqlPsiFacade instance = SqlPsiFacade.getInstance(editor.getProject());
+            SqlLanguageDialect dialectMapping = instance.getDialectMapping(mapperClass.getContainingFile().getVirtualFile());
+            dbms = dialectMapping.getDbms();
+        }catch (Exception ignore){
+        }
+
+        AreaOperateManager areaOperateManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass,
             null,
             null);
         foundAreaOperateManager = true;

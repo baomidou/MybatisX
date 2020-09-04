@@ -11,6 +11,11 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.Importer;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
+import com.intellij.database.Dbms;
+import com.intellij.database.model.DasTable;
+import com.intellij.database.psi.DbDataSource;
+import com.intellij.database.psi.DbPsiFacade;
+import com.intellij.database.util.DasUtil;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
@@ -30,11 +35,16 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.sql.dialects.SqlLanguageDialect;
 import com.intellij.sql.psi.SqlPsiFacade;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.containers.JBIterable;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.PriorityQueue;
 
 /**
  * 在mapper类中通过名字生成方法和xml内容
@@ -66,14 +76,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             final String text = statementElement.getText();
 
 
-            SqlPsiFacade instance = SqlPsiFacade.getInstance(project);
-            SqlLanguageDialect dialectMapping = instance.getDialectMapping(element.getContainingFile().getVirtualFile());
-            PlatformGenerator platformGenerator = CommonGenerator.createEditorAutoCompletion(entityClass,
-                text,
-                project,
-                dialectMapping.getDbms(),
-                entityMappingResolver.getTableName(),
-                entityMappingResolver.getFields());
+            PlatformGenerator platformGenerator = getPlatformGenerator(project, element, entityClass, entityMappingResolver, text);
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
             TypeDescriptor parameterDescriptor = platformGenerator.getParameter();
 
@@ -91,8 +94,7 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
             });
 
             // 导入对象
-            PsiDocumentManager psiDocumentManager = PsiDocumentManager
-                .getInstance(project);
+            PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
             Importer importer = Importer.create(parameterDescriptor.getImportList());
             importer.addImportToFile(psiDocumentManager,
                 (PsiJavaFile) element.getContainingFile(),
@@ -119,6 +121,81 @@ public class GenerateMapperMethodSmartJpaAction extends PsiElementBaseIntentionA
         }
     }
 
+    @NotNull
+    protected PlatformGenerator getPlatformGenerator(@NotNull Project project, @NotNull PsiElement element, PsiClass entityClass, EntityMappingResolver entityMappingResolver, String text) {
+        Dbms dbms = Dbms.MYSQL;
+        try {
+            SqlPsiFacade instance = SqlPsiFacade.getInstance(project);
+            SqlLanguageDialect dialectMapping = instance.getDialectMapping(element.getContainingFile().getVirtualFile());
+            dbms = dialectMapping.getDbms();
+        } catch (Exception ignore) {
+        }
+        // 名字默认是从实体上面解析到的
+        String tableName = entityMappingResolver.getTableName();
+        Holder holder = new Holder();
+        try {
+            DbPsiFacade dbPsiFacade = DbPsiFacade.getInstance(project);
+            // 名字可能会找到合适的表名
+            tableName = getTableName(entityClass, dbPsiFacade.getDataSources(), entityMappingResolver.getTableName(), holder);
+        } catch (Exception ignore) {
+        }
+        return CommonGenerator.createEditorAutoCompletion(entityClass,
+            text,
+            dbms,
+            holder.getDasTable(),
+            tableName,
+            entityMappingResolver.getFields());
+    }
+
+
+    /**
+     * 遍历所有数据源的表名
+     *
+     * @param entityClass
+     * @param dataSources
+     * @param foundTableName
+     * @return
+     */
+    protected String getTableName(PsiClass entityClass, @NotNull List<DbDataSource> dataSources, String foundTableName, Holder holder) {
+        if (StringUtils.isNotBlank(foundTableName)) {
+            return foundTableName;
+        }
+        // 如果有多个候选值, 就选择长度最长的
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>(Comparator.comparing(String::length, Comparator.reverseOrder()));
+        if (dataSources.size() > 0) {
+            for (DbDataSource dataSource : dataSources) {
+                JBIterable<? extends DasTable> tables = DasUtil.getTables(dataSource);
+                for (DasTable table : tables) {
+                    String entityTableName = entityClass.getName();
+                    String tableName = table.getName();
+                    String guessTableName = tableName.replaceAll("_", "").toUpperCase();
+                    // 完全相等的情况下就不用候选了
+                    if (guessTableName.equalsIgnoreCase(entityTableName)) {
+                        // 第一版的猜测数据源，只做绝对相等的情况
+                        holder.setDasTable(table);
+                        return tableName;
+                    }
+                }
+            }
+        }
+        // 存在候选的情况下, 返回表名最长的
+        if (priorityQueue.size() > 0) {
+            return priorityQueue.peek();
+        }
+        return entityClass.getName().toUpperCase();
+    }
+
+    private class Holder {
+        DasTable dasTable = null;
+
+        public DasTable getDasTable() {
+            return dasTable;
+        }
+
+        public void setDasTable(DasTable dasTable) {
+            this.dasTable = dasTable;
+        }
+    }
 
     private static final Logger logger = Logger.getInstance(GenerateMapperMethodSmartJpaAction.class);
 

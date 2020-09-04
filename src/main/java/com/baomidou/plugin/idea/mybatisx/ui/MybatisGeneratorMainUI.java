@@ -400,7 +400,7 @@ public class MybatisGeneratorMainUI extends JFrame {
          */
 
         this.getContentPane().add(Box.createVerticalStrut(10)); //采用x布局时，添加固定宽度组件隔开
-        final DefaultListModel defaultListModel = new DefaultListModel();
+        final DefaultListModel<String> defaultListModel = new DefaultListModel<>();
 
         if (historyConfigList == null) {
             historyConfigList = new HashMap<>();

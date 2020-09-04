@@ -13,14 +13,14 @@ public class TableInfo {
 
     public final DbTable tableElement;
 
-    private List<DasColumn> columns = new ArrayList<DasColumn>();
+    private List<DasColumn> columns;
 
-    private List<String> primaryKeys = new ArrayList<String>();
+    private List<String> primaryKeys = new ArrayList<>();
 
 
     public TableInfo(DbTable tableElement) {
         this.tableElement = tableElement;
-        List<DasColumn> columns = new ArrayList<DasColumn>();
+        List<DasColumn> columns = new ArrayList<>();
 
         JBIterable<? extends DasColumn> columnsIter = DasUtil.getColumns(tableElement);
         List<? extends DasColumn> dasColumns = columnsIter.toList();
@@ -45,7 +45,7 @@ public class TableInfo {
     }
 
     public List<String> getColumnsName() {
-        List<String> columnsName = new ArrayList();
+        List<String> columnsName = new ArrayList<>();
         for (DasColumn column : columns) {
             columnsName.add(column.getName());
         }

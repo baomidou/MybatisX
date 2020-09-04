@@ -7,6 +7,7 @@ import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.xml.XmlAttributeValue;
@@ -20,7 +21,7 @@ import java.util.Optional;
  */
 public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue> {
 
-    protected ContextReferenceSetResolver<PsiElement,PsiElement> resolver;
+    protected ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
 
     protected int index;
 
@@ -34,7 +35,7 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
     @Nullable
     @Override
     public PsiElement resolve() {
-        Optional<PsiElement> resolved = resolver.resolve(index);
+        Optional<PsiField> resolved = resolver.resolve(index);
         return resolved.orElse(null);
     }
 
@@ -49,7 +50,7 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
     private Optional<PsiClass> getTargetClazz() {
         if (getElement().getValue().contains(MybatisConstants.DOT_SEPARATOR)) {
             int ind = 0 == index ? 0 : index - 1;
-            Optional<PsiElement> resolved = resolver.resolve(ind);
+            Optional<PsiField> resolved = resolver.resolve(ind);
             if (resolved.isPresent()) {
                 return JavaService.getInstance(myElement.getProject()).getReferenceClazzOfPsiField(resolved.get());
             }
@@ -59,11 +60,11 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         return Optional.empty();
     }
 
-    public ContextReferenceSetResolver getResolver() {
+    public ContextReferenceSetResolver<XmlAttributeValue, PsiField>  getResolver() {
         return resolver;
     }
 
-    public void setResolver(ContextReferenceSetResolver resolver) {
+    public void setResolver(ContextReferenceSetResolver<XmlAttributeValue, PsiField>  resolver) {
         this.resolver = resolver;
     }
 

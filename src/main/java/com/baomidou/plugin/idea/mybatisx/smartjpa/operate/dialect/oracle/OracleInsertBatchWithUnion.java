@@ -37,6 +37,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
 
     }
 
+    @Override
     @NotNull
     protected SuffixOperator getSuffixOperator(List<TxField> mappingField) {
         return new InsertBatchSuffixOperator(mappingField);

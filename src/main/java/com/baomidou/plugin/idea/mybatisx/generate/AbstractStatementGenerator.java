@@ -87,7 +87,9 @@ public abstract class AbstractStatementGenerator {
     }
 
     public static void applyGenerate(@Nullable final PsiMethod method) {
-        if (null == method) return;
+        if (null == method){
+            return;
+        }
         final Project project = method.getProject();
         final AbstractStatementGenerator[] generators = getGenerators(method);
         if (1 == generators.length) {
@@ -131,7 +133,7 @@ public abstract class AbstractStatementGenerator {
         if (null == psiClass){
             return;
         }
-        CollectProcessor processor = new CollectProcessor();
+        CollectProcessor<Mapper> processor = new CollectProcessor<>();
         JavaService.getInstance(method.getProject()).process(psiClass, processor);
         final List<Mapper> mappers = Lists.newArrayList(processor.getResults());
         if (1 == mappers.size()) {
@@ -148,7 +150,7 @@ public abstract class AbstractStatementGenerator {
                 public boolean isWriteAction() {
                     return true;
                 }
-            }, paths.toArray(new String[paths.size()]));
+            }, paths.toArray(new String[0]));
         }
     }
 
@@ -157,6 +159,7 @@ public abstract class AbstractStatementGenerator {
         target.getId().setStringValue(method.getName());
         target.setValue(" ");
         XmlTag tag = target.getXmlTag();
+        assert tag != null;
         int offset = tag.getTextOffset() + tag.getTextLength() - tag.getName().length() + 1;
         EditorService editorService = EditorService.getInstance(method.getProject());
         editorService.format(tag.getContainingFile(), tag);
