@@ -3,9 +3,4 @@
 
 
     </extensions>
-
-    <actions>
-        <group id="DatabaseViewPopupMenu">
-        </group>
-    </actions>
 </idea-plugin>

@@ -97,7 +97,6 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
 
                 PsiType typeParameter = referenceElement.getTypeParameters()[0];
 
-
                 PsiClass entityClass = javaPsiFacade.findClass(typeParameter.getCanonicalText(), mapperClass.getResolveScope());
 
                 initDatas(entityClass);

@@ -142,6 +142,9 @@
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperMethodSmartJpaAction</className>
         </intentionAction>
 
+        <intentionAction id="baomidou.GenerateMapperMethodSmartAdvanceJpaAction">
+            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperMethodSmartJpaAdvanceAction</className>
+        </intentionAction>
         <!--提示动作 end-->
 
         <!-- mybatis的xml和mapper类 文件图标都改成一只鸟-->

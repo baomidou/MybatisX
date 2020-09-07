@@ -49,6 +49,8 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             Optional<ResultMap> resultMapOpt = findResultMap(mapper.getResultMaps());
             if (resultMapOpt.isPresent()) {
                 ResultMap resultMap = resultMapOpt.get();
+
+
                 GenericAttributeValue<PsiClass> type = resultMap.getType();
                 // 实体类的名字
                 PsiClass entityClass = type.getValue();
@@ -58,11 +60,38 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
                 List<TxField> txFields = new ArrayList<>();
                 txFields.addAll(determineIds(entityClass, resultMap.getIds()));
                 txFields.addAll(determineResults(resultMap.getResults(), entityClass));
+                addExtends(txFields, resultMap, entityClass, mapper.getResultMaps());
                 this.fieldList = txFields;
                 return Optional.of(entityClass);
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * 添加所有父类的 ResultMap
+     * @param txFields
+     * @param currentResultMap
+     * @param entityClass
+     * @param resultMaps
+     */
+    private void addExtends(List<TxField> txFields, ResultMap currentResultMap, PsiClass entityClass, List<ResultMap> resultMaps) {
+        GenericAttributeValue<XmlAttributeValue> anExtends = currentResultMap.getExtends();
+        String stringValue = anExtends.getStringValue();
+        if (StringUtils.isEmpty(stringValue)) {
+            return;
+        }
+        ResultMap foundResultMap = null;
+        for (ResultMap resultMap : resultMaps) {
+            if (resultMap.getId().getStringValue().equals(stringValue)) {
+                foundResultMap = resultMap;
+                break;
+            }
+        }
+        if (foundResultMap != null) {
+            txFields.addAll(determineResults(foundResultMap.getResults(), entityClass));
+            addExtends(txFields, foundResultMap, entityClass, resultMaps);
+        }
     }
 
     private Collection<? extends TxField> determineResults(List<Result> results, PsiClass mapperClass) {
@@ -97,6 +126,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
 
     /**
      * resultMap 的子标签<id/>
+     *
      * @param mapperClass
      * @param ids
      * @return
@@ -107,6 +137,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
 
     /**
      * resultMap 的 id
+     *
      * @param mapperClass
      * @param id
      * @return
@@ -133,6 +164,8 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
                 mostShortResultMap = resultMap;
             } else {
                 String shortName = mostShortResultMap.getId().getStringValue();
+                assert shortName != null;
+                assert currentMapId != null;
                 if (shortName.length() >= currentMapId.length()) {
                     mostShortResultMap = resultMap;
                 }

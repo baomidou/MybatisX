@@ -29,7 +29,7 @@ class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
     @ApiStatus.Internal
     @Override
     public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
-        AppUIExecutor.onUiThread().later().execute(()->{
+        AppUIExecutor.onUiThread().later().withDocumentsCommitted(project).inTransaction(project).execute(()->{
             boolean committed = PsiDocumentManager.getInstance(project).isCommitted(editor.getDocument());
             logger.info("document committed: {}", committed);
             if (committed) {

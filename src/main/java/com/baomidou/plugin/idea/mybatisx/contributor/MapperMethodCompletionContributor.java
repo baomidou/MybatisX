@@ -74,6 +74,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (Throwable e) {
             logger.error("自动提示异常", e);
+            throw e;
         }
 
         logger.info("MapperMethodCompletionContributor.fillCompletionVariants end");
