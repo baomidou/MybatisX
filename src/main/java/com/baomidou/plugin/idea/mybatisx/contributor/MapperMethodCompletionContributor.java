@@ -105,11 +105,11 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             logger.info("当前类不是接口, 不提示");
             return Optional.empty();
         }
-
-        Optional<PsiClass> entityClassByMapperClass = JpaAnnotationMappingResolver.findEntityClassByMapperClass(mapperClass);
-        if (entityClassByMapperClass.isPresent()) {
-            return entityClassByMapperClass;
-        }
+//
+//        Optional<PsiClass> entityClassByMapperClass = JpaAnnotationMappingResolver.findEntityClassByMapperClass(mapperClass);
+//        if (entityClassByMapperClass.isPresent()) {
+//            return entityClassByMapperClass;
+//        }
         Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
         if (!firstMapper.isPresent()) {
             logger.info("当前类不是mapper接口, 不提示");
@@ -119,7 +119,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
                 return Optional.empty();
             }
         }
-        return Optional.ofNullable(mapperClass);
+        return Optional.of(mapperClass);
     }
 
     private static boolean inCommentOrLiteral(CompletionParameters parameters) {
