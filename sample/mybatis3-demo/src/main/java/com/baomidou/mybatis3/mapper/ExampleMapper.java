@@ -1,4 +1,5 @@
 package com.baomidou.mybatis3.mapper;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

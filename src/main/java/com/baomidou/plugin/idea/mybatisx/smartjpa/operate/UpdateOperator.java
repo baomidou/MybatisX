@@ -10,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldApp
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
@@ -60,12 +61,11 @@ public class UpdateOperator extends BaseOperatorManager {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector,
-                                      MybatisXmlGenerator mybatisXmlGenerator) {
+                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             String operatorXml = "update " + tableName + "\n set ";
 
             return operatorXml + collector.stream().map(syntaxAppenderWrapper -> {
-                return syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
+                return syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
             }).collect(Collectors.joining());
         }
     }
@@ -113,8 +113,8 @@ public class UpdateOperator extends BaseOperatorManager {
     }
 
     @Override
-    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
-        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
         mybatisXmlGenerator.generateUpdate(id, mapperXml);
     }
 }

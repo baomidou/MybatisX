@@ -1,6 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionIfTestWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
@@ -8,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.CommonGenerat
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.Importer;
+import com.baomidou.plugin.idea.mybatisx.ui.JpaAdvanceDialog;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
@@ -23,7 +26,6 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.ui.messages.MessageDialog;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
@@ -46,6 +48,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * 在mapper类中通过名字生成方法和xml内容
@@ -57,6 +60,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
         try {
+
             PsiTypeElement statementElement = PsiTreeUtil.getParentOfType(element, PsiTypeElement.class);
             if (statementElement == null) {
                 statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
@@ -74,6 +78,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
                 return;
             }
 
+
             final String text = statementElement.getText();
 
 
@@ -87,6 +92,9 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
                 logger.info("不支持的语法");
                 return;
             }
+
+            ConditionFieldWrapper conditionFieldWrapper = getConditionFieldWrapper(project, platformGenerator);
+
             Document document = editor.getDocument();
             String newMethodString = returnDescriptor.getContent() + " " + statementElement.getText() + parameterDescriptor.getContent();
             TextRange textRange = statementElement.getTextRange();
@@ -113,14 +121,27 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
                 PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
                 final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
                 // 生成完整版的内容
-                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper, project));
+
+                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper, project), conditionFieldWrapper);
             }
 
 
         } catch (Throwable e) {
             logger.error("聪明的JPA失败了", e);
-            Messages.showErrorDialog(e.getMessage(),"generate error");
+            Messages.showErrorDialog(e.getMessage(), "generate error");
         }
+    }
+
+    protected ConditionFieldWrapper getConditionFieldWrapper(@NotNull Project project, PlatformGenerator platformGenerator) {
+        // 弹出模态窗口
+        JpaAdvanceDialog fieldSelectedDialogWrapper = new JpaAdvanceDialog(project);
+        fieldSelectedDialogWrapper.initFields(platformGenerator.getConditionFields());
+        fieldSelectedDialogWrapper.show();
+        // 模态窗口选择 OK, 生成相关代码
+        if (fieldSelectedDialogWrapper.getExitCode() != Messages.YES) {
+        }
+        Set<String> selectedFields = fieldSelectedDialogWrapper.getSelectedFields();
+        return new ConditionIfTestWrapper(selectedFields);
     }
 
     @NotNull
@@ -178,7 +199,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
                         return tableName;
                     }
                     // 加入候选
-                    if(guessTableName.contains(entityTableName.toUpperCase())){
+                    if (guessTableName.contains(entityTableName.toUpperCase())) {
                         priorityQueue.add(guessTableName);
                     }
                 }

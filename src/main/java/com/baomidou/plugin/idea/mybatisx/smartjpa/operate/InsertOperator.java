@@ -9,6 +9,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAp
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
@@ -61,12 +62,11 @@ public class InsertOperator extends BaseOperatorManager {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector,
-                                      MybatisXmlGenerator mybatisXmlGenerator) {
+                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder();
             mapperXml.append("insert into " + tableName).append("\n");
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
-                String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
+                String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 mapperXml.append(templateText);
             }
             return mapperXml.toString();
@@ -91,14 +91,14 @@ public class InsertOperator extends BaseOperatorManager {
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
                                           LinkedList<PsiParameter> parameters,
-                                          LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                          LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender selective = InsertCustomSuffixAppender.createInsertBySuffixOperator("Selective",
                     new InsertSelectiveSuffixOperator(mappingField),
                     AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
                 syntaxAppenderWrappers.add(new SyntaxAppenderWrapper(selective));
-                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, mybatisXmlGenerator);
+                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
 
@@ -124,14 +124,14 @@ public class InsertOperator extends BaseOperatorManager {
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
                                           LinkedList<PsiParameter> parameters,
-                                          LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                          LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender insertAll = InsertCustomSuffixAppender.createInsertBySuffixOperator("All",
                     new InsertAllSuffixOperator(mappingField),
                     AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
                 syntaxAppenderWrappers.add(new SyntaxAppenderWrapper(insertAll));
-                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, mybatisXmlGenerator);
+                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
 
 
@@ -176,8 +176,8 @@ public class InsertOperator extends BaseOperatorManager {
     }
 
     @Override
-    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
-        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, MybatisXmlGenerator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
         mybatisXmlGenerator.generateInsert(id, mapperXml);
     }
 

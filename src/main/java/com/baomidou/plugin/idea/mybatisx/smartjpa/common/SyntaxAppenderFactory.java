@@ -1,8 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
@@ -29,7 +29,9 @@ public interface SyntaxAppenderFactory {
 
     String getFactoryTemplateText(LinkedList<SyntaxAppender> jpaStringList,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, String tableName, MybatisXmlGenerator mybatisXmlGenerator);
+                                  LinkedList<PsiParameter> parameters,
+                                  String tableName,
+                                  ConditionFieldWrapper conditionFieldWrapper);
 
     Optional<String> mappingAppend(SyntaxAppender syntaxAppender, List<SyntaxAppender> splitList);
 
@@ -46,7 +48,7 @@ public interface SyntaxAppenderFactory {
     default String getTemplateText(String tableName,
                                    PsiClass entityClass,
                                    LinkedList<PsiParameter> parameters,
-                                   LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                   LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
         return "";
     }
 

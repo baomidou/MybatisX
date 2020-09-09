@@ -4,32 +4,26 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.FieldAppendTypeCommand;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
-import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
 
 public class CustomFieldAppender implements SyntaxAppender {
 
@@ -104,7 +98,7 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
         PsiParameter parameter = parameters.poll();
         if (parameter == null) {
             logger.info("字段参数为空, 什么也不做, fieldName: {}", fieldName);
@@ -121,7 +115,6 @@ public class CustomFieldAppender implements SyntaxAppender {
         // 移除字段符号
         final SyntaxAppender peek = jpaStringList.poll();
         String text = peek.getText();
-        //old:   text.substring(0, 1).toLowerCase() + text.substring(1)
         text = StringUtils.lowerCaseFirstChar(text);
         PsiField psiField = fieldMap.get(text);
         if (psiField == null) {

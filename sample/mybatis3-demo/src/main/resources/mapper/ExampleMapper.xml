@@ -21,23 +21,6 @@
         AND title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
         order by age
     </select>
-    <insert id="insertBatch">
-        insert into null(id,
-        title,
-        content,
-        money,
-        age,
-        create_time)
-        values
-        <foreach collection="blogCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},
-            #{item.title,jdbcType=VARCHAR},
-            #{item.content,jdbcType=VARCHAR},
-            #{item.money,jdbcType=DECIMAL},
-            #{item.age,jdbcType=NUMERIC},
-            #{item.createTime,jdbcType=TIMESTAMP})
-        </foreach>
-    </insert>
 
 
 </mapper>

@@ -26,7 +26,7 @@ class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
         this.editor = editor;
         this.project = project;
     }
-    @ApiStatus.Internal
+
     @Override
     public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
         AppUIExecutor.onUiThread().later().withDocumentsCommitted(project).inTransaction(project).execute(()->{

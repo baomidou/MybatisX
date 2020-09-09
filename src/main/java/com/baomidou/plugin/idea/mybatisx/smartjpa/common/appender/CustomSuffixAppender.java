@@ -8,14 +8,10 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffi
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.FieldSuffixAppendTypeService;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
-import com.intellij.database.datagrid.DataGridUtil;
-import com.intellij.database.model.ObjectKind;
-import com.intellij.database.psi.DbDataSource;
-import com.intellij.database.util.DasUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -144,7 +140,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
         if (collector.size() == 0) {
             logger.info("这个后缀没有参数, suffix: {}", this.getText());
         }

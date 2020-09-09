@@ -14,26 +14,25 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.Boolea
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.InParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.NotInParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.ParamIgnoreCaseSuffixOperator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +43,7 @@ import java.util.stream.Collectors;
  */
 public class ConditionAppenderFactory extends BaseAppenderFactory {
     List<SyntaxAppender> syntaxAppenderArrayList;
+
 
     public ConditionAppenderFactory(final String resultAreaName, final List<TxField> mappingField) {
         syntaxAppenderArrayList = initAppender(mappingField, resultAreaName);
@@ -179,14 +179,31 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
     @Override
     public String getTemplateText(String tableName, PsiClass entityClass,
                                   LinkedList<PsiParameter> parameters,
-                                  LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                  LinkedList<SyntaxAppenderWrapper> collector,
+                                  ConditionFieldWrapper conditionFieldWrapper) {
         final String where = "where";
-        final String condition = collector
-            .stream()
-            .map(x -> x.getAppender()
-                .getTemplateText(tableName, entityClass, parameters, x.getCollector(), mybatisXmlGenerator))
-            .collect(Collectors.joining());
-        return where + " " + condition;
+
+        StringBuilder stringBuilder = new StringBuilder();
+        Stack<String> joinStack = new Stack<>();
+        for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
+            SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
+            String templateText = appender
+                .getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrapper.getCollector(), conditionFieldWrapper);
+            if (appender.getType() == AppendTypeEnum.JOIN) {
+                joinStack.push(templateText);
+                continue;
+            }
+            if (appender instanceof CustomFieldAppender) {
+                if(!joinStack.empty()){
+                    templateText =  joinStack.pop() + templateText;
+                }
+                CustomFieldAppender fieldAppender = (CustomFieldAppender) appender;
+                templateText = conditionFieldWrapper.wrapperConditionText(fieldAppender.getFieldName(), templateText);
+            }
+            stringBuilder.append(templateText);
+        }
+
+        return conditionFieldWrapper.wrapperWhere(stringBuilder.toString());
     }
 
 

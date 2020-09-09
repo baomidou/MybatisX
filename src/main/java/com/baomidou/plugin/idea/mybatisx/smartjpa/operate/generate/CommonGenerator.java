@@ -1,33 +1,25 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameterDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.intellij.database.Dbms;
-import com.intellij.database.model.DasDataSource;
 import com.intellij.database.model.DasTable;
-import com.intellij.database.psi.DbDataSource;
-import com.intellij.database.psi.DbPsiFacade;
-import com.intellij.database.util.DasUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.sql.dialects.SqlLanguageDialect;
-import com.intellij.sql.psi.SqlPsiFacade;
-import com.intellij.util.containers.JBIterable;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.sql.DataSource;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 /**
  * 常用的生成器
@@ -44,20 +36,19 @@ public class CommonGenerator implements PlatformGenerator {
     private CommonGenerator(PsiClass entityClass, String text,
                             @NotNull Dbms dbms,
                             DasTable dasTable,
-                            String defaultTableName,
+                            String tableName,
                             List<TxField> fields) {
         this.entityClass = entityClass;
         this.text = text;
         mappingField = fields;
 
-        this.tableName = defaultTableName;
+        this.tableName = tableName;
 
-        appenderManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass, dasTable, tableName);
+        appenderManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass, dasTable, this.tableName);
         jpaList = appenderManager.splitAppenderByText(text);
     }
 
     /**
-     *
      * @param entityClass
      * @param text
      * @param dbms
@@ -70,7 +61,7 @@ public class CommonGenerator implements PlatformGenerator {
                                                              DasTable dasTable,
                                                              String tableName,
                                                              List<TxField> fields) {
-        return new CommonGenerator(entityClass, text, dbms,dasTable, tableName, fields);
+        return new CommonGenerator(entityClass, text, dbms, dasTable, tableName, fields);
     }
 
 
@@ -88,15 +79,26 @@ public class CommonGenerator implements PlatformGenerator {
     }
 
     @Override
-    public void generateMapperXml(PsiMethod psiMethod, MybatisXmlGenerator mybatisXmlGenerator) {
+    public void generateMapperXml(PsiMethod psiMethod, MybatisXmlGenerator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
         appenderManager.generateMapperXml(
             text,
             new LinkedList<>(jpaList),
             entityClass,
             psiMethod,
             tableName,
-            mybatisXmlGenerator);
+            mybatisXmlGenerator,
+            conditionFieldWrapper);
 
+    }
+
+    @Override
+    public List<String> getConditionFields() {
+        return jpaList.stream()
+            .filter(syntaxAppender->syntaxAppender.getAreaSequence() == AreaSequence.CONDITION
+                && syntaxAppender.getType() == AppendTypeEnum.FIELD &&
+                syntaxAppender instanceof CustomFieldAppender)
+            .map(x-> ((CustomFieldAppender)x).getFieldName())
+            .collect(Collectors.toList());
     }
 
 }

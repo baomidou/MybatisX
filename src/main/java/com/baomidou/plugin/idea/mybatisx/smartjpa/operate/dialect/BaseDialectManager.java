@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect;
 
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
@@ -34,6 +35,7 @@ public class BaseDialectManager implements AreaOperateManager {
         this.registerManagers(new InsertOperator(mappingField));
         this.registerManagers(new UpdateOperator(mappingField));
         this.registerManagers(new DeleteOperator(mappingField));
+
     }
 
     protected void registerManagers(AreaOperateManager areaOperateManager){
@@ -109,7 +111,13 @@ public class BaseDialectManager implements AreaOperateManager {
     }
 
     @Override
-    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableNameByEntityName, MybatisXmlGenerator mybatisXmlGenerator) {
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod,
+                                  String tableNameByEntityName,
+                                  MybatisXmlGenerator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper) {
         if (jpaList.size() == 0 || jpaList.get(0).getType() != AppendTypeEnum.AREA) {
             return;
         }
@@ -117,7 +125,7 @@ public class BaseDialectManager implements AreaOperateManager {
 
         for (AreaOperateManager typeManager : this.typeManagers) {
             if (typeManager.support(syntaxAppender.getText())) {
-                typeManager.generateMapperXml(id, jpaList, entityClass, psiMethod, tableNameByEntityName, mybatisXmlGenerator);
+                typeManager.generateMapperXml(id, jpaList, entityClass, psiMethod, tableNameByEntityName, mybatisXmlGenerator, conditionFieldWrapper);
                 return;
             }
         }

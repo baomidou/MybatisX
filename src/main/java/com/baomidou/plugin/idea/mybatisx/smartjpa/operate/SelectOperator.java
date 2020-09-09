@@ -12,6 +12,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppe
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.SortAppenderFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
@@ -69,10 +70,9 @@ public class SelectOperator extends BaseOperatorManager {
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
                                           LinkedList<PsiParameter> parameters,
-                                          LinkedList<SyntaxAppenderWrapper> collector,
-                                          MybatisXmlGenerator mybatisXmlGenerator) {
+                                          LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
-                super.getTemplateText(tableName,entityClass,parameters,collector,mybatisXmlGenerator);
+                super.getTemplateText(tableName,entityClass,parameters,collector, conditionFieldWrapper);
                 // 无论如何都是返回这样的查询
                 return "select <include refid=\"Base_Column_List\"/> from " + tableName;
             }
@@ -113,10 +113,9 @@ public class SelectOperator extends BaseOperatorManager {
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
                                           LinkedList<PsiParameter> parameters,
-                                          LinkedList<SyntaxAppenderWrapper> collector,
-                                          MybatisXmlGenerator mybatisXmlGenerator) {
+                                          LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
-                super.getTemplateText(tableName,entityClass,parameters,collector,mybatisXmlGenerator);
+                super.getTemplateText(tableName,entityClass,parameters,collector, conditionFieldWrapper);
                 // 无论如何都是返回这样的查询
                 return "select <include refid=\"Base_Column_List\"/> from " + tableName;
             }
@@ -193,8 +192,7 @@ public class SelectOperator extends BaseOperatorManager {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector,
-                                      MybatisXmlGenerator mybatisXmlGenerator) {
+                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             if (collector.isEmpty()) {
                 return "select <include refid=\"Base_Column_List\"/> from " + tableName;
             }
@@ -203,7 +201,7 @@ public class SelectOperator extends BaseOperatorManager {
             for (SyntaxAppenderWrapper syntaxAppender : collector) {
                 // 列名 或者 逗号
                 String columnName = syntaxAppender.getAppender()
-                    .getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), mybatisXmlGenerator);
+                    .getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), conditionFieldWrapper);
                 stringBuilder.append(columnName);
             }
             stringBuilder.append("\n").append("from").append(" ").append(tableName);
@@ -269,10 +267,10 @@ public class SelectOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return appenderList
                 .stream()
-                .map(x -> x.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator))
+                .map(x -> x.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper))
                 .collect(Collectors.joining(","));
         }
     }
@@ -286,7 +284,7 @@ public class SelectOperator extends BaseOperatorManager {
 
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return columnName;
         }
     }
@@ -295,8 +293,8 @@ public class SelectOperator extends BaseOperatorManager {
     public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList,
                                   PsiClass entityClass,
                                   PsiMethod psiMethod, String tableName,
-                                  MybatisXmlGenerator mybatisXmlGenerator) {
-        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, mybatisXmlGenerator);
+                                  MybatisXmlGenerator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
         mybatisXmlGenerator.generateSelect(id, mapperXml);
     }
 

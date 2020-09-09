@@ -1,4 +1,4 @@
-<idea-plugin url="https://gitee.com/baomidou/mybatis-plus" require-restart="false">
+<idea-plugin url="https://gitee.com/baomidou/mybatis-plus">
     <id>com.baomidou.plugin.idea.mybatisx</id>
     <name>MyBatisX</name>
     <version>1.0.0</version>
@@ -74,7 +74,7 @@
                                         implementationClass="com.baomidou.plugin.idea.mybatisx.provider.InjectionLineMarkerProvider"/>
 
         <!--设置中的配置-->
-        <applicationConfigurable dynamic="true" id="mybatisx.settings" instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
+        <applicationConfigurable id="mybatisx.settings" instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
 
         <!--应用服务-->
         <applicationService id="baomidou.MybatisSetting"

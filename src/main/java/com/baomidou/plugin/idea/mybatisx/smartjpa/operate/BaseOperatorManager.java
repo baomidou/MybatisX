@@ -3,10 +3,10 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlockFactory;
@@ -123,14 +123,14 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
      * @param entityClass
      * @param psiMethod
      * @param tableName
-     * @param mybatisXmlGenerator
+     * @param conditionFieldWrapper
      * @return
      */
     protected String generateXml(LinkedList<SyntaxAppender> jpaList,
                                  PsiClass entityClass,
                                  PsiMethod psiMethod,
                                  String tableName,
-                                 MybatisXmlGenerator mybatisXmlGenerator) {
+                                 ConditionFieldWrapper conditionFieldWrapper) {
         SyntaxAppender firstAreaAppender = jpaList.peek();
         if (firstAreaAppender != null && !this.canExecute(firstAreaAppender.getText())) {
             return null;
@@ -147,7 +147,8 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
                 entityClass,
                 parameters,
                 tableName,
-                mybatisXmlGenerator);
+                conditionFieldWrapper
+            );
         }).collect(Collectors.joining("\n"));
 
     }

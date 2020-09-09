@@ -5,7 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
@@ -26,7 +26,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
     @Override
     public String getFactoryTemplateText(LinkedList<SyntaxAppender> jpaStringList,
                                          PsiClass entityClass,
-                                         LinkedList<PsiParameter> parameters, String tableName, MybatisXmlGenerator mybatisXmlGenerator) {
+                                         LinkedList<PsiParameter> parameters, String tableName, ConditionFieldWrapper conditionFieldWrapper) {
         if (jpaStringList.isEmpty()) {
             return "";
         }
@@ -35,6 +35,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         SyntaxAppenderWrapper rootSyntaxWrapper = new SyntaxAppenderWrapper(null);
         compositeAppender.toTree(jpaStringList, rootSyntaxWrapper);
 
+        // 加入 mybatis-xml 的 if-test 支持
         // 遍历区域, 生成字符串
         return "\n" + rootSyntaxWrapper.getCollector().stream().map(syntaxAppenderWrapper -> {
             LinkedList<SyntaxAppenderWrapper> collector = syntaxAppenderWrapper
@@ -43,7 +44,8 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
                 entityClass,
                 parameters,
                 collector,
-                mybatisXmlGenerator);
+                conditionFieldWrapper
+            );
         }).collect(Collectors.joining("\n"));
     }
 

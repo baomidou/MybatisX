@@ -5,7 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AreaPrefixAppendTypeCommand;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
@@ -119,8 +119,8 @@ public class CustomAreaAppender implements SyntaxAppender {
     }
 
     @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
-        return syntaxAppenderFactory.getTemplateText(tableName, entityClass, parameters, collector,mybatisXmlGenerator);
+    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        return syntaxAppenderFactory.getTemplateText(tableName, entityClass, parameters, collector,conditionFieldWrapper);
     }
 
 

@@ -9,9 +9,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppe
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
@@ -72,16 +72,16 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return getFieldName();
         }
     }
 
     @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
         StringBuilder stringBuilder = new StringBuilder();
         for (SyntaxAppenderWrapper syntaxAppender : collector) {
-            String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), mybatisXmlGenerator);
+            String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), conditionFieldWrapper);
             stringBuilder.append(templateText).append(" ");
         }
         return "order by " + stringBuilder.toString();

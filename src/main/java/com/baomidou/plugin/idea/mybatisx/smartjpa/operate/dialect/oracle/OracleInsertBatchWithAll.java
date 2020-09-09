@@ -5,11 +5,11 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.database.model.DasTable;
@@ -56,14 +56,14 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
         ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {
             @Override
-            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator("BatchWithAll",
                     getSuffixOperator(mappingField),
                     AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
                 syntaxAppenderWrappers.add(new SyntaxAppenderWrapper(suffixOperator));
-                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, mybatisXmlGenerator);
+                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
         return appenderFactory;
@@ -79,11 +79,10 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector,
-                                      MybatisXmlGenerator mybatisXmlGenerator) {
+                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder("insert all ");
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
-                String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
+                String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 mapperXml.append(templateText);
             }
             mapperXml.append("select 1 from dual");

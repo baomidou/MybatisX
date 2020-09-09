@@ -4,7 +4,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.TemplateResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
@@ -98,26 +98,26 @@ public class CompositeAppender implements SyntaxAppender {
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
                                   LinkedList<PsiParameter> parameters,
-                                  LinkedList<SyntaxAppenderWrapper> collector, MybatisXmlGenerator mybatisXmlGenerator) {
+                                  LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
         StringBuilder stringBuilder = new StringBuilder();
         // 第一个是 and, or
         if (appenderList.peek().getType() == AppendTypeEnum.JOIN
             || appenderList.peek().getType() == AppendTypeEnum.AREA) {
             SyntaxAppender lastAppender = appenderList.poll();
             // 先执行 连接符的获取模板文本, 然后把后续的内容拼接起来
-            String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
-            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector,mybatisXmlGenerator);
+            String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
+            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector,conditionFieldWrapper);
         }
         // 最后一个是后缀
         if (appenderList.peekLast().getType() == AppendTypeEnum.SUFFIX) {
             SyntaxAppender lastAppender = appenderList.pollLast();
             // 由后缀去处理前面所有的内容
-            return lastAppender.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
+            return lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
 
         }
         logger.info("组合字段操作: {}", appenderList.size());
         for (SyntaxAppender appender : appenderList) {
-            String templateText = appender.getTemplateText(tableName, entityClass, parameters, collector, mybatisXmlGenerator);
+            String templateText = appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
             stringBuilder.append(templateText);
         }
 

@@ -56,18 +56,6 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
         return txParameters;
     }
 
-    //    private List<SyntaxAppender> toTree(LinkedList<SyntaxAppender> jpaStringList) {
-//        List<SyntaxAppender> list = new ArrayList<>();
-//        SyntaxAppender current = null;
-//        while ((current = jpaStringList.poll()) != null) {
-//            current.toTree(jpaStringList);
-//            list.add(current);
-//        }
-//        return list;
-//    }
-
-    private static final Logger logger = LoggerFactory.getLogger(ResultAppenderFactory.class);
-
     @Override
     public List<SyntaxAppender> getSyntaxAppenderList() {
         return this.syntaxAppenderList;
