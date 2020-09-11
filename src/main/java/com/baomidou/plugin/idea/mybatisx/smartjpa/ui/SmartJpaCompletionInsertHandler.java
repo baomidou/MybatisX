@@ -29,13 +29,11 @@ class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
 
     @Override
     public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
-        AppUIExecutor.onUiThread().later().withDocumentsCommitted(project).inTransaction(project).execute(()->{
-            boolean committed = PsiDocumentManager.getInstance(project).isCommitted(editor.getDocument());
-            logger.info("document committed: {}", committed);
-            if (committed) {
-                new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(project, editor, 1);
-            }
-        });
+        boolean committed = PsiDocumentManager.getInstance(project).isCommitted(editor.getDocument());
+        logger.info("document committed: {}", committed);
+        if (committed) {
+            new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(project, editor, 1);
+        }
     }
 
     private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionInsertHandler.class);

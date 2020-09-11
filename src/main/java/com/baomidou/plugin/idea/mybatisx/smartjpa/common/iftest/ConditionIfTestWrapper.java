@@ -7,6 +7,10 @@ import java.util.Set;
  */
 public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     private Set<String> wrapperFields;
+    private String allFieldsStr;
+    private String resultMap;
+    private boolean resultType;
+    private String resultTypeClass;
 
     public ConditionIfTestWrapper(Set<String> wrapperFields) {
         this.wrapperFields = wrapperFields;
@@ -29,7 +33,39 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return "<where>" + content + "\n</where>";
     }
 
+    @Override
+    public String getAllFields() {
+        return allFieldsStr;
+    }
+
+    @Override
+    public String getResultMap() {
+        return resultType ? null : resultMap;
+    }
+
+    @Override
+    public String getResultType() {
+        return resultType ? resultTypeClass : null;
+    }
+
+
     private String getNullWrapper(String fieldName) {
         return fieldName + "!= null";
+    }
+
+    public void setAllFields(String allFieldsStr) {
+        this.allFieldsStr = allFieldsStr;
+    }
+
+    public void setResultMap(String resultMap) {
+        this.resultMap = resultMap;
+    }
+
+    public void setResultType(boolean resultType) {
+        this.resultType = resultType;
+    }
+
+    public void setResultTypeClass(String resultTypeClass) {
+        this.resultTypeClass = resultTypeClass;
     }
 }

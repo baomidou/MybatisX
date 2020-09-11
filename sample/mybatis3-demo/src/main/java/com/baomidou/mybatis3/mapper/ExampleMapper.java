@@ -13,4 +13,5 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     List<Blog> selectByIdAndCreateTimeBetweenAndTitleContainingOrderByAge(@Param("id") Long id, @Param("beginCreateTime") Date beginCreateTime, @Param("endCreateTime") Date endCreateTime, @Param("title") String title);
 
+    List<Blog> selectAllById(@Param("id")Long id);
 }

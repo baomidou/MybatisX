@@ -21,6 +21,14 @@
         AND title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
         order by age
     </select>
+    <select id="selectAllById" resultType="com.baomidou.mybatis3.domain.Blog">
+        select id ,title ,content ,money ,age ,create_time as createTime from t_blog
+        <where>
+            <if test="id!= null">id = #{id,jdbcType=NUMERIC}
+            </if>
+        </where>
+
+    </select>
 
 
 </mapper>

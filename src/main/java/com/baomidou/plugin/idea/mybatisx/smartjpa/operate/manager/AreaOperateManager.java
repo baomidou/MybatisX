@@ -4,7 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +44,7 @@ public interface AreaOperateManager {
     boolean support(String operatorText);
 
     /**
-     *
-     *  @param id
+     *   @param id
      * @param jpaList 输入的文本
      * @param entityClass 类
      * @param psiMethod 方法
@@ -58,7 +57,7 @@ public interface AreaOperateManager {
                            PsiClass entityClass,
                            PsiMethod psiMethod,
                            String tableName,
-                           MybatisXmlGenerator mybatisXmlGenerator,
+                           Generator mybatisXmlGenerator,
                            ConditionFieldWrapper conditionFieldWrapper);
 
 }

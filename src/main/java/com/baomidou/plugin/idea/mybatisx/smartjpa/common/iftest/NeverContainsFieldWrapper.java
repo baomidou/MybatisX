@@ -13,4 +13,23 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
     public String wrapperWhere(String content) {
         return "where " + content;
     }
+
+    /**
+     * 默认的 查询所有字段的方式
+     * @return
+     */
+    @Override
+    public String getAllFields() {
+        return "<include refid=\"Base_Column_List\" />";
+    }
+
+    @Override
+    public String getResultMap() {
+        return "BaseResultMap";
+    }
+
+    @Override
+    public String getResultType() {
+        return null;
+    }
 }

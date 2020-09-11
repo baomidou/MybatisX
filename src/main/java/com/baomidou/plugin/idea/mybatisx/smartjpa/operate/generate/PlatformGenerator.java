@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.intellij.psi.PsiMethod;
 
@@ -26,12 +27,14 @@ public interface PlatformGenerator {
 
     /**
      * 生成mapper方法
-     *
-     * @param psiMethod       PSI 方法描述
+     *  @param psiMethod       PSI 方法描述
      * @param methodGenerator 方法生成操作,  自定义实现可以生成 spring jpa, mybatis xml, mybatis 注解
      */
-    void generateMapperXml(PsiMethod psiMethod, MybatisXmlGenerator methodGenerator, ConditionFieldWrapper conditionFieldWrapper);
+    void generateMapperXml(PsiMethod psiMethod, Generator methodGenerator, ConditionFieldWrapper conditionFieldWrapper);
 
     List<String> getConditionFields();
 
+    List<TxField> getAllFields();
+
+    String getEntityClass();
 }

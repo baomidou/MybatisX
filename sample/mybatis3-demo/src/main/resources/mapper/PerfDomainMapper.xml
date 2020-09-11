@@ -20,7 +20,36 @@
         , down
 
     </select>
-   
+    <select id="selectAllByIdAndExact" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from perf_domain
+        <where>
+            <if test="id!= null">id = #{id,jdbcType=VARCHAR}
+            </if>
+            <if test="exact!= null">
+                AND exact = #{exact,jdbcType=VARCHAR}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectAllByIdAndExact" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from perf_domain
+        where id = #{id,jdbcType=VARCHAR}
+        AND exact = #{exact,jdbcType=VARCHAR}
+
+    </select>
+    <select id="selectAllByIdAndExact" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from perf_domain
+        <where>id = #{id,jdbcType=VARCHAR}
+            AND exact = #{exact,jdbcType=VARCHAR}
+        </where>
+
+    </select>
 
 
 </mapper>

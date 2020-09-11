@@ -79,7 +79,7 @@ public class CommonGenerator implements PlatformGenerator {
     }
 
     @Override
-    public void generateMapperXml(PsiMethod psiMethod, MybatisXmlGenerator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+    public void generateMapperXml(PsiMethod psiMethod, Generator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
         appenderManager.generateMapperXml(
             text,
             new LinkedList<>(jpaList),
@@ -101,4 +101,13 @@ public class CommonGenerator implements PlatformGenerator {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public List<TxField> getAllFields(){
+        return mappingField;
+    }
+
+    @Override
+    public String getEntityClass(){
+        return entityClass.getQualifiedName();
+    }
 }

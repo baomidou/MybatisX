@@ -21,4 +21,5 @@ public interface PerfDomainMapper extends BaseMapper<PerfDomain> {
 
     List<PerfDomain> selectAllByIdAndExact(@Param("id")String id,@Param("exact")String exact);
 
+
 }

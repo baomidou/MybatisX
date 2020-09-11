@@ -12,17 +12,15 @@ import org.jetbrains.annotations.NotNull;
  * 第一版在这里预留一个形式
  * 后续可以加入:  springjpa提示, 生成mybatis注解
  */
-public class MybatisXmlGenerator implements Generator {
+public class MybatisAnnotationGenerator implements Generator {
 
     public static final String ID = "id";
     public static final String RESULT_MAP = "resultMap";
+    public static final String RESULT_TYPE = "resultType";
     private Mapper mapper;
     private Project project;
 
-    public static final String RESULT_TYPE = "resultType";
-
-    public MybatisXmlGenerator(Mapper mapper, @NotNull Project project) {
-        this.mapper = mapper;
+    public MybatisAnnotationGenerator(@NotNull Project project) {
         this.project = project;
     }
 
@@ -32,10 +30,10 @@ public class MybatisXmlGenerator implements Generator {
         select.setAttribute(ID, id);
         boolean setResult = false;
         if (StringUtils.isNotBlank(resultMap)) {
-            select.setAttribute(RESULT_MAP, resultMap);
+            select.setAttribute(RESULT_MAP, "BaseResultMap");
             setResult = true;
         }
-        if (!setResult && StringUtils.isNotBlank(resultType)) {
+        if (!setResult && StringUtils.isNotBlank(resultMap)) {
             select.setAttribute(RESULT_TYPE,resultType);
             setResult = true;
         }
@@ -49,8 +47,8 @@ public class MybatisXmlGenerator implements Generator {
     @Override
     public void generateDelete(String id, String value) {
         XmlTag delete = mapper.ensureTagExists().createChildTag("delete", null, value, false);
-        delete.setAttribute(ID,id);
-        mapper.ensureTagExists().addSubTag(delete,false);
+        delete.setAttribute(ID, id);
+        mapper.ensureTagExists().addSubTag(delete, false);
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(delete);
@@ -59,9 +57,9 @@ public class MybatisXmlGenerator implements Generator {
     @Override
     public void generateInsert(String id, String value) {
         XmlTag insert = mapper.ensureTagExists().createChildTag("insert", null, value, false);
-        insert.setAttribute(ID,id);
+        insert.setAttribute(ID, id);
         XmlTag xmlTag = mapper.ensureTagExists();
-        xmlTag.addSubTag(insert,false);
+        xmlTag.addSubTag(insert, false);
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(insert);
@@ -70,8 +68,8 @@ public class MybatisXmlGenerator implements Generator {
     @Override
     public void generateUpdate(String id, String value) {
         XmlTag update = mapper.ensureTagExists().createChildTag("update", null, value, false);
-        update.setAttribute(ID,id);
-        mapper.ensureTagExists().addSubTag(update,false);
+        update.setAttribute(ID, id);
+        mapper.ensureTagExists().addSubTag(update, false);
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(update);

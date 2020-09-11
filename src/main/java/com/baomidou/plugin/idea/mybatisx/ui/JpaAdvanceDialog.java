@@ -1,21 +1,18 @@
 package com.baomidou.plugin.idea.mybatisx.ui;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class JpaAdvanceDialog extends DialogWrapper {
 
@@ -25,6 +22,8 @@ public class JpaAdvanceDialog extends DialogWrapper {
         super(project);
         super.init();
         setTitle("Generate Options");
+
+
     }
 
     @Override
@@ -47,9 +46,12 @@ public class JpaAdvanceDialog extends DialogWrapper {
         return strings;
     }
 
+    public String getAllFieldsStr(){
+        return smartJpaAdvanceUI.getAllFieldsText();
+    }
     private static final Logger logger = Logger.getInstance(JpaAdvanceDialog.class);
 
-    public void initFields(List<String> conditionFields) {
+    public void initFields(List<String> conditionFields, List<TxField> allFields, String entityClass) {
         JPanel conditionPanel = smartJpaAdvanceUI.getConditionPanel();
         // 默认 5 列
         int columns =  5;
@@ -70,5 +72,19 @@ public class JpaAdvanceDialog extends DialogWrapper {
             conditionPanel.add(checkBox, constraints);
         }
 
+        smartJpaAdvanceUI.initResultFields(allFields);
+        smartJpaAdvanceUI.setResultType(entityClass);
+    }
+
+    public String getResultMap() {
+        return smartJpaAdvanceUI.getResultMap();
+    }
+
+
+    public String getResultTypeClass() {
+        return smartJpaAdvanceUI.getResultTypeClass();
+    }
+    public boolean isResultType(){
+        return smartJpaAdvanceUI.isResultType();
     }
 }

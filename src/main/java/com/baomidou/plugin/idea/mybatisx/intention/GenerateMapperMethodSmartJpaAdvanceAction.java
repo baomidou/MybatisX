@@ -93,25 +93,12 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
                 return;
             }
 
-            ConditionFieldWrapper conditionFieldWrapper = getConditionFieldWrapper(project, platformGenerator);
-
-            Document document = editor.getDocument();
-            String newMethodString = returnDescriptor.getContent() + " " + statementElement.getText() + parameterDescriptor.getContent();
-            TextRange textRange = statementElement.getTextRange();
-            WriteCommandAction.runWriteCommandAction(project, () -> {
-                document.replaceString(textRange.getStartOffset(), textRange.getEndOffset(), newMethodString);
-            });
-
-            // 导入对象
-            PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
-            Importer importer = Importer.create(parameterDescriptor.getImportList());
-            importer.addImportToFile(psiDocumentManager,
-                (PsiJavaFile) element.getContainingFile(),
-                document);
-            Importer importerReturn = Importer.create(returnDescriptor.getImportList());
-            importerReturn.addImportToFile(psiDocumentManager,
-                (PsiJavaFile) element.getContainingFile(),
-                document);
+            Optional<ConditionFieldWrapper> conditionFieldWrapperOptional = getConditionFieldWrapper(project, platformGenerator);
+            if(!conditionFieldWrapperOptional.isPresent()){
+                // 不希望生成任何内容
+                return;
+            }
+            String newMethodString = generateAndGetMethodStr(project, editor, element, statementElement, parameterDescriptor, returnDescriptor);
 
             // 生成xml 内容,写入xml 文件
             Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(project, mapperClass);
@@ -122,7 +109,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
                 final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
                 // 生成完整版的内容
 
-                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper, project), conditionFieldWrapper);
+                platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper, project), conditionFieldWrapperOptional.get());
             }
 
 
@@ -132,16 +119,49 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
         }
     }
 
-    protected ConditionFieldWrapper getConditionFieldWrapper(@NotNull Project project, PlatformGenerator platformGenerator) {
+    @NotNull
+    protected String generateAndGetMethodStr(@NotNull Project project, Editor editor, @NotNull PsiElement element, PsiTypeElement statementElement, TypeDescriptor parameterDescriptor, TypeDescriptor returnDescriptor) {
+        Document document = editor.getDocument();
+        String newMethodString = returnDescriptor.getContent() + " " + statementElement.getText() + parameterDescriptor.getContent();
+        TextRange textRange = statementElement.getTextRange();
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            document.replaceString(textRange.getStartOffset(), textRange.getEndOffset(), newMethodString);
+        });
+
+        // 导入对象
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        Importer importer = Importer.create(parameterDescriptor.getImportList());
+        importer.addImportToFile(psiDocumentManager,
+            (PsiJavaFile) element.getContainingFile(),
+            document);
+        Importer importerReturn = Importer.create(returnDescriptor.getImportList());
+        importerReturn.addImportToFile(psiDocumentManager,
+            (PsiJavaFile) element.getContainingFile(),
+            document);
+        return newMethodString;
+    }
+
+    protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project, PlatformGenerator platformGenerator) {
         // 弹出模态窗口
         JpaAdvanceDialog fieldSelectedDialogWrapper = new JpaAdvanceDialog(project);
-        fieldSelectedDialogWrapper.initFields(platformGenerator.getConditionFields());
+        fieldSelectedDialogWrapper.initFields(platformGenerator.getConditionFields(),
+            platformGenerator.getAllFields(),
+            platformGenerator.getEntityClass());
         fieldSelectedDialogWrapper.show();
         // 模态窗口选择 OK, 生成相关代码
         if (fieldSelectedDialogWrapper.getExitCode() != Messages.YES) {
+            return Optional.empty();
         }
         Set<String> selectedFields = fieldSelectedDialogWrapper.getSelectedFields();
-        return new ConditionIfTestWrapper(selectedFields);
+        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(selectedFields);
+
+        conditionIfTestWrapper.setAllFields(fieldSelectedDialogWrapper.getAllFieldsStr());
+
+        conditionIfTestWrapper.setResultMap(fieldSelectedDialogWrapper.getResultMap());
+        conditionIfTestWrapper.setResultTypeClass(fieldSelectedDialogWrapper.getResultTypeClass());
+        conditionIfTestWrapper.setResultType(fieldSelectedDialogWrapper.isResultType());
+
+        return Optional.of(conditionIfTestWrapper);
     }
 
     @NotNull

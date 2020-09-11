@@ -4,4 +4,11 @@ public interface ConditionFieldWrapper {
     String wrapperConditionText(String fieldName, String templateText);
 
     String wrapperWhere(String content);
+
+    String getAllFields();
+
+    String getResultMap();
+
+    String getResultType();
+
 }

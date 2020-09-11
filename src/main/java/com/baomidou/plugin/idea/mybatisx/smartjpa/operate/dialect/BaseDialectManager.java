@@ -10,7 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.UpdateOperator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.intellij.psi.PsiClass;
@@ -116,7 +116,7 @@ public class BaseDialectManager implements AreaOperateManager {
                                   PsiClass entityClass,
                                   PsiMethod psiMethod,
                                   String tableNameByEntityName,
-                                  MybatisXmlGenerator mybatisXmlGenerator,
+                                  Generator mybatisXmlGenerator,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         if (jpaList.size() == 0 || jpaList.get(0).getType() != AppendTypeEnum.AREA) {
             return;

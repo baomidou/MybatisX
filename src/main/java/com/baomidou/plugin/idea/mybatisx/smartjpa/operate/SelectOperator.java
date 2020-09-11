@@ -16,7 +16,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
@@ -33,18 +33,18 @@ public class SelectOperator extends BaseOperatorManager {
 
 
     public SelectOperator(List<TxField> mappingField, PsiClass entityClass) {
-        this.init(mappingField,entityClass,AbstractStatementGenerator.SELECT_GENERATOR.getPatterns());
+        this.init(mappingField, entityClass, AbstractStatementGenerator.SELECT_GENERATOR.getPatterns());
     }
 
     public void init(final List<TxField> mappingField, PsiClass entityClass, Set<String> patterns) {
         SortAppenderFactory sortAppenderFactory = new SortAppenderFactory(mappingField);
         for (String areaName : patterns) {
             // 返回自定义字段
-            initCustomFieldBlock(areaName,mappingField,sortAppenderFactory,entityClass);
+            initCustomFieldBlock(areaName, mappingField, sortAppenderFactory, entityClass);
             // 返回集合
-            initSelectAllBlock(areaName,mappingField,sortAppenderFactory,entityClass);
+            initSelectAllBlock(areaName, mappingField, sortAppenderFactory, entityClass);
             // 返回对象
-            initSelectOneBlock(areaName,mappingField,sortAppenderFactory,entityClass);
+            initSelectOneBlock(areaName, mappingField, sortAppenderFactory, entityClass);
 
         }
 
@@ -52,12 +52,16 @@ public class SelectOperator extends BaseOperatorManager {
 
     /**
      * 初始化 selectOne+By+field区域
+     *
      * @param areaName
      * @param mappingField
      * @param sortAppenderFactory
      * @param entityClass
      */
-    private void initSelectOneBlock(String areaName, List<TxField> mappingField, SortAppenderFactory sortAppenderFactory, PsiClass entityClass) {
+    private void initSelectOneBlock(String areaName,
+                                    List<TxField> mappingField,
+                                    SortAppenderFactory sortAppenderFactory,
+                                    PsiClass entityClass) {
         String newAreaName = areaName + "One";
         StatementBlock statementBlock = new StatementBlock();
 
@@ -65,16 +69,18 @@ public class SelectOperator extends BaseOperatorManager {
         statementBlock.setConditionAppenderFactory(conditionAppenderFactory);
 
         // 结果集区域
-        ResultAppenderFactory resultAppenderFactory = new SelectResultAppenderFactory(newAreaName){
+        ResultAppenderFactory resultAppenderFactory = new SelectResultAppenderFactory(newAreaName) {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
                                           LinkedList<PsiParameter> parameters,
-                                          LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+                                          LinkedList<SyntaxAppenderWrapper> collector,
+                                          ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
-                super.getTemplateText(tableName,entityClass,parameters,collector, conditionFieldWrapper);
+                super.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 // 无论如何都是返回这样的查询
-                return "select <include refid=\"Base_Column_List\"/> from " + tableName;
+                String allFields = conditionFieldWrapper.getAllFields();
+                return "select " + allFields + " from " + tableName;
             }
         };
 
@@ -108,16 +114,17 @@ public class SelectOperator extends BaseOperatorManager {
         statementBlock.setConditionAppenderFactory(conditionAppenderFactory);
 
         // 结果集区域
-        ResultAppenderFactory resultAppenderFactory = new SelectResultAppenderFactory(newAreaName){
+        ResultAppenderFactory resultAppenderFactory = new SelectResultAppenderFactory(newAreaName) {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
                                           LinkedList<PsiParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
-                super.getTemplateText(tableName,entityClass,parameters,collector, conditionFieldWrapper);
+                super.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 // 无论如何都是返回这样的查询
-                return "select <include refid=\"Base_Column_List\"/> from " + tableName;
+                String allFields = conditionFieldWrapper.getAllFields();
+                return "select " + allFields + " from " + tableName;
             }
         };
 
@@ -150,7 +157,7 @@ public class SelectOperator extends BaseOperatorManager {
 
         // 结果集区域
         ResultAppenderFactory resultAppenderFactory = new SelectResultAppenderFactory(areaName);
-        this.initCustomFieldResultAppender(resultAppenderFactory, mappingField, areaName,conditionAppenderFactory);
+        this.initCustomFieldResultAppender(resultAppenderFactory, mappingField, areaName, conditionAppenderFactory);
 
         statementBlock.setResultAppenderFactory(resultAppenderFactory);
         //条件区域
@@ -194,7 +201,8 @@ public class SelectOperator extends BaseOperatorManager {
                                       LinkedList<PsiParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             if (collector.isEmpty()) {
-                return "select <include refid=\"Base_Column_List\"/> from " + tableName;
+                String allFields = conditionFieldWrapper.getAllFields();
+                return "select " + allFields + " from " + tableName;
             }
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("select").append(" ");
@@ -258,8 +266,6 @@ public class SelectOperator extends BaseOperatorManager {
     }
 
 
-
-
     private class SelectCompositeAppender extends CompositeAppender {
 
         public SelectCompositeAppender(final SyntaxAppender... appenders) {
@@ -293,9 +299,10 @@ public class SelectOperator extends BaseOperatorManager {
     public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList,
                                   PsiClass entityClass,
                                   PsiMethod psiMethod, String tableName,
-                                  MybatisXmlGenerator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+                                  Generator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
         String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
-        mybatisXmlGenerator.generateSelect(id, mapperXml);
+
+        mybatisXmlGenerator.generateSelect(id, mapperXml,conditionFieldWrapper.getResultMap(), conditionFieldWrapper.getResultType());
     }
 
     @Override
