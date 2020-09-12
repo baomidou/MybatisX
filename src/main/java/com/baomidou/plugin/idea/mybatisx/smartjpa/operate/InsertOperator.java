@@ -259,7 +259,7 @@ public class InsertOperator extends BaseOperatorManager {
 
         private String selective(String paramName, String origin) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("<if test=\"").append(paramName).append("!= null").append("\">");
+            stringBuilder.append("<if test=\"").append(paramName).append(" != null").append("\">");
             stringBuilder.append(origin);
             stringBuilder.append(",");
             stringBuilder.append("</if>");

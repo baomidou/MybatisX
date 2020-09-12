@@ -39,14 +39,9 @@ public class CustomFieldAppender implements SyntaxAppender {
         return areaSequence;
     }
 
-    public CustomFieldAppender(String tipName) {
-        this.tipName = tipName;
-    }
-
     public void setAreaSequence(AreaSequence areaSequence) {
         this.areaSequence = areaSequence;
     }
-
 
     public CustomFieldAppender(TxField field, AreaSequence areaSequence) {
         this.fieldName = field.getFieldName();
@@ -55,12 +50,6 @@ public class CustomFieldAppender implements SyntaxAppender {
         this.areaSequence = areaSequence;
     }
 
-    protected CustomFieldAppender(CustomFieldAppender customFieldAppender, AreaSequence areaSequence) {
-        this.tipName = customFieldAppender.tipName;
-        this.fieldName = customFieldAppender.fieldName;
-        this.columnName = customFieldAppender.columnName;
-        this.areaSequence = areaSequence;
-    }
 
 
     public String getFieldName() {

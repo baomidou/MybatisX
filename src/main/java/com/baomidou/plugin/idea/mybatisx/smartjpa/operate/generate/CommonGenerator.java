@@ -33,7 +33,8 @@ public class CommonGenerator implements PlatformGenerator {
     private String text;
 
 
-    private CommonGenerator(PsiClass entityClass, String text,
+    private CommonGenerator(PsiClass entityClass,
+                            String text,
                             @NotNull Dbms dbms,
                             DasTable dasTable,
                             String tableName,

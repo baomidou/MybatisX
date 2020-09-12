@@ -102,8 +102,10 @@
         <!--        <typedHandler implementation="com.baomidou.plugin.idea.mybatisx.action.MybatisTypedHandler" id="mybatis" order="first"/>-->
 
         <!--附加的LiveTemplate模板-->
+        <!-- 影响了不重启插件， 取消这个扩展 -->
         <defaultLiveTemplatesProvider id="baomidou.SqlLiveTemplateProvider"
                                       implementation="com.baomidou.plugin.idea.mybatisx.template.SqlLiveTemplateProvider"/>
+
         <refactoring.elementListenerProvider id="baomidou.MapperRefactoringProvider"
             implementation="com.baomidou.plugin.idea.mybatisx.refactoring.MapperRefactoringProvider"/>
 

@@ -29,6 +29,9 @@ public abstract class JpaMappingResolver {
     public static final String TABLE_NAME = "name";
 
     protected String getTableNameByJpaOrCamel(PsiClass entityClass) {
+        if(entityClass == null){
+            throw new IllegalArgumentException("无法确认实体类, 请尝试重新打开Mapper");
+        }
         String tableName = null;
         PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
         if (annotation != null) {

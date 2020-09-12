@@ -1,12 +1,13 @@
 package com.baomidou.plugin.idea.mybatisx.ui;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,21 +17,25 @@ import java.util.Set;
 
 public class JpaAdvanceDialog extends DialogWrapper {
 
-    SmartJpaAdvanceUI smartJpaAdvanceUI = new SmartJpaAdvanceUI();
+    private SmartJpaAdvanceUI smartJpaAdvanceUI = new SmartJpaAdvanceUI();
 
     public JpaAdvanceDialog(@Nullable Project project) {
         super(project);
         super.init();
         setTitle("Generate Options");
-
-
+        setSize(600, 400);
     }
+
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
         return smartJpaAdvanceUI.getRootPanel();
     }
 
+    @Override
+    public void show() {
+        super.show();
+    }
 
     public Set<String> getSelectedFields() {
         Set<String> strings = new HashSet<>();
@@ -46,34 +51,38 @@ public class JpaAdvanceDialog extends DialogWrapper {
         return strings;
     }
 
-    public String getAllFieldsStr(){
+    public String getAllFieldsStr() {
         return smartJpaAdvanceUI.getAllFieldsText();
     }
-    private static final Logger logger = Logger.getInstance(JpaAdvanceDialog.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(JpaAdvanceDialog.class);
 
     public void initFields(List<String> conditionFields, List<TxField> allFields, String entityClass) {
-        JPanel conditionPanel = smartJpaAdvanceUI.getConditionPanel();
-        // 默认 5 列
-        int columns =  5;
-        int biggerColumn = (int)Math.sqrt(conditionFields.size());
-        // 如果 列的总数大于25个, 则取 开根号之后的整形值
-        columns = Math.max(biggerColumn,columns);
-        int rows = conditionFields.size() / columns + (conditionFields.size() % columns == 0 ? 0 : 1);
-        GridLayoutManager mgr = new GridLayoutManager(rows, columns);
-        conditionPanel.setLayout(mgr);
-        conditionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        for (int i = 0; i < conditionFields.size(); i++) {
-            String conditionField = conditionFields.get(i);
-            GridConstraints constraints = new GridConstraints();
-            constraints.setRow(i / columns);
-            constraints.setColumn(i % columns);
-            constraints.setFill(GridConstraints.FILL_BOTH);
-            JCheckBox checkBox = new JCheckBox(conditionField, true);
-            conditionPanel.add(checkBox, constraints);
+        if (conditionFields.size() > 0) {
+            JPanel conditionPanel = smartJpaAdvanceUI.getConditionPanel();
+            // 默认 5 列
+            int columns = 5;
+            int biggerColumn = (int) Math.sqrt(conditionFields.size());
+            // 如果 列的总数大于25个, 则取 开根号之后的整形值
+            columns = Math.max(biggerColumn, columns);
+            int rows = conditionFields.size() / columns + (conditionFields.size() % columns == 0 ? 0 : 1);
+            GridLayoutManager mgr = new GridLayoutManager(rows, columns);
+            conditionPanel.setLayout(mgr);
+            conditionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            for (int i = 0; i < conditionFields.size(); i++) {
+                String conditionField = conditionFields.get(i);
+                GridConstraints constraints = new GridConstraints();
+                constraints.setRow(i / columns);
+                constraints.setColumn(i % columns);
+                constraints.setFill(GridConstraints.FILL_BOTH);
+                JCheckBox checkBox = new JCheckBox(conditionField, true);
+                conditionPanel.add(checkBox, constraints);
+            }
         }
 
         smartJpaAdvanceUI.initResultFields(allFields);
         smartJpaAdvanceUI.setResultType(entityClass);
+
     }
 
     public String getResultMap() {
@@ -84,7 +93,13 @@ public class JpaAdvanceDialog extends DialogWrapper {
     public String getResultTypeClass() {
         return smartJpaAdvanceUI.getResultTypeClass();
     }
-    public boolean isResultType(){
+
+    public boolean isResultType() {
         return smartJpaAdvanceUI.isResultType();
+    }
+
+    public SmartJpaAdvanceUI.GeneratorEnum getGeneratorType() {
+
+        return smartJpaAdvanceUI.getGeneratorType();
     }
 }

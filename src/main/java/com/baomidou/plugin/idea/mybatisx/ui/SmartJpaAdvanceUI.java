@@ -16,9 +16,9 @@ public class SmartJpaAdvanceUI {
     private JTextField resultMapClassTextField;
     private JRadioButton includeRadioButton;
     private JRadioButton allColumnRadioButton;
-    private JEditorPane selectedFieldsText;
     private JRadioButton asFieldRadioButton;
     private JTextField baseColumnListTextField;
+    private JTextArea columnsTextArea;
     private List<TxField> allFields;
 
     private boolean resultType = false;
@@ -36,18 +36,16 @@ public class SmartJpaAdvanceUI {
             }
         });
 
+        includeRadioButton.addItemListener(e -> {
+            includeAllResults();
+        });
 
-        includeRadioButton.addActionListener(e -> {
-            String includeSql = "<include refid=\"" + baseColumnListTextField.getText() + "\"/>";
-            selectedFieldsText.setText(includeSql);
-            resultType = false;
-        });
-        allColumnRadioButton.addActionListener(e -> {
+        allColumnRadioButton.addItemListener(e -> {
             String collect = allFields.stream().map(TxField::getColumnName).collect(Collectors.joining(" ,"));
-            selectedFieldsText.setText(collect);
+            columnsTextArea.setText(collect);
             resultType = false;
         });
-        asFieldRadioButton.addActionListener(e -> {
+        asFieldRadioButton.addItemListener(e -> {
             String collect = allFields.stream().map(x -> {
                 // 没有驼峰命名, 就不需要 as
                 if (x.getColumnName().equals(x.getFieldName())) {
@@ -57,14 +55,22 @@ public class SmartJpaAdvanceUI {
                     return x.getColumnName() + " as " + x.getFieldName();
                 }
             }).collect(Collectors.joining(" ,"));
-            selectedFieldsText.setText(collect);
+            columnsTextArea.setText(collect);
             resultType = true;
         });
 
-
+        // 假装执行了选中 includeAllRadio的事件
+        includeAllResults();
     }
 
-    public GeneratorEnum getGenerator() {
+    private void includeAllResults() {
+        String includeSql = "<include refid=\"" + baseColumnListTextField.getText() + "\"/>";
+        columnsTextArea.setText(includeSql);
+        resultType = false;
+    }
+
+
+    public GeneratorEnum getGeneratorType() {
         if (methodCombo.getSelectedIndex() == 1) {
             return GeneratorEnum.MYBATIS_ANNOTATION;
         }
@@ -84,7 +90,7 @@ public class SmartJpaAdvanceUI {
     }
 
     public String getAllFieldsText() {
-        return selectedFieldsText.getText();
+        return columnsTextArea.getText();
     }
 
     public void initResultFields(List<TxField> allFields) {
@@ -106,6 +112,7 @@ public class SmartJpaAdvanceUI {
     public void setResultType(String entityClass) {
         resultMapClassTextField.setText(entityClass);
     }
+
 
     public enum GeneratorEnum {
         MYBATIS_XML,

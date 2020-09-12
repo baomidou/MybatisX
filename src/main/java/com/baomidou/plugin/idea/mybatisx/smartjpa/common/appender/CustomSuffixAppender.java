@@ -140,19 +140,38 @@ public class CustomSuffixAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<SyntaxAppenderWrapper> collector,
+                                  ConditionFieldWrapper conditionFieldWrapper) {
         if (collector.size() == 0) {
             logger.info("这个后缀没有参数, suffix: {}", this.getText());
         }
-        SyntaxAppenderWrapper syntaxAppenderWrapper = collector.get(0);
-        SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
+
+        StringBuilder stringBuilder = new StringBuilder();
         String fieldName = null;
-        // 兼容insert 语句生成,后缀没有字段的情况
-        if (appender instanceof CustomFieldAppender) {
-            CustomFieldAppender field = (CustomFieldAppender) appender;
-            fieldName = field.getFieldName();
+        int i = 0;
+        for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
+
+            SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
+            // 兼容insert 语句生成,后缀没有字段的情况
+            if (appender instanceof CustomFieldAppender) {
+                CustomFieldAppender field = (CustomFieldAppender) appender;
+                fieldName = field.getFieldName();
+                break;
+            }
+            // field 是不能取值的
+            String templateText =
+                appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
+            if (i > 0) {
+                stringBuilder.append(" ");
+            }
+            stringBuilder.append(templateText);
+            i++;
         }
-       return suffixOperator.getTemplateText(fieldName, parameters);
+
+        String suffixTemplateText = suffixOperator.getTemplateText(fieldName, parameters);
+        stringBuilder.append(suffixTemplateText);
+        return conditionFieldWrapper.wrapperConditionText(fieldName, stringBuilder.toString());
     }
 
     /**
@@ -165,15 +184,28 @@ public class CustomSuffixAppender implements SyntaxAppender {
     public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
         LinkedList<SyntaxAppenderWrapper> collector = new LinkedList<>();
 
-        SyntaxAppenderWrapper peek = syntaxAppenderWrapper.getCollector().peekLast();
-        if (peek.getAppender().getType() == AppendTypeEnum.FIELD) {
-
-            SyntaxAppenderWrapper lastField = syntaxAppenderWrapper.getCollector().pollLast();
-            collector.add(lastField);
-
-        }
+        addField(syntaxAppenderWrapper, collector);
+        addJoin(syntaxAppenderWrapper, collector);
 
         syntaxAppenderWrapper.addWrapper(new SyntaxAppenderWrapper(this, collector));
+    }
+
+    private void addJoin(SyntaxAppenderWrapper syntaxAppenderWrapper, LinkedList<SyntaxAppenderWrapper> collector) {
+        SyntaxAppenderWrapper peek = syntaxAppenderWrapper.getCollector().peekLast();
+        assert peek != null;
+        if (peek.getAppender().getType() == AppendTypeEnum.JOIN) {
+            SyntaxAppenderWrapper lastField = syntaxAppenderWrapper.getCollector().pollLast();
+            collector.addFirst(lastField);
+        }
+    }
+
+    private void addField(SyntaxAppenderWrapper syntaxAppenderWrapper, LinkedList<SyntaxAppenderWrapper> collector) {
+        SyntaxAppenderWrapper peek = syntaxAppenderWrapper.getCollector().peekLast();
+        assert peek != null;
+        if (peek.getAppender().getType() == AppendTypeEnum.FIELD) {
+            SyntaxAppenderWrapper lastField = syntaxAppenderWrapper.getCollector().pollLast();
+            collector.add(lastField);
+        }
     }
 
     @Override

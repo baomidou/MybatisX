@@ -9,6 +9,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Entity com.baomidou.mybatis3.domain.Blog
  */
-public interface BlogNoXmlMapper extends BaseMapper<Blog> {
+public interface BlogNoXmlMapper {
 
 }

@@ -181,9 +181,8 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                                   LinkedList<PsiParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
-        final String where = "where";
-
         StringBuilder stringBuilder = new StringBuilder();
+        int i = 0;
         Stack<String> joinStack = new Stack<>();
         for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
             SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
@@ -194,13 +193,17 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                 continue;
             }
             if (appender instanceof CustomFieldAppender) {
-                if(!joinStack.empty()){
-                    templateText =  joinStack.pop() + templateText;
+                if (!joinStack.empty()) {
+                    templateText = joinStack.pop() + templateText;
                 }
                 CustomFieldAppender fieldAppender = (CustomFieldAppender) appender;
                 templateText = conditionFieldWrapper.wrapperConditionText(fieldAppender.getFieldName(), templateText);
             }
+            if (i > 0) {
+                stringBuilder.append("\n");
+            }
             stringBuilder.append(templateText);
+            i++;
         }
 
         return conditionFieldWrapper.wrapperWhere(stringBuilder.toString());

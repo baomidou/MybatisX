@@ -20,8 +20,8 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     public String wrapperConditionText(String fieldName, String templateText) {
         if (wrapperFields.contains(fieldName)) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("\n<if test=\"").append(getNullWrapper(fieldName)).append("\">");
-            stringBuilder.append(templateText);
+            stringBuilder.append("<if test=\"").append(getNullWrapper(fieldName)).append("\">");
+            stringBuilder.append("\n").append(templateText);
             stringBuilder.append("\n").append("</if>");
             templateText = stringBuilder.toString();
         }
@@ -29,8 +29,8 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     }
 
     @Override
-    public String wrapperWhere(String content) {
-        return "<where>" + content + "\n</where>";
+    public String  wrapperWhere(String content) {
+        return "<where>\n" + content + "\n</where>";
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
 
 
     private String getNullWrapper(String fieldName) {
-        return fieldName + "!= null";
+        return fieldName + " != null";
     }
 
     public void setAllFields(String allFieldsStr) {

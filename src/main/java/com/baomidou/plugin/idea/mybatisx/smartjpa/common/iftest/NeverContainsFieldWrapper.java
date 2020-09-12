@@ -11,7 +11,7 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
 
     @Override
     public String wrapperWhere(String content) {
-        return "where " + content;
+        return "where \n" + content;
     }
 
     /**

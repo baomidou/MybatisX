@@ -11,6 +11,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGen
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.Importer;
 import com.baomidou.plugin.idea.mybatisx.ui.JpaAdvanceDialog;
+import com.baomidou.plugin.idea.mybatisx.ui.SmartJpaAdvanceUI;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
@@ -21,20 +22,12 @@ import com.intellij.database.psi.DbPsiFacade;
 import com.intellij.database.util.DasUtil;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiJavaFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiTypeElement;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.sql.dialects.SqlLanguageDialect;
 import com.intellij.sql.psi.SqlPsiFacade;
@@ -43,12 +36,10 @@ import com.intellij.util.containers.JBIterable;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 在mapper类中通过名字生成方法和xml内容
@@ -59,29 +50,29 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
+
+
+        PsiTypeElement statementElement = PsiTreeUtil.getParentOfType(element, PsiTypeElement.class);
+        if (statementElement == null) {
+            statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
+        }
+        PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
+        if (mapperClass == null) {
+            logger.info("未找到mapper类");
+            return;
+        }
+        EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
+        PsiClass entityClass = entityMappingResolverFactory.searchEntity();
+        EntityMappingResolver entityMappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
+        if (entityClass == null) {
+            logger.info("未找到实体类");
+            return;
+        }
+
+
+        String text = statementElement.getText();
+
         try {
-
-            PsiTypeElement statementElement = PsiTreeUtil.getParentOfType(element, PsiTypeElement.class);
-            if (statementElement == null) {
-                statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
-            }
-            PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
-            if (mapperClass == null) {
-                logger.info("未找到mapper类");
-                return;
-            }
-            EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
-            PsiClass entityClass = entityMappingResolverFactory.searchEntity();
-            EntityMappingResolver entityMappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
-            if (entityClass == null) {
-                logger.info("未找到实体类");
-                return;
-            }
-
-
-            final String text = statementElement.getText();
-
-
             PlatformGenerator platformGenerator = getPlatformGenerator(project, element, entityClass, entityMappingResolver, text);
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
             TypeDescriptor parameterDescriptor = platformGenerator.getParameter();
@@ -94,7 +85,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
             }
 
             Optional<ConditionFieldWrapper> conditionFieldWrapperOptional = getConditionFieldWrapper(project, platformGenerator);
-            if(!conditionFieldWrapperOptional.isPresent()){
+            if (!conditionFieldWrapperOptional.isPresent()) {
                 // 不希望生成任何内容
                 return;
             }
@@ -114,8 +105,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
 
 
         } catch (Throwable e) {
-            logger.error("聪明的JPA失败了", e);
-            Messages.showErrorDialog(e.getMessage(), "generate error");
+            logger.error("generate error, text: {}", text, e);
         }
     }
 
@@ -143,23 +133,24 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
 
     protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project, PlatformGenerator platformGenerator) {
         // 弹出模态窗口
-        JpaAdvanceDialog fieldSelectedDialogWrapper = new JpaAdvanceDialog(project);
-        fieldSelectedDialogWrapper.initFields(platformGenerator.getConditionFields(),
+        JpaAdvanceDialog jpaAdvanceDialog = new JpaAdvanceDialog(project);
+        jpaAdvanceDialog.initFields(platformGenerator.getConditionFields(),
             platformGenerator.getAllFields(),
             platformGenerator.getEntityClass());
-        fieldSelectedDialogWrapper.show();
+        jpaAdvanceDialog.show();
         // 模态窗口选择 OK, 生成相关代码
-        if (fieldSelectedDialogWrapper.getExitCode() != Messages.YES) {
+        if (jpaAdvanceDialog.getExitCode() != Messages.YES) {
             return Optional.empty();
         }
-        Set<String> selectedFields = fieldSelectedDialogWrapper.getSelectedFields();
+        Set<String> selectedFields = jpaAdvanceDialog.getSelectedFields();
         ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(selectedFields);
 
-        conditionIfTestWrapper.setAllFields(fieldSelectedDialogWrapper.getAllFieldsStr());
+        conditionIfTestWrapper.setAllFields(jpaAdvanceDialog.getAllFieldsStr());
 
-        conditionIfTestWrapper.setResultMap(fieldSelectedDialogWrapper.getResultMap());
-        conditionIfTestWrapper.setResultTypeClass(fieldSelectedDialogWrapper.getResultTypeClass());
-        conditionIfTestWrapper.setResultType(fieldSelectedDialogWrapper.isResultType());
+        conditionIfTestWrapper.setResultMap(jpaAdvanceDialog.getResultMap());
+        conditionIfTestWrapper.setResultTypeClass(jpaAdvanceDialog.getResultTypeClass());
+        conditionIfTestWrapper.setResultType(jpaAdvanceDialog.isResultType());
+
 
         return Optional.of(conditionIfTestWrapper);
     }
@@ -244,7 +235,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
         }
     }
 
-    private static final Logger logger = Logger.getInstance(GenerateMapperMethodSmartJpaAdvanceAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenerateMapperMethodSmartJpaAdvanceAction.class);
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {

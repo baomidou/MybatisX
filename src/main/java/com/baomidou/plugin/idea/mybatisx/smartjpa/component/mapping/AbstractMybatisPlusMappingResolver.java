@@ -99,6 +99,10 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
 
                 PsiClass entityClass = javaPsiFacade.findClass(typeParameter.getCanonicalText(), mapperClass.getResolveScope());
 
+                if(entityClass == null){
+                    continue;
+                }
+
                 initDatas(entityClass);
 
                 return Optional.ofNullable(entityClass);

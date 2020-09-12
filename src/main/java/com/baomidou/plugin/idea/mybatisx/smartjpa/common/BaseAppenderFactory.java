@@ -40,13 +40,14 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         return "\n" + rootSyntaxWrapper.getCollector().stream().map(syntaxAppenderWrapper -> {
             LinkedList<SyntaxAppenderWrapper> collector = syntaxAppenderWrapper
                 .getCollector();
-            return syntaxAppenderWrapper.getAppender().getTemplateText(tableName,
+            String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName,
                 entityClass,
                 parameters,
                 collector,
                 conditionFieldWrapper
             );
-        }).collect(Collectors.joining("\n"));
+            return templateText;
+        }).filter(StringUtils::isNotBlank).collect(Collectors.joining("\n"));
     }
 
 

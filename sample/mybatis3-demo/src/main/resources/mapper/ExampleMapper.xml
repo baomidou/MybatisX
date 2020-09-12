@@ -16,18 +16,63 @@
         select
         <include refid="Base_Column_List"/>
         from t_blog
-        where id = #{id,jdbcType=NUMERIC}
-        AND createTime between #{beginCreateTime,jdbcType=TIMESTAMP} and #{endCreateTime,jdbcType=TIMESTAMP}
-        AND title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
-        order by age
-    </select>
-    <select id="selectAllById" resultType="com.baomidou.mybatis3.domain.Blog">
-        select id ,title ,content ,money ,age ,create_time as createTime from t_blog
         <where>
-            <if test="id!= null">id = #{id,jdbcType=NUMERIC}
+            <if test="id != null">
+                id = #{id,jdbcType=NUMERIC}
+            </if>
+            <if test="createTime != null">
+                AND createTime between #{beginCreateTime,jdbcType=TIMESTAMP} and #{endCreateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="title != null">
+                AND title like CONCAT('%', #{title,jdbcType=VARCHAR},'%')
             </if>
         </where>
-
+        order by age
+    </select>
+    <select id="selectByAgeAndTitleIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        <where>
+            <if test="age != null">
+                age = #{age,jdbcType=NUMERIC}
+            </if>
+            <if test="title != null">
+                AND title in
+                <foreach collection="titleList" item="item" open="(" close=")" separator=",">
+                    #{item,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="selectByAgeAndTitle" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        <where>
+            <if test="age != null">
+                age = #{age,jdbcType=NUMERIC}
+            </if>
+            <if test="title != null">
+                AND title = #{title,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByAgeAndTitleAndContentBetween" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        <where>
+            <if test="age != null">
+                age = #{age,jdbcType=NUMERIC}
+            </if>
+            <if test="title != null">
+                AND title = #{title,jdbcType=VARCHAR}
+            </if>
+            <if test="content != null">
+                AND content between #{beginContent,jdbcType=VARCHAR} and #{endContent,jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
 
 

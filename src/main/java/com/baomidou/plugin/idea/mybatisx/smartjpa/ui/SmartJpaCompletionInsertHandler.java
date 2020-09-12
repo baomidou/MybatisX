@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.application.AppUIExecutor;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 选择自动填充时, 再次提示
  */
-class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
+public class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
     private final Editor editor;
     private final Project project;
 
@@ -27,13 +28,9 @@ class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElement> {
 
     @Override
     public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
-        AppUIExecutor appUIExecutor = AppUIExecutor.onUiThread().later().withDocumentsCommitted(project);
-        appUIExecutor.submit(()->{
-            boolean committed = PsiDocumentManager.getInstance(project).isCommitted(editor.getDocument());
-            logger.info("document committed: {}", committed);
-            if (committed) {
-                new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(project, editor, 1);
-            }
+        context.setLaterRunnable(() -> {
+            CodeCompletionHandlerBase handler = CodeCompletionHandlerBase.createHandler(CompletionType.BASIC);
+            handler.invokeCompletion(project,editor,1,true);
         });
     }
 

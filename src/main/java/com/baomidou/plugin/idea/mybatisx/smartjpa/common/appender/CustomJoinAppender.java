@@ -73,7 +73,7 @@ public class CustomJoinAppender implements SyntaxAppender {
 
     @Override
     public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
-        return "\n" + sqlText + SPACE;
+        return sqlText + SPACE;
     }
 
     @Override
@@ -95,7 +95,6 @@ public class CustomJoinAppender implements SyntaxAppender {
 
     @Override
     public boolean checkAfter(SyntaxAppender secondAppender, AreaSequence areaSequence) {
-//        boolean typeCheck = getType().checkAfter(secondAppender.getType());
         boolean sequenceCheck = getAreaSequence().getSequence() == secondAppender.getAreaSequence().getSequence();
         return sequenceCheck;
     }

@@ -3,10 +3,11 @@ package com.baomidou.plugin.idea.mybatisx.intention;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.NeverContainsFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -18,8 +19,7 @@ import java.util.Optional;
 public class GenerateMapperMethodSmartJpaAction extends GenerateMapperMethodSmartJpaAdvanceAction {
 
 
-    private static final Logger logger = Logger.getInstance(GenerateMapperMethodSmartJpaAction.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(GenerateMapperMethodSmartJpaAction.class);
 
     @Nls(capitalization = Nls.Capitalization.Sentence)
     @NotNull

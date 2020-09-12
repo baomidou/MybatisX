@@ -13,6 +13,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +150,7 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
                 tableName,
                 conditionFieldWrapper
             );
-        }).collect(Collectors.joining("\n"));
+        }).filter(StringUtils::isNotBlank).collect(Collectors.joining("\n")) + "\n";
 
     }
 
