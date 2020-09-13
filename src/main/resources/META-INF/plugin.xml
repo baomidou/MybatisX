@@ -6,12 +6,12 @@
 
     <description><![CDATA[
           MybatisX plugin
-          支持如下功能:
+          Features:
        <ul>
-          <li>mapper类和xml跳转</li>
-          <li>mybatis.xml,mapper.xml 配置文件提示</li>
-          <li>mapper类智能填充方法名,以JPA的形式填充方法和xml(参考了 MybatisCodeHelperPro插件)</li>
-          <li>集成mybatis generator gui界面(copy from free mybatis plugin)</li>
+          <li>mapper and xml can jump back and forth</li>
+          <li>mybatis.xml,mapper.xml prompt</li>
+          <li>mapper and xml support auto prompt like jpa (reference  MybatisCodeHelperPro)</li>
+          <li>integrate mybatis generator Gui (copy from free mybatis plugin)</li>
       </ul>
 
       QQ群号: 829161197
@@ -21,12 +21,12 @@
     <change-notes><![CDATA[
       <h4>2020.09.03</h4>
       <ul>
-          <li>集成选择表名生成类文件</li>
-          <li>支持oracle的insertBatch的两种方式</li>
+          <li>support generate Class from table name</li>
+          <li>support two ways of oracle insertBatch</li>
       </ul>
        <h4>2020.08.12</h4>
       <ul>
-          <li>加入智能jpa提示</li>
+          <li>mapper and xml support auto prompt like jpa</li>
       </ul>
       <h4>2017.10.20</h4>
       <ul>
