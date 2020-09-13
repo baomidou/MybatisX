@@ -57,6 +57,8 @@
         <projectService id="baomidou.AnnotationService" serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.AnnotationService"/>
         <projectService id="baomidou.EditorService" serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.EditorService"/>
         <projectService id="baomidou.AliasFacade" serviceImplementation="com.baomidou.plugin.idea.mybatisx.alias.AliasFacade"/>
+
+
         <projectService id="baomidou.MapperLocator" serviceImplementation="com.baomidou.plugin.idea.mybatisx.locator.MapperLocator"/>
         <projectService id="baomidou.MapperManager" serviceInterface="com.baomidou.plugin.idea.mybatisx.core.MapperManager"
                         serviceImplementation="com.baomidou.plugin.idea.mybatisx.core.impl.MapperManagerImpl"/>
@@ -160,18 +162,4 @@
                              instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
     </extensions>
 
-    <actions>
-<!--        <group id="TestMybatisX" text="MybatisX" description="MxTest" >-->
-<!--            <action class="com.baomidou.plugin.idea.mybatisx.action.TestAction" id="TestAction" text="TestAction">-->
-<!--            </action>-->
-<!--            <add-to-group group-id="MainMenu" anchor="last"/>-->
-<!--        </group>-->
-
-        <action id="bmd-mybatis-generate-action"
-                class="com.baomidou.plugin.idea.mybatisx.action.MybatisGeneratorMainAction"
-                text="Mybatis-Generator"
-                description="Mybatis generator idea plugin">
-            <add-to-group group-id="DatabaseViewPopupMenu" anchor="first"/>
-        </action>
-    </actions>
 </idea-plugin>

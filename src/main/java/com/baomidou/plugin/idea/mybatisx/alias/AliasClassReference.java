@@ -2,11 +2,9 @@ package com.baomidou.plugin.idea.mybatisx.alias;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.xml.XmlAttributeValue;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +30,7 @@ public class AliasClassReference extends PsiReferenceBase<XmlAttributeValue> {
     @Override
     public PsiElement resolve() {
         XmlAttributeValue attributeValue = getElement();
-        return AliasFacade.getInstance(attributeValue.getProject()).findPsiClass(attributeValue, attributeValue.getValue()).orNull();
+        return AliasFacade.getInstance(attributeValue.getProject()).findPsiClass(attributeValue, attributeValue.getValue()).orElse(null);
     }
 
     @NotNull

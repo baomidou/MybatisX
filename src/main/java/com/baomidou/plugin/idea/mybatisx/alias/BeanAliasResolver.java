@@ -40,7 +40,6 @@ public class BeanAliasResolver extends PackageAliasResolver {
     public Collection<String> getPackages(@Nullable PsiElement element) {
         Set<String> res = Sets.newHashSet();
         for (Module module : moduleManager.getModules()) {
-            // TODO old springManager.getCombinedModel(module).getModelsToProcess
             for (CommonSpringModel springModel : springManager.getCombinedModel(module).getRelatedModels()) {
                 addPackages(res, springModel);
             }

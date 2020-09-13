@@ -1,7 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
@@ -9,13 +7,13 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author yanglin
@@ -34,7 +32,7 @@ public class AliasFacade {
 
     public AliasFacade(Project project) {
         this.project = project;
-        this.resolvers = Lists.newArrayList();
+        this.resolvers = new ArrayList<>();
         this.javaPsiFacade = JavaPsiFacade.getInstance(project);
         initResolvers();
     }
@@ -51,7 +49,6 @@ public class AliasFacade {
         this.registerResolver(AliasResolverFactory.createInnerAliasResolver(project));
     }
 
-    @NotNull
     public Optional<PsiClass> findPsiClass(@Nullable PsiElement element, @NotNull String shortName) {
         PsiClass clazz = javaPsiFacade.findClass(shortName, GlobalSearchScope.allScope(project));
         if (null != clazz) {
@@ -64,12 +61,12 @@ public class AliasFacade {
                 }
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @NotNull
     public Collection<AliasDesc> getAliasDescs(@Nullable PsiElement element) {
-        ArrayList<AliasDesc> result = Lists.newArrayList();
+        ArrayList<AliasDesc> result = new ArrayList<>();
         for (AliasResolver resolver : resolvers) {
             result.addAll(resolver.getClassAliasDescriptions(element));
         }
@@ -78,7 +75,7 @@ public class AliasFacade {
 
     public Optional<AliasDesc> findAliasDesc(@Nullable PsiClass clazz) {
         if (null == clazz) {
-            return Optional.absent();
+            return Optional.empty();
         }
         for (AliasResolver resolver : resolvers) {
             for (AliasDesc desc : resolver.getClassAliasDescriptions(clazz)) {
@@ -87,7 +84,7 @@ public class AliasFacade {
                 }
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     public void registerResolver(@NotNull AliasResolver resolver) {

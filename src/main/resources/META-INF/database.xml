@@ -1,6 +1,17 @@
 <idea-plugin>
-    <extensions defaultExtensionNs="com.intellij">
+    <extensions defaultExtensionNs="com.intellij.database">
+
 
 
     </extensions>
+
+    <actions>
+
+        <action id="bmd-mybatis-generate-action"
+                class="com.baomidou.plugin.idea.mybatisx.action.MybatisGeneratorMainAction"
+                text="Mybatis-Generator"
+                description="Mybatis generator idea plugin">
+            <add-to-group group-id="DatabaseViewPopupMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
