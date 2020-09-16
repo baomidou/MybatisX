@@ -33,9 +33,7 @@ public class SelectGenerator extends AbstractStatementGenerator {
 
     private void setupResultType(PsiMethod method, Select select) {
         Optional<PsiClass> clazz = AbstractStatementGenerator.getSelectResultType(method);
-        if (clazz.isPresent()) {
-            select.getResultType().setValue(clazz.get());
-        }
+        clazz.ifPresent(psiClass -> select.getResultType().setValue(psiClass));
     }
 
     @NotNull

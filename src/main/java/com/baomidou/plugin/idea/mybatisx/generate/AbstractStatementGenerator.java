@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -66,19 +67,32 @@ public abstract class AbstractStatementGenerator {
         }
     };
 
+    /**
+     * 获取方法的返回类型
+     *
+     * @param method
+     * @return
+     */
     public static Optional<PsiClass> getSelectResultType(@Nullable PsiMethod method) {
         if (null == method) {
             return Optional.empty();
         }
         PsiType returnType = method.getReturnType();
+        // 是基本类型, 并且不是 void
         if (returnType instanceof PsiPrimitiveType && !PsiType.VOID.equals(returnType)) {
-            return JavaUtils.findClazz(method.getProject(), ((PsiPrimitiveType) returnType).getBoxedTypeName());
+            return JavaUtils.findClazz(method.getProject(), Objects.requireNonNull(((PsiPrimitiveType) returnType).getBoxedTypeName()));
         } else if (returnType instanceof PsiClassReferenceType) {
             PsiClassReferenceType type = (PsiClassReferenceType) returnType;
             if (type.hasParameters()) {
                 PsiType[] parameters = type.getParameters();
+                // 处理是 List 的返回结果, 将List<T> 的泛型拿出来
                 if (parameters.length == 1) {
-                    type = (PsiClassReferenceType) parameters[0];
+                    PsiType parameter = parameters[0];
+                    // 通常情况 List<?> 这里一定是引用类型, 但是进入这里的来源还有检查方法,
+                    // 不仅仅只是生成xml,  所以这里加一个判断.
+                    if (parameter instanceof PsiClassReferenceType) {
+                        type = (PsiClassReferenceType) parameter;
+                    }
                 }
             }
             return Optional.ofNullable(type.resolve());
@@ -87,7 +101,7 @@ public abstract class AbstractStatementGenerator {
     }
 
     public static void applyGenerate(@Nullable final PsiMethod method) {
-        if (null == method){
+        if (null == method) {
             return;
         }
         final Project project = method.getProject();
@@ -99,8 +113,9 @@ public abstract class AbstractStatementGenerator {
                 @Override
                 public PopupStep onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
                     return this.doFinalStep(new Runnable() {
+                        @Override
                         public void run() {
-                            WriteCommandAction.writeCommandAction(project).run(()-> selectedValue.execute(method));
+                            WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method));
                         }
                     });
                 }
@@ -130,7 +145,7 @@ public abstract class AbstractStatementGenerator {
 
     public void execute(@NotNull final PsiMethod method) {
         PsiClass psiClass = method.getContainingClass();
-        if (null == psiClass){
+        if (null == psiClass) {
             return;
         }
         CollectProcessor<Mapper> processor = new CollectProcessor<>();
