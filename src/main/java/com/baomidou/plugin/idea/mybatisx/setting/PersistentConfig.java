@@ -28,6 +28,7 @@ public class PersistentConfig implements PersistentStateComponent<PersistentConf
         return ServiceManager.getService(project, PersistentConfig.class);
     }
 
+    @Override
     @Nullable
     public PersistentConfig getState() {
         return this;

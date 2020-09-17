@@ -8,6 +8,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderF
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -32,11 +33,11 @@ import java.util.stream.Collectors;
 public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
 
-    private DasTable dasTable;
+    private DasTableAdaptor dasTable;
     private String tableName;
 
 
-    public OracleInsertBatchWithAll(DasTable dasTable, String tableName) {
+    public OracleInsertBatchWithAll(DasTableAdaptor dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
 
@@ -47,12 +48,14 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
         return "BatchWithAll";
     }
 
+    @Override
     @NotNull
     protected SuffixOperator getSuffixOperator(List<TxField> mappingField) {
         return new InsertBatchSuffixOperator(tableName,mappingField);
     }
 
 
+    @Override
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
         ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {
             @Override
@@ -117,7 +120,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
         @Override
         public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
-            Optional<String> sequenceName = OracleGenerateUtil.findSequenceName(dasTable,tableName);
+            Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
             StringBuilder stringBuilder = new StringBuilder();
             String itemName = "item";
@@ -139,7 +142,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                     // 第一版写死字段变更, 后续重构
                     // 变更主键生成规则为自定义函数
                     if (sequenceName.isPresent() && dasTable != null) {
-                        DasTableKey primaryKey = DasUtil.getPrimaryKey(dasTable);
+                        DasTableKey primaryKey = dasTable.getPrimaryKey();
                         // 当前字段是主键, 使用自定义函数替换主键
                         if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
                             String pkFieldName = primaryKey.getColumnsRef().iterate().next();

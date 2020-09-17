@@ -1,8 +1,11 @@
 <idea-plugin>
-    <extensions defaultExtensionNs="com.intellij.database">
+    <extensions defaultExtensionNs="com.intellij">
 
-
-
+        <!-- 项目配置 -->
+        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting"
+                             id="baomidou.MybatisGeneratorConfigurable"
+                             dynamic="true"
+                             instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
     </extensions>
 
     <actions>

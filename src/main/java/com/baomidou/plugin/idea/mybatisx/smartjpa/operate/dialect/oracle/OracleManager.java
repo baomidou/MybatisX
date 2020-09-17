@@ -1,12 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.BaseDialectManager;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.UpdateOperator;
-import com.intellij.database.model.DasTable;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.BaseDialectManager;
 import com.intellij.psi.PsiClass;
 
 import java.util.List;
@@ -15,10 +15,10 @@ import java.util.List;
  * oracle 方言
  */
 public class OracleManager extends BaseDialectManager {
-    private DasTable dasTable;
+    private DasTableAdaptor dasTable;
     private String tableName;
 
-    public OracleManager(List<TxField> mappingField, PsiClass entityClass, DasTable dasTable, String tableName) {
+    public OracleManager(List<TxField> mappingField, PsiClass entityClass, DasTableAdaptor dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
         init(mappingField, entityClass);

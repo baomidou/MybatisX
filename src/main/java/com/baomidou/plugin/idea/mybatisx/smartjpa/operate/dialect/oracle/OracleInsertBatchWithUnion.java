@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
 import com.intellij.database.model.DasObject;
@@ -28,10 +29,10 @@ import java.util.stream.Collectors;
 public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
 
 
-    private DasTable dasTable;
+    private DasTableAdaptor dasTable;
     private String tableName;
 
-    public OracleInsertBatchWithUnion(DasTable dasTable, String tableName) {
+    public OracleInsertBatchWithUnion(DasTableAdaptor dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
 
@@ -61,7 +62,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
 
         @Override
         public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
-            Optional<String> sequenceName = OracleGenerateUtil.findSequenceName(dasTable, tableName);
+            Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
             StringBuilder stringBuilder = new StringBuilder();
             String itemName = "item";
@@ -83,7 +84,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
                     // 第一版写死字段变更, 后续重构
                     // 变更主键生成规则为自定义函数
                     if (sequenceName.isPresent() && dasTable != null) {
-                        DasTableKey primaryKey = DasUtil.getPrimaryKey(dasTable);
+                        DasTableKey primaryKey = dasTable.getPrimaryKey();
                         // 当前字段是主键, 使用自定义函数替换主键
                         if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
                             String pkFieldName = primaryKey.getColumnsRef().iterate().next();

@@ -7,8 +7,8 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+
 import com.intellij.spring.CommonSpringModel;
-import com.intellij.spring.SpringManager;
 import com.intellij.spring.model.SpringBeanPointer;
 import com.intellij.spring.model.utils.SpringPropertyUtils;
 import com.intellij.spring.model.xml.beans.SpringPropertyDefinition;
@@ -27,12 +27,13 @@ public class BeanAliasResolver extends PackageAliasResolver {
     private static final String MAPPER_ALIAS_PACKAGE_CLASS = "org.mybatis.spring.SqlSessionFactoryBean";
     private static final String MAPPER_ALIAS_PROPERTY = "typeAliasesPackage";
     private ModuleManager moduleManager;
-    private SpringManager springManager;
+    private SpringManagerAdaptor springManagerAdaptor ;
 
     public BeanAliasResolver(Project project) {
         super(project);
         this.moduleManager = ModuleManager.getInstance(project);
-        this.springManager = SpringManager.getInstance(project);
+        springManagerAdaptor = new SpringManagerAdaptor(project);
+
     }
 
     @NotNull
@@ -40,7 +41,7 @@ public class BeanAliasResolver extends PackageAliasResolver {
     public Collection<String> getPackages(@Nullable PsiElement element) {
         Set<String> res = Sets.newHashSet();
         for (Module module : moduleManager.getModules()) {
-            for (CommonSpringModel springModel : springManager.getCombinedModel(module).getRelatedModels()) {
+            for (CommonSpringModel springModel : springManagerAdaptor.getModels(module)) {
                 addPackages(res, springModel);
             }
         }

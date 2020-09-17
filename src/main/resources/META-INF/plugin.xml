@@ -36,7 +36,7 @@
     </change-notes>
 
     <idea-version since-build="193.0"/>
-    <depends>com.intellij.java</depends>
+    <depends>com.intellij.modules.java</depends>
     <depends optional="true" config-file="spring.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="database.xml">com.intellij.database</depends>
 
@@ -155,11 +155,7 @@
         <iconProvider id="baomidou.XmlAndMapperIconProvider"  implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
 
         <projectService id="baomidou.PersistentConfig" serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>
-        <!-- 项目配置 -->
-        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting"
-                             id="baomidou.MybatisGeneratorConfigurable"
-                             dynamic="true"
-                             instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
+
     </extensions>
 
 </idea-plugin>

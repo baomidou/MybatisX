@@ -32,11 +32,6 @@ public class JpaAdvanceDialog extends DialogWrapper {
         return smartJpaAdvanceUI.getRootPanel();
     }
 
-    @Override
-    public void show() {
-        super.show();
-    }
-
     public Set<String> getSelectedFields() {
         Set<String> strings = new HashSet<>();
         Component[] components = smartJpaAdvanceUI.getConditionPanel().getComponents();

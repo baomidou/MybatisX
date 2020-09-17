@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
@@ -14,7 +15,6 @@ import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.JavaCompletionSorting;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.database.Dbms;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiClass;
@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -119,13 +120,13 @@ public class SmartJpaCompletionProvider {
         }
         // 第一次初始化
         List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
-        // TODO 识别方言
-        Dbms dbms = Dbms.MYSQL;
+        // 旗舰版根据配置生成, 社区版固定为mysql的形式
+        DbmsAdaptor dbms = DbmsAdaptor.MYSQL;
         try{
-            SqlPsiFacade instance = SqlPsiFacade.getInstance(editor.getProject());
+            SqlPsiFacade instance = SqlPsiFacade.getInstance(Objects.requireNonNull(editor.getProject()));
             SqlLanguageDialect dialectMapping = instance.getDialectMapping(mapperClass.getContainingFile().getVirtualFile());
-            dbms = dialectMapping.getDbms();
-        }catch (Exception ignore){
+            dbms = DbmsAdaptor.castOf(dialectMapping.getDbms());
+        }catch (NoClassDefFoundError ignore){
         }
 
         AreaOperateManager areaOperateManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass,

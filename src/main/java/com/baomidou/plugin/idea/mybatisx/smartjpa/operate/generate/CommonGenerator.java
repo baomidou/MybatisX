@@ -8,11 +8,11 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameterDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.intellij.database.Dbms;
-import com.intellij.database.model.DasTable;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
@@ -35,8 +35,8 @@ public class CommonGenerator implements PlatformGenerator {
 
     private CommonGenerator(PsiClass entityClass,
                             String text,
-                            @NotNull Dbms dbms,
-                            DasTable dasTable,
+                           DbmsAdaptor dbms,
+                            DasTableAdaptor dasTable,
                             String tableName,
                             List<TxField> fields) {
         this.entityClass = entityClass;
@@ -58,8 +58,8 @@ public class CommonGenerator implements PlatformGenerator {
      * @return
      */
     public static CommonGenerator createEditorAutoCompletion(PsiClass entityClass, String text,
-                                                             @NotNull Dbms dbms,
-                                                             DasTable dasTable,
+                                                             @NotNull DbmsAdaptor dbms,
+                                                             DasTableAdaptor dasTable,
                                                              String tableName,
                                                              List<TxField> fields) {
         return new CommonGenerator(entityClass, text, dbms, dasTable, tableName, fields);
