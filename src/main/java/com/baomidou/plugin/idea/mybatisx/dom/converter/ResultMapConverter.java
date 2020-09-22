@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 /**
+ * The type Result map converter.
+ *
  * @author yanglin
  */
 public class ResultMapConverter extends IdBasedTagConverter {

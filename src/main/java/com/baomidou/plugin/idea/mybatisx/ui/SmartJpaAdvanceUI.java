@@ -7,7 +7,13 @@ import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Smart jpa advance ui.
+ */
 public class SmartJpaAdvanceUI {
+    /**
+     * The Condition panel.
+     */
     public JPanel conditionPanel;
     private JPanel rootPanel;
     private JCheckBox checkAllConditionField;
@@ -23,6 +29,9 @@ public class SmartJpaAdvanceUI {
 
     private boolean resultType = false;
 
+    /**
+     * Instantiates a new Smart jpa advance ui.
+     */
     public SmartJpaAdvanceUI() {
         checkAllConditionField.addChangeListener(e -> {
             // 将条件区的选择状态变更
@@ -70,6 +79,11 @@ public class SmartJpaAdvanceUI {
     }
 
 
+    /**
+     * Gets generator type.
+     *
+     * @return the generator type
+     */
     public GeneratorEnum getGeneratorType() {
         if (methodCombo.getSelectedIndex() == 1) {
             return GeneratorEnum.MYBATIS_ANNOTATION;
@@ -77,45 +91,99 @@ public class SmartJpaAdvanceUI {
         return GeneratorEnum.MYBATIS_XML;
     }
 
+    /**
+     * Gets root panel.
+     *
+     * @return the root panel
+     */
     public JPanel getRootPanel() {
         return rootPanel;
     }
 
+    /**
+     * Gets condition panel.
+     *
+     * @return the condition panel
+     */
     public JPanel getConditionPanel() {
         return conditionPanel;
     }
 
+    /**
+     * Gets check all condition field.
+     *
+     * @return the check all condition field
+     */
     public JCheckBox getCheckAllConditionField() {
         return checkAllConditionField;
     }
 
+    /**
+     * Gets all fields text.
+     *
+     * @return the all fields text
+     */
     public String getAllFieldsText() {
         return columnsTextArea.getText();
     }
 
+    /**
+     * Init result fields.
+     *
+     * @param allFields the all fields
+     */
     public void initResultFields(List<TxField> allFields) {
         this.allFields = allFields;
     }
 
+    /**
+     * Gets result map.
+     *
+     * @return the result map
+     */
     public String getResultMap() {
         return baseResultMapTextField.getText();
     }
 
+    /**
+     * Gets result type class.
+     *
+     * @return the result type class
+     */
     public String getResultTypeClass() {
         return resultMapClassTextField.getText();
     }
 
+    /**
+     * Is result type boolean.
+     *
+     * @return the boolean
+     */
     public boolean isResultType() {
         return resultType;
     }
 
+    /**
+     * Sets result type.
+     *
+     * @param entityClass the entity class
+     */
     public void setResultType(String entityClass) {
         resultMapClassTextField.setText(entityClass);
     }
 
 
+    /**
+     * The enum Generator enum.
+     */
     public enum GeneratorEnum {
+        /**
+         * Mybatis xml generator enum.
+         */
         MYBATIS_XML,
+        /**
+         * Mybatis annotation generator enum.
+         */
         MYBATIS_ANNOTATION,
     }
 }

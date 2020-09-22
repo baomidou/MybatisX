@@ -22,10 +22,19 @@ public class StatementBlockFactory {
     private final List<StatementBlock> blockList = new ArrayList<>();
 
 
+    /**
+     * Instantiates a new Statement block factory.
+     */
     public StatementBlockFactory() {
     }
 
 
+    /**
+     * Split appender by text linked list.
+     *
+     * @param splitParam the split param
+     * @return the linked list
+     */
     @NotNull
     public LinkedList<SyntaxAppender> splitAppenderByText(String splitParam) {
         SyntaxSplitHelper syntaxSplitHelper = new SyntaxSplitHelper(this.blockList);
@@ -33,6 +42,11 @@ public class StatementBlockFactory {
 
     }
 
+    /**
+     * Register statement block.
+     *
+     * @param statementBlock the statement block
+     */
     public void registerStatementBlock(final StatementBlock statementBlock) {
         this.blockList.add(statementBlock);
 
@@ -44,6 +58,12 @@ public class StatementBlockFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(StatementBlockFactory.class);
 
+    /**
+     * Find area list by jpa list.
+     *
+     * @param jpaList the jpa list
+     * @return the list
+     */
     public List<SyntaxAppenderFactory> findAreaListByJpa(LinkedList<SyntaxAppender> jpaList) {
         List<SyntaxAppenderFactory> appenderFactories = new ArrayList<>();
         SyntaxAppender peek = jpaList.peek();
@@ -59,10 +79,21 @@ public class StatementBlockFactory {
         return appenderFactories;
     }
 
+    /**
+     * Gets all block.
+     *
+     * @return the all block
+     */
     public Collection<StatementBlock> getAllBlock() {
         return blockList;
     }
 
+    /**
+     * Find block by text statement block.
+     *
+     * @param text the text
+     * @return the statement block
+     */
     public StatementBlock findBlockByText(String text) {
         return appenderFactoryMap.get(text);
     }

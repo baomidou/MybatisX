@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * The type Marker provider adaptor.
+ *
  * @author yanglin
  */
 public abstract class MarkerProviderAdaptor implements LineMarkerProvider {

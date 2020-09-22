@@ -6,10 +6,15 @@ import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptorFactory;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 
 /**
+ * The type Mybatis file template descriptor factory.
+ *
  * @author yanglin
  */
 public class MybatisFileTemplateDescriptorFactory implements FileTemplateGroupDescriptorFactory {
 
+    /**
+     * The constant MYBATIS_MAPPER_XML_TEMPLATE.
+     */
     public static final String MYBATIS_MAPPER_XML_TEMPLATE = "Mybatis Mapper.xml";
 
     @Override

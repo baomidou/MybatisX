@@ -11,8 +11,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The type Abstract mybatis plus mapping resolver.
+ */
 public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResolver implements EntityMappingResolver {
 
+    /**
+     * The constant VALUE.
+     */
     public static final String VALUE = "value";
     /**
      * 表名
@@ -26,6 +32,11 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     private List<TxField> txFields;
 
 
+    /**
+     * Init datas.
+     *
+     * @param entityClass the entity class
+     */
     protected void initDatas(PsiClass entityClass) {
         tableName = determineTableName(entityClass);
         txFields = determineFields(entityClass);
@@ -34,7 +45,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     /**
      * 获得表名注解
      *
-     * @return
+     * @return table name annotation
      */
     @NotNull
     protected abstract String getTableNameAnnotation();
@@ -56,6 +67,12 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
             }).collect(Collectors.toList());
     }
 
+    /**
+     * Gets table field annotation.
+     *
+     * @param field the field
+     * @return the table field annotation
+     */
     @NotNull
     protected abstract String getTableFieldAnnotation(@NotNull PsiField field);
 
@@ -70,6 +87,13 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         return tableName;
     }
 
+    /**
+     * Gets attribute value.
+     *
+     * @param fieldAnnotation the field annotation
+     * @param value           the value
+     * @return the attribute value
+     */
     protected String getAttributeValue(PsiAnnotation fieldAnnotation, String value) {
         if (fieldAnnotation == null) {
             return null;
@@ -118,6 +142,11 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         return Optional.empty();
     }
 
+    /**
+     * Gets base mapper class name.
+     *
+     * @return the base mapper class name
+     */
     protected abstract String getBaseMapperClassName();
 
     @Override

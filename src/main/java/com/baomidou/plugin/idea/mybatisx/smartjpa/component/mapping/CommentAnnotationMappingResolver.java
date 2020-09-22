@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 public class CommentAnnotationMappingResolver extends JpaMappingResolver implements EntityMappingResolver {
 
 
+    /**
+     * The constant TABLE_ENTITY.
+     */
     public static final String TABLE_ENTITY = "Entity";
 
     @Override

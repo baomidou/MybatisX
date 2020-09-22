@@ -14,13 +14,28 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MybatisXmlGenerator implements Generator {
 
+    /**
+     * The constant ID.
+     */
     public static final String ID = "id";
+    /**
+     * The constant RESULT_MAP.
+     */
     public static final String RESULT_MAP = "resultMap";
     private Mapper mapper;
     private Project project;
 
+    /**
+     * The constant RESULT_TYPE.
+     */
     public static final String RESULT_TYPE = "resultType";
 
+    /**
+     * Instantiates a new Mybatis xml generator.
+     *
+     * @param mapper  the mapper
+     * @param project the project
+     */
     public MybatisXmlGenerator(Mapper mapper, @NotNull Project project) {
         this.mapper = mapper;
         this.project = project;

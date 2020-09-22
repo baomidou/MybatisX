@@ -23,6 +23,8 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.CommonProcessors;
 
 /**
+ * The type Mapper line marker provider.
+ *
  * @author yanglin
  */
 public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {

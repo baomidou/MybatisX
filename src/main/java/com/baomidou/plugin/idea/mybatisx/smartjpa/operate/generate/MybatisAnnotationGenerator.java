@@ -14,12 +14,26 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MybatisAnnotationGenerator implements Generator {
 
+    /**
+     * The constant ID.
+     */
     public static final String ID = "id";
+    /**
+     * The constant RESULT_MAP.
+     */
     public static final String RESULT_MAP = "resultMap";
+    /**
+     * The constant RESULT_TYPE.
+     */
     public static final String RESULT_TYPE = "resultType";
     private Mapper mapper;
     private Project project;
 
+    /**
+     * Instantiates a new Mybatis annotation generator.
+     *
+     * @param project the project
+     */
     public MybatisAnnotationGenerator(@NotNull Project project) {
         this.project = project;
     }

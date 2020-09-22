@@ -10,10 +10,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * The type Configuration description.
+ *
  * @author yanglin
  */
 public class ConfigurationDescription extends DomFileDescription<Configuration> {
 
+    /**
+     * Instantiates a new Configuration description.
+     */
     public ConfigurationDescription() {
         super(Configuration.class, "configuration");
     }

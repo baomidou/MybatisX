@@ -28,14 +28,27 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Update operator.
+ */
 public class UpdateOperator extends BaseOperatorManager {
 
 
+    /**
+     * Instantiates a new Update operator.
+     *
+     * @param mappingField the mapping field
+     */
     public UpdateOperator(final List<TxField> mappingField) {
         this.setOperatorNameList(AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns());
         this.init(mappingField);
     }
 
+    /**
+     * Init.
+     *
+     * @param mappingField the mapping field
+     */
     public void init(final List<TxField> mappingField) {
         for (final String areaName : this.getOperatorNameList()) {
             final ResultAppenderFactory updateFactory = new UpdateResultAppenderFactory(areaName);
@@ -53,6 +66,11 @@ public class UpdateOperator extends BaseOperatorManager {
 
     private class UpdateResultAppenderFactory extends ResultAppenderFactory {
 
+        /**
+         * Instantiates a new Update result appender factory.
+         *
+         * @param areaPrefix the area prefix
+         */
         public UpdateResultAppenderFactory(String areaPrefix) {
             super(areaPrefix);
         }

@@ -2,6 +2,9 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The type Tx field.
+ */
 public class TxField {
     /**
      * 提示名称
@@ -19,35 +22,75 @@ public class TxField {
 
     private String fieldType;
 
+    /**
+     * Gets field type.
+     *
+     * @return the field type
+     */
     public String getFieldType() {
         return this.fieldType;
     }
 
+    /**
+     * Sets field type.
+     *
+     * @param fieldType the field type
+     */
     public void setFieldType(final String fieldType) {
         this.fieldType = fieldType;
     }
 
+    /**
+     * Gets tip name.
+     *
+     * @return the tip name
+     */
     public String getTipName() {
         return this.tipName;
     }
 
+    /**
+     * Sets tip name.
+     *
+     * @param tipName the tip name
+     */
     public void setTipName(final String tipName) {
         this.tipName = tipName;
     }
 
+    /**
+     * Gets field name.
+     *
+     * @return the field name
+     */
     public String getFieldName() {
         return this.fieldName;
     }
 
+    /**
+     * Sets field name.
+     *
+     * @param fieldName the field name
+     */
     public void setFieldName(final String fieldName) {
         this.fieldName = fieldName;
     }
 
+    /**
+     * Gets column name.
+     *
+     * @return the column name
+     */
     @NotNull
     public String getColumnName() {
         return this.columnName;
     }
 
+    /**
+     * Sets column name.
+     *
+     * @param columnName the column name
+     */
     public void setColumnName(final String columnName) {
         this.columnName = columnName;
     }

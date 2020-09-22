@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * The type Mybatis generator configurable.
+ */
 public class MybatisGeneratorConfigurable implements SearchableConfigurable {
     private MybatisGeneratorSettingUI mainPanel;
 
@@ -16,6 +19,11 @@ public class MybatisGeneratorConfigurable implements SearchableConfigurable {
     private final Project project;
 
 
+    /**
+     * Instantiates a new Mybatis generator configurable.
+     *
+     * @param project the project
+     */
     public MybatisGeneratorConfigurable(@NotNull Project project) {
         this.project = project;
     }

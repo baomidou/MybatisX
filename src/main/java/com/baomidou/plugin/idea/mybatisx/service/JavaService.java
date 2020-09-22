@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
+ * The type Java service.
+ *
  * @author yanglin
  */
 public class JavaService {
@@ -37,16 +39,33 @@ public class JavaService {
 
     private EditorService editorService;
 
+    /**
+     * Instantiates a new Java service.
+     *
+     * @param project the project
+     */
     public JavaService(Project project) {
         this.project = project;
         this.javaPsiFacade = JavaPsiFacade.getInstance(project);
         this.editorService = EditorService.getInstance(project);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @param project the project
+     * @return the instance
+     */
     public static JavaService getInstance(@NotNull Project project) {
         return ServiceManager.getService(project, JavaService.class);
     }
 
+    /**
+     * Gets reference clazz of psi field.
+     *
+     * @param field the field
+     * @return the reference clazz of psi field
+     */
     public Optional<PsiClass> getReferenceClazzOfPsiField(@NotNull PsiElement field) {
         if (!(field instanceof PsiField)) {
             return Optional.empty();
@@ -56,12 +75,24 @@ public class JavaService {
             Optional.empty();
     }
 
+    /**
+     * Find statement optional.
+     *
+     * @param method the method
+     * @return the optional
+     */
     public Optional<DomElement> findStatement(@Nullable PsiMethod method) {
         CommonProcessors.FindFirstProcessor<DomElement> processor = new CommonProcessors.FindFirstProcessor<DomElement>();
         process(method, processor);
         return processor.isFound() ? Optional.ofNullable(processor.getFoundValue()) : Optional.<DomElement>empty();
     }
 
+    /**
+     * Process.
+     *
+     * @param psiMethod the psi method
+     * @param processor the processor
+     */
     @SuppressWarnings("unchecked")
     public void process(@NotNull PsiMethod psiMethod, @NotNull Processor<IdDomElement> processor) {
         PsiClass psiClass = psiMethod.getContainingClass();
@@ -77,6 +108,12 @@ public class JavaService {
         }
     }
 
+    /**
+     * Process.
+     *
+     * @param clazz     the clazz
+     * @param processor the processor
+     */
     @SuppressWarnings("unchecked")
     public void process(@NotNull PsiClass clazz, @NotNull Processor<Mapper> processor) {
         String ns = clazz.getQualifiedName();
@@ -87,6 +124,12 @@ public class JavaService {
         }
     }
 
+    /**
+     * Process.
+     *
+     * @param target    the target
+     * @param processor the processor
+     */
     public void process(@NotNull PsiElement target, @NotNull Processor processor) {
         if (target instanceof PsiMethod) {
             process((PsiMethod) target, processor);
@@ -95,12 +138,25 @@ public class JavaService {
         }
     }
 
+    /**
+     * Find with find first processor optional.
+     *
+     * @param <T>    the type parameter
+     * @param target the target
+     * @return the optional
+     */
     public <T> Optional<T> findWithFindFirstProcessor(@NotNull PsiElement target) {
         CommonProcessors.FindFirstProcessor<T> processor = new CommonProcessors.FindFirstProcessor<T>();
         process(target, processor);
         return Optional.ofNullable(processor.getFoundValue());
     }
 
+    /**
+     * Import clazz.
+     *
+     * @param file      the file
+     * @param clazzName the clazz name
+     */
     public void importClazz(PsiJavaFile file, String clazzName) {
         if (!JavaUtils.hasImportClazz(file, clazzName)) {
             Optional<PsiClass> clazz = JavaUtils.findClazz(project, clazzName);

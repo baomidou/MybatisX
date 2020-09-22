@@ -32,6 +32,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
+ * The type Java utils.
+ *
  * @author yanglin
  */
 public final class JavaUtils {
@@ -40,15 +42,34 @@ public final class JavaUtils {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Is model clazz boolean.
+     *
+     * @param clazz the clazz
+     * @return the boolean
+     */
     public static boolean isModelClazz(@Nullable PsiClass clazz) {
         return null != clazz && !clazz.isAnnotationType() && !clazz.isInterface() && !clazz.isEnum() && clazz.isValid();
     }
 
+    /**
+     * Find settable psi field optional.
+     *
+     * @param clazz        the clazz
+     * @param propertyName the property name
+     * @return the optional
+     */
     public static Optional<PsiField> findSettablePsiField(@NotNull PsiClass clazz, @Nullable String propertyName) {
         PsiMethod propertySetter = PropertyUtil.findPropertySetter(clazz, propertyName, false, true);
         return null == propertySetter ? Optional.empty() : Optional.ofNullable(PropertyUtil.findPropertyFieldByMember(propertySetter));
     }
 
+    /**
+     * Find settable psi fields psi field [ ].
+     *
+     * @param clazz the clazz
+     * @return the psi field [ ]
+     */
     @NotNull
     public static PsiField[] findSettablePsiFields(@NotNull PsiClass clazz) {
         PsiMethod[] methods = clazz.getAllMethods();
@@ -62,6 +83,12 @@ public final class JavaUtils {
         return fields.toArray(new PsiField[0]);
     }
 
+    /**
+     * Is element within interface boolean.
+     *
+     * @param element the element
+     * @return the boolean
+     */
     public static boolean isElementWithinInterface(@Nullable PsiElement element) {
         if (element instanceof PsiClass && ((PsiClass) element).isInterface()) {
             return true;
@@ -70,10 +97,25 @@ public final class JavaUtils {
         return Optional.ofNullable(type).isPresent() && type.isInterface();
     }
 
+    /**
+     * Find clazz optional.
+     *
+     * @param project   the project
+     * @param clazzName the clazz name
+     * @return the optional
+     */
     public static Optional<PsiClass> findClazz(@NotNull Project project, @NotNull String clazzName) {
         return Optional.ofNullable(JavaPsiFacade.getInstance(project).findClass(clazzName, GlobalSearchScope.allScope(project)));
     }
 
+    /**
+     * Find method optional.
+     *
+     * @param project    the project
+     * @param clazzName  the clazz name
+     * @param methodName the method name
+     * @return the optional
+     */
     public static Optional<PsiMethod> findMethod(@NotNull Project project, @Nullable String clazzName, @Nullable String methodName) {
         if (StringUtils.isBlank(clazzName) && StringUtils.isBlank(methodName)) {
             return Optional.empty();
@@ -86,20 +128,49 @@ public final class JavaUtils {
         return Optional.empty();
     }
 
+    /**
+     * Find method optional.
+     *
+     * @param project the project
+     * @param element the element
+     * @return the optional
+     */
     public static Optional<PsiMethod> findMethod(@NotNull Project project, @NotNull IdDomElement element) {
         return findMethod(project, MapperUtils.getNamespace(element), MapperUtils.getId(element));
     }
 
+    /**
+     * Is annotation present boolean.
+     *
+     * @param target     the target
+     * @param annotation the annotation
+     * @return the boolean
+     */
     public static boolean isAnnotationPresent(@NotNull PsiModifierListOwner target, @NotNull Annotation annotation) {
         PsiModifierList modifierList = target.getModifierList();
         return null != modifierList && null != modifierList.findAnnotation(annotation.getQualifiedName());
     }
 
+    /**
+     * Gets psi annotation.
+     *
+     * @param target     the target
+     * @param annotation the annotation
+     * @return the psi annotation
+     */
     public static Optional<PsiAnnotation> getPsiAnnotation(@NotNull PsiModifierListOwner target, @NotNull Annotation annotation) {
         PsiModifierList modifierList = target.getModifierList();
         return null == modifierList ? Optional.empty() : Optional.ofNullable(modifierList.findAnnotation(annotation.getQualifiedName()));
     }
 
+    /**
+     * Gets annotation attribute value.
+     *
+     * @param target     the target
+     * @param annotation the annotation
+     * @param attrName   the attr name
+     * @return the annotation attribute value
+     */
     public static Optional<PsiAnnotationMemberValue> getAnnotationAttributeValue(@NotNull PsiModifierListOwner target,
                                                                                            @NotNull Annotation annotation,
                                                                                            @NotNull String attrName) {
@@ -110,15 +181,36 @@ public final class JavaUtils {
         return psiAnnotation.map(value -> value.findAttributeValue(attrName));
     }
 
+    /**
+     * Gets annotation value.
+     *
+     * @param target     the target
+     * @param annotation the annotation
+     * @return the annotation value
+     */
     public static Optional<PsiAnnotationMemberValue> getAnnotationValue(@NotNull PsiModifierListOwner target, @NotNull Annotation annotation) {
         return getAnnotationAttributeValue(target, annotation, "value");
     }
 
+    /**
+     * Gets annotation value text.
+     *
+     * @param target     the target
+     * @param annotation the annotation
+     * @return the annotation value text
+     */
     public static Optional<String> getAnnotationValueText(@NotNull PsiModifierListOwner target, @NotNull Annotation annotation) {
         Optional<PsiAnnotationMemberValue> annotationValue = getAnnotationValue(target, annotation);
         return annotationValue.map(psiAnnotationMemberValue -> psiAnnotationMemberValue.getText().replaceAll("\"", ""));
     }
 
+    /**
+     * Is any annotation present boolean.
+     *
+     * @param target      the target
+     * @param annotations the annotations
+     * @return the boolean
+     */
     public static boolean isAnyAnnotationPresent(@NotNull PsiModifierListOwner target, @NotNull Set<Annotation> annotations) {
         for (Annotation annotation : annotations) {
             if (isAnnotationPresent(target, annotation)) {
@@ -128,6 +220,13 @@ public final class JavaUtils {
         return false;
     }
 
+    /**
+     * Is all parameter with annotation boolean.
+     *
+     * @param method     the method
+     * @param annotation the annotation
+     * @return the boolean
+     */
     public static boolean isAllParameterWithAnnotation(@NotNull PsiMethod method, @NotNull Annotation annotation) {
         PsiParameter[] parameters = method.getParameterList().getParameters();
         for (PsiParameter parameter : parameters) {
@@ -138,6 +237,13 @@ public final class JavaUtils {
         return true;
     }
 
+    /**
+     * Has import clazz boolean.
+     *
+     * @param file      the file
+     * @param clazzName the clazz name
+     * @return the boolean
+     */
     public static boolean hasImportClazz(@NotNull PsiJavaFile file, @NotNull String clazzName) {
         PsiImportList importList = file.getImportList();
         if (null == importList) {

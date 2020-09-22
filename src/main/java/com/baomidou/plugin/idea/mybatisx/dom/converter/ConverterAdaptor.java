@@ -11,6 +11,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
+ * The type Converter adaptor.
+ *
+ * @param <T> the type parameter
  * @author yanglin
  */
 public abstract class ConverterAdaptor<T> extends ResolvingConverter<T> {

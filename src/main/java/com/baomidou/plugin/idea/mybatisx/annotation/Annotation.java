@@ -19,26 +19,53 @@ import java.util.Set;
  * </p>
  *
  * @author yanglin
- * @since 2018-07-30
+ * @since 2018 -07-30
  */
 public class Annotation implements Cloneable {
 
+    /**
+     * The constant PARAM.
+     */
     public static final Annotation PARAM = new Annotation("@Param", "org.apache.ibatis.annotations.Param");
 
+    /**
+     * The constant SELECT.
+     */
     public static final Annotation SELECT = new Annotation("@Select", "org.apache.ibatis.annotations.Select");
 
+    /**
+     * The constant UPDATE.
+     */
     public static final Annotation UPDATE = new Annotation("@Update", "org.apache.ibatis.annotations.Update");
 
+    /**
+     * The constant INSERT.
+     */
     public static final Annotation INSERT = new Annotation("@Insert", "org.apache.ibatis.annotations.Insert");
 
+    /**
+     * The constant DELETE.
+     */
     public static final Annotation DELETE = new Annotation("@Delete", "org.apache.ibatis.annotations.Delete");
 
+    /**
+     * The constant ALIAS.
+     */
     public static final Annotation ALIAS = new Annotation("@Alias", "org.apache.ibatis.type.Alias");
 
+    /**
+     * The constant AUTOWIRED.
+     */
     public static final Annotation AUTOWIRED = new Annotation("@Autowired", "org.springframework.beans.factory.annotation.Autowired");
 
+    /**
+     * The constant RESOURCE.
+     */
     public static final Annotation RESOURCE = new Annotation("@Resource", "javax.annotation.Resource");
 
+    /**
+     * The constant STATEMENT_SYMMETRIES.
+     */
     public static final Set<Annotation> STATEMENT_SYMMETRIES = ImmutableSet.of(SELECT, UPDATE, INSERT, DELETE);
 
     private final String label;
@@ -47,13 +74,24 @@ public class Annotation implements Cloneable {
 
     private Map<String, AnnotationValue> attributePairs;
 
+    /**
+     * The interface Annotation value.
+     */
     public interface AnnotationValue {
     }
 
+    /**
+     * The type String value.
+     */
     public static class StringValue implements AnnotationValue {
 
         private String value;
 
+        /**
+         * Instantiates a new String value.
+         *
+         * @param value the value
+         */
         public StringValue(@NotNull String value) {
             this.value = value;
         }
@@ -65,6 +103,12 @@ public class Annotation implements Cloneable {
 
     }
 
+    /**
+     * Instantiates a new Annotation.
+     *
+     * @param label         the label
+     * @param qualifiedName the qualified name
+     */
     public Annotation(@NotNull String label, @NotNull String qualifiedName) {
         this.label = label;
         this.qualifiedName = qualifiedName;
@@ -76,12 +120,25 @@ public class Annotation implements Cloneable {
         return this;
     }
 
+    /**
+     * With attribute annotation.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the annotation
+     */
     public Annotation withAttribute(@NotNull String key, @NotNull AnnotationValue value) {
         Annotation copy = this.clone();
         copy.attributePairs = Maps.newHashMap(this.attributePairs);
         return copy.addAttribute(key, value);
     }
 
+    /**
+     * With value annotation.
+     *
+     * @param value the value
+     * @return the annotation
+     */
     public Annotation withValue(@NotNull AnnotationValue value) {
         return withAttribute("value", value);
     }
@@ -114,6 +171,12 @@ public class Annotation implements Cloneable {
         return builder.toString();
     }
 
+    /**
+     * To psi class optional.
+     *
+     * @param project the project
+     * @return the optional
+     */
     public Optional<PsiClass> toPsiClass(@NotNull Project project) {
         return Optional.ofNullable(JavaPsiFacade.getInstance(project).findClass(getQualifiedName(), GlobalSearchScope.allScope(project)));
     }
@@ -130,11 +193,21 @@ public class Annotation implements Cloneable {
         }
     }
 
+    /**
+     * Gets label.
+     *
+     * @return the label
+     */
     @NotNull
     public String getLabel() {
         return label;
     }
 
+    /**
+     * Gets qualified name.
+     *
+     * @return the qualified name
+     */
     @NotNull
     public String getQualifiedName() {
         return qualifiedName;

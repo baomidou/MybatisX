@@ -29,15 +29,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Insert operator.
+ */
 public class InsertOperator extends BaseOperatorManager {
 
 
+    /**
+     * Instantiates a new Insert operator.
+     *
+     * @param mappingField the mapping field
+     */
     public InsertOperator(final List<TxField> mappingField) {
         Set<String> patterns = AbstractStatementGenerator.INSERT_GENERATOR.getPatterns();
         this.init(mappingField, patterns);
     }
 
 
+    /**
+     * Init.
+     *
+     * @param mappingField the mapping field
+     * @param patterns     the patterns
+     */
     public void init(final List<TxField> mappingField, Set<String> patterns) {
         for (final String areaName : patterns) {
             // insertSelective
@@ -54,6 +68,11 @@ public class InsertOperator extends BaseOperatorManager {
 
     private class InsertResultAppenderFactory extends ResultAppenderFactory {
 
+        /**
+         * Instantiates a new Insert result appender factory.
+         *
+         * @param areaPrefix the area prefix
+         */
         public InsertResultAppenderFactory(String areaPrefix) {
             super(areaPrefix);
         }
@@ -152,12 +171,30 @@ public class InsertOperator extends BaseOperatorManager {
     }
 
 
+    /**
+     * The type Insert custom suffix appender.
+     */
     static class InsertCustomSuffixAppender extends CustomSuffixAppender {
 
+        /**
+         * Instantiates a new Insert custom suffix appender.
+         *
+         * @param tipName        the tip name
+         * @param suffixOperator the suffix operator
+         * @param areaSequence   the area sequence
+         */
         public InsertCustomSuffixAppender(String tipName, SuffixOperator suffixOperator, AreaSequence areaSequence) {
             super(tipName, suffixOperator, areaSequence);
         }
 
+        /**
+         * Create insert by suffix operator syntax appender.
+         *
+         * @param all            the all
+         * @param suffixOperator the suffix operator
+         * @param areaSequence   the area sequence
+         * @return the syntax appender
+         */
         public static SyntaxAppender createInsertBySuffixOperator(String all, SuffixOperator suffixOperator, AreaSequence areaSequence) {
             return new InsertCustomSuffixAppender(all, suffixOperator, areaSequence);
         }
@@ -192,6 +229,11 @@ public class InsertOperator extends BaseOperatorManager {
 
         private List<TxField> mappingField;
 
+        /**
+         * Instantiates a new Insert all suffix operator.
+         *
+         * @param mappingField the mapping field
+         */
         public InsertAllSuffixOperator(List<TxField> mappingField) {
             this.mappingField = mappingField;
         }
@@ -223,6 +265,11 @@ public class InsertOperator extends BaseOperatorManager {
 
         private List<TxField> mappingField;
 
+        /**
+         * Instantiates a new Insert selective suffix operator.
+         *
+         * @param mappingField the mapping field
+         */
         public InsertSelectiveSuffixOperator(List<TxField> mappingField) {
             this.mappingField = mappingField;
         }

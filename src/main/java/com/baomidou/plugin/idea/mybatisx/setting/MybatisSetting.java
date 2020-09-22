@@ -22,6 +22,8 @@ import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenera
 import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
 
 /**
+ * The type Mybatis setting.
+ *
  * @author yanglin
  */
 @State(
@@ -36,10 +38,18 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
     private Type gsonTypeToken = new TypeToken<Set<String>>() {
     }.getType();
 
+    /**
+     * Instantiates a new Mybatis setting.
+     */
     public MybatisSetting() {
         statementGenerateModel = GenerateModel.START_WITH_MODEL;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static MybatisSetting getInstance() {
         return ServiceManager.getService(MybatisSetting.class);
     }
@@ -72,10 +82,20 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
         }
     }
 
+    /**
+     * Gets statement generate model.
+     *
+     * @return the statement generate model
+     */
     public GenerateModel getStatementGenerateModel() {
         return statementGenerateModel;
     }
 
+    /**
+     * Sets statement generate model.
+     *
+     * @param statementGenerateModel the statement generate model
+     */
     public void setStatementGenerateModel(GenerateModel statementGenerateModel) {
         this.statementGenerateModel = statementGenerateModel;
     }

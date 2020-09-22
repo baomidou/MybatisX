@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
+ * The type Ui component facade.
+ *
  * @author yanglin
  */
 public final class UiComponentFacade {
@@ -34,10 +36,24 @@ public final class UiComponentFacade {
         this.fileEditorManager = FileEditorManager.getInstance(project);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @param project the project
+     * @return the instance
+     */
     public static UiComponentFacade getInstance(@NotNull Project project) {
         return new UiComponentFacade(project);
     }
 
+    /**
+     * Show single folder selection dialog virtual file.
+     *
+     * @param title    the title
+     * @param toSelect the to select
+     * @param roots    the roots
+     * @return the virtual file
+     */
     public VirtualFile showSingleFolderSelectionDialog(@NotNull String title,
                                                        @Nullable VirtualFile toSelect,
                                                        @Nullable VirtualFile... roots) {
@@ -49,6 +65,16 @@ public final class UiComponentFacade {
         return FileChooser.chooseFile(descriptor, project, toSelect);
     }
 
+    /**
+     * Show list popup with single clickable jb popup.
+     *
+     * @param popupTitle        the popup title
+     * @param popupListener     the popup listener
+     * @param clickableTitle    the clickable title
+     * @param clickableListener the clickable listener
+     * @param objs              the objs
+     * @return the jb popup
+     */
     public JBPopup showListPopupWithSingleClickable(@NotNull String popupTitle,
                                                     @NotNull ListSelectionListener popupListener,
                                                     @NotNull String clickableTitle,
@@ -77,6 +103,14 @@ public final class UiComponentFacade {
         return popup;
     }
 
+    /**
+     * Show list popup jb popup.
+     *
+     * @param title    the title
+     * @param listener the listener
+     * @param objs     the objs
+     * @return the jb popup
+     */
     public JBPopup showListPopup(@NotNull String title,
                                  @Nullable final ListSelectionListener listener,
                                  @NotNull Object[] objs) {
@@ -104,6 +138,14 @@ public final class UiComponentFacade {
         }
     }
 
+    /**
+     * Create list popup builder popup chooser builder.
+     *
+     * @param title    the title
+     * @param listener the listener
+     * @param objs     the objs
+     * @return the popup chooser builder
+     */
     public PopupChooserBuilder createListPopupBuilder(@NotNull String title,
                                                       @Nullable final ListSelectionListener listener,
                                                       @NotNull Object... objs) {

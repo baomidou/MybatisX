@@ -13,6 +13,8 @@ import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The type Java file intention chooser.
+ *
  * @author yanglin
  */
 public abstract class JavaFileIntentionChooser implements IntentionChooser {
@@ -26,20 +28,50 @@ public abstract class JavaFileIntentionChooser implements IntentionChooser {
         return null != element && JavaUtils.isElementWithinInterface(element) && isAvailable(element);
     }
 
+    /**
+     * Is available boolean.
+     *
+     * @param element the element
+     * @return the boolean
+     */
     public abstract boolean isAvailable(@NotNull PsiElement element);
 
+    /**
+     * Is position of parameter declaration boolean.
+     *
+     * @param element the element
+     * @return the boolean
+     */
     public boolean isPositionOfParameterDeclaration(@NotNull PsiElement element) {
         return element.getParent() instanceof PsiParameter;
     }
 
+    /**
+     * Is position of method declaration boolean.
+     *
+     * @param element the element
+     * @return the boolean
+     */
     public boolean isPositionOfMethodDeclaration(@NotNull PsiElement element) {
         return element.getParent() instanceof PsiMethod;
     }
 
+    /**
+     * Is position of interface declaration boolean.
+     *
+     * @param element the element
+     * @return the boolean
+     */
     public boolean isPositionOfInterfaceDeclaration(@NotNull PsiElement element) {
         return element.getParent() instanceof PsiClass;
     }
 
+    /**
+     * Is target present in xml boolean.
+     *
+     * @param element the element
+     * @return the boolean
+     */
     public boolean isTargetPresentInXml(@NotNull PsiElement element) {
         return JavaService.getInstance(element.getProject()).findWithFindFirstProcessor(element).isPresent();
     }

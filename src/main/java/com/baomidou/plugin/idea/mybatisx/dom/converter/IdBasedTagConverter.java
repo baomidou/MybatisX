@@ -34,16 +34,26 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * The type Id based tag converter.
+ *
  * @author yanglin
  */
 public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
     private final boolean crossMapperSupported;
 
+    /**
+     * Instantiates a new Id based tag converter.
+     */
     public IdBasedTagConverter() {
         this(true);
     }
 
+    /**
+     * Instantiates a new Id based tag converter.
+     *
+     * @param crossMapperSupported the cross mapper supported
+     */
     protected IdBasedTagConverter(boolean crossMapperSupported) {
         this.crossMapperSupported = crossMapperSupported;
     }
@@ -82,24 +92,45 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
     }
 
     /**
+     * Gets comparisons.
+     *
      * @param mapper  mapper in the project, null if {@link #crossMapperSupported} is false
      * @param context the dom convert context
+     * @return the comparisons
      */
     @NotNull
     public abstract Collection<? extends IdDomElement> getComparisons(@Nullable Mapper mapper, ConvertContext context);
 
     private abstract class TraverseStrategy {
+        /**
+         * The Context.
+         */
         protected ConvertContext context;
 
+        /**
+         * Instantiates a new Traverse strategy.
+         *
+         * @param context the context
+         */
         public TraverseStrategy(@NotNull ConvertContext context) {
             this.context = context;
         }
 
+        /**
+         * Gets value.
+         *
+         * @return the value
+         */
         public abstract Collection<? extends IdDomElement> getValue();
     }
 
     private class InsideMapperStrategy extends TraverseStrategy {
 
+        /**
+         * Instantiates a new Inside mapper strategy.
+         *
+         * @param context the context
+         */
         public InsideMapperStrategy(@NotNull ConvertContext context) {
             super(context);
         }
@@ -113,6 +144,11 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
 
     private class CrossMapperStrategy extends TraverseStrategy {
 
+        /**
+         * Instantiates a new Cross mapper strategy.
+         *
+         * @param context the context
+         */
         public CrossMapperStrategy(@NotNull ConvertContext context) {
             super(context);
         }
@@ -175,6 +211,14 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         private ConvertContext context;
         private String text;
 
+        /**
+         * Instantiates a new Value reference.
+         *
+         * @param element the element
+         * @param rng     the rng
+         * @param context the context
+         * @param text    the text
+         */
         public ValueReference(@NotNull PsiElement element, TextRange rng, ConvertContext context, String text) {
             super(element, rng, false);
             this.context = context;

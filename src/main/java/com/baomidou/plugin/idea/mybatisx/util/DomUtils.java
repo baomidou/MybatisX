@@ -18,12 +18,23 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomService;
 
+/**
+ * The type Dom utils.
+ */
 public final class DomUtils {
 
     private DomUtils() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Find dom elements collection.
+     *
+     * @param <T>     the type parameter
+     * @param project the project
+     * @param clazz   the clazz
+     * @return the collection
+     */
     @NotNull
     @NonNls
     public static <T extends DomElement> Collection<T> findDomElements(@NotNull Project project, Class<T> clazz) {
@@ -43,7 +54,7 @@ public final class DomUtils {
      * </p>
      *
      * @param file 判断文件
-     * @return
+     * @return boolean
      */
     public static boolean isMybatisFile(@Nullable PsiFile file) {
         if (!isXmlFile(file)) {
@@ -53,6 +64,12 @@ public final class DomUtils {
         return null != rootTag && rootTag.getName().equals("mapper");
     }
 
+    /**
+     * Is mybatis configuration file boolean.
+     *
+     * @param file the file
+     * @return the boolean
+     */
     public static boolean isMybatisConfigurationFile(@NotNull PsiFile file) {
         if (!isXmlFile(file)) {
             return false;
@@ -61,6 +78,12 @@ public final class DomUtils {
         return null != rootTag && rootTag.getName().equals("configuration");
     }
 
+    /**
+     * Is beans file boolean.
+     *
+     * @param file the file
+     * @return the boolean
+     */
     public static boolean isBeansFile(@NotNull PsiFile file) {
         if (!isXmlFile(file)) {
             return false;
@@ -69,6 +92,12 @@ public final class DomUtils {
         return null != rootTag && rootTag.getName().equals("beans");
     }
 
+    /**
+     * Is xml file boolean.
+     *
+     * @param file the file
+     * @return the boolean
+     */
     static boolean isXmlFile(@NotNull PsiFile file) {
         return file instanceof XmlFile;
     }

@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 /**
+ * The type Alias class reference.
+ *
  * @author yanglin
  */
 public class AliasClassReference extends PsiReferenceBase<XmlAttributeValue> {
@@ -22,6 +24,11 @@ public class AliasClassReference extends PsiReferenceBase<XmlAttributeValue> {
         }
     };
 
+    /**
+     * Instantiates a new Alias class reference.
+     *
+     * @param element the element
+     */
     public AliasClassReference(@NotNull XmlAttributeValue element) {
         super(element, true);
     }

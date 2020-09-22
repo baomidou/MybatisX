@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * The type Mapper method inspection.
+ *
  * @author yanglin
  */
 public class MapperMethodInspection extends MapperInspection {

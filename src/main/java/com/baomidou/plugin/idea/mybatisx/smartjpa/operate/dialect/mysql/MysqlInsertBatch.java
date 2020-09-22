@@ -25,12 +25,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Mysql insert batch.
+ */
 public class MysqlInsertBatch implements CustomStatement {
 
+    /**
+     * Instantiates a new Mysql insert batch.
+     */
     public MysqlInsertBatch() {
 
     }
 
+    /**
+     * Init insert batch.
+     *
+     * @param areaName     the area name
+     * @param mappingField the mapping field
+     */
     public void initInsertBatch(String areaName, List<TxField> mappingField) {
         String newAreaName = getNewAreaName(areaName);
         // insertBatch
@@ -49,6 +61,13 @@ public class MysqlInsertBatch implements CustomStatement {
         this.operatorName = newAreaName;
     }
 
+    /**
+     * Gets result appender factory.
+     *
+     * @param mappingField the mapping field
+     * @param newAreaName  the new area name
+     * @return the result appender factory
+     */
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
         ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {
             @Override
@@ -65,23 +84,46 @@ public class MysqlInsertBatch implements CustomStatement {
         return appenderFactory;
     }
 
+    /**
+     * Batch name string.
+     *
+     * @return the string
+     */
     @NotNull
     protected String batchName() {
         return "Batch";
     }
 
+    /**
+     * Gets new area name.
+     *
+     * @param areaName the area name
+     * @return the new area name
+     */
     @NotNull
     protected String getNewAreaName(String areaName) {
         return areaName + batchName();
     }
 
+    /**
+     * Gets suffix operator.
+     *
+     * @param mappingField the mapping field
+     * @return the suffix operator
+     */
     @NotNull
     protected SuffixOperator getSuffixOperator(List<TxField> mappingField) {
         return new InsertBatchSuffixOperator(mappingField);
     }
 
+    /**
+     * The Statement block.
+     */
     StatementBlock statementBlock;
 
+    /**
+     * The Operator name.
+     */
     String operatorName;
     @Override
     public StatementBlock getStatementBlock() {
@@ -96,6 +138,11 @@ public class MysqlInsertBatch implements CustomStatement {
 
     private class InsertBatchResultAppenderFactory extends ResultAppenderFactory {
 
+        /**
+         * Instantiates a new Insert batch result appender factory.
+         *
+         * @param areaPrefix the area prefix
+         */
         public InsertBatchResultAppenderFactory(String areaPrefix) {
             super(areaPrefix);
         }
@@ -134,6 +181,11 @@ public class MysqlInsertBatch implements CustomStatement {
 
         private List<TxField> mappingField;
 
+        /**
+         * Instantiates a new Insert batch suffix operator.
+         *
+         * @param mappingField the mapping field
+         */
         public InsertBatchSuffixOperator(List<TxField> mappingField) {
             this.mappingField = mappingField;
         }

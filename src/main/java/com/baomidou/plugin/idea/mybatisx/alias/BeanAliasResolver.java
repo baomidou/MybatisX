@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
+ * The type Bean alias resolver.
+ *
  * @author yanglin
  */
 public class BeanAliasResolver extends PackageAliasResolver {
@@ -29,6 +31,11 @@ public class BeanAliasResolver extends PackageAliasResolver {
     private ModuleManager moduleManager;
     private SpringManagerAdaptor springManagerAdaptor ;
 
+    /**
+     * Instantiates a new Bean alias resolver.
+     *
+     * @param project the project
+     */
     public BeanAliasResolver(Project project) {
         super(project);
         this.moduleManager = ModuleManager.getInstance(project);

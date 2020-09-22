@@ -27,11 +27,17 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
+ * The type Test param contributor.
+ *
  * @author yanglin
  */
 public class TestParamContributor extends CompletionContributor {
 
     private static final Logger logger = LoggerFactory.getLogger(TestParamContributor.class);
+
+    /**
+     * Instantiates a new Test param contributor.
+     */
     public TestParamContributor() {
         extend(CompletionType.BASIC,
                 XmlPatterns.psiElement().inside(XmlPatterns.xmlAttributeValue().inside(XmlPatterns.xmlAttribute().withName("test"))),
@@ -44,6 +50,13 @@ public class TestParamContributor extends CompletionContributor {
                 });
     }
 
+    /**
+     * Add element for psi parameter.
+     *
+     * @param project the project
+     * @param result  the result
+     * @param element the element
+     */
     public static void addElementForPsiParameter(@NotNull Project project, @NotNull CompletionResultSet result, @Nullable IdDomElement element) {
         if (null == element) {
             return;

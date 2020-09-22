@@ -9,6 +9,9 @@ import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
 
+/**
+ * The type Mybatis generator main action.
+ */
 public class MybatisGeneratorMainAction extends AnAction {
 
 

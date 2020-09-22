@@ -29,6 +29,9 @@ public class CommonGenerator implements PlatformGenerator {
     private List<TxField> mappingField;
     private String tableName;
     private PsiClass entityClass;
+    /**
+     * The Appender manager.
+     */
     final AreaOperateManager appenderManager;
     private String text;
 
@@ -50,12 +53,15 @@ public class CommonGenerator implements PlatformGenerator {
     }
 
     /**
-     * @param entityClass
-     * @param text
-     * @param dbms
-     * @param tableName
-     * @param fields
-     * @return
+     * Create editor auto completion common generator.
+     *
+     * @param entityClass the entity class
+     * @param text        the text
+     * @param dbms        the dbms
+     * @param dasTable    the das table
+     * @param tableName   the table name
+     * @param fields      the fields
+     * @return common generator
      */
     public static CommonGenerator createEditorAutoCompletion(PsiClass entityClass, String text,
                                                              @NotNull DbmsAdaptor dbms,

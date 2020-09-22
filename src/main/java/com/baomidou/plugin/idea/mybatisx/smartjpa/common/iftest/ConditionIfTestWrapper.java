@@ -3,6 +3,8 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 import java.util.Set;
 
 /**
+ * The type Condition if test wrapper.
+ *
  * @author ls9527
  */
 public class ConditionIfTestWrapper implements ConditionFieldWrapper {
@@ -12,6 +14,11 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     private boolean resultType;
     private String resultTypeClass;
 
+    /**
+     * Instantiates a new Condition if test wrapper.
+     *
+     * @param wrapperFields the wrapper fields
+     */
     public ConditionIfTestWrapper(Set<String> wrapperFields) {
         this.wrapperFields = wrapperFields;
     }
@@ -53,18 +60,38 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return fieldName + " != null";
     }
 
+    /**
+     * Sets all fields.
+     *
+     * @param allFieldsStr the all fields str
+     */
     public void setAllFields(String allFieldsStr) {
         this.allFieldsStr = allFieldsStr;
     }
 
+    /**
+     * Sets result map.
+     *
+     * @param resultMap the result map
+     */
     public void setResultMap(String resultMap) {
         this.resultMap = resultMap;
     }
 
+    /**
+     * Sets result type.
+     *
+     * @param resultType the result type
+     */
     public void setResultType(boolean resultType) {
         this.resultType = resultType;
     }
 
+    /**
+     * Sets result type class.
+     *
+     * @param resultTypeClass the result type class
+     */
     public void setResultTypeClass(String resultTypeClass) {
         this.resultTypeClass = resultTypeClass;
     }

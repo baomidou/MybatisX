@@ -13,14 +13,20 @@ import org.slf4j.LoggerFactory;
  * </p>
  *
  * @author yanglin
- * @since 2018-07-30
+ * @since 2018 -07-30
  */
 public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> {
 
+    /**
+     * Instantiates a new Mapper xml inspection.
+     */
     public MapperXmlInspection() {
         super(DomElement.class);
     }
 
+    /**
+     * The Logger.
+     */
     Logger logger = LoggerFactory.getLogger(MapperXmlInspection.class);
 
     @Override

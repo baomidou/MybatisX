@@ -17,14 +17,29 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
+ * The type Context psi field reference.
+ *
  * @author yanglin
  */
 public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue> {
 
+    /**
+     * The Resolver.
+     */
     protected ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
 
+    /**
+     * The Index.
+     */
     protected int index;
 
+    /**
+     * Instantiates a new Context psi field reference.
+     *
+     * @param element the element
+     * @param range   the range
+     * @param index   the index
+     */
     public ContextPsiFieldReference(XmlAttributeValue element, TextRange range, int index) {
         super(element, range, false);
         this.index = index;
@@ -60,18 +75,38 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         return Optional.empty();
     }
 
+    /**
+     * Gets resolver.
+     *
+     * @return the resolver
+     */
     public ContextReferenceSetResolver<XmlAttributeValue, PsiField>  getResolver() {
         return resolver;
     }
 
+    /**
+     * Sets resolver.
+     *
+     * @param resolver the resolver
+     */
     public void setResolver(ContextReferenceSetResolver<XmlAttributeValue, PsiField>  resolver) {
         this.resolver = resolver;
     }
 
+    /**
+     * Gets index.
+     *
+     * @return the index
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Sets index.
+     *
+     * @param index the index
+     */
     public void setIndex(int index) {
         this.index = index;
     }

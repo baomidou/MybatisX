@@ -15,10 +15,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
+ * The type Config package alias resolver.
+ *
  * @author yanglin
  */
 public class ConfigPackageAliasResolver extends PackageAliasResolver {
 
+    /**
+     * Instantiates a new Config package alias resolver.
+     *
+     * @param project the project
+     */
     public ConfigPackageAliasResolver(Project project) {
         super(project);
     }

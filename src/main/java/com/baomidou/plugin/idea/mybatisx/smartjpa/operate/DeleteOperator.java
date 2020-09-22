@@ -23,15 +23,28 @@ import com.intellij.psi.PsiParameter;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The type Delete operator.
+ */
 public class DeleteOperator extends BaseOperatorManager {
 
 
+    /**
+     * Instantiates a new Delete operator.
+     *
+     * @param mappingField the mapping field
+     */
     public DeleteOperator(final List<TxField> mappingField) {
         super.setOperatorNameList(AbstractStatementGenerator.DELETE_GENERATOR.getPatterns());
         this.init(mappingField);
     }
 
 
+    /**
+     * Init.
+     *
+     * @param mappingField the mapping field
+     */
     public void init(final List<TxField> mappingField) {
         for (String areaName : getOperatorNameList()) {
             // 没有结果集字段
@@ -73,6 +86,11 @@ public class DeleteOperator extends BaseOperatorManager {
 
     private class DeleteResultAppenderFactory extends ResultAppenderFactory {
 
+        /**
+         * Instantiates a new Delete result appender factory.
+         *
+         * @param pattern the pattern
+         */
         public DeleteResultAppenderFactory(String pattern) {
             super(pattern);
         }

@@ -29,6 +29,15 @@ public class AreaPrefixAppendTypeCommand implements AppendTypeCommand {
     private final AreaSequence childAreaSequence;
     private final SyntaxAppenderFactory syntaxAppenderFactory;
 
+    /**
+     * Instantiates a new Area prefix append type command.
+     *
+     * @param areaPrefix            the area prefix
+     * @param areaType              the area type
+     * @param areaSequence          the area sequence
+     * @param childAreaSequence     the child area sequence
+     * @param syntaxAppenderFactory the syntax appender factory
+     */
     public AreaPrefixAppendTypeCommand(String areaPrefix, String areaType, AreaSequence areaSequence, AreaSequence childAreaSequence, SyntaxAppenderFactory syntaxAppenderFactory) {
         this.areaPrefix = areaPrefix;
         this.areaType = areaType;

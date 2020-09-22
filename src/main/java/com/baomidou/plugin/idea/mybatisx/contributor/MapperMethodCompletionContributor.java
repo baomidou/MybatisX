@@ -30,8 +30,14 @@ import java.util.Optional;
  */
 public class MapperMethodCompletionContributor extends CompletionContributor {
 
+    /**
+     * The constant FOUND.
+     */
     public static final Key<Boolean> FOUND = Key.create("mapper.found");
 
+    /**
+     * The constant MAPPER.
+     */
     public static final Key<PsiClass> MAPPER = Key.create("mapper.mapper");
 
     /**
@@ -78,6 +84,12 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
     }
 
+    /**
+     * Find mapper class optional.
+     *
+     * @param parameters the parameters
+     * @return the optional
+     */
     @NotNull
     protected Optional<PsiClass> findMapperClass(@NotNull CompletionParameters parameters) {
         if (parameters.getCompletionType() != CompletionType.BASIC) {

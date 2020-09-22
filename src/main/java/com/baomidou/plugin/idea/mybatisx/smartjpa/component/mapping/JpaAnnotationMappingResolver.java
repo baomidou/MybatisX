@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * 自定义的BaseMapper上面, 定义了一个实体. 实体上有jpa的@Table注解
- *
+ * <p>
  * 例如: public interface BlogCustomBaseMapper extends CustomBaseMapper<JpaBlog> {}
  * BlogCustomBaseMapper 有 mapper 文件, 但是什么也没配置
  */

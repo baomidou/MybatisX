@@ -77,6 +77,7 @@ public class MybatisGeneratorMainUI extends JFrame {
     private JCheckBox overrideXMLBox = new JCheckBox("Overwrite-Xml");
     private JCheckBox overrideJavaBox = new JCheckBox("Overwrite-Java");
     private JCheckBox needToStringHashcodeEqualsBox = new JCheckBox("toString/hashCode/equals");
+    private JCheckBox needMapperAnnotationBox = new JCheckBox("Mapper Annotation");
     private JCheckBox useSchemaPrefixBox = new JCheckBox("Use-Schema(使用Schema前缀)");
     private JCheckBox needForUpdateBox = new JCheckBox("Add-ForUpdate(select增加ForUpdate)");
     private JCheckBox annotationDAOBox = new JCheckBox("Repository-Annotation(Repository注解)");
@@ -89,6 +90,12 @@ public class MybatisGeneratorMainUI extends JFrame {
     private JCheckBox useLombokBox = new JCheckBox("Use-Lombox");
 
 
+    /**
+     * Instantiates a new Mybatis generator main ui.
+     *
+     * @param anActionEvent the an action event
+     * @throws HeadlessException the headless exception
+     */
     public MybatisGeneratorMainUI(AnActionEvent anActionEvent) throws HeadlessException {
         this.anActionEvent = anActionEvent;
         this.project = anActionEvent.getData(PlatformDataKeys.PROJECT);
@@ -330,6 +337,9 @@ public class MybatisGeneratorMainUI extends JFrame {
             if (config.isNeedToStringHashcodeEquals()) {
                 needToStringHashcodeEqualsBox.setSelected(true);
             }
+            if(config.isNeedMapperAnnotation()){
+                needMapperAnnotationBox.setSelected(true);
+            }
             if (config.isUseSchemaPrefix()) {
                 useSchemaPrefixBox.setSelected(true);
             }
@@ -366,6 +376,7 @@ public class MybatisGeneratorMainUI extends JFrame {
         optionsPanel.add(overrideXMLBox);
         optionsPanel.add(overrideJavaBox);
         optionsPanel.add(needToStringHashcodeEqualsBox);
+        optionsPanel.add(needMapperAnnotationBox);
         optionsPanel.add(useSchemaPrefixBox);
         optionsPanel.add(needForUpdateBox);
         optionsPanel.add(annotationDAOBox);
@@ -437,6 +448,7 @@ public class MybatisGeneratorMainUI extends JFrame {
                         overrideXMLBox.setSelected(selectedConfig.isOverrideXML());
                         overrideJavaBox.setSelected(selectedConfig.isOverrideJava());
                         needToStringHashcodeEqualsBox.setSelected(selectedConfig.isNeedToStringHashcodeEquals());
+                        needMapperAnnotationBox.setSelected(selectedConfig.isNeedMapperAnnotation());
                         useSchemaPrefixBox.setSelected(selectedConfig.isUseSchemaPrefix());
                         needForUpdateBox.setSelected(selectedConfig.isNeedForUpdate());
                         annotationDAOBox.setSelected(selectedConfig.isAnnotationDAO());
@@ -478,23 +490,27 @@ public class MybatisGeneratorMainUI extends JFrame {
         setContentPane(contentPane);
 
         buttonOK.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 onOK();
             }
         });
         buttonCancel.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 onCancel();
             }
         });
 
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }
         });
 
         contentPane.registerKeyboardAction(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 onCancel();
             }
@@ -523,6 +539,7 @@ public class MybatisGeneratorMainUI extends JFrame {
                 generator_config.setOverrideXML(overrideXMLBox.getSelectedObjects() != null);
                 generator_config.setOverrideJava(overrideJavaBox.getSelectedObjects() != null);
                 generator_config.setNeedToStringHashcodeEquals(needToStringHashcodeEqualsBox.getSelectedObjects() != null);
+                generator_config.setNeedMapperAnnotation(needMapperAnnotationBox.getSelectedObjects() != null);
                 generator_config.setUseSchemaPrefix(useSchemaPrefixBox.getSelectedObjects() != null);
                 generator_config.setNeedForUpdate(needForUpdateBox.getSelectedObjects() != null);
                 generator_config.setAnnotationDAO(annotationDAOBox.getSelectedObjects() != null);
@@ -567,6 +584,7 @@ public class MybatisGeneratorMainUI extends JFrame {
                     generator_config.setOverrideXML(overrideXMLBox.getSelectedObjects() != null);
                     generator_config.setOverrideJava(overrideJavaBox.getSelectedObjects() != null);
                     generator_config.setNeedToStringHashcodeEquals(needToStringHashcodeEqualsBox.getSelectedObjects() != null);
+                    generator_config.setNeedMapperAnnotation(needMapperAnnotationBox.getSelectedObjects() != null);
                     generator_config.setUseSchemaPrefix(useSchemaPrefixBox.getSelectedObjects() != null);
                     generator_config.setNeedForUpdate(needForUpdateBox.getSelectedObjects() != null);
                     generator_config.setAnnotationDAO(annotationDAOBox.getSelectedObjects() != null);

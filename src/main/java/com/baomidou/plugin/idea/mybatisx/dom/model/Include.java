@@ -8,10 +8,17 @@ import com.intellij.util.xml.GenericAttributeValue;
 import com.baomidou.plugin.idea.mybatisx.dom.converter.SqlConverter;
 
 /**
+ * The interface Include.
+ *
  * @author yanglin
  */
 public interface Include extends DomElement {
 
+    /**
+     * Gets ref id.
+     *
+     * @return the ref id
+     */
     @Attribute("refid")
     @Convert(SqlConverter.class)
     GenericAttributeValue<XmlTag> getRefId();

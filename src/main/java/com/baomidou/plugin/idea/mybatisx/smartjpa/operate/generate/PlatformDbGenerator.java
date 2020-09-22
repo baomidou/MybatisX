@@ -19,6 +19,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+/**
+ * The type Platform db generator.
+ */
 public class PlatformDbGenerator extends  PlatformSimpleGenerator {
 
     @Override

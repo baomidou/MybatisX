@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * The type Custom area appender.
+ */
 public class CustomAreaAppender implements SyntaxAppender {
     @Override
     public String toString() {
@@ -29,6 +32,11 @@ public class CustomAreaAppender implements SyntaxAppender {
             '}';
     }
 
+    /**
+     * Gets syntax appender factory.
+     *
+     * @return the syntax appender factory
+     */
     public SyntaxAppenderFactory getSyntaxAppenderFactory() {
         return syntaxAppenderFactory;
     }
@@ -46,6 +54,15 @@ public class CustomAreaAppender implements SyntaxAppender {
         return areaSequence;
     }
 
+    /**
+     * Instantiates a new Custom area appender.
+     *
+     * @param area                  the area
+     * @param areaType              the area type
+     * @param areaSequence          the area sequence
+     * @param childAreaSequence     the child area sequence
+     * @param syntaxAppenderFactory the syntax appender factory
+     */
     protected CustomAreaAppender(final String area, String areaType, AreaSequence areaSequence, AreaSequence childAreaSequence, SyntaxAppenderFactory syntaxAppenderFactory) {
         this.area = area;
         this.areaType = areaType;
@@ -55,6 +72,14 @@ public class CustomAreaAppender implements SyntaxAppender {
     }
 
 
+    /**
+     * Instantiates a new Custom area appender.
+     *
+     * @param area                  the area
+     * @param areaType              the area type
+     * @param areaSequence          the area sequence
+     * @param syntaxAppenderFactory the syntax appender factory
+     */
     protected CustomAreaAppender(String area, String areaType, AreaSequence areaSequence, SyntaxAppenderFactory syntaxAppenderFactory) {
         this.area = area;
         this.areaType = areaType;
@@ -62,6 +87,15 @@ public class CustomAreaAppender implements SyntaxAppender {
         this.syntaxAppenderFactory = syntaxAppenderFactory;
     }
 
+    /**
+     * Create custom area appender custom area appender.
+     *
+     * @param area                  the area
+     * @param areaType              the area type
+     * @param areaSequence          the area sequence
+     * @param syntaxAppenderFactory the syntax appender factory
+     * @return the custom area appender
+     */
     public static CustomAreaAppender createCustomAreaAppender(String area,
                                                               String areaType,
                                                               AreaSequence areaSequence,
@@ -69,10 +103,27 @@ public class CustomAreaAppender implements SyntaxAppender {
         return createCustomAreaAppender(area, areaType, areaSequence, AreaSequence.UN_KNOWN, syntaxAppenderFactory);
     }
 
+    /**
+     * Create custom area appender custom area appender.
+     *
+     * @param area     the area
+     * @param areaType the area type
+     * @return the custom area appender
+     */
     public static CustomAreaAppender createCustomAreaAppender(final String area, String areaType) {
         return createCustomAreaAppender(area, areaType, AreaSequence.AREA, AreaSequence.UN_KNOWN, null);
     }
 
+    /**
+     * Create custom area appender custom area appender.
+     *
+     * @param area                  the area
+     * @param areaType              the area type
+     * @param sequence              the sequence
+     * @param childAreaSequence     the child area sequence
+     * @param syntaxAppenderFactory the syntax appender factory
+     * @return the custom area appender
+     */
     public static CustomAreaAppender createCustomAreaAppender(final String area, String areaType, AreaSequence sequence,
                                                               AreaSequence childAreaSequence,
                                                               SyntaxAppenderFactory syntaxAppenderFactory) {
@@ -142,6 +193,11 @@ public class CustomAreaAppender implements SyntaxAppender {
 
     private AreaSequence childAreaSequence;
 
+    /**
+     * Gets child area sequence.
+     *
+     * @return the child area sequence
+     */
     public AreaSequence getChildAreaSequence() {
         return childAreaSequence;
     }

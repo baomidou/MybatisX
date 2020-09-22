@@ -14,21 +14,22 @@ public interface EntityMappingResolver {
     /**
      * 获取所有字段
      *
-     * @return
+     * @return fields
      */
     List<TxField> getFields();
 
     /**
      * 获取所有表名
      *
-     * @return
+     * @return table name
      */
     String getTableName();
 
     /**
      * 支持 mapper 类
-     * @param mapperClass
-     * @return
+     *
+     * @param mapperClass the mapper class
+     * @return optional
      */
     Optional<PsiClass> findEntity(PsiClass mapperClass);
 }

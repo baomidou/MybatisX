@@ -9,10 +9,17 @@ import com.baomidou.plugin.idea.mybatisx.dom.converter.AliasConverter;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The interface Collection.
+ *
  * @author yanglin
  */
 public interface Collection extends GroupFour, ResultMapGroup, PropertyGroup {
 
+    /**
+     * Gets of type.
+     *
+     * @return the of type
+     */
     @NotNull
     @Attribute("ofType")
     @Convert(AliasConverter.class)

@@ -16,13 +16,25 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
+ * The interface Group two.
+ *
  * @author yanglin
  */
 public interface GroupTwo extends GroupOne, IdDomElement {
 
+    /**
+     * Gets binds.
+     *
+     * @return the binds
+     */
     @SubTagList("bind")
     List<Bind> getBinds();
 
+    /**
+     * Gets parameter map.
+     *
+     * @return the parameter map
+     */
     @NotNull
     @Attribute("parameterMap")
     @Convert(ParameterMapConverter.class)
@@ -32,6 +44,11 @@ public interface GroupTwo extends GroupOne, IdDomElement {
     @Convert(DaoMethodConverter.class)
     GenericAttributeValue<String> getId();
 
+    /**
+     * Gets parameter type.
+     *
+     * @return the parameter type
+     */
     @NotNull
     @Attribute("parameterType")
     @Convert(AliasConverter.class)

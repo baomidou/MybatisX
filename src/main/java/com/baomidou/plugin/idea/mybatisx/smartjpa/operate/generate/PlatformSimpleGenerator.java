@@ -8,9 +8,22 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The type Platform simple generator.
+ */
 public class PlatformSimpleGenerator {
 
 
+    /**
+     * Gets platform generator.
+     *
+     * @param project               the project
+     * @param element               the element
+     * @param entityClass           the entity class
+     * @param entityMappingResolver the entity mapping resolver
+     * @param text                  the text
+     * @return the platform generator
+     */
     @NotNull
     public PlatformGenerator getPlatformGenerator(@NotNull Project project, @NotNull PsiElement element, PsiClass entityClass, EntityMappingResolver entityMappingResolver, String text) {
         DbmsAdaptor dbms = getDbmsAdaptor(project, element);
@@ -26,6 +39,14 @@ public class PlatformSimpleGenerator {
             entityMappingResolver.getFields());
     }
 
+    /**
+     * Find adaptor das table adaptor.
+     *
+     * @param project               the project
+     * @param entityClass           the entity class
+     * @param entityMappingResolver the entity mapping resolver
+     * @return the das table adaptor
+     */
     protected DasTableAdaptor findAdaptor(@NotNull Project project, PsiClass entityClass, EntityMappingResolver entityMappingResolver) {
         DasTableAdaptor dasTableAdaptor = new DasTableAdaptor();
         try {
@@ -36,6 +57,14 @@ public class PlatformSimpleGenerator {
         return dasTableAdaptor;
     }
 
+    /**
+     * Find table name string.
+     *
+     * @param project               the project
+     * @param entityClass           the entity class
+     * @param entityMappingResolver the entity mapping resolver
+     * @return the string
+     */
     protected String findTableName(@NotNull Project project, PsiClass entityClass, EntityMappingResolver entityMappingResolver) {
         String tableName = entityMappingResolver.getTableName();
         try {
@@ -47,6 +76,13 @@ public class PlatformSimpleGenerator {
         return tableName;
     }
 
+    /**
+     * Gets dbms adaptor.
+     *
+     * @param project the project
+     * @param element the element
+     * @return the dbms adaptor
+     */
     protected DbmsAdaptor getDbmsAdaptor(@NotNull Project project, @NotNull PsiElement element) {
       return DbmsAdaptor.MYSQL;
     }
@@ -55,10 +91,11 @@ public class PlatformSimpleGenerator {
     /**
      * 遍历所有数据源的表名
      *
-     * @param entityClass
-     * @param dataSources
-     * @param foundTableName
-     * @return
+     * @param entityClass     the entity class
+     * @param project         the project
+     * @param foundTableName  the found table name
+     * @param dasTableAdaptor the das table adaptor
+     * @return table name
      */
     protected String getTableName(PsiClass entityClass,
                                   Project project,

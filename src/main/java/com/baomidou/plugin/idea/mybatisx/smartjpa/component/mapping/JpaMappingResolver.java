@@ -20,14 +20,35 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The type Jpa mapping resolver.
+ */
 public abstract class JpaMappingResolver {
 
 
+    /**
+     * The constant JAVAX_PERSISTENCE_TABLE.
+     */
     public static final String JAVAX_PERSISTENCE_TABLE = "javax.persistence.Table";
+    /**
+     * The constant JAVAX_PERSISTENCE_COLUMN.
+     */
     public static final String JAVAX_PERSISTENCE_COLUMN = "javax.persistence.Column";
+    /**
+     * The constant COLUMN_NAME.
+     */
     public static final String COLUMN_NAME = "name";
+    /**
+     * The constant TABLE_NAME.
+     */
     public static final String TABLE_NAME = "name";
 
+    /**
+     * Gets table name by jpa or camel.
+     *
+     * @param entityClass the entity class
+     * @return the table name by jpa or camel
+     */
     protected String getTableNameByJpaOrCamel(PsiClass entityClass) {
         if(entityClass == null){
             throw new IllegalArgumentException("无法确认实体类, 请尝试重新打开Mapper");
@@ -45,6 +66,12 @@ public abstract class JpaMappingResolver {
         return tableName;
     }
 
+    /**
+     * Gets column name by jpa or camel.
+     *
+     * @param field the field
+     * @return the column name by jpa or camel
+     */
     protected String getColumnNameByJpaOrCamel(PsiField field) {
         String columnName = null;
         // 根据jpa的方式修改列名
@@ -68,6 +95,12 @@ public abstract class JpaMappingResolver {
             .collect(Collectors.joining("_"));
     }
 
+    /**
+     * Find entity class by mapper class optional.
+     *
+     * @param mapperClass the mapper class
+     * @return the optional
+     */
     public static Optional<PsiClass> findEntityClassByMapperClass(PsiClass mapperClass) {
         JavaPsiFacade instance = JavaPsiFacade.getInstance(mapperClass.getProject());
         PsiReferenceList extendsList = mapperClass.getExtendsList();
@@ -102,6 +135,12 @@ public abstract class JpaMappingResolver {
     }
 
 
+    /**
+     * Init data by camel list.
+     *
+     * @param entityClass the entity class
+     * @return the list
+     */
     protected List<TxField> initDataByCamel(PsiClass entityClass) {
         // 去除有 static, transient 标记的字段
         List<PsiField> psiFieldList = FieldUtil.getPsiFieldList(entityClass);

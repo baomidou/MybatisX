@@ -76,6 +76,11 @@ public class Config {
 	 */
 	private boolean needToStringHashcodeEquals;
 
+    /**
+     * 是否生成Mapper注解
+     */
+    private boolean needMapperAnnotation;
+
 	/**
 	 * 是否使用Schema前缀
 	 */
@@ -126,264 +131,597 @@ public class Config {
 	private String connectorJarPath;
 	private boolean useLombokPlugin;
 
-	public boolean isUseLombokPlugin() {
+    /**
+     * Is use lombok plugin boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isUseLombokPlugin() {
 		return useLombokPlugin;
 	}
 
-	public void setUseLombokPlugin(boolean useLombokPlugin) {
+    /**
+     * Sets use lombok plugin.
+     *
+     * @param useLombokPlugin the use lombok plugin
+     */
+    public void setUseLombokPlugin(boolean useLombokPlugin) {
 		this.useLombokPlugin = useLombokPlugin;
 	}
 
-	public boolean isJsr310Support() {
+    /**
+     * Is jsr 310 support boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isJsr310Support() {
         return jsr310Support;
     }
 
+    /**
+     * Sets jsr 310 support.
+     *
+     * @param jsr310Support the jsr 310 support
+     */
     public void setJsr310Support(boolean jsr310Support) {
         this.jsr310Support = jsr310Support;
     }
 
+    /**
+     * Is use schema prefix boolean.
+     *
+     * @return the boolean
+     */
     public boolean isUseSchemaPrefix() {
         return useSchemaPrefix;
     }
 
+    /**
+     * Sets use schema prefix.
+     *
+     * @param useSchemaPrefix the use schema prefix
+     */
     public void setUseSchemaPrefix(boolean useSchemaPrefix) {
         this.useSchemaPrefix = useSchemaPrefix;
     }
 
-	public boolean isUseExample() {
+    /**
+     * Is use example boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isUseExample() {
 		return useExample;
 	}
 
-	public void setUseExample(boolean useExample) {
+    /**
+     * Sets use example.
+     *
+     * @param useExample the use example
+     */
+    public void setUseExample(boolean useExample) {
 		this.useExample = useExample;
 	}
 
-	public String getName() {
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
+    public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
+    public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getTableName() {
+    /**
+     * Gets table name.
+     *
+     * @return the table name
+     */
+    public String getTableName() {
 		return tableName;
 	}
 
-	public void setTableName(String tableName) {
+    /**
+     * Sets table name.
+     *
+     * @param tableName the table name
+     */
+    public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
 
-	public String getModelName() {
+    /**
+     * Gets model name.
+     *
+     * @return the model name
+     */
+    public String getModelName() {
 		return modelName;
 	}
 
-	public void setModelName(String modelName) {
+    /**
+     * Sets model name.
+     *
+     * @param modelName the model name
+     */
+    public void setModelName(String modelName) {
 		this.modelName = modelName;
 	}
 
-	public String getConnectorJarPath() {
+    /**
+     * Gets connector jar path.
+     *
+     * @return the connector jar path
+     */
+    public String getConnectorJarPath() {
 		return connectorJarPath;
 	}
 
-	public void setConnectorJarPath(String connectorJarPath) {
+    /**
+     * Sets connector jar path.
+     *
+     * @param connectorJarPath the connector jar path
+     */
+    public void setConnectorJarPath(String connectorJarPath) {
 		this.connectorJarPath = connectorJarPath;
 	}
 
-	public String getProjectFolder() {
+    /**
+     * Gets project folder.
+     *
+     * @return the project folder
+     */
+    public String getProjectFolder() {
 		return projectFolder;
 	}
 
-	public void setProjectFolder(String projectFolder) {
+    /**
+     * Sets project folder.
+     *
+     * @param projectFolder the project folder
+     */
+    public void setProjectFolder(String projectFolder) {
 		this.projectFolder = projectFolder;
 	}
 
-	public String getModelPackage() {
+    /**
+     * Gets model package.
+     *
+     * @return the model package
+     */
+    public String getModelPackage() {
 		return modelPackage;
 	}
 
-	public void setModelPackage(String modelPackage) {
+    /**
+     * Sets model package.
+     *
+     * @param modelPackage the model package
+     */
+    public void setModelPackage(String modelPackage) {
 		this.modelPackage = modelPackage;
 	}
 
-	public String getModelTargetFolder() {
+    /**
+     * Gets model target folder.
+     *
+     * @return the model target folder
+     */
+    public String getModelTargetFolder() {
 		return modelTargetFolder;
 	}
 
-	public void setModelTargetFolder(String modelTargetFolder) {
+    /**
+     * Sets model target folder.
+     *
+     * @param modelTargetFolder the model target folder
+     */
+    public void setModelTargetFolder(String modelTargetFolder) {
 		this.modelTargetFolder = modelTargetFolder;
 	}
 
-	public String getDaoPackage() {
+    /**
+     * Gets dao package.
+     *
+     * @return the dao package
+     */
+    public String getDaoPackage() {
 		return daoPackage;
 	}
 
-	public void setDaoPackage(String daoPackage) {
+    /**
+     * Sets dao package.
+     *
+     * @param daoPackage the dao package
+     */
+    public void setDaoPackage(String daoPackage) {
 		this.daoPackage = daoPackage;
 	}
 
-	public String getDaoTargetFolder() {
+    /**
+     * Gets dao target folder.
+     *
+     * @return the dao target folder
+     */
+    public String getDaoTargetFolder() {
 		return daoTargetFolder;
 	}
 
-	public void setDaoTargetFolder(String daoTargetFolder) {
+    /**
+     * Sets dao target folder.
+     *
+     * @param daoTargetFolder the dao target folder
+     */
+    public void setDaoTargetFolder(String daoTargetFolder) {
 		this.daoTargetFolder = daoTargetFolder;
 	}
 
-	public String getXmlPackage() {
+    /**
+     * Gets xml package.
+     *
+     * @return the xml package
+     */
+    public String getXmlPackage() {
 		return xmlPackage;
 	}
 
-	public void setXmlPackage(String xmlPackage) {
+    /**
+     * Sets xml package.
+     *
+     * @param xmlPackage the xml package
+     */
+    public void setXmlPackage(String xmlPackage) {
 		this.xmlPackage = xmlPackage;
 	}
 
-	public boolean isOffsetLimit() {
+    /**
+     * Is offset limit boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isOffsetLimit() {
 		return offsetLimit;
 	}
 
-	public void setOffsetLimit(boolean offsetLimit) {
+    /**
+     * Sets offset limit.
+     *
+     * @param offsetLimit the offset limit
+     */
+    public void setOffsetLimit(boolean offsetLimit) {
 		this.offsetLimit = offsetLimit;
 	}
 
-	public boolean isComment() {
+    /**
+     * Is comment boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isComment() {
 		return comment;
 	}
 
-	public void setComment(boolean comment) {
+    /**
+     * Sets comment.
+     *
+     * @param comment the comment
+     */
+    public void setComment(boolean comment) {
 		this.comment = comment;
 	}
 
+    /**
+     * Is need to string hashcode equals boolean.
+     *
+     * @return the boolean
+     */
     public boolean isNeedToStringHashcodeEquals() {
         return needToStringHashcodeEquals;
     }
 
+    public boolean isNeedMapperAnnotation() {
+        return needMapperAnnotation;
+    }
+
+    public void setNeedMapperAnnotation(boolean needMapperAnnotation) {
+        this.needMapperAnnotation = needMapperAnnotation;
+    }
+
+    /**
+     * Sets need to string hashcode equals.
+     *
+     * @param needToStringHashcodeEquals the need to string hashcode equals
+     */
     public void setNeedToStringHashcodeEquals(boolean needToStringHashcodeEquals) {
         this.needToStringHashcodeEquals = needToStringHashcodeEquals;
     }
 
-	public boolean isNeedForUpdate() {
+    /**
+     * Is need for update boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isNeedForUpdate() {
 		return needForUpdate;
 	}
 
-	public void setNeedForUpdate(boolean needForUpdate) {
+    /**
+     * Sets need for update.
+     *
+     * @param needForUpdate the need for update
+     */
+    public void setNeedForUpdate(boolean needForUpdate) {
 		this.needForUpdate = needForUpdate;
 	}
 
-	public boolean isAnnotationDAO() {
+    /**
+     * Is annotation dao boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isAnnotationDAO() {
 		return annotationDAO;
 	}
 
-	public void setAnnotationDAO(boolean annotationDAO) {
+    /**
+     * Sets annotation dao.
+     *
+     * @param annotationDAO the annotation dao
+     */
+    public void setAnnotationDAO(boolean annotationDAO) {
 		this.annotationDAO = annotationDAO;
 	}
 
-	public boolean isAnnotation() {
+    /**
+     * Is annotation boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isAnnotation() {
 		return annotation;
 	}
 
-	public void setAnnotation(boolean annotation) {
+    /**
+     * Sets annotation.
+     *
+     * @param annotation the annotation
+     */
+    public void setAnnotation(boolean annotation) {
 		this.annotation = annotation;
 	}
 
-	public boolean isUseActualColumnNames() {
+    /**
+     * Is use actual column names boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isUseActualColumnNames() {
 		return useActualColumnNames;
 	}
 
-	public void setUseActualColumnNames(boolean useActualColumnNames) {
+    /**
+     * Sets use actual column names.
+     *
+     * @param useActualColumnNames the use actual column names
+     */
+    public void setUseActualColumnNames(boolean useActualColumnNames) {
 		this.useActualColumnNames = useActualColumnNames;
 	}
 
-	public String getDaoName() {
+    /**
+     * Gets dao name.
+     *
+     * @return the dao name
+     */
+    public String getDaoName() {
 		return daoName;
 	}
 
-	public void setDaoName(String daoName) {
+    /**
+     * Sets dao name.
+     *
+     * @param daoName the dao name
+     */
+    public void setDaoName(String daoName) {
 		this.daoName = daoName;
 	}
 
-	public String getPrimaryKey() {
+    /**
+     * Gets primary key.
+     *
+     * @return the primary key
+     */
+    public String getPrimaryKey() {
 		return primaryKey;
 	}
 
-	public void setPrimaryKey(String primaryKey) {
+    /**
+     * Sets primary key.
+     *
+     * @param primaryKey the primary key
+     */
+    public void setPrimaryKey(String primaryKey) {
 		this.primaryKey = primaryKey;
 	}
 
+    /**
+     * Gets encoding.
+     *
+     * @return the encoding
+     */
     public String getEncoding() {
         return encoding;
     }
 
+    /**
+     * Sets encoding.
+     *
+     * @param encoding the encoding
+     */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
-	public boolean getUseTableNameAlias() {
+    /**
+     * Gets use table name alias.
+     *
+     * @return the use table name alias
+     */
+    public boolean getUseTableNameAlias() {
 		return useTableNameAlias;
 	}
 
-	public void setUseTableNameAlias(boolean useTableNameAlias) {
+    /**
+     * Sets use table name alias.
+     *
+     * @param useTableNameAlias the use table name alias
+     */
+    public void setUseTableNameAlias(boolean useTableNameAlias) {
 		this.useTableNameAlias = useTableNameAlias;
 	}
 
-	public boolean isUseTableNameAlias() {
+    /**
+     * Is use table name alias boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isUseTableNameAlias() {
 		return useTableNameAlias;
 	}
 
-	public boolean isOverrideXML() {
+    /**
+     * Is override xml boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isOverrideXML() {
 		return overrideXML;
 	}
 
-	public void setOverrideXML(boolean overrideXML) {
+    /**
+     * Sets override xml.
+     *
+     * @param overrideXML the override xml
+     */
+    public void setOverrideXML(boolean overrideXML) {
 		this.overrideXML = overrideXML;
 	}
 
-	public void setUseDAOExtendStyle(boolean useDAOExtendStyle) {
+    /**
+     * Sets use dao extend style.
+     *
+     * @param useDAOExtendStyle the use dao extend style
+     */
+    public void setUseDAOExtendStyle(boolean useDAOExtendStyle) {
 		this.useDAOExtendStyle = useDAOExtendStyle;
 	}
 
-	public boolean isUseDAOExtendStyle() {
+    /**
+     * Is use dao extend style boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isUseDAOExtendStyle() {
 		return useDAOExtendStyle;
 	}
 
-	public String getModelMvnPath() {
+    /**
+     * Gets model mvn path.
+     *
+     * @return the model mvn path
+     */
+    public String getModelMvnPath() {
 		return modelMvnPath;
 	}
 
-	public void setModelMvnPath(String modelMvnPath) {
+    /**
+     * Sets model mvn path.
+     *
+     * @param modelMvnPath the model mvn path
+     */
+    public void setModelMvnPath(String modelMvnPath) {
 		this.modelMvnPath = modelMvnPath;
 	}
 
-	public String getDaoMvnPath() {
+    /**
+     * Gets dao mvn path.
+     *
+     * @return the dao mvn path
+     */
+    public String getDaoMvnPath() {
 		return daoMvnPath;
 	}
 
-	public void setDaoMvnPath(String daoMvnPath) {
+    /**
+     * Sets dao mvn path.
+     *
+     * @param daoMvnPath the dao mvn path
+     */
+    public void setDaoMvnPath(String daoMvnPath) {
 		this.daoMvnPath = daoMvnPath;
 	}
 
-	public String getXmlMvnPath() {
+    /**
+     * Gets xml mvn path.
+     *
+     * @return the xml mvn path
+     */
+    public String getXmlMvnPath() {
 		return xmlMvnPath;
 	}
 
-	public void setXmlMvnPath(String xmlMvnPath) {
+    /**
+     * Sets xml mvn path.
+     *
+     * @param xmlMvnPath the xml mvn path
+     */
+    public void setXmlMvnPath(String xmlMvnPath) {
 		this.xmlMvnPath = xmlMvnPath;
 	}
 
-	public String getDaoPostfix() {
+    /**
+     * Gets dao postfix.
+     *
+     * @return the dao postfix
+     */
+    public String getDaoPostfix() {
 		return daoPostfix;
 	}
 
-	public void setDaoPostfix(String daoPostfix) {
+    /**
+     * Sets dao postfix.
+     *
+     * @param daoPostfix the dao postfix
+     */
+    public void setDaoPostfix(String daoPostfix) {
 		this.daoPostfix = daoPostfix;
 	}
 
 
-	public boolean isOverrideJava() {
+    /**
+     * Is override java boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isOverrideJava() {
 		return overrideJava;
 	}
 
-	public void setOverrideJava(boolean overrideJava) {
+    /**
+     * Sets override java.
+     *
+     * @param overrideJava the override java
+     */
+    public void setOverrideJava(boolean overrideJava) {
 		this.overrideJava = overrideJava;
 	}
 }

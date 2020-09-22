@@ -9,10 +9,17 @@ import com.baomidou.plugin.idea.mybatisx.dom.converter.AliasConverter;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The interface Association.
+ *
  * @author yanglin
  */
 public interface Association extends GroupFour, ResultMapGroup, PropertyGroup {
 
+    /**
+     * Gets java type.
+     *
+     * @return the java type
+     */
     @NotNull
     @Attribute("javaType")
     @Convert(AliasConverter.class)

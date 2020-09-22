@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 /**
+ * The type Inner alias resolver.
+ *
  * @author yanglin
  */
 public class InnerAliasResolver extends AliasResolver {
@@ -35,6 +37,11 @@ public class InnerAliasResolver extends AliasResolver {
             AliasDesc.create(JavaUtils.findClazz(project, "java.util.Iterator").get(), "iterator")
     );
 
+    /**
+     * Instantiates a new Inner alias resolver.
+     *
+     * @param project the project
+     */
     public InnerAliasResolver(Project project) {
         super(project);
     }

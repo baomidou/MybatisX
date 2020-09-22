@@ -29,7 +29,12 @@ public class BaseDialectManager implements AreaOperateManager {
     private List<AreaOperateManager> typeManagers = new ArrayList<>();
 
 
-
+    /**
+     * Init.
+     *
+     * @param mappingField the mapping field
+     * @param entityClass  the entity class
+     */
     protected void init(final List<TxField> mappingField, PsiClass entityClass) {
         this.registerManagers(new SelectOperator(mappingField,entityClass));
         this.registerManagers(new InsertOperator(mappingField));
@@ -38,6 +43,11 @@ public class BaseDialectManager implements AreaOperateManager {
 
     }
 
+    /**
+     * Register managers.
+     *
+     * @param areaOperateManager the area operate manager
+     */
     protected void registerManagers(AreaOperateManager areaOperateManager){
         this.typeManagers.add(areaOperateManager);
     }

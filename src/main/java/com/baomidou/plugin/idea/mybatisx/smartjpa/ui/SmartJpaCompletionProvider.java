@@ -31,11 +31,21 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The type Smart jpa completion provider.
+ */
 public class SmartJpaCompletionProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionProvider.class);
 
 
+    /**
+     * Add completion.
+     *
+     * @param parameters  the parameters
+     * @param result      the result
+     * @param mapperClass the mapper class
+     */
     public void addCompletion(@NotNull final CompletionParameters parameters,
                               @NotNull final CompletionResultSet result,
                               PsiClass mapperClass) {

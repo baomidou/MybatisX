@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The type In parameter changer.
+ */
 public class InParameterChanger implements MxParameterChanger {
     @Override
     public List<TxParameter> getParameter(TxParameter txParameter) {
@@ -44,6 +47,11 @@ public class InParameterChanger implements MxParameterChanger {
         return stringBuilder.toString();
     }
 
+    /**
+     * Gets in.
+     *
+     * @return the in
+     */
     @NotNull
     protected String getIn() {
         return "in";

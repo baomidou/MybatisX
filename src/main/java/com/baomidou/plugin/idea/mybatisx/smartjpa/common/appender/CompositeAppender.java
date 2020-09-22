@@ -20,10 +20,21 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Composite appender.
+ */
 public class CompositeAppender implements SyntaxAppender {
 
+    /**
+     * The Appender list.
+     */
     protected final LinkedList<SyntaxAppender> appenderList;
 
+    /**
+     * Instantiates a new Composite appender.
+     *
+     * @param appenderList the appender list
+     */
     public CompositeAppender(final SyntaxAppender... appenderList) {
         this.appenderList = new LinkedList<>(Arrays.asList(appenderList));
     }
@@ -92,6 +103,9 @@ public class CompositeAppender implements SyntaxAppender {
     }
 
 
+    /**
+     * The Template resolver.
+     */
     TemplateResolver templateResolver = new TemplateResolver();
 
     @Override

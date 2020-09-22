@@ -10,10 +10,15 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The type Generate statement chooser.
+ *
  * @author yanglin
  */
 public class GenerateStatementChooser extends JavaFileIntentionChooser {
 
+    /**
+     * The constant INSTANCE.
+     */
     public static final JavaFileIntentionChooser INSTANCE = new GenerateStatementChooser();
 
     @Override

@@ -14,13 +14,19 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author yanglin
- * @since 2018-07-30
+ * @since 2018 -07-30
  */
 public class ResultTypeQuickFix extends GenericQuickFix {
 
     private Select select;
     private PsiClass target;
 
+    /**
+     * Instantiates a new Result type quick fix.
+     *
+     * @param select the select
+     * @param target the target
+     */
     public ResultTypeQuickFix(@NotNull Select select, @NotNull PsiClass target) {
         this.select = select;
         this.target = target;
@@ -38,20 +44,40 @@ public class ResultTypeQuickFix extends GenericQuickFix {
         resultType.setValue(target);
     }
 
+    /**
+     * Gets target.
+     *
+     * @return the target
+     */
     @NotNull
     public PsiClass getTarget() {
         return target;
     }
 
+    /**
+     * Sets target.
+     *
+     * @param target the target
+     */
     public void setTarget(@NotNull PsiClass target) {
         this.target = target;
     }
 
+    /**
+     * Gets select.
+     *
+     * @return the select
+     */
     @NotNull
     public Select getSelect() {
         return select;
     }
 
+    /**
+     * Sets select.
+     *
+     * @param select the select
+     */
     public void setSelect(@NotNull Select select) {
         this.select = select;
     }

@@ -29,13 +29,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Select operator.
+ */
 public class SelectOperator extends BaseOperatorManager {
 
 
+    /**
+     * Instantiates a new Select operator.
+     *
+     * @param mappingField the mapping field
+     * @param entityClass  the entity class
+     */
     public SelectOperator(List<TxField> mappingField, PsiClass entityClass) {
         this.init(mappingField, entityClass, AbstractStatementGenerator.SELECT_GENERATOR.getPatterns());
     }
 
+    /**
+     * Init.
+     *
+     * @param mappingField the mapping field
+     * @param entityClass  the entity class
+     * @param patterns     the patterns
+     */
     public void init(final List<TxField> mappingField, PsiClass entityClass, Set<String> patterns) {
         SortAppenderFactory sortAppenderFactory = new SortAppenderFactory(mappingField);
         for (String areaName : patterns) {
@@ -175,6 +191,11 @@ public class SelectOperator extends BaseOperatorManager {
      */
     private class SelectResultAppenderFactory extends ResultAppenderFactory {
 
+        /**
+         * Instantiates a new Select result appender factory.
+         *
+         * @param areaPrefix the area prefix
+         */
         public SelectResultAppenderFactory(String areaPrefix) {
             super(areaPrefix);
         }
@@ -258,6 +279,13 @@ public class SelectOperator extends BaseOperatorManager {
     private class SelectCustomAreaAppender extends CustomAreaAppender {
 
 
+        /**
+         * Instantiates a new Select custom area appender.
+         *
+         * @param area                  the area
+         * @param areaType              the area type
+         * @param syntaxAppenderFactory the syntax appender factory
+         */
         public SelectCustomAreaAppender(final String area, final String areaType, final SyntaxAppenderFactory syntaxAppenderFactory) {
             super(area, areaType, AreaSequence.AREA, AreaSequence.RESULT, syntaxAppenderFactory);
         }
@@ -268,6 +296,11 @@ public class SelectOperator extends BaseOperatorManager {
 
     private class SelectCompositeAppender extends CompositeAppender {
 
+        /**
+         * Instantiates a new Select composite appender.
+         *
+         * @param appenders the appenders
+         */
         public SelectCompositeAppender(final SyntaxAppender... appenders) {
             super(appenders);
         }

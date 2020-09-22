@@ -8,12 +8,22 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The type Generic intention.
+ *
  * @author yanglin
  */
 public abstract class GenericIntention implements IntentionAction {
 
+    /**
+     * The Chooser.
+     */
     protected IntentionChooser chooser;
 
+    /**
+     * Instantiates a new Generic intention.
+     *
+     * @param chooser the chooser
+     */
     public GenericIntention(@NotNull IntentionChooser chooser) {
         this.chooser = chooser;
     }

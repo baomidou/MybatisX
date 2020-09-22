@@ -8,10 +8,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
+ * The interface Bean.
+ *
  * @author yanglin
  */
 public interface Bean extends DomElement {
 
+    /**
+     * Gets bean properties.
+     *
+     * @return the bean properties
+     */
     @NotNull
     @SubTagList("property")
     List<BeanProperty> getBeanProperties();

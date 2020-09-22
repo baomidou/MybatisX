@@ -35,6 +35,8 @@ import java.util.Properties;
 
 
 /**
+ * The type Mapper utils.
+ *
  * @author yanglin
  */
 public final class MapperUtils {
@@ -43,6 +45,12 @@ public final class MapperUtils {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Find parent id dom element optional.
+     *
+     * @param element the element
+     * @return the optional
+     */
     public static Optional<IdDomElement> findParentIdDomElement(@Nullable PsiElement element) {
         DomElement domElement = DomUtil.getDomElement(element);
         if (null == domElement) {
@@ -54,6 +62,17 @@ public final class MapperUtils {
         return Optional.ofNullable(DomUtil.getParentOfType(domElement, IdDomElement.class, true));
     }
 
+    /**
+     * Create mapper from file template psi element.
+     *
+     * @param fileTemplateName the file template name
+     * @param fileName         the file name
+     * @param directory        the directory
+     * @param pops             the pops
+     * @param project          the project
+     * @return the psi element
+     * @throws Exception the exception
+     */
     public static PsiElement createMapperFromFileTemplate(@NotNull String fileTemplateName,
                                                           @NotNull String fileName,
                                                           @NotNull PsiDirectory directory,
@@ -63,6 +82,12 @@ public final class MapperUtils {
         return FileTemplateUtil.createFromTemplate(fileTemplate, fileName, pops, directory);
     }
 
+    /**
+     * Find mapper directories collection.
+     *
+     * @param project the project
+     * @return the collection
+     */
     @NotNull
     public static Collection<PsiDirectory> findMapperDirectories(@NotNull Project project) {
         return Collections2.transform(findMappers(project), new Function<Mapper, PsiDirectory>() {
@@ -73,17 +98,36 @@ public final class MapperUtils {
         });
     }
 
+    /**
+     * Is element within mybatis file boolean.
+     *
+     * @param element the element
+     * @return the boolean
+     */
     public static boolean isElementWithinMybatisFile(@NotNull PsiElement element) {
         PsiFile psiFile = element.getContainingFile();
         return element instanceof XmlElement && DomUtils.isMybatisFile(psiFile);
     }
 
+    /**
+     * Find mappers collection.
+     *
+     * @param project the project
+     * @return the collection
+     */
     @NotNull
     @NonNls
     public static Collection<Mapper> findMappers(@NotNull Project project) {
         return DomUtils.findDomElements(project, Mapper.class);
     }
 
+    /**
+     * Find mappers collection.
+     *
+     * @param project   the project
+     * @param namespace the namespace
+     * @return the collection
+     */
     @NotNull
     @NonNls
     public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull String namespace) {
@@ -96,35 +140,76 @@ public final class MapperUtils {
         return result;
     }
 
+    /**
+     * Find mappers collection.
+     *
+     * @param project the project
+     * @param clazz   the clazz
+     * @return the collection
+     */
     @NotNull
     public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull PsiClass clazz) {
         return JavaUtils.isElementWithinInterface(clazz) ? findMappers(project, Objects.requireNonNull(clazz.getQualifiedName())) : Collections.emptyList();
     }
 
+    /**
+     * Find mappers collection.
+     *
+     * @param project the project
+     * @param method  the method
+     * @return the collection
+     */
     @NotNull
     public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull PsiMethod method) {
         PsiClass clazz = method.getContainingClass();
         return null == clazz ? Collections.<Mapper>emptyList() : findMappers(project, clazz);
     }
 
+    /**
+     * Find first mapper optional.
+     *
+     * @param project   the project
+     * @param namespace the namespace
+     * @return the optional
+     */
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull String namespace) {
         Collection<Mapper> mappers = findMappers(project, namespace);
         return CollectionUtils.isEmpty(mappers) ? Optional.<Mapper>empty() : Optional.of(mappers.iterator().next());
     }
 
+    /**
+     * Find first mapper optional.
+     *
+     * @param project the project
+     * @param clazz   the clazz
+     * @return the optional
+     */
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull PsiClass clazz) {
         String qualifiedName = clazz.getQualifiedName();
         return null != qualifiedName ? findFirstMapper(project, qualifiedName) : Optional.<Mapper>empty();
     }
 
+    /**
+     * Find first mapper optional.
+     *
+     * @param project the project
+     * @param method  the method
+     * @return the optional
+     */
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull PsiMethod method) {
         PsiClass containingClass = method.getContainingClass();
         return null != containingClass ? findFirstMapper(project, containingClass) : Optional.empty();
     }
 
+    /**
+     * Gets mapper.
+     *
+     * @param element the element
+     * @return the mapper
+     */
     @SuppressWarnings("unchecked")
     @NotNull
     @NonNls
@@ -137,6 +222,12 @@ public final class MapperUtils {
         }
     }
 
+    /**
+     * Gets namespace.
+     *
+     * @param mapper the mapper
+     * @return the namespace
+     */
     @NotNull
     @NonNls
     public static String getNamespace(@NotNull Mapper mapper) {
@@ -144,29 +235,64 @@ public final class MapperUtils {
         return null == ns ? "" : ns;
     }
 
+    /**
+     * Gets namespace.
+     *
+     * @param element the element
+     * @return the namespace
+     */
     @NotNull
     @NonNls
     public static String getNamespace(@NotNull DomElement element) {
         return getNamespace(getMapper(element));
     }
 
+    /**
+     * Is mapper with same namespace boolean.
+     *
+     * @param mapper the mapper
+     * @param target the target
+     * @return the boolean
+     */
     @NonNls
     public static boolean isMapperWithSameNamespace(@Nullable Mapper mapper, @Nullable Mapper target) {
         return null != mapper && null != target && getNamespace(mapper).equals(getNamespace(target));
     }
 
+    /**
+     * Gets id.
+     *
+     * @param <T>        the type parameter
+     * @param domElement the dom element
+     * @return the id
+     */
     @Nullable
     @NonNls
     public static <T extends IdDomElement> String getId(@NotNull T domElement) {
         return domElement.getId().getRawText();
     }
 
+    /**
+     * Gets id signature.
+     *
+     * @param <T>        the type parameter
+     * @param domElement the dom element
+     * @return the id signature
+     */
     @NotNull
     @NonNls
     public static <T extends IdDomElement> String getIdSignature(@NotNull T domElement) {
         return getNamespace(domElement) + "." + getId(domElement);
     }
 
+    /**
+     * Gets id signature.
+     *
+     * @param <T>        the type parameter
+     * @param domElement the dom element
+     * @param mapper     the mapper
+     * @return the id signature
+     */
     @NotNull
     @NonNls
     public static <T extends IdDomElement> String getIdSignature(@NotNull T domElement, @NotNull Mapper mapper) {
@@ -180,6 +306,12 @@ public final class MapperUtils {
         return isMapperWithSameNamespace(contextMapper, mapper) ?id :idsignature ;
     }
 
+    /**
+     * Process configured type aliases.
+     *
+     * @param project   the project
+     * @param processor the processor
+     */
     public static void processConfiguredTypeAliases(@NotNull Project project, @NotNull Processor<TypeAlias> processor) {
         for (Configuration conf : getMybatisConfigurations(project)) {
             for (TypeAliases tas : conf.getTypeAliases()) {
@@ -197,6 +329,12 @@ public final class MapperUtils {
         return DomUtils.findDomElements(project, Configuration.class);
     }
 
+    /**
+     * Process configured package.
+     *
+     * @param project   the project
+     * @param processor the processor
+     */
     public static void processConfiguredPackage(@NotNull Project project,
                                                 @NotNull Processor<Package> processor) {
         for (Configuration conf : getMybatisConfigurations(project)) {

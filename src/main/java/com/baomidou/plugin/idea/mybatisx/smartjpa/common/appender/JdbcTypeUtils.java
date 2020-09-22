@@ -6,7 +6,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The type Jdbc type utils.
+ */
 public class JdbcTypeUtils {
+    /**
+     * Wrapper field string.
+     *
+     * @param paramName     the param name
+     * @param canonicalText the canonical text
+     * @return the string
+     */
     public static String wrapperField(String paramName, @NotNull String canonicalText) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("#{").append(paramName);

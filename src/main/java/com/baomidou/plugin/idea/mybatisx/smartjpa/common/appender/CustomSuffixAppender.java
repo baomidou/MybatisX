@@ -23,17 +23,35 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The type Custom suffix appender.
+ */
 public class CustomSuffixAppender implements SyntaxAppender {
 
     private final String tipName;
+    /**
+     * The Suffix operator.
+     */
     protected SuffixOperator suffixOperator;
     private MxParameterChanger mxParameterFinder;
 
 
+    /**
+     * Instantiates a new Custom suffix appender.
+     *
+     * @param tipName the tip name
+     */
     protected CustomSuffixAppender(String tipName) {
         this.tipName = tipName;
     }
 
+    /**
+     * Instantiates a new Custom suffix appender.
+     *
+     * @param tipName        the tip name
+     * @param suffixOperator the suffix operator
+     * @param areaSequence   the area sequence
+     */
     protected CustomSuffixAppender(String tipName, SuffixOperator suffixOperator, AreaSequence areaSequence) {
         this.tipName = tipName;
         this.suffixOperator = suffixOperator;
@@ -41,6 +59,14 @@ public class CustomSuffixAppender implements SyntaxAppender {
     }
 
 
+    /**
+     * Create by param join custom suffix appender.
+     *
+     * @param tipName         the tip name
+     * @param compareOperator the compare operator
+     * @param areaSequence    the area sequence
+     * @return the custom suffix appender
+     */
     public static CustomSuffixAppender createByParamJoin(String tipName, String compareOperator, AreaSequence areaSequence) {
         CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName);
         customSuffixAppender.suffixOperator = new ParamBeforeSuffixOperator(compareOperator);
@@ -48,6 +74,15 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return customSuffixAppender;
     }
 
+    /**
+     * Create by param around custom suffix appender.
+     *
+     * @param tipName      the tip name
+     * @param prefix       the prefix
+     * @param suffix       the suffix
+     * @param areaSequence the area sequence
+     * @return the custom suffix appender
+     */
     public static CustomSuffixAppender createByParamAround(String tipName, String prefix, String suffix, AreaSequence areaSequence) {
         CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName);
         customSuffixAppender.suffixOperator = new ParamAroundSuffixOperator(prefix, suffix);
@@ -55,6 +90,14 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return customSuffixAppender;
     }
 
+    /**
+     * Create by suffix operator custom suffix appender.
+     *
+     * @param tipName        the tip name
+     * @param suffixOperator the suffix operator
+     * @param areaSequence   the area sequence
+     * @return the custom suffix appender
+     */
     public static CustomSuffixAppender createBySuffixOperator(String tipName, SuffixOperator suffixOperator, AreaSequence areaSequence) {
         CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName);
         customSuffixAppender.suffixOperator = suffixOperator;
@@ -63,6 +106,14 @@ public class CustomSuffixAppender implements SyntaxAppender {
     }
 
 
+    /**
+     * Create by parameter changer custom suffix appender.
+     *
+     * @param tipName           the tip name
+     * @param mxParameterFinder the mx parameter finder
+     * @param areaSequence      the area sequence
+     * @return the custom suffix appender
+     */
     public static CustomSuffixAppender createByParameterChanger(String tipName, MxParameterChanger mxParameterFinder, AreaSequence areaSequence) {
         CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName);
         customSuffixAppender.mxParameterFinder = mxParameterFinder;
@@ -79,10 +130,10 @@ public class CustomSuffixAppender implements SyntaxAppender {
     /**
      * 根据固定后缀
      *
-     * @param tipName
-     * @param suffix
-     * @param areaSequence
-     * @return
+     * @param tipName      the tip name
+     * @param suffix       the suffix
+     * @param areaSequence the area sequence
+     * @return syntax appender
      */
     public static SyntaxAppender createByFixed(String tipName, String suffix, AreaSequence areaSequence) {
         CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName);
@@ -226,6 +277,11 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return hasAreaCheck || (typeCheck && sequenceCheck);
     }
 
+    /**
+     * Gets suffix operator.
+     *
+     * @return the suffix operator
+     */
     public SuffixOperator getSuffixOperator() {
         return suffixOperator;
     }

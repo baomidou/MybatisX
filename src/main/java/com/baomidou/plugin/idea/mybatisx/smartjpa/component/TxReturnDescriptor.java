@@ -14,6 +14,12 @@ public class TxReturnDescriptor implements TypeDescriptor {
     private TxReturnDescriptor() {
     }
 
+    /**
+     * Create collection by psi class tx return descriptor.
+     *
+     * @param psiClass the psi class
+     * @return the tx return descriptor
+     */
     public static TxReturnDescriptor createCollectionByPsiClass(PsiClass psiClass) {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
         txReturnDescriptor.qualifiedName = Arrays.asList("java.util.List", psiClass.getQualifiedName());
@@ -21,6 +27,12 @@ public class TxReturnDescriptor implements TypeDescriptor {
         return txReturnDescriptor;
     }
 
+    /**
+     * Create by psi class tx return descriptor.
+     *
+     * @param psiClass the psi class
+     * @return the tx return descriptor
+     */
     public static TxReturnDescriptor createByPsiClass(PsiClass psiClass) {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
         txReturnDescriptor.qualifiedName = Collections.singletonList(psiClass.getQualifiedName());
@@ -28,6 +40,13 @@ public class TxReturnDescriptor implements TypeDescriptor {
         return txReturnDescriptor;
     }
 
+    /**
+     * Create by origin tx return descriptor.
+     *
+     * @param qualifiedName the qualified name
+     * @param simpleName    the simple name
+     * @return the tx return descriptor
+     */
     public static TxReturnDescriptor createByOrigin(String qualifiedName, String simpleName) {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
         txReturnDescriptor.qualifiedName = Collections.singletonList(qualifiedName);

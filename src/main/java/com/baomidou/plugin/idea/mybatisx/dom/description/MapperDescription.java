@@ -15,10 +15,13 @@ import org.jetbrains.annotations.Nullable;
  * </p>
  *
  * @author yanglin jobob
- * @since 2018-07-30
+ * @since 2018 -07-30
  */
 public class MapperDescription extends DomFileDescription<Mapper> {
 
+    /**
+     * Instantiates a new Mapper description.
+     */
     public MapperDescription() {
         super(Mapper.class, "mapper");
     }

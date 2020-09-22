@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author makejava
  * @version 1.0.0
- * @since 2018/08/06 10:24
+ * @since 2018 /08/06 10:24
  */
 public class MapperManagerImpl implements MapperManager {
     /**
@@ -45,6 +45,11 @@ public class MapperManagerImpl implements MapperManager {
      */
     private Map<Module, List<PsiJavaFile>> mapperClsMap = new ConcurrentHashMap<>();
 
+    /**
+     * Instantiates a new Mapper manager.
+     *
+     * @param project the project
+     */
     public MapperManagerImpl(Project project) {
         this.project = project;
         this.init();

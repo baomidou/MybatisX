@@ -12,10 +12,15 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author yanglin jobob
- * @since 2018-07-30
+ * @since 2018 -07-30
  */
 public class InsertGenerator extends AbstractStatementGenerator {
 
+    /**
+     * Instantiates a new Insert generator.
+     *
+     * @param patterns the patterns
+     */
     public InsertGenerator(@NotNull String... patterns) {
         super(patterns);
     }

@@ -17,6 +17,12 @@ import java.util.List;
 public class MysqlManager extends BaseDialectManager {
 
 
+    /**
+     * Instantiates a new Mysql manager.
+     *
+     * @param mappingField the mapping field
+     * @param entityClass  the entity class
+     */
     public MysqlManager(List<TxField> mappingField, PsiClass entityClass) {
         super();
         init(mappingField, entityClass);

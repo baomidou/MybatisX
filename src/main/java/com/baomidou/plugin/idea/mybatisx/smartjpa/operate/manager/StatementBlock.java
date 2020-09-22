@@ -11,6 +11,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+/**
+ * The type Statement block.
+ */
 public class StatementBlock {
 
     /**
@@ -34,39 +37,85 @@ public class StatementBlock {
      */
     private TypeDescriptor returnDescriptor;
 
+    /**
+     * Gets result appender factory.
+     *
+     * @return the result appender factory
+     */
     public SyntaxAppenderFactory getResultAppenderFactory() {
         return resultAppenderFactory;
     }
 
+    /**
+     * Sets result appender factory.
+     *
+     * @param resultAppenderFactory the result appender factory
+     */
     public void setResultAppenderFactory(SyntaxAppenderFactory resultAppenderFactory) {
         this.resultAppenderFactory = resultAppenderFactory;
     }
 
+    /**
+     * Gets condition appender factory.
+     *
+     * @return the condition appender factory
+     */
     public SyntaxAppenderFactory getConditionAppenderFactory() {
         return conditionAppenderFactory;
     }
 
+    /**
+     * Sets condition appender factory.
+     *
+     * @param conditionAppenderFactory the condition appender factory
+     */
     public void setConditionAppenderFactory(SyntaxAppenderFactory conditionAppenderFactory) {
         this.conditionAppenderFactory = conditionAppenderFactory;
     }
 
+    /**
+     * Gets sort appender factory.
+     *
+     * @return the sort appender factory
+     */
     public SyntaxAppenderFactory getSortAppenderFactory() {
         return sortAppenderFactory;
     }
 
+    /**
+     * Sets sort appender factory.
+     *
+     * @param sortAppenderFactory the sort appender factory
+     */
     public void setSortAppenderFactory(SyntaxAppenderFactory sortAppenderFactory) {
         this.sortAppenderFactory = sortAppenderFactory;
     }
 
+    /**
+     * Gets tag name.
+     *
+     * @return the tag name
+     */
     public String getTagName() {
         return tagName;
     }
 
+    /**
+     * Sets tag name.
+     *
+     * @param tagName the tag name
+     */
     public void setTagName(String tagName) {
         this.tagName = tagName;
     }
 
 
+    /**
+     * Gets syntax appender factory by str.
+     *
+     * @param text the text
+     * @return the syntax appender factory by str
+     */
     public SyntaxAppenderFactory getSyntaxAppenderFactoryByStr(String text) {
         if (existCurrentArea(getResultAppenderFactory(), text)) {
             return getResultAppenderFactory();
@@ -90,14 +139,31 @@ public class StatementBlock {
         return false;
     }
 
+    /**
+     * Sets return wrapper.
+     *
+     * @param typeDescriptor the type descriptor
+     */
     public void setReturnWrapper(TypeDescriptor typeDescriptor) {
         this.returnDescriptor = typeDescriptor;
     }
 
+    /**
+     * Gets return descriptor.
+     *
+     * @return the return descriptor
+     */
     public TypeDescriptor getReturnDescriptor() {
         return returnDescriptor;
     }
 
+    /**
+     * Find priority linked list.
+     *
+     * @param stringLengthComparator the string length comparator
+     * @param splitStr               the split str
+     * @return the linked list
+     */
     public LinkedList<SyntaxAppender> findPriority(Comparator<SyntaxAppender> stringLengthComparator,
                                                    String splitStr) {
         if(StringUtils.isNoneBlank(splitStr)&&

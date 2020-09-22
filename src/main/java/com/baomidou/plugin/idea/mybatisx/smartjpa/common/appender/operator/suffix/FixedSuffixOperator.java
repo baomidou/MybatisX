@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 /**
  * 固定后缀
- *
+ * <p>
  * is null
  * is not null
  */
@@ -16,6 +16,11 @@ public class FixedSuffixOperator implements SuffixOperator{
      */
     private String operatorName;
 
+    /**
+     * Instantiates a new Fixed suffix operator.
+     *
+     * @param operatorName the operator name
+     */
     public FixedSuffixOperator(final String operatorName) {
         this.operatorName = operatorName;
     }

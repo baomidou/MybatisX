@@ -25,12 +25,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Custom field appender.
+ */
 public class CustomFieldAppender implements SyntaxAppender {
 
+    /**
+     * The Tip name.
+     */
     protected String tipName;
 
+    /**
+     * The Field name.
+     */
     protected String fieldName;
 
+    /**
+     * The Column name.
+     */
     protected String columnName;
     private AreaSequence areaSequence;
 
@@ -39,10 +51,21 @@ public class CustomFieldAppender implements SyntaxAppender {
         return areaSequence;
     }
 
+    /**
+     * Sets area sequence.
+     *
+     * @param areaSequence the area sequence
+     */
     public void setAreaSequence(AreaSequence areaSequence) {
         this.areaSequence = areaSequence;
     }
 
+    /**
+     * Instantiates a new Custom field appender.
+     *
+     * @param field        the field
+     * @param areaSequence the area sequence
+     */
     public CustomFieldAppender(TxField field, AreaSequence areaSequence) {
         this.fieldName = field.getFieldName();
         this.tipName = field.getTipName();
@@ -51,7 +74,11 @@ public class CustomFieldAppender implements SyntaxAppender {
     }
 
 
-
+    /**
+     * Gets field name.
+     *
+     * @return the field name
+     */
     public String getFieldName() {
         return this.fieldName;
     }

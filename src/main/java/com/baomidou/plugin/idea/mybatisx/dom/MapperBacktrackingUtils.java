@@ -18,6 +18,8 @@ import java.util.Optional;
 
 
 /**
+ * The type Mapper backtracking utils.
+ *
  * @author yanglin
  */
 public final class MapperBacktrackingUtils {
@@ -26,6 +28,12 @@ public final class MapperBacktrackingUtils {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Gets property clazz.
+     *
+     * @param attributeValue the attribute value
+     * @return the property clazz
+     */
     public static Optional<PsiClass> getPropertyClazz(XmlAttributeValue attributeValue) {
         DomElement domElement = DomUtil.getDomElement(attributeValue);
         if (null == domElement) {
@@ -54,6 +62,13 @@ public final class MapperBacktrackingUtils {
         return Optional.empty();
     }
 
+    /**
+     * Is within same tag boolean.
+     *
+     * @param domElement the dom element
+     * @param xmlElement the xml element
+     * @return the boolean
+     */
     public static boolean isWithinSameTag(@NotNull DomElement domElement, XmlAttributeValue xmlElement) {
         XmlTag xmlTag = PsiTreeUtil.getParentOfType(xmlElement, XmlTag.class);
         return null != xmlElement && domElement.getXmlTag().equals(xmlTag);

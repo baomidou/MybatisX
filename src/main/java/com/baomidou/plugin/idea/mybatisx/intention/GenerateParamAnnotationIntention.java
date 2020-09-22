@@ -13,10 +13,15 @@ import com.baomidou.plugin.idea.mybatisx.service.AnnotationService;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The type Generate param annotation intention.
+ *
  * @author yanglin
  */
 public class GenerateParamAnnotationIntention extends GenericIntention {
 
+    /**
+     * Instantiates a new Generate param annotation intention.
+     */
     public GenerateParamAnnotationIntention() {
         super(GenerateParamChooser.INSTANCE);
     }

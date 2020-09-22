@@ -29,16 +29,29 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Base operator manager.
+ */
 public abstract class BaseOperatorManager implements AreaOperateManager {
 
     private Set<String> operatorNameList = new HashSet<>();
 
     private final StatementBlockFactory syntaxAppenderFactoryManager = new StatementBlockFactory();
 
+    /**
+     * Gets operator name list.
+     *
+     * @return the operator name list
+     */
     protected Set<String> getOperatorNameList() {
         return operatorNameList;
     }
 
+    /**
+     * Sets operator name list.
+     *
+     * @param nameSet the name set
+     */
     protected void setOperatorNameList(final Set<String> nameSet) {
         operatorNameList = nameSet;
     }
@@ -55,6 +68,11 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         return statementBlock.getReturnDescriptor();
     }
 
+    /**
+     * Add operator name.
+     *
+     * @param operatorName the operator name
+     */
     protected void addOperatorName(String operatorName){
         operatorNameList.add(operatorName);
     }
@@ -64,6 +82,12 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         return this.syntaxAppenderFactoryManager.splitAppenderByText(splitParam);
     }
 
+    /**
+     * Can execute boolean.
+     *
+     * @param areaName the area name
+     * @return the boolean
+     */
     protected boolean canExecute(final String areaName) {
         return this.operatorNameList.contains(areaName);
     }
@@ -111,21 +135,31 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
     private static final Logger logger = LoggerFactory.getLogger(BaseOperatorManager.class);
 
 
+    /**
+     * Register statement block.
+     *
+     * @param statementBlock the statement block
+     */
     public void registerStatementBlock(StatementBlock statementBlock) {
         this.syntaxAppenderFactoryManager.registerStatementBlock(statementBlock);
     }
 
+    /**
+     * Gets tag name.
+     *
+     * @return the tag name
+     */
     protected abstract String getTagName();
 
     /**
      * 生成xml
      *
-     * @param jpaList
-     * @param entityClass
-     * @param psiMethod
-     * @param tableName
-     * @param conditionFieldWrapper
-     * @return
+     * @param jpaList               the jpa list
+     * @param entityClass           the entity class
+     * @param psiMethod             the psi method
+     * @param tableName             the table name
+     * @param conditionFieldWrapper the condition field wrapper
+     * @return string
      */
     protected String generateXml(LinkedList<SyntaxAppender> jpaList,
                                  PsiClass entityClass,
@@ -155,6 +189,12 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
     }
 
 
+    /**
+     * Init custom area.
+     *
+     * @param areaName     the area name
+     * @param mappingField the mapping field
+     */
     protected void initCustomArea(String areaName, List<TxField> mappingField){
 
     }

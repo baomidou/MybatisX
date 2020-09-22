@@ -15,7 +15,10 @@ import java.util.PriorityQueue;
 class SyntaxSplitHelper {
 
     private final List<StatementBlock> statementBlockList;
-    // 文本长度优先排序, 其次按照区域顺序排序
+    /**
+     * The String length comparator.
+     */
+// 文本长度优先排序, 其次按照区域顺序排序
     Comparator<SyntaxAppender> stringLengthComparator = (o1, o2) ->
     {
         // 长度相等, 按照区域顺序排序
@@ -26,6 +29,9 @@ class SyntaxSplitHelper {
         return compare;
     };
 
+    /**
+     * The Syntax appender comparator.
+     */
     Comparator<LinkedList<SyntaxAppender>> syntaxAppenderComparator = (o1, o2) ->
     {
         // 长度相等, 按照区域顺序排序
@@ -36,13 +42,20 @@ class SyntaxSplitHelper {
         return listComparor;
     };
 
+    /**
+     * Instantiates a new Syntax split helper.
+     *
+     * @param statementBlockList the statement block list
+     */
     public SyntaxSplitHelper(final List<StatementBlock> statementBlockList) {
         this.statementBlockList = statementBlockList;
     }
 
     /**
-     * @param splitText
-     * @return
+     * Split appender by text linked list.
+     *
+     * @param splitText the split text
+     * @return linked list
      */
     @NotNull
     public LinkedList<SyntaxAppender> splitAppenderByText(final String splitText) {

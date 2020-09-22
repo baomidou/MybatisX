@@ -32,6 +32,12 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
     private DasTableAdaptor dasTable;
     private String tableName;
 
+    /**
+     * Instantiates a new Oracle insert batch with union.
+     *
+     * @param dasTable  the das table
+     * @param tableName the table name
+     */
     public OracleInsertBatchWithUnion(DasTableAdaptor dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
@@ -56,6 +62,11 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
         @NotNull
         private List<TxField> mappingField;
 
+        /**
+         * Instantiates a new Insert batch suffix operator.
+         *
+         * @param mappingField the mapping field
+         */
         public InsertBatchSuffixOperator(List<TxField> mappingField) {
             this.mappingField = mappingField;
         }

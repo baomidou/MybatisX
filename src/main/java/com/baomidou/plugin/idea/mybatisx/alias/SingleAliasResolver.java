@@ -14,10 +14,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 /**
+ * The type Single alias resolver.
+ *
  * @author yanglin
  */
 public class SingleAliasResolver extends AliasResolver {
 
+    /**
+     * Instantiates a new Single alias resolver.
+     *
+     * @param project the project
+     */
     public SingleAliasResolver(Project project) {
         super(project);
     }

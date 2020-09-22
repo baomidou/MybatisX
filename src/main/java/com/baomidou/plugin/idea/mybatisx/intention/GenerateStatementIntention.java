@@ -12,10 +12,15 @@ import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The type Generate statement intention.
+ *
  * @author yanglin
  */
 public class GenerateStatementIntention extends GenericIntention {
 
+    /**
+     * Instantiates a new Generate statement intention.
+     */
     public GenerateStatementIntention() {
         super(GenerateStatementChooser.INSTANCE);
     }

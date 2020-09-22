@@ -5,6 +5,8 @@ import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The type Alias desc.
+ *
  * @author yanglin
  */
 public class AliasDesc {
@@ -13,30 +15,66 @@ public class AliasDesc {
 
     private String alias;
 
+    /**
+     * Instantiates a new Alias desc.
+     */
     public AliasDesc() {
     }
 
+    /**
+     * Create alias desc.
+     *
+     * @param psiClass the psi class
+     * @param alias    the alias
+     * @return the alias desc
+     */
     public static AliasDesc create(@NotNull PsiClass psiClass, @NotNull String alias) {
         return new AliasDesc(psiClass, alias);
     }
 
+    /**
+     * Instantiates a new Alias desc.
+     *
+     * @param clazz the clazz
+     * @param alias the alias
+     */
     public AliasDesc(PsiClass clazz, String alias) {
         this.clazz = clazz;
         this.alias = alias;
     }
 
+    /**
+     * Gets clazz.
+     *
+     * @return the clazz
+     */
     public PsiClass getClazz() {
         return clazz;
     }
 
+    /**
+     * Sets clazz.
+     *
+     * @param clazz the clazz
+     */
     public void setClazz(PsiClass clazz) {
         this.clazz = clazz;
     }
 
+    /**
+     * Gets alias.
+     *
+     * @return the alias
+     */
     public String getAlias() {
         return alias;
     }
 
+    /**
+     * Sets alias.
+     *
+     * @param alias the alias
+     */
     public void setAlias(String alias) {
         this.alias = alias;
     }

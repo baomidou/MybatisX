@@ -13,13 +13,28 @@ import java.util.Optional;
  * 默认按照 mybatis-plus3 > mybatis-plus2 > xml(resultMap 最短的标签)
  */
 public class EntityMappingResolverFactory {
+    /**
+     * The Project.
+     */
     Project project;
 
 
+    /**
+     * The Mapper class.
+     */
     PsiClass mapperClass;
 
+    /**
+     * The Entity mapping resolver list.
+     */
     List<EntityMappingResolver> entityMappingResolverList = new ArrayList<>();
 
+    /**
+     * Instantiates a new Entity mapping resolver factory.
+     *
+     * @param project     the project
+     * @param mapperClass the mapper class
+     */
     public EntityMappingResolverFactory(Project project, PsiClass mapperClass) {
         this.project = project;
         this.mapperClass = mapperClass;
@@ -36,6 +51,11 @@ public class EntityMappingResolverFactory {
 
     private EntityMappingResolver currentEntityMappingResolver;
 
+    /**
+     * Search entity psi class.
+     *
+     * @return the psi class
+     */
     public PsiClass searchEntity() {
         for (EntityMappingResolver entityMappingResolver : entityMappingResolverList) {
             Optional<PsiClass> entity = entityMappingResolver.findEntity(mapperClass);
@@ -48,6 +68,11 @@ public class EntityMappingResolverFactory {
     }
 
 
+    /**
+     * Gets entity mapping resolver.
+     *
+     * @return the entity mapping resolver
+     */
     public EntityMappingResolver getEntityMappingResolver() {
         if (currentEntityMappingResolver != null) {
             return currentEntityMappingResolver;

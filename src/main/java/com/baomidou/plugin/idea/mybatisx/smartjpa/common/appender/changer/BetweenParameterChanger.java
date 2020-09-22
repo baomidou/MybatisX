@@ -13,8 +13,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The type Between parameter changer.
+ */
 public class BetweenParameterChanger implements MxParameterChanger {
 
+    /**
+     * The constant SPACE.
+     */
     public static final String SPACE = " ";
 
     @Override

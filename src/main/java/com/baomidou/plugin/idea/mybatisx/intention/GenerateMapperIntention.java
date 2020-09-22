@@ -39,10 +39,15 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
+ * The type Generate mapper intention.
+ *
  * @author yanglin
  */
 public class GenerateMapperIntention extends GenericIntention {
 
+    /**
+     * Instantiates a new Generate mapper intention.
+     */
     public GenerateMapperIntention() {
         super(GenerateMapperChooser.INSTANCE);
     }

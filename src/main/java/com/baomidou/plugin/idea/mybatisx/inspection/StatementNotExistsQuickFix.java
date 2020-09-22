@@ -13,12 +13,17 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author yanglin
- * @since 2018-07-30
+ * @since 2018 -07-30
  */
 public class StatementNotExistsQuickFix extends GenericQuickFix {
 
     private PsiMethod method;
 
+    /**
+     * Instantiates a new Statement not exists quick fix.
+     *
+     * @param method the method
+     */
     public StatementNotExistsQuickFix(@NotNull PsiMethod method) {
         this.method = method;
     }
@@ -34,11 +39,21 @@ public class StatementNotExistsQuickFix extends GenericQuickFix {
         AbstractStatementGenerator.applyGenerate(method);
     }
 
+    /**
+     * Gets method.
+     *
+     * @return the method
+     */
     @NotNull
     public PsiMethod getMethod() {
         return method;
     }
 
+    /**
+     * Sets method.
+     *
+     * @param method the method
+     */
     public void setMethod(@NotNull PsiMethod method) {
         this.method = method;
     }

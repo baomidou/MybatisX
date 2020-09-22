@@ -8,10 +8,17 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 
 /**
+ * The interface Property group.
+ *
  * @author yanglin
  */
 public interface PropertyGroup extends DomElement {
 
+    /**
+     * Gets property.
+     *
+     * @return the property
+     */
     @Attribute("property")
     @Convert(PropertyConverter.class)
     GenericAttributeValue<XmlAttributeValue> getProperty();

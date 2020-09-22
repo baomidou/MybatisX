@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
+ * The type Injection line marker provider.
+ *
  * @author yanglin
  */
 public class InjectionLineMarkerProvider extends RelatedItemLineMarkerProvider {

@@ -15,12 +15,19 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
+ * The type Package alias resolver.
+ *
  * @author yanglin
  */
 public abstract class PackageAliasResolver extends AliasResolver {
 
     private JavaPsiFacade javaPsiFacade;
 
+    /**
+     * Instantiates a new Package alias resolver.
+     *
+     * @param project the project
+     */
     public PackageAliasResolver(Project project) {
         super(project);
         this.javaPsiFacade = JavaPsiFacade.getInstance(project);
@@ -51,6 +58,12 @@ public abstract class PackageAliasResolver extends AliasResolver {
         }
     }
 
+    /**
+     * Gets packages.
+     *
+     * @param element the element
+     * @return the packages
+     */
     @NotNull
     public abstract Collection<String> getPackages(@Nullable PsiElement element);
 }

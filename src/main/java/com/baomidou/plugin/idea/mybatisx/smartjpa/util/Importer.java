@@ -13,22 +13,44 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The type Importer.
+ */
 public class Importer {
 
     private Set<String> newImportList;
 
+    /**
+     * Create importer.
+     *
+     * @param strings the strings
+     * @return the importer
+     */
     public static Importer create(final Set<String> strings) {
         Importer importer = new Importer();
         importer.newImportList = strings;
         return importer;
     }
 
+    /**
+     * Create importer.
+     *
+     * @param imports the imports
+     * @return the importer
+     */
     public static Importer create(List<String> imports) {
         Importer importer = new Importer();
         importer.newImportList = new HashSet<>(imports);
         return importer;
     }
 
+    /**
+     * Add import to file.
+     *
+     * @param psiDocumentManager the psi document manager
+     * @param containingFile     the containing file
+     * @param document           the document
+     */
     public void addImportToFile(PsiDocumentManager psiDocumentManager,
                                 PsiJavaFile containingFile,
                                 Document document) {
@@ -68,6 +90,12 @@ public class Importer {
         }
     }
 
+    /**
+     * Commit and save document.
+     *
+     * @param psiDocumentManager the psi document manager
+     * @param document           the document
+     */
     public static void commitAndSaveDocument(PsiDocumentManager psiDocumentManager, Document document) {
         if (document != null) {
             psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);

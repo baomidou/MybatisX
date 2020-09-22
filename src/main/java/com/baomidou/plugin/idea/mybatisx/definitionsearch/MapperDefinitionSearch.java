@@ -16,10 +16,13 @@ import com.intellij.util.xml.DomElement;
  * </p>
  *
  * @author yanglin
- * @since 2018-08-05
+ * @since 2018 -08-05
  */
 public class MapperDefinitionSearch extends QueryExecutorBase<XmlElement, PsiElement> {
 
+    /**
+     * Instantiates a new Mapper definition search.
+     */
     public MapperDefinitionSearch() {
         super(true);
     }

@@ -17,6 +17,8 @@ import java.util.Optional;
 
 
 /**
+ * The type Sql param completion contributor.
+ *
  * @author yanglin
  */
 public class SqlParamCompletionContributor extends CompletionContributor {

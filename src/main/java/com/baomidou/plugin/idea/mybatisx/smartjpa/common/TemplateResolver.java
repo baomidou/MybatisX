@@ -9,8 +9,22 @@ import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
 
+/**
+ * The type Template resolver.
+ */
 public class TemplateResolver {
 
+    /**
+     * Gets template text.
+     *
+     * @param current               the current
+     * @param tableName             the table name
+     * @param entityClass           the entity class
+     * @param parameters            the parameters
+     * @param collector             the collector
+     * @param conditionFieldWrapper the condition field wrapper
+     * @return the template text
+     */
     public String getTemplateText(LinkedList<SyntaxAppender> current,
                                   String tableName, PsiClass entityClass,
                                   LinkedList<PsiParameter> parameters,

@@ -28,6 +28,11 @@ import java.util.List;
 public class SortAppenderFactory extends BaseAppenderFactory {
     private final List<TxField> mappingField;
 
+    /**
+     * Instantiates a new Sort appender factory.
+     *
+     * @param mappingField the mapping field
+     */
     public SortAppenderFactory(final List<TxField> mappingField) {
         this.mappingField = mappingField;
     }
@@ -64,6 +69,12 @@ public class SortAppenderFactory extends BaseAppenderFactory {
 
     private class SortCustomFieldAppender extends CustomFieldAppender{
 
+        /**
+         * Instantiates a new Sort custom field appender.
+         *
+         * @param field the field
+         * @param sort  the sort
+         */
         public SortCustomFieldAppender(TxField field, AreaSequence sort) {
             super(field, sort);
         }

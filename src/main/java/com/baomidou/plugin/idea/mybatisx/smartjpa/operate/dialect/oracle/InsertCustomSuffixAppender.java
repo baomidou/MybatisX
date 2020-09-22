@@ -13,10 +13,25 @@ import java.util.LinkedList;
  */
 public class InsertCustomSuffixAppender extends CustomSuffixAppender {
 
+    /**
+     * Instantiates a new Insert custom suffix appender.
+     *
+     * @param tipName        the tip name
+     * @param suffixOperator the suffix operator
+     * @param areaSequence   the area sequence
+     */
     public InsertCustomSuffixAppender(String tipName, SuffixOperator suffixOperator, AreaSequence areaSequence) {
         super(tipName, suffixOperator, areaSequence);
     }
 
+    /**
+     * Create insert by suffix operator syntax appender.
+     *
+     * @param all            the all
+     * @param suffixOperator the suffix operator
+     * @param areaSequence   the area sequence
+     * @return the syntax appender
+     */
     public static SyntaxAppender createInsertBySuffixOperator(String all, SuffixOperator suffixOperator, AreaSequence areaSequence) {
         return new InsertCustomSuffixAppender(all, suffixOperator, areaSequence);
     }

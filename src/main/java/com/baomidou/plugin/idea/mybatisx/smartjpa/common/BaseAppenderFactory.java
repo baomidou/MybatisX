@@ -20,6 +20,9 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Base appender factory.
+ */
 public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
 
 
@@ -58,8 +61,8 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
      * 实际上是 and +field + equals
      * 默认追加 equals
      *
-     * @param syntaxAppender
-     * @param current
+     * @param syntaxAppender the syntax appender
+     * @param current        the current
      */
     protected void appendDefault(SyntaxAppender syntaxAppender, LinkedList<SyntaxAppender> current) {
 
@@ -100,9 +103,11 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
     }
 
     /**
+     * Is valid boolean.
+     *
      * @param splitList   前面已经存在数据
      * @param appendTypes 当前可选的数据
-     * @return
+     * @return boolean
      */
     protected boolean isValid(List<SyntaxAppender> splitList, List<SyntaxAppender> appendTypes) {
         if (appendTypes.size() == 0) {
@@ -169,6 +174,11 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         }
     }
 
+    /**
+     * Gets area sequence.
+     *
+     * @return the area sequence
+     */
     protected abstract AreaSequence getAreaSequence();
 
 

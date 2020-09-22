@@ -9,10 +9,18 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The type Boolean parameter changer.
+ */
 public class BooleanParameterChanger implements MxParameterChanger {
 
     private Boolean booleanValue;
 
+    /**
+     * Instantiates a new Boolean parameter changer.
+     *
+     * @param booleanValue the boolean value
+     */
     public BooleanParameterChanger(Boolean booleanValue) {
         this.booleanValue = booleanValue;
     }

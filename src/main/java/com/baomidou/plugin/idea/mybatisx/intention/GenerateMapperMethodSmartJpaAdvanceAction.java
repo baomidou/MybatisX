@@ -121,6 +121,17 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
         return true;
     }
 
+    /**
+     * Generate and get method str string.
+     *
+     * @param project             the project
+     * @param editor              the editor
+     * @param element             the element
+     * @param statementElement    the statement element
+     * @param parameterDescriptor the parameter descriptor
+     * @param returnDescriptor    the return descriptor
+     * @return the string
+     */
     @NotNull
     protected String generateAndGetMethodStr(@NotNull Project project, Editor editor, @NotNull PsiElement element, PsiTypeElement statementElement, TypeDescriptor parameterDescriptor, TypeDescriptor returnDescriptor) {
         Document document = editor.getDocument();
@@ -143,6 +154,13 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
         return newMethodString;
     }
 
+    /**
+     * Gets condition field wrapper.
+     *
+     * @param project           the project
+     * @param platformGenerator the platform generator
+     * @return the condition field wrapper
+     */
     protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project, PlatformGenerator platformGenerator) {
         // 弹出模态窗口
         JpaAdvanceDialog jpaAdvanceDialog = new JpaAdvanceDialog(project);

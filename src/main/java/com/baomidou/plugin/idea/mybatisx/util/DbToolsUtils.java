@@ -16,8 +16,18 @@ import org.mybatis.generator.api.intellij.IntellijTableInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Db tools utils.
+ */
 public class DbToolsUtils {
     private static final Cloner myCloner = new Cloner();
+
+    /**
+     * Build intellij table info intellij table info.
+     *
+     * @param currentTable the current table
+     * @return the intellij table info
+     */
     public static IntellijTableInfo buildIntellijTableInfo(DbTable currentTable) {
         IntellijTableInfo tableInfo = new IntellijTableInfo();
         tableInfo.setTableName(currentTable.getName());
@@ -63,6 +73,12 @@ public class DbToolsUtils {
         return extractDatabaseTypeFromUrl(url);
     }
 
+    /**
+     * Extract database type from url string.
+     *
+     * @param url the url
+     * @return the string
+     */
     public static String extractDatabaseTypeFromUrl(String url) {
         if (url == null) {
             return "";
@@ -82,6 +98,13 @@ public class DbToolsUtils {
         }
     }
 
+    /**
+     * Convert column to intellij column info intellij column info.
+     *
+     * @param column       the column
+     * @param databaseType the database type
+     * @return the intellij column info
+     */
     @NotNull
     public static IntellijColumnInfo convertColumnToIntellijColumnInfo(DasColumn column, String databaseType) {
         IntellijColumnInfo columnInfo = new IntellijColumnInfo();
@@ -105,7 +128,15 @@ public class DbToolsUtils {
         return columnInfo;
     }
 
-    //这个我也不知道是什么，复制别人的代码
+    /**
+     * Convert type name to jdbc type int.
+     *
+     * @param jdbcTypeName the jdbc type name
+     * @param size         the size
+     * @param databaseType the database type
+     * @return the int
+     */
+//这个我也不知道是什么，复制别人的代码
     public static int convertTypeNameToJdbcType(String jdbcTypeName, int size, String databaseType) {
         if (StringUtil.isEmpty(jdbcTypeName)) {
             return 1111;

@@ -6,13 +6,31 @@ import com.intellij.psi.PsiField;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The type Mybatis plus 2 mapping resolver.
+ */
 public class MybatisPlus2MappingResolver extends AbstractMybatisPlusMappingResolver {
 
+    /**
+     * The constant TABLE_FIELD.
+     */
     public static final String TABLE_FIELD = "com.baomidou.mybatisplus.annotations.TableField";
+    /**
+     * The constant TABLE_NAME.
+     */
     public static final String TABLE_NAME = "com.baomidou.mybatisplus.annotations.TableName";
+    /**
+     * The constant TABLE_ID.
+     */
     public static final String TABLE_ID = "com.baomidou.mybatisplus.annotations.TableId";
+    /**
+     * The constant BASE_MAPPER.
+     */
     public static final String BASE_MAPPER = "com.baomidou.mybatisplus.mapper.BaseMapper";
 
+    /**
+     * Instantiates a new Mybatis plus 2 mapping resolver.
+     */
     public MybatisPlus2MappingResolver() {
     }
 

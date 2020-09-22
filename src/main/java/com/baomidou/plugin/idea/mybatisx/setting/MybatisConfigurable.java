@@ -19,6 +19,8 @@ import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenera
 import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
 
 /**
+ * The type Mybatis configurable.
+ *
  * @author yanglin
  */
 public class MybatisConfigurable implements SearchableConfigurable {
@@ -33,6 +35,9 @@ public class MybatisConfigurable implements SearchableConfigurable {
 
     private Joiner joiner = Joiner.on(separator);
 
+    /**
+     * Instantiates a new Mybatis configurable.
+     */
     public MybatisConfigurable() {
         mybatisSetting = MybatisSetting.getInstance();
     }

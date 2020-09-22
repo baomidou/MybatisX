@@ -7,14 +7,26 @@ import com.intellij.util.xml.NameValue;
 import com.intellij.util.xml.Required;
 
 /**
+ * The interface Id dom element.
+ *
  * @author yanglin
  */
 public interface IdDomElement extends DomElement {
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     @Required
     @NameValue
     @Attribute("id")
     GenericAttributeValue<String> getId();
 
+    /**
+     * Sets value.
+     *
+     * @param content the content
+     */
     void setValue(String content);
 }

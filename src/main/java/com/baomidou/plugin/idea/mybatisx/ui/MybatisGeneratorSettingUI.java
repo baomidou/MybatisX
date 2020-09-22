@@ -19,7 +19,13 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Mybatis generator setting ui.
+ */
 public class MybatisGeneratorSettingUI  {
+    /**
+     * The Content panel.
+     */
     public JPanel contentPanel = new JBPanel<>(new GridLayout(1, 1));
 
 
@@ -52,11 +58,18 @@ public class MybatisGeneratorSettingUI  {
 
     private PersistentConfig config;
 
+    /**
+     * Instantiates a new Mybatis generator setting ui.
+     */
     public MybatisGeneratorSettingUI() {
     }
 
 
-
+    /**
+     * Create ui.
+     *
+     * @param project the project
+     */
     public void createUI(Project project) {
         String projectFolder = project.getBasePath();
         contentPanel.setPreferredSize(new Dimension(0, 0));
@@ -221,6 +234,11 @@ public class MybatisGeneratorSettingUI  {
         }
     }
 
+    /**
+     * Is modified boolean.
+     *
+     * @return the boolean
+     */
     public boolean isModified() {
         boolean modified = true;
 //        modified |= !this.id.getText().equals(config.getId());
@@ -239,6 +257,9 @@ public class MybatisGeneratorSettingUI  {
         return modified;
     }
 
+    /**
+     * Apply.
+     */
     public void apply() {
         HashMap<String, Config> initConfig = new HashMap<>();
         Config config = new Config();
@@ -270,10 +291,18 @@ public class MybatisGeneratorSettingUI  {
 
     }
 
+    /**
+     * Reset.
+     */
     public void reset() {
 
     }
 
+    /**
+     * Gets content pane.
+     *
+     * @return the content pane
+     */
     public JPanel getContentPane() {
         return contentPanel;
     }

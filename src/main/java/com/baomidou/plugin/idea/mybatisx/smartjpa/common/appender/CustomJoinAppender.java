@@ -19,13 +19,26 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Custom join appender.
+ */
 public class CustomJoinAppender implements SyntaxAppender {
 
+    /**
+     * The constant SPACE.
+     */
     public static final String SPACE = " ";
     private final String tipText;
     private String sqlText;
     private AreaSequence areaSequence;
 
+    /**
+     * Instantiates a new Custom join appender.
+     *
+     * @param tipText      the tip text
+     * @param sqlText      the sql text
+     * @param areaSequence the area sequence
+     */
     public CustomJoinAppender(String tipText, String sqlText, AreaSequence areaSequence) {
         this.tipText = tipText;
         this.sqlText = sqlText;

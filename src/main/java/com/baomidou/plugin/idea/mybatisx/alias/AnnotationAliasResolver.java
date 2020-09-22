@@ -20,14 +20,27 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * The type Annotation alias resolver.
+ *
  * @author yanglin
  */
 public class AnnotationAliasResolver extends AliasResolver {
 
+    /**
+     * Instantiates a new Annotation alias resolver.
+     *
+     * @param project the project
+     */
     public AnnotationAliasResolver(Project project) {
         super(project);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @param project the project
+     * @return the instance
+     */
     public static final AnnotationAliasResolver getInstance(@NotNull Project project) {
         return project.getComponent(AnnotationAliasResolver.class);
     }

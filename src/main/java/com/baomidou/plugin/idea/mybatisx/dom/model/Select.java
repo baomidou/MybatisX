@@ -9,10 +9,17 @@ import com.baomidou.plugin.idea.mybatisx.dom.converter.AliasConverter;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The interface Select.
+ *
  * @author yanglin
  */
 public interface Select extends GroupTwo, ResultMapGroup {
 
+    /**
+     * Gets result type.
+     *
+     * @return the result type
+     */
     @NotNull
     @Attribute("resultType")
     @Convert(AliasConverter.class)

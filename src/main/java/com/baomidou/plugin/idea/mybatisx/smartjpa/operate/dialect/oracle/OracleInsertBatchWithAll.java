@@ -37,6 +37,12 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
     private String tableName;
 
 
+    /**
+     * Instantiates a new Oracle insert batch with all.
+     *
+     * @param dasTable  the das table
+     * @param tableName the table name
+     */
     public OracleInsertBatchWithAll(DasTableAdaptor dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;
@@ -74,6 +80,11 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
     private class InsertBatchResultAppenderFactory extends ResultAppenderFactory {
 
+        /**
+         * Instantiates a new Insert batch result appender factory.
+         *
+         * @param areaPrefix the area prefix
+         */
         public InsertBatchResultAppenderFactory(String areaPrefix) {
             super(areaPrefix);
         }
@@ -113,6 +124,12 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
         @NotNull
         private List<TxField> mappingField;
 
+        /**
+         * Instantiates a new Insert batch suffix operator.
+         *
+         * @param tableName    the table name
+         * @param mappingField the mapping field
+         */
         public InsertBatchSuffixOperator(String tableName, List<TxField> mappingField) {
             this.tableName = tableName;
             this.mappingField = mappingField;

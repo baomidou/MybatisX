@@ -44,18 +44,33 @@ import java.util.Set;
  * </p>
  *
  * @author jobob
- * @since 2018-07-30
+ * @since 2018 -07-30
  */
 public abstract class AbstractStatementGenerator {
 
+    /**
+     * The constant UPDATE_GENERATOR.
+     */
     public static final AbstractStatementGenerator UPDATE_GENERATOR = new UpdateGenerator("update", "modify", "set");
 
+    /**
+     * The constant SELECT_GENERATOR.
+     */
     public static final AbstractStatementGenerator SELECT_GENERATOR = new SelectGenerator("select", "get", "look", "find", "list", "search", "count", "query");
 
+    /**
+     * The constant DELETE_GENERATOR.
+     */
     public static final AbstractStatementGenerator DELETE_GENERATOR = new DeleteGenerator("del", "cancel");
 
+    /**
+     * The constant INSERT_GENERATOR.
+     */
     public static final AbstractStatementGenerator INSERT_GENERATOR = new InsertGenerator("insert", "add", "new");
 
+    /**
+     * The constant ALL.
+     */
     public static final Set<AbstractStatementGenerator> ALL = ImmutableSet.of(UPDATE_GENERATOR, SELECT_GENERATOR, DELETE_GENERATOR, INSERT_GENERATOR);
 
     private static final Function<Mapper, String> FUN = new Function<Mapper, String>() {
@@ -70,8 +85,8 @@ public abstract class AbstractStatementGenerator {
     /**
      * 获取方法的返回类型
      *
-     * @param method
-     * @return
+     * @param method the method
+     * @return select result type
      */
     public static Optional<PsiClass> getSelectResultType(@Nullable PsiMethod method) {
         if (null == method) {
@@ -100,6 +115,11 @@ public abstract class AbstractStatementGenerator {
         return Optional.empty();
     }
 
+    /**
+     * Apply generate.
+     *
+     * @param method the method
+     */
     public static void applyGenerate(@Nullable final PsiMethod method) {
         if (null == method) {
             return;
@@ -124,6 +144,12 @@ public abstract class AbstractStatementGenerator {
         }
     }
 
+    /**
+     * Get generators abstract statement generator [ ].
+     *
+     * @param method the method
+     * @return the abstract statement generator [ ]
+     */
     @NotNull
     public static AbstractStatementGenerator[] getGenerators(@NotNull PsiMethod method) {
         GenerateModel model = MybatisSetting.getInstance().getStatementGenerateModel();
@@ -139,10 +165,20 @@ public abstract class AbstractStatementGenerator {
 
     private Set<String> patterns;
 
+    /**
+     * Instantiates a new Abstract statement generator.
+     *
+     * @param patterns the patterns
+     */
     public AbstractStatementGenerator(@NotNull String... patterns) {
         this.patterns = Sets.newHashSet(patterns);
     }
 
+    /**
+     * Execute.
+     *
+     * @param method the method
+     */
     public void execute(@NotNull final PsiMethod method) {
         PsiClass psiClass = method.getContainingClass();
         if (null == psiClass) {
@@ -186,19 +222,46 @@ public abstract class AbstractStatementGenerator {
         return this.getDisplayText();
     }
 
+    /**
+     * Gets target.
+     *
+     * @param mapper the mapper
+     * @param method the method
+     * @return the target
+     */
     @NotNull
     protected abstract GroupTwo getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method);
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     @NotNull
     public abstract String getId();
 
+    /**
+     * Gets display text.
+     *
+     * @return the display text
+     */
     @NotNull
     public abstract String getDisplayText();
 
+    /**
+     * Gets patterns.
+     *
+     * @return the patterns
+     */
     public Set<String> getPatterns() {
         return patterns;
     }
 
+    /**
+     * Sets patterns.
+     *
+     * @param patterns the patterns
+     */
     public void setPatterns(Set<String> patterns) {
         this.patterns = patterns;
     }

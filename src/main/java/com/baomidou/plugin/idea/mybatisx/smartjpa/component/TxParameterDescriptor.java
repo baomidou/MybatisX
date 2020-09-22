@@ -9,13 +9,30 @@ import java.util.stream.Collectors;
  */
 public class TxParameterDescriptor implements TypeDescriptor {
 
+    /**
+     * The constant SPACE.
+     */
     public static final String SPACE = " ";
+    /**
+     * The Parameter list.
+     */
     List<TxParameter> parameterList = new ArrayList<>();
 
+    /**
+     * Instantiates a new Tx parameter descriptor.
+     *
+     * @param parameterList the parameter list
+     */
     public TxParameterDescriptor(final List<TxParameter> parameterList) {
         this.parameterList = parameterList;
     }
 
+    /**
+     * Add boolean.
+     *
+     * @param txParameter the tx parameter
+     * @return the boolean
+     */
     public boolean add(TxParameter txParameter) {
         return parameterList.add(txParameter);
     }

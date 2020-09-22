@@ -16,6 +16,8 @@ import com.intellij.psi.impl.source.codeStyle.CodeFormatterFacade;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The type Editor service.
+ *
  * @author yanglin
  */
 public class EditorService {
@@ -26,15 +28,32 @@ public class EditorService {
 
     private CodeFormatterFacade codeFormatterFacade;
 
+    /**
+     * Instantiates a new Editor service.
+     *
+     * @param project the project
+     */
     public EditorService(Project project) {
         this.project = project;
         this.fileEditorManager = FileEditorManager.getInstance(project);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @param project the project
+     * @return the instance
+     */
     public static EditorService getInstance(@NotNull Project project) {
         return ServiceManager.getService(project, EditorService.class);
     }
 
+    /**
+     * Format.
+     *
+     * @param file    the file
+     * @param element the element
+     */
     public void format(@NotNull PsiFile file, @NotNull PsiElement element) {
         CodeStyleSettingsManager instance = CodeStyleSettingsManager.getInstance(element.getProject());
         CodeStyleSettings settings = instance.getMainProjectCodeStyle();
@@ -42,6 +61,12 @@ public class EditorService {
         codeFormatterFacade.processText(file, new FormatTextRanges(element.getTextRange(), true), true);
     }
 
+    /**
+     * Scroll to.
+     *
+     * @param element the element
+     * @param offset  the offset
+     */
     public void scrollTo(@NotNull PsiElement element, int offset) {
         NavigationUtil.activateFileWithPsiElement(element, true);
         Editor editor = fileEditorManager.getSelectedTextEditor();

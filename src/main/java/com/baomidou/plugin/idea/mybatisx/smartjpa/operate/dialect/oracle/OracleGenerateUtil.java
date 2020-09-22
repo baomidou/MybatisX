@@ -14,6 +14,13 @@ import java.util.PriorityQueue;
  */
 public class OracleGenerateUtil {
 
+    /**
+     * Find sequence name optional.
+     *
+     * @param dasTable  the das table
+     * @param tableName the table name
+     * @return the optional
+     */
     public static Optional<String> findSequenceName(DasTable dasTable, String tableName) {
         String foundSequenceName = null;
         if (dasTable != null) {

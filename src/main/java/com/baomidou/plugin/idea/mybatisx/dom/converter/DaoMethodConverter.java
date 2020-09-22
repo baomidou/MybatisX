@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * The type Dao method converter.
+ *
  * @author yanglin
  */
 public class DaoMethodConverter extends ConverterAdaptor<PsiMethod> {

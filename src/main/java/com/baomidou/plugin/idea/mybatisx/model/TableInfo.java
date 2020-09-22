@@ -9,8 +9,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The type Table info.
+ */
 public class TableInfo {
 
+    /**
+     * The Table element.
+     */
     public final DbTable tableElement;
 
     private List<DasColumn> columns;
@@ -18,6 +24,11 @@ public class TableInfo {
     private List<String> primaryKeys = new ArrayList<>();
 
 
+    /**
+     * Instantiates a new Table info.
+     *
+     * @param tableElement the table element
+     */
     public TableInfo(DbTable tableElement) {
         this.tableElement = tableElement;
         List<DasColumn> columns = new ArrayList<>();
@@ -36,14 +47,29 @@ public class TableInfo {
         this.columns = columns;
     }
 
+    /**
+     * Gets table name.
+     *
+     * @return the table name
+     */
     public String getTableName() {
         return tableElement.getName();
     }
 
+    /**
+     * Gets columns.
+     *
+     * @return the columns
+     */
     public List<DasColumn> getColumns() {
         return columns;
     }
 
+    /**
+     * Gets columns name.
+     *
+     * @return the columns name
+     */
     public List<String> getColumnsName() {
         List<String> columnsName = new ArrayList<>();
         for (DasColumn column : columns) {
@@ -52,10 +78,20 @@ public class TableInfo {
         return columnsName;
     }
 
+    /**
+     * Gets primary keys.
+     *
+     * @return the primary keys
+     */
     public List<String> getPrimaryKeys() {
         return this.primaryKeys;
     }
 
+    /**
+     * Gets non primary columns.
+     *
+     * @return the non primary columns
+     */
     public List<DasColumn> getNonPrimaryColumns() {
         Set<String> pKNameSet = new HashSet<String>();
         for (String pkName : getPrimaryKeys()) {

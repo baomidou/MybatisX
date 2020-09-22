@@ -1,6 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 
 /**
+ * The type Never contains field wrapper.
+ *
  * @author ls9527
  */
 public class NeverContainsFieldWrapper implements ConditionFieldWrapper {

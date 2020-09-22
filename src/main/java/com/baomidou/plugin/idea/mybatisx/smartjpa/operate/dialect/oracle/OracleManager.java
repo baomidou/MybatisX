@@ -18,6 +18,14 @@ public class OracleManager extends BaseDialectManager {
     private DasTableAdaptor dasTable;
     private String tableName;
 
+    /**
+     * Instantiates a new Oracle manager.
+     *
+     * @param mappingField the mapping field
+     * @param entityClass  the entity class
+     * @param dasTable     the das table
+     * @param tableName    the table name
+     */
     public OracleManager(List<TxField> mappingField, PsiClass entityClass, DasTableAdaptor dasTable, String tableName) {
         this.dasTable = dasTable;
         this.tableName = tableName;

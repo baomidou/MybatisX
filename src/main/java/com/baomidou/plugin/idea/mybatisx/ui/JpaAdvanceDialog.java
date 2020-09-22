@@ -15,10 +15,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The type Jpa advance dialog.
+ *
+ * @author ls9527  自动生成的高级提示框
+ */
 public class JpaAdvanceDialog extends DialogWrapper {
 
     private SmartJpaAdvanceUI smartJpaAdvanceUI = new SmartJpaAdvanceUI();
 
+    /**
+     * Instantiates a new Jpa advance dialog.
+     *
+     * @param project the project
+     */
     public JpaAdvanceDialog(@Nullable Project project) {
         super(project);
         super.init();
@@ -32,6 +42,11 @@ public class JpaAdvanceDialog extends DialogWrapper {
         return smartJpaAdvanceUI.getRootPanel();
     }
 
+    /**
+     * Gets selected fields.
+     *
+     * @return the selected fields
+     */
     public Set<String> getSelectedFields() {
         Set<String> strings = new HashSet<>();
         Component[] components = smartJpaAdvanceUI.getConditionPanel().getComponents();
@@ -46,12 +61,24 @@ public class JpaAdvanceDialog extends DialogWrapper {
         return strings;
     }
 
+    /**
+     * Gets all fields str.
+     *
+     * @return the all fields str
+     */
     public String getAllFieldsStr() {
         return smartJpaAdvanceUI.getAllFieldsText();
     }
 
     private static final Logger logger = LoggerFactory.getLogger(JpaAdvanceDialog.class);
 
+    /**
+     * Init fields.
+     *
+     * @param conditionFields the condition fields
+     * @param allFields       the all fields
+     * @param entityClass     the entity class
+     */
     public void initFields(List<String> conditionFields, List<TxField> allFields, String entityClass) {
         if (conditionFields.size() > 0) {
             JPanel conditionPanel = smartJpaAdvanceUI.getConditionPanel();
@@ -80,19 +107,39 @@ public class JpaAdvanceDialog extends DialogWrapper {
 
     }
 
+    /**
+     * Gets result map.
+     *
+     * @return the result map
+     */
     public String getResultMap() {
         return smartJpaAdvanceUI.getResultMap();
     }
 
 
+    /**
+     * Gets result type class.
+     *
+     * @return the result type class
+     */
     public String getResultTypeClass() {
         return smartJpaAdvanceUI.getResultTypeClass();
     }
 
+    /**
+     * Is result type boolean.
+     *
+     * @return the boolean
+     */
     public boolean isResultType() {
         return smartJpaAdvanceUI.isResultType();
     }
 
+    /**
+     * Gets generator type.
+     *
+     * @return the generator type
+     */
     public SmartJpaAdvanceUI.GeneratorEnum getGeneratorType() {
 
         return smartJpaAdvanceUI.getGeneratorType();

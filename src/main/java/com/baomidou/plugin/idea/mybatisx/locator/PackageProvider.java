@@ -8,10 +8,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 /**
+ * The type Package provider.
+ *
  * @author yanglin
  */
 public abstract class PackageProvider {
 
+    /**
+     * Gets packages.
+     *
+     * @param project the project
+     * @return the packages
+     */
     @NotNull
     public abstract Set<PsiPackage> getPackages(@NotNull Project project);
 

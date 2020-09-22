@@ -42,13 +42,29 @@ import java.util.stream.Collectors;
  * https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation
  */
 public class ConditionAppenderFactory extends BaseAppenderFactory {
+    /**
+     * The Syntax appender array list.
+     */
     List<SyntaxAppender> syntaxAppenderArrayList;
 
 
+    /**
+     * Instantiates a new Condition appender factory.
+     *
+     * @param resultAreaName the result area name
+     * @param mappingField   the mapping field
+     */
     public ConditionAppenderFactory(final String resultAreaName, final List<TxField> mappingField) {
         syntaxAppenderArrayList = initAppender(mappingField, resultAreaName);
     }
 
+    /**
+     * Init appender list.
+     *
+     * @param mappingField   the mapping field
+     * @param resultAreaName the result area name
+     * @return the list
+     */
     public List<SyntaxAppender> initAppender(List<TxField> mappingField, String resultAreaName) {
         final List<SyntaxAppender> syntaxAppenderArrayList = new ArrayList<>();
 

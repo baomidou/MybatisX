@@ -23,7 +23,10 @@ import java.util.List;
  * 结果集追加
  */
 public class ResultAppenderFactory extends BaseAppenderFactory {
-    // 区域类型
+    /**
+     * The constant RESULT.
+     */
+// 区域类型
     public static final String RESULT = "Result";
     /**
      * 区域前缀
@@ -32,10 +35,20 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
 
     private final List<SyntaxAppender> syntaxAppenderList = new ArrayList<>();
 
+    /**
+     * Instantiates a new Result appender factory.
+     *
+     * @param areaPrefix the area prefix
+     */
     public ResultAppenderFactory(final String areaPrefix) {
         this.areaPrefix = areaPrefix;
     }
 
+    /**
+     * Register appender.
+     *
+     * @param syntaxAppender the syntax appender
+     */
     public void registerAppender(final SyntaxAppender syntaxAppender) {
         this.syntaxAppenderList.add(syntaxAppender);
     }

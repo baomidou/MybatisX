@@ -12,6 +12,13 @@ import javax.swing.JTextField;
 public class JTextFieldHintListener implements FocusListener {
     private String hintText;
     private JTextField textField;
+
+    /**
+     * Instantiates a new J text field hint listener.
+     *
+     * @param jTextField the j text field
+     * @param hintText   the hint text
+     */
     public JTextFieldHintListener(JTextField jTextField,String hintText) {
         this.textField = jTextField;
         this.hintText = hintText;

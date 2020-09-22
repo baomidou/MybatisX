@@ -25,6 +25,7 @@ import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.intellij.IntellijTableInfo;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.mybatis.generator.plugins.MapperAnnotationPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,11 @@ public class MybatisGenerator {
     private DbType dbType;//数据库类型
     private IntellijTableInfo intellijTableInfo;
 
+    /**
+     * Instantiates a new Mybatis generator.
+     *
+     * @param config the config
+     */
     public MybatisGenerator(Config config) {
         this.config = config;
     }
@@ -50,8 +56,10 @@ public class MybatisGenerator {
     /**
      * 自动生成的主逻辑
      *
-     * @param anActionEvent
-     * @throws Exception
+     * @param anActionEvent the an action event
+     * @param saveConfig    the save config
+     * @return the list
+     * @throws Exception the exception
      */
     public List<String> execute(final AnActionEvent anActionEvent, boolean saveConfig) throws Exception {
         List<String> result = new ArrayList<>();
@@ -437,6 +445,15 @@ public class MybatisGenerator {
             toStringPluginPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
             context.addPluginConfiguration(toStringPluginPlugin);
         }
+
+        if (config.isNeedMapperAnnotation()) {
+            PluginConfiguration mapperAnnotation = new PluginConfiguration();
+            mapperAnnotation.addProperty("type", "org.mybatis.generator.plugins.MapperAnnotationPlugin");
+            mapperAnnotation.setConfigurationType("org.mybatis.generator.plugins.MapperAnnotationPlugin");
+            context.addPluginConfiguration(mapperAnnotation);
+        }
+
+
 
         // limit/offset插件
         if (config.isOffsetLimit()) {
