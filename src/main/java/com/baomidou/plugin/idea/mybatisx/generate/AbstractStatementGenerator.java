@@ -77,7 +77,9 @@ public abstract class AbstractStatementGenerator {
         @Override
         public String apply(Mapper mapper) {
             VirtualFile vf = mapper.getXmlTag().getContainingFile().getVirtualFile();
-            if (null == vf) return "";
+            if (null == vf) {
+                return "";
+            }
             return vf.getCanonicalPath();
         }
     };

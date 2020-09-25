@@ -460,8 +460,8 @@ public class MybatisGenerator {
             if (DbType.MySQL.equals(dbType)
                     || DbType.PostgreSQL.equals(dbType)) {
                 PluginConfiguration mySQLLimitPlugin = new PluginConfiguration();
-                mySQLLimitPlugin.addProperty("type", "cn.kt.MySQLLimitPlugin");
-                mySQLLimitPlugin.setConfigurationType("cn.kt.MySQLLimitPlugin");
+                mySQLLimitPlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLLimitPlugin");
+                mySQLLimitPlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLLimitPlugin");
                 context.addPluginConfiguration(mySQLLimitPlugin);
             }
         }
@@ -478,8 +478,8 @@ public class MybatisGenerator {
             if (DbType.MySQL.equals(dbType)
                     || DbType.PostgreSQL.equals(dbType)) {
                 PluginConfiguration mySQLForUpdatePlugin = new PluginConfiguration();
-                mySQLForUpdatePlugin.addProperty("type", "cn.kt.MySQLForUpdatePlugin");
-                mySQLForUpdatePlugin.setConfigurationType("cn.kt.MySQLForUpdatePlugin");
+                mySQLForUpdatePlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLForUpdatePlugin");
+                mySQLForUpdatePlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLForUpdatePlugin");
                 context.addPluginConfiguration(mySQLForUpdatePlugin);
             }
         }
