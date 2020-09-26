@@ -4,8 +4,8 @@ import com.baomidou.mybatis3.MybatisPlus3Application;
 import com.baomidou.mybatis3.domain.Blog;
 import com.baomidou.mybatis3.mapper.BlogDeleteMapper;
 import com.baomidou.mybatis3.mapper.BlogInsertMapper;
-import com.baomidou.mybatis3.mapper.BlogScriptMapper;
 import com.baomidou.mybatis3.mapper.BlogSelectMapper;
+import com.baomidou.mybatis3.mapper.BlogSelectProviderMapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,13 +22,13 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MybatisPlus3Application.class)
-public class BlogScriptMapperTest {
+public class BlogSelectProviderMapperTest {
 
     @Resource
     BlogInsertMapper blogInsertMapper;
 
     @Resource
-    BlogScriptMapper blogScriptMapper;
+    BlogSelectProviderMapper blogSelectProviderMapper;
 
     @After
     public void destroyData() {
@@ -85,19 +85,10 @@ public class BlogScriptMapperTest {
     }
 
     @Test
-    public void testSelectAllByAge() {
-        List<Blog> blogs = blogScriptMapper.selectAllByAge(1);
-        Assert.assertNotNull(blogs);
-        Assert.assertEquals(blogs.size(), 1);
+    public void selectById() {
+        Blog blog = blogSelectProviderMapper.selectByPrimaryKey(1L);
+        Assert.assertNotNull(blog);
     }
-
-    @Test
-    public void selectAllByTitle() {
-        List<Blog> blogs = blogScriptMapper.selectAllByTitle("apache-a");
-        Assert.assertNotNull(blogs);
-        Assert.assertEquals(blogs.size(), 1);
-    }
-
 
     @Resource
     private BlogDeleteMapper blogDeleteMapper;

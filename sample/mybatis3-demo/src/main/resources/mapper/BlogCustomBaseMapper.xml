@@ -9,6 +9,9 @@
         <result column="title" property="title"/>
         <result column="money" property="money"/>
     </resultMap>
+    <sql id="Base_Column_List">
+        id,age,content,title,money
+    </sql>
 
     <select id="selectByAgeAndContentOrderByAge" resultMap="BaseResultMap">
         select

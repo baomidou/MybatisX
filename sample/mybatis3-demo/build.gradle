@@ -25,3 +25,10 @@ dependencies {
     compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 
 }
+
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+

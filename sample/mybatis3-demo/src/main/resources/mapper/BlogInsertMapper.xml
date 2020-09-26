@@ -14,7 +14,6 @@
 		id,age,content,title,money,create_time
 	</sql>
     <insert id="insertSelective">
-
         insert into t_blog
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id!= null">id,</if>
