@@ -25,7 +25,8 @@ public abstract class JavaFileIntentionChooser implements IntentionChooser {
             return false;
         }
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        return null != element && JavaUtils.isElementWithinInterface(element) && isAvailable(element);
+        //  && isAvailable(element), 不应该判断当前模块是不是已经有了这个mapper. 因为无法判断
+        return null != element && JavaUtils.isElementWithinInterface(element);
     }
 
     /**

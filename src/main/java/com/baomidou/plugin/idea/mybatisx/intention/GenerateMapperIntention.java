@@ -67,6 +67,7 @@ public class GenerateMapperIntention extends GenericIntention {
     public void invoke(@NotNull final Project project, final Editor editor, PsiFile file) throws IncorrectOperationException {
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
         PsiClass clazz = PsiTreeUtil.getParentOfType(element, PsiClass.class);
+        //TODO mapper 目录不一定只有一个, 后续优化
         Collection<PsiDirectory> directories = MapperUtils.findMapperDirectories(project);
         if (CollectionUtils.isEmpty(directories)) {
             handleChooseNewFolder(project, editor, clazz);
