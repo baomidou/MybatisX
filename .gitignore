@@ -3,5 +3,5 @@ build
 idea-sandbox
 /out/
 /MybatisX.iml
-.gradle
+.gradle/
 .idea

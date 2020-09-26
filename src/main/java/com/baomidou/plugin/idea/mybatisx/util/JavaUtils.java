@@ -26,10 +26,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The type Java utils.
@@ -109,6 +107,17 @@ public final class JavaUtils {
     }
 
     /**
+     * Find clazz optional.
+     *
+     * @param project   the project
+     * @param clazzName the clazz name
+     * @return the optional
+     */
+    public static Optional<PsiClass[]> findClasses(@NotNull Project project, @NotNull String clazzName) {
+        return Optional.ofNullable(JavaPsiFacade.getInstance(project).findClasses(clazzName, GlobalSearchScope.allScope(project)));
+    }
+
+    /**
      * Find method optional.
      *
      * @param project    the project
@@ -127,6 +136,32 @@ public final class JavaUtils {
         }
         return Optional.empty();
     }
+
+    /**
+     * Find method optional.
+     *
+     * @param project    the project
+     * @param clazzName  the clazz name
+     * @param methodName the method name
+     * @return the optional
+     */
+    public static Optional<PsiMethod[]> findMethods(@NotNull Project project, @Nullable String clazzName, @Nullable String methodName) {
+        if (StringUtils.isBlank(clazzName) && StringUtils.isBlank(methodName)) {
+            return Optional.empty();
+        }
+        Optional<PsiClass[]> classes = findClasses(project, clazzName);
+        if (classes.isPresent()) {
+
+            List<@NotNull PsiMethod> collect = Arrays.stream(classes.get())
+                .map(psiClass -> psiClass.findMethodsByName(methodName, true))
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toList());
+            return collect.isEmpty() ? Optional.empty() : Optional.of(collect.toArray(new PsiMethod[0]));
+
+        }
+        return Optional.empty();
+    }
+
 
     /**
      * Find method optional.
@@ -172,8 +207,8 @@ public final class JavaUtils {
      * @return the annotation attribute value
      */
     public static Optional<PsiAnnotationMemberValue> getAnnotationAttributeValue(@NotNull PsiModifierListOwner target,
-                                                                                           @NotNull Annotation annotation,
-                                                                                           @NotNull String attrName) {
+                                                                                 @NotNull Annotation annotation,
+                                                                                 @NotNull String attrName) {
         if (!isAnnotationPresent(target, annotation)) {
             return Optional.empty();
         }

@@ -1,9 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
-import com.google.common.base.Optional;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * The type Array utils.
@@ -24,9 +24,8 @@ public final class ArrayUtils {
      * @param defValue the def value
      * @return the only element
      */
-    @NotNull
     public static <T> Optional<T> getOnlyElement(@Nullable T[] target, @NotNull T defValue) {
-        return Optional.fromNullable(getOnlyElement(target).or(defValue));
+        return Optional.ofNullable(getOnlyElement(target).orElse(defValue));
     }
 
     /**
@@ -36,9 +35,8 @@ public final class ArrayUtils {
      * @param target the target
      * @return the only element
      */
-    @NotNull
     public static <T> Optional<T> getOnlyElement(@Nullable T[] target) {
-        return (null == target || 1 != target.length) ? Optional.<T>absent() : Optional.fromNullable(target[0]);
+        return (null == target || 1 != target.length) ? Optional.<T>empty() : Optional.ofNullable(target[0]);
     }
 
 }

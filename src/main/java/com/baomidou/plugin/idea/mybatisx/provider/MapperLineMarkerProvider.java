@@ -54,6 +54,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         .setAlignment(GutterIconRenderer.Alignment.CENTER)
                         .setTargets(Collections2.transform(results, FUN))
                         .setTooltipTitle("Navigation to target in mapper xml");
+                // TODO 智能跳转到合适的xml
                 result.add(builder.createLineMarkerInfo(((PsiNameIdentifierOwner) element).getNameIdentifier()));
             }
         }

@@ -2,9 +2,15 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
+import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,42 +29,28 @@ import java.util.Optional;
  * @param <T> the type parameter
  * @author yanglin
  */
-public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends MarkerProviderAdaptor {
+public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends RelatedItemLineMarkerProvider {
 
-    @Override
-    public void collectSlowLineMarkers(@NotNull List<PsiElement> elements,
-                                       @NotNull Collection<LineMarkerInfo> result) {
-    }
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
 
-    @SuppressWarnings("unchecked")
-    @Nullable
     @Override
-    public LineMarkerInfo<? extends PsiElement> getLineMarkerInfo(@NotNull PsiElement element) {
-        if (!isTheElement(element)) return null;
+    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
+        if (!isTheElement(element))
+            return;
         logger.info("getLineMarkerInfo start, element: {}", element);
-        logger.info("xml加入跳转图标开始");
-        Optional<? extends T> processResult = apply((F) element);
-        Optional<LineMarkerInfo<? extends PsiElement>> optional = processResult.map(t -> new LineMarkerInfo<>(
-            (F) element,
-            element.getTextRange(),
-            getIcon(),
-            getTooltipProvider(t),
-            getNavigationHandler(t),
-            GutterIconRenderer.Alignment.CENTER
-        ));
+        Optional<? extends T[]> processResult = apply((F) element);
+        if (processResult.isPresent()) {
+            T[] arrays = processResult.get();
+            NavigationGutterIconBuilder navigationGutterIconBuilder = NavigationGutterIconBuilder.create(getIcon());
+            navigationGutterIconBuilder.setTargets(arrays);
+            RelatedItemLineMarkerInfo<PsiElement> lineMarkerInfo = navigationGutterIconBuilder.createLineMarkerInfo(element);
+            result.add(lineMarkerInfo);
+        }
+
         logger.info("getLineMarkerInfo end");
-        return optional.orElse(null);
     }
 
-    private Function<F, String> getTooltipProvider(final T target) {
-        return from -> getTooltip(from, target);
-    }
-
-    private GutterIconNavigationHandler<F> getNavigationHandler(final T target) {
-        return (e, from) -> getNavigatable(from, target).navigate(true);
-    }
 
     /**
      * Is the element boolean.
@@ -74,27 +66,8 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends 
      * @param from the from
      * @return the optional
      */
-    public abstract Optional<? extends T> apply(@NotNull F from);
+    public abstract Optional<? extends T[]> apply(@NotNull F from);
 
-    /**
-     * Gets navigatable.
-     *
-     * @param from   the from
-     * @param target the target
-     * @return the navigatable
-     */
-    @NotNull
-    public abstract Navigatable getNavigatable(@NotNull F from, @NotNull T target);
-
-    /**
-     * Gets tooltip.
-     *
-     * @param from   the from
-     * @param target the target
-     * @return the tooltip
-     */
-    @NotNull
-    public abstract String getTooltip(@NotNull F from, @NotNull T target);
 
     /**
      * Gets icon.
