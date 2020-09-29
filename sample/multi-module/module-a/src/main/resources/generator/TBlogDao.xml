@@ -13,19 +13,23 @@
     id, title, content, money, age, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_blog
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="getAllBlog" resultType="generate.TBlog">
+
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_blog
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="generate.TBlog" useGeneratedKeys="true">
-    insert into t_blog (title, content, money, 
+    insert into t_blog (title, content, money,
       age, create_time)
-    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL}, 
+    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL},
       #{age,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="generate.TBlog" useGeneratedKeys="true">

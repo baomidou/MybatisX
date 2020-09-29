@@ -115,6 +115,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         }
         JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(mapperClass.getProject());
         for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
+            //TODO batchInsert 报错
             String qualifiedName = referenceElement.getQualifiedName();
 
             if (getBaseMapperClassName().equals(qualifiedName)) {

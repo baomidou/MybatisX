@@ -193,17 +193,25 @@ public abstract class AbstractStatementGenerator {
             setupTag(method, (Mapper) Iterables.getOnlyElement(mappers, (Object) null));
         } else if (mappers.size() > 1) {
             Collection<String> paths = Collections2.transform(mappers, FUN);
-            UiComponentFacade.getInstance(method.getProject()).showListPopup("Choose target mapper xml to generate", new ListSelectionListener() {
-                @Override
-                public void selected(int index) {
-                    setupTag(method, mappers.get(index));
-                }
+            UiComponentFacade.getInstance(method.getProject())
+                .showListPopup("Choose target mapper xml to generate", new ListSelectionListener() {
+                    @Override
+                    public void selected(int index) {
+                        // 修复多模块生成标签, 修改xml内容不允许在用户线程操作的BUG
+                        WriteCommandAction.runWriteCommandAction(method.getProject(), new Runnable() {
+                            @Override
+                            public void run() {
+                                setupTag(method, mappers.get(index));
+                            }
+                        });
 
-                @Override
-                public boolean isWriteAction() {
-                    return true;
-                }
-            }, paths.toArray(new String[0]));
+                    }
+
+                    @Override
+                    public boolean isWriteAction() {
+                        return true;
+                    }
+                }, paths.toArray(new String[0]));
         }
     }
 

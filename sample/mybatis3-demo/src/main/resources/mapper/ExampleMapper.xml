@@ -62,6 +62,13 @@
         select
         <include refid="Base_Column_List"/>
         from t_blog
+        where
+        age = #{age,jdbcType=NUMERIC}
+        AND title = #{title,jdbcType=VARCHAR}
+        AND content between #{beginContent,jdbcType=VARCHAR} and #{endContent,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByAgeAndTitleAndContentBetween" resultMap="BaseResultMap">
+        select id ,title ,content ,money ,age ,create_time from t_blog
         <where>
             <if test="age != null">
                 age = #{age,jdbcType=NUMERIC}

@@ -53,19 +53,60 @@
     <insert id="insertAll">
         insert into t_blog
         (id,
+         title,
+         content,
+         money,
+         age,
+         create_time)
+        values (#{id,jdbcType=NUMERIC},
+                #{title,jdbcType=VARCHAR},
+                #{content,jdbcType=VARCHAR},
+                #{money,jdbcType=DECIMAL},
+                #{age,jdbcType=NUMERIC},
+                #{createTime,jdbcType=TIMESTAMP})
+
+    </insert>
+    <insert id="insertBatchWithUnion">
+        insert into t_blog(id,
         title,
         content,
         money,
         age,
         create_time)
-        values
-        (#{id,jdbcType=NUMERIC},
-        #{title,jdbcType=VARCHAR},
-        #{content,jdbcType=VARCHAR},
-        #{money,jdbcType=DECIMAL},
-        #{age,jdbcType=NUMERIC},
-        #{createTime,jdbcType=TIMESTAMP}
+        (
+        <foreach collection="blogCollection" item="item" separator="union all">
+            select
+            #{item.id,jdbcType=NUMERIC},
+            #{item.title,jdbcType=VARCHAR},
+            #{item.content,jdbcType=VARCHAR},
+            #{item.money,jdbcType=DECIMAL},
+            #{item.age,jdbcType=NUMERIC},
+            SYSDATE
+            from dual
+        </foreach>
         )
+    </insert>
+    <insert id="insertBatchWithAll">
+        insert all
+        <foreach collection="blogCollection" item="item">
+            INTO t_blog
+            (id,
+            title,
+            content,
+            money,
+            age,
+            create_time)
+            VALUES
+            (
+            #{item.id,jdbcType=NUMERIC},
+            #{item.title,jdbcType=VARCHAR},
+            #{item.content,jdbcType=VARCHAR},
+            #{item.money,jdbcType=DECIMAL},
+            #{item.age,jdbcType=NUMERIC},
+            SYSDATE
+            )
+        </foreach>
+        select 1 from dual
     </insert>
 
 

@@ -210,19 +210,26 @@ public class CustomSuffixAppender implements SyntaxAppender {
                 fieldName = field.getFieldName();
                 break;
             }
-            // field 是不能取值的
-            String templateText =
-                appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-            if (i > 0) {
-                stringBuilder.append(" ");
+            if (appender instanceof CustomJoinAppender) {
+                String templateText =
+                    getFieldTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper, appender);
+                if (i > 0) {
+                    stringBuilder.append(" ");
+                }
+                stringBuilder.append(templateText);
+                i++;
             }
-            stringBuilder.append(templateText);
-            i++;
+            // field 是不能取值的
+//
         }
 
         String suffixTemplateText = suffixOperator.getTemplateText(fieldName, parameters);
         stringBuilder.append(suffixTemplateText);
         return conditionFieldWrapper.wrapperConditionText(fieldName, stringBuilder.toString());
+    }
+
+    protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
+        return appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
     }
 
     /**
@@ -243,7 +250,9 @@ public class CustomSuffixAppender implements SyntaxAppender {
 
     private void addJoin(SyntaxAppenderWrapper syntaxAppenderWrapper, LinkedList<SyntaxAppenderWrapper> collector) {
         SyntaxAppenderWrapper peek = syntaxAppenderWrapper.getCollector().peekLast();
-        assert peek != null;
+        if (peek == null) {
+            return;
+        }
         if (peek.getAppender().getType() == AppendTypeEnum.JOIN) {
             SyntaxAppenderWrapper lastField = syntaxAppenderWrapper.getCollector().pollLast();
             collector.addFirst(lastField);

@@ -19,6 +19,11 @@
     </description>
 
     <change-notes><![CDATA[
+      <h4>1.3.2</h4>
+      <ul>
+          <li>fixed some bugs</li>
+          <li>Support community version</li>
+      </ul>
       <h4>2020.09.03</h4>
       <ul>
           <li>support generate Class from table name</li>

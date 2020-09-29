@@ -11,6 +11,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.highlighter.HighlighterIterator;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.PsiClass;
@@ -63,7 +64,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
                 mapperClass = mapperClassOptional.get();
                 editor.putUserData(MAPPER, mapperClass);
                 editor.putUserData(FOUND, true);
-            }else{
+            } else {
                 editor.putUserData(FOUND, false);
                 return;
             }
@@ -75,6 +76,8 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         try {
             SmartJpaCompletionProvider smartJpaCompletionProvider = new SmartJpaCompletionProvider();
             smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
+        } catch (ProcessCanceledException e) {
+            logger.error("未知的取消原因", e);
         } catch (Throwable e) {
             logger.error("自动提示异常", e);
             throw e;
