@@ -486,13 +486,10 @@ public class MybatisGenerator {
 
         //repository 插件
         if (config.isAnnotationDAO()) {
-            if (DbType.MySQL.equals(dbType)
-                    || DbType.PostgreSQL.equals(dbType)) {
                 PluginConfiguration repositoryPlugin = new PluginConfiguration();
-                repositoryPlugin.addProperty("type", "cn.kt.RepositoryPlugin");
-                repositoryPlugin.setConfigurationType("cn.kt.RepositoryPlugin");
+                repositoryPlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.RepositoryPlugin");
+                repositoryPlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.RepositoryPlugin");
                 context.addPluginConfiguration(repositoryPlugin);
-            }
         }
 
         if (config.isUseDAOExtendStyle()) {//13
