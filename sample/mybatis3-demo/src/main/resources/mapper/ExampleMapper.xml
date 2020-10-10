@@ -82,5 +82,8 @@
         </where>
     </select>
 
+    <select id="selectBlogById" parameterType="blog" resultType="blog">
+
+    </select>
 
 </mapper>

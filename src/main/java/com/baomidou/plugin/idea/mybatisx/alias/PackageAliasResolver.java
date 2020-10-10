@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.google.common.collect.Sets;
 
 import com.intellij.openapi.project.Project;
@@ -54,7 +55,8 @@ public abstract class PackageAliasResolver extends AliasResolver {
 
     private void addAliasDesc(Set<AliasDesc> result, PsiPackage pkg) {
         for (PsiClass clazz : pkg.getClasses()) {
-            addAliasDesc(result, clazz, clazz.getName());
+            String aliasName = StringUtils.lowerCaseFirstChar(clazz.getName());
+            addAliasDesc(result, clazz, aliasName);
         }
     }
 

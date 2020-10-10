@@ -22,5 +22,7 @@ public interface ExampleMapper extends BaseMapper<Blog> {
     List<Blog> selectByAgeAndTitleAndContentBetween(@Param("age")Integer age,@Param("title")String title,@Param("beginContent")String beginContent,@Param("endContent")String endContent);
 
 
+    Blog selectBlogById(Integer id);
+
 
 }
