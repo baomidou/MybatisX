@@ -1,23 +1,19 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.google.common.collect.Sets;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-
 import com.intellij.spring.CommonSpringModel;
 import com.intellij.spring.model.SpringBeanPointer;
+import com.intellij.spring.model.utils.SpringModelUtils;
 import com.intellij.spring.model.utils.SpringPropertyUtils;
-import com.intellij.spring.model.xml.beans.SpringPropertyDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The type Bean alias resolver.
@@ -26,10 +22,18 @@ import java.util.Set;
  */
 public class BeanAliasResolver extends PackageAliasResolver {
 
-    private static final String MAPPER_ALIAS_PACKAGE_CLASS = "org.mybatis.spring.SqlSessionFactoryBean";
+    private static final List<String> MAPPER_ALIAS_PACKAGE_CLASSES = new ArrayList<String>() {
+        {
+            // default
+            add("org.mybatis.spring.SqlSessionFactoryBean");
+            // mybatis-plus3
+            add("com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean");
+            // mybatis-plus2
+            add("com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean");
+        }
+    };
+
     private static final String MAPPER_ALIAS_PROPERTY = "typeAliasesPackage";
-    private ModuleManager moduleManager;
-    private SpringManagerAdaptor springManagerAdaptor ;
 
     /**
      * Instantiates a new Bean alias resolver.
@@ -38,46 +42,39 @@ public class BeanAliasResolver extends PackageAliasResolver {
      */
     public BeanAliasResolver(Project project) {
         super(project);
-        this.moduleManager = ModuleManager.getInstance(project);
-        springManagerAdaptor = new SpringManagerAdaptor(project);
-
     }
 
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
+        CommonSpringModel springModel = SpringModelUtils.getInstance().getSpringModel(element);
+
+        Set<PsiClass> classes = findSqlSessionFactories(MAPPER_ALIAS_PACKAGE_CLASSES);
+
+        return determinePackages(classes, springModel.getAllCommonBeans());
+    }
+
+    private Set<PsiClass> findSqlSessionFactories(List<String> mapperAliasPackageClasses) {
+        Set<PsiClass> sqlSessionFactorySet = new HashSet<>();
+        for (String mapperAliasPackageClass : mapperAliasPackageClasses) {
+            Optional<PsiClass> clazz = JavaUtils.findClazz(project, mapperAliasPackageClass);
+            clazz.ifPresent(sqlSessionFactorySet::add);
+        }
+        return sqlSessionFactorySet;
+    }
+
+    private Set<String> determinePackages(Set<PsiClass> sqlSessionFactoryClasses, @NotNull Collection<SpringBeanPointer> allCommonBeans) {
         Set<String> res = Sets.newHashSet();
-        for (Module module : moduleManager.getModules()) {
-            for (CommonSpringModel springModel : springManagerAdaptor.getModels(module)) {
-                addPackages(res, springModel);
+        for (SpringBeanPointer pointer : allCommonBeans) {
+            PsiClass beanClass = pointer.getBeanClass();
+            if (beanClass != null && sqlSessionFactoryClasses.contains(beanClass)) {
+                String propertyStringValue = SpringPropertyUtils.getPropertyStringValue(pointer.getSpringBean(), MAPPER_ALIAS_PROPERTY);
+                if (!StringUtils.isEmpty(propertyStringValue)) {
+                    res.add(propertyStringValue);
+                }
             }
         }
         return res;
-    }
-
-    private void addPackages(Set<String> res, CommonSpringModel springModel) {
-        //TODO 这里要适配MP的话就改动一下。
-        Optional<PsiClass> sqlSessionFactoryClazzOpt = JavaUtils.findClazz(project, MAPPER_ALIAS_PACKAGE_CLASS);
-        if (sqlSessionFactoryClazzOpt.isPresent()) {
-            //TODO old:  Collection domBeans = springModel.getAllCommonBeans();
-            Collection<SpringBeanPointer> domBeans = springModel.getAllCommonBeans();
-            PsiClass sqlSessionFactoryClazz = sqlSessionFactoryClazzOpt.get();
-
-            for (SpringBeanPointer pointer : domBeans) {
-                PsiClass beanClass = pointer.getBeanClass();
-                if (beanClass != null && beanClass.equals(sqlSessionFactoryClazz)) {
-                    SpringPropertyDefinition basePackages = SpringPropertyUtils.findPropertyByName(pointer.getSpringBean(), MAPPER_ALIAS_PROPERTY);
-                    if (basePackages != null) {
-                        final String value = basePackages.getValueElement().getStringValue();
-                        if (value != null) {
-                            res.add(value);
-                        }
-                    }
-                }
-            }
-
-        }
-
     }
 
 }

@@ -59,15 +59,6 @@
         </where>
     </select>
     <select id="selectByAgeAndTitleAndContentBetween" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_blog
-        where
-        age = #{age,jdbcType=NUMERIC}
-        AND title = #{title,jdbcType=VARCHAR}
-        AND content between #{beginContent,jdbcType=VARCHAR} and #{endContent,jdbcType=VARCHAR}
-    </select>
-    <select id="selectByAgeAndTitleAndContentBetween" resultMap="BaseResultMap">
         select id ,title ,content ,money ,age ,create_time from t_blog
         <where>
             <if test="age != null">
@@ -82,8 +73,11 @@
         </where>
     </select>
 
-    <select id="selectBlogById" parameterType="blog" resultType="blog">
-
+    <select id="selectBlogById" resultType="myAliasBlog">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where id = #{id,jdbcType=NUMERIC}
     </select>
 
 </mapper>

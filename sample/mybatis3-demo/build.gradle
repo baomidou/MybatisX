@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.baomidou.sample'
+group 'com.baomidou.sample.mybatis-plus3'
 version '1.1.0'
 
 repositories {
@@ -32,3 +32,6 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
+test{
+    useJUnitPlatform()
+}

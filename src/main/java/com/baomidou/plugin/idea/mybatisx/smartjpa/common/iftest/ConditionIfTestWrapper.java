@@ -1,6 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The type Condition if test wrapper.
@@ -13,21 +19,24 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     private String resultMap;
     private boolean resultType;
     private String resultTypeClass;
+    private Map<String, TxField> txFieldMap;
 
     /**
      * Instantiates a new Condition if test wrapper.
      *
      * @param wrapperFields the wrapper fields
+     * @param allFields
      */
-    public ConditionIfTestWrapper(Set<String> wrapperFields) {
+    public ConditionIfTestWrapper(Set<String> wrapperFields, List<TxField> allFields) {
         this.wrapperFields = wrapperFields;
+        txFieldMap = allFields.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x));
     }
 
     @Override
     public String wrapperConditionText(String fieldName, String templateText) {
         if (wrapperFields.contains(fieldName)) {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("<if test=\"").append(getNullWrapper(fieldName)).append("\">");
+            stringBuilder.append("<if test=\"").append(getConditionField(fieldName)).append("\">");
             stringBuilder.append("\n").append(templateText);
             stringBuilder.append("\n").append("</if>");
             templateText = stringBuilder.toString();
@@ -36,7 +45,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     }
 
     @Override
-    public String  wrapperWhere(String content) {
+    public String wrapperWhere(String content) {
         return "<where>\n" + content + "\n</where>";
     }
 
@@ -56,8 +65,13 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     }
 
 
-    private String getNullWrapper(String fieldName) {
-        return fieldName + " != null";
+    private String getConditionField(String fieldName) {
+        TxField txField = txFieldMap.get(fieldName);
+        String appender = "";
+        if(Objects.equals(txField.getFieldType(), "java.lang.String")){
+            appender = " and " + fieldName + " != ''";
+        }
+        return fieldName + " != null" + appender;
     }
 
     /**

@@ -42,8 +42,11 @@
 
     <idea-version since-build="193.0"/>
     <depends>com.intellij.modules.java</depends>
-    <depends optional="true" config-file="spring.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="database.xml">com.intellij.database</depends>
+    <!-- support aliases -->
+    <depends optional="true" config-file="spring.xml">com.intellij.spring</depends>
+    <!-- support aliases -->
+    <depends optional="true" config-file="spring-boot.xml">com.intellij.spring.boot</depends>
 
     <extensions defaultExtensionNs="com.intellij">
 

@@ -26,7 +26,7 @@ intellij {
 //    type 'IC'  // 社区版
 //    plugins = ['java'] //Bundled plugin dependencies
     type 'IU' // 企业版
-    plugins = ['java', 'Spring', 'DatabaseTools'] //Bundled plugin dependencies
+    plugins = ['java', 'Spring', 'SpringBoot','DatabaseTools'] //Bundled plugin dependencies
 
     pluginName 'MybatisX'
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
@@ -43,7 +43,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group 'com.baomidou.plugin.idea.mybatisx'
-version '1.3.2'
+version '1.3.4'
 
 repositories {
     jcenter()

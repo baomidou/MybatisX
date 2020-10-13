@@ -3,6 +3,8 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import com.baomidou.mybatis3.alias.MyAliasBlog;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatis3.domain.Blog;
@@ -22,7 +24,7 @@ public interface ExampleMapper extends BaseMapper<Blog> {
     List<Blog> selectByAgeAndTitleAndContentBetween(@Param("age")Integer age,@Param("title")String title,@Param("beginContent")String beginContent,@Param("endContent")String endContent);
 
 
-    Blog selectBlogById(Integer id);
+    MyAliasBlog selectBlogById(Long id);
 
 
 }

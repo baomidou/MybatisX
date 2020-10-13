@@ -173,7 +173,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
             return Optional.empty();
         }
         Set<String> selectedFields = jpaAdvanceDialog.getSelectedFields();
-        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(selectedFields);
+        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(selectedFields,platformGenerator.getAllFields());
 
         conditionIfTestWrapper.setAllFields(jpaAdvanceDialog.getAllFieldsStr());
 

@@ -65,4 +65,8 @@ public class AliasResolverFactory {
     public static AliasResolver createSingleAliasResolver(@NotNull Project project) {
         return new SingleAliasResolver(project);
     }
+
+    public static AliasResolver createSpringBootResolver(Project project) {
+        return new SpringBootPackageResolver(project);
+    }
 }
