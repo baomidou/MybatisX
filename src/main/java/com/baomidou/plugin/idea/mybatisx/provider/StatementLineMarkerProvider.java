@@ -11,8 +11,6 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.google.common.collect.ImmutableSet;
-import com.intellij.openapi.project.ProjectUtil;
-import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
@@ -26,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -53,7 +50,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
             && MapperUtils.isElementWithinMybatisFile(element);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public Optional<? extends PsiElement[]> apply(@NotNull XmlTag from) {
         DomElement domElement = DomUtil.getDomElement(from);
         if (null == domElement) {
@@ -93,6 +90,28 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
     @Override
     public Icon getIcon() {
         return Icons.STATEMENT_LINE_MARKER_ICON;
+    }
+
+
+    @Override
+    @NotNull
+    public String getTooltip(PsiElement element, @NotNull PsiElement target) {
+        String text = null;
+        if (element instanceof PsiMethod) {
+            PsiMethod psiMethod = (PsiMethod) element;
+            PsiClass containingClass = psiMethod.getContainingClass();
+            if (containingClass != null) {
+                text = containingClass.getName() + "#" +psiMethod.getName();
+            }
+        }
+        if (text == null && element instanceof PsiClass) {
+            PsiClass psiClass = (PsiClass) element;
+            text = psiClass.getQualifiedName();
+        }
+        if (text == null) {
+            text = target.getContainingFile().getText();
+        }
+        return "Data access object found - " + text;
     }
 
 }

@@ -1,25 +1,15 @@
 package com.baomidou.plugin.idea.mybatisx.provider;
 
-import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.util.Function;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,13 +26,17 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends 
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
-        if (!isTheElement(element))
+        if (!isTheElement(element)) {
             return;
+        }
         logger.info("getLineMarkerInfo start, element: {}", element);
         Optional<? extends T[]> processResult = apply((F) element);
         if (processResult.isPresent()) {
             T[] arrays = processResult.get();
             NavigationGutterIconBuilder navigationGutterIconBuilder = NavigationGutterIconBuilder.create(getIcon());
+            if (arrays != null && arrays.length > 0) {
+                navigationGutterIconBuilder.setTooltipTitle(getTooltip(arrays[0], element));
+            }
             navigationGutterIconBuilder.setTargets(arrays);
             RelatedItemLineMarkerInfo<PsiElement> lineMarkerInfo = navigationGutterIconBuilder.createLineMarkerInfo(element);
             result.add(lineMarkerInfo);
@@ -74,6 +68,10 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends 
      *
      * @return the icon
      */
+    @Override
     @NotNull
     public abstract Icon getIcon();
+
+    @NotNull
+    public abstract String getTooltip(T array, @NotNull PsiElement target);
 }

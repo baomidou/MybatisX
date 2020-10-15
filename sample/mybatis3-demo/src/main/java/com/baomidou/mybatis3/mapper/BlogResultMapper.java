@@ -13,6 +13,7 @@ public interface BlogResultMapper {
 
     /**
      * 测试一长串的提示性能
+     *
      * @param age
      * @param title
      * @param beginCreateTime
@@ -20,5 +21,7 @@ public interface BlogResultMapper {
      * @param idList
      * @return
      */
-    List<Blog> selectAllByAgeAndTitleContainingAndCreateTimeBetweenAndIdInOrderByCreateTimeDesc(@Param("age")Integer age,@Param("title")String title,@Param("beginCreateTime")Date beginCreateTime,@Param("endCreateTime")Date endCreateTime,@Param("idList")Collection<Long> idList);
+    List<Blog> selectAllByAgeAndTitleContainingAndCreateTimeBetweenAndIdInOrderByCreateTimeDesc(@Param("age") Integer age, @Param("title") String title, @Param("beginCreateTime") Date beginCreateTime, @Param("endCreateTime") Date endCreateTime, @Param("idList") Collection<Long> idList);
+
+
 }

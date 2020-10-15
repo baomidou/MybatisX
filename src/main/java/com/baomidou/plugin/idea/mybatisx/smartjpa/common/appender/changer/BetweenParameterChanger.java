@@ -6,7 +6,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.github.hypfvieh.util.StringUtil;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiParameter;
 
 import java.util.Arrays;
@@ -26,12 +26,12 @@ public class BetweenParameterChanger implements MxParameterChanger {
     @Override
     public List<TxParameter> getParameter(TxParameter txParameter) {
         TxParameter beginParameter = TxParameter.createByOrigin(
-                "begin" + StringUtil.upperCaseFirstChar(txParameter.getName()),
+                "begin" + StringUtils.upperCaseFirstChar(txParameter.getName()),
                 txParameter.getTypeText(),
                 txParameter.getCanonicalTypeText());
 
         TxParameter endParameter = TxParameter.createByOrigin(
-                "end" + StringUtil.upperCaseFirstChar(txParameter.getName()),
+                "end" + StringUtils.upperCaseFirstChar(txParameter.getName()),
                 txParameter.getTypeText(),
                 txParameter.getCanonicalTypeText());
 

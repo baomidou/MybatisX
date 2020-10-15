@@ -40,7 +40,7 @@
       ]]>
     </change-notes>
 
-    <idea-version since-build="193.0"/>
+    <idea-version since-build="192.0"/>
     <depends>com.intellij.modules.java</depends>
     <depends optional="true" config-file="database.xml">com.intellij.database</depends>
     <!-- support aliases -->

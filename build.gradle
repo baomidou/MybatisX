@@ -1,7 +1,8 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven {url "https://oss.sonatype.org/content/repositories/snapshots/"}
+        maven {url 'https://plugins.gradle.org/m2/'}
+        maven {url 'https://oss.sonatype.org/content/repositories/snapshots/'}
         maven {url 'https://dl.bintray.com/jetbrains/intellij-plugin-service'}
         maven {url 'https://dl.bintray.com/jetbrains/intellij-third-party-dependencies/'}
     }
@@ -21,7 +22,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 // https://github.com/JetBrains/gradle-intellij-plugin/
 // http://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/prerequisites.html
 intellij {
-    version '2019.3'
+    version '2019.2'
 
 //    type 'IC'  // 社区版
 //    plugins = ['java'] //Bundled plugin dependencies

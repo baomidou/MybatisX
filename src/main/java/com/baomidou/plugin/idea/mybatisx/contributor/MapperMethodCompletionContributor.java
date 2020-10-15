@@ -77,10 +77,9 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             SmartJpaCompletionProvider smartJpaCompletionProvider = new SmartJpaCompletionProvider();
             smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (ProcessCanceledException e) {
-            logger.error("未知的取消原因", e);
+            logger.info("未知的取消原因", e);
         } catch (Throwable e) {
             logger.error("自动提示异常", e);
-            throw e;
         }
 
         logger.info("MapperMethodCompletionContributor.fillCompletionVariants end");

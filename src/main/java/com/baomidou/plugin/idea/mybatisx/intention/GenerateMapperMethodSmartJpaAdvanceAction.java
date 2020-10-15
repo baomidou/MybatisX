@@ -15,11 +15,11 @@ import com.baomidou.plugin.idea.mybatisx.ui.JpaAdvanceDialog;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.database.psi.DbTable;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.TextRange;
@@ -106,7 +106,8 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
                 platformGenerator.generateMapperXml(psiMethod, new MybatisXmlGenerator(mapper, project), conditionFieldWrapperOptional.get());
             }
 
-
+        } catch (ProcessCanceledException e) {
+            logger.info("cancel info", e);
         } catch (Throwable e) {
             logger.error("generate error ", e);
         }
@@ -173,7 +174,7 @@ public class GenerateMapperMethodSmartJpaAdvanceAction extends PsiElementBaseInt
             return Optional.empty();
         }
         Set<String> selectedFields = jpaAdvanceDialog.getSelectedFields();
-        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(selectedFields,platformGenerator.getAllFields());
+        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(selectedFields, platformGenerator.getAllFields());
 
         conditionIfTestWrapper.setAllFields(jpaAdvanceDialog.getAllFieldsStr());
 
