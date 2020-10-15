@@ -2,8 +2,10 @@ package com.baomidou.plugin.idea.mybatisx.intention;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiJavaToken;
 import com.intellij.psi.util.PsiTreeUtil;
 
+import jdk.nashorn.internal.parser.TokenType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,9 +23,11 @@ public class GenerateMapperChooser extends JavaFileIntentionChooser {
     @Override
     public boolean isAvailable(@NotNull PsiElement element) {
         if (isPositionOfInterfaceDeclaration(element)) {
-            PsiClass clazz = PsiTreeUtil.getParentOfType(element, PsiClass.class);
-            if (null != clazz) {
-                return !isTargetPresentInXml(clazz);
+            // ensure parent element is a PsiClass
+            if (element.getParent() instanceof PsiClass) {
+                PsiJavaToken nextSiblingOfType = PsiTreeUtil.getNextSiblingOfType(element, PsiJavaToken.class);
+                return nextSiblingOfType != null &&
+                    nextSiblingOfType.getTokenType().isLeftBound();
             }
         }
         return false;

@@ -125,9 +125,12 @@
                          displayName="Mapper method inspection"
                          groupName="Mybatis" enabledByDefault="true" level="ERROR"
                          implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperMethodInspection"/>
-        <localInspection language="XML" shortName="MybatisMapperXmlInspection" enabledByDefault="true" level="ERROR"
+        <localInspection language="XML" shortName="MybatisMapperXmlInspection"
+                         enabledByDefault="true"
+                         level="ERROR"
                          id="baomidou.MybatisMapperXmlInspection"
-                         displayName="Mapper xml inspection" groupName="Mybatis"
+                         displayName="Mapper xml inspection"
+                         groupName="Mybatis"
                          implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperXmlInspection"/>
         <!--实体类属性检测-->
 

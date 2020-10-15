@@ -31,12 +31,7 @@ import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * The type Generate mapper intention.
@@ -95,10 +90,10 @@ public class GenerateMapperIntention extends GenericIntention {
         };
         UiComponentFacade uiComponentFacade = UiComponentFacade.getInstance(project);
         uiComponentFacade.showListPopupWithSingleClickable("Choose folder",
-                popupListener,
-                "Choose another",
-                getChooseFolderListener(editor, clazz),
-                getPathTextForShown(project, keys, pathMap));
+            popupListener,
+            "Choose another",
+            getChooseFolderListener(editor, clazz),
+            getPathTextForShown(project, keys, pathMap));
     }
 
     private ClickableListener getChooseFolderListener(final Editor editor, final PsiClass clazz) {
@@ -118,7 +113,6 @@ public class GenerateMapperIntention extends GenericIntention {
 
     private void handleChooseNewFolder(Project project, Editor editor, PsiClass clazz) {
         UiComponentFacade uiComponentFacade = UiComponentFacade.getInstance(project);
-//      TODO old VirtualFile baseDir = project.getBasePath();
         VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
         VirtualFile vf = uiComponentFacade.showSingleFolderSelectionDialog("Select target folder", baseDir, baseDir);
         if (null != vf) {
@@ -129,15 +123,12 @@ public class GenerateMapperIntention extends GenericIntention {
     private String[] getPathTextForShown(Project project, List<String> paths, final Map<String, PsiDirectory> pathMap) {
         Collections.sort(paths);
         final String projectBasePath = project.getBasePath();
-        Collection<String> result = Lists.newArrayList(Collections2.transform(paths, new Function<String, String>() {
-            @Override
-            public String apply(String input) {
-                String relativePath = FileUtil.getRelativePath(projectBasePath, input, File.separatorChar);
-                Module module = ModuleUtil.findModuleForPsiElement(pathMap.get(input));
-                return null == module ? relativePath : ("[" + module.getName() + "] " + relativePath);
-            }
-        }));
-        return result.toArray(new String[result.size()]);
+
+        return paths.stream().map(input -> {
+            String relativePath = FileUtil.getRelativePath(projectBasePath, input, File.separatorChar);
+            Module module = ModuleUtil.findModuleForPsiElement(pathMap.get(input));
+            return null == module ? relativePath : ("[" + module.getName() + "] " + relativePath);
+        }).toArray(String[]::new);
     }
 
     private Map<String, PsiDirectory> getPathMap(Collection<PsiDirectory> directories) {
@@ -163,9 +154,14 @@ public class GenerateMapperIntention extends GenericIntention {
             Properties properties = new Properties();
             properties.setProperty("NAMESPACE", mapperClass.getQualifiedName());
 
-            PsiElement psiFile = MapperUtils.createMapperFromFileTemplate(MybatisFileTemplateDescriptorFactory.MYBATIS_MAPPER_XML_TEMPLATE,
-                    mapperClass.getName(), directory, properties,editor.getProject());
-            EditorService.getInstance(mapperClass.getProject()).scrollTo(psiFile, 0);
+            PsiElement psiFile = MapperUtils.createMapperFromFileTemplate(
+                MybatisFileTemplateDescriptorFactory.MYBATIS_MAPPER_XML_TEMPLATE,
+                mapperClass.getName(),
+                directory,
+                properties, editor.getProject());
+            if (psiFile != null) {
+                EditorService.getInstance(mapperClass.getProject()).scrollTo(psiFile, 0);
+            }
         } catch (Exception e) {
             HintManager.getInstance().showErrorHint(editor, "Failed: " + e.getCause());
         }

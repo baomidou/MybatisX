@@ -24,16 +24,9 @@ public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> 
         super(DomElement.class);
     }
 
-    /**
-     * The Logger.
-     */
-    Logger logger = LoggerFactory.getLogger(MapperXmlInspection.class);
-
     @Override
     protected void checkDomElement(DomElement element, DomElementAnnotationHolder holder, DomHighlightingHelper helper) {
-        logger.info("check xml start, element: {}",element);
         super.checkDomElement(element, holder, helper);
-        logger.info("check xml end, element: {}",element);
     }
 
 }

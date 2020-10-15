@@ -30,10 +30,11 @@ public class XmlAndMapperIconProvider extends IconProvider {
                 if (firstMapper.isPresent()) {
                     return Icons.MAPPER_CLASS_ICON;
                 }
+                logger.info("mapper class icon , element: {}", element);
             }
-            logger.info("icon , element: {}", element);
         }
         if (MapperUtils.isElementWithinMybatisFile(element)) {
+            logger.info("mapper xml icon , element: {}", element);
             return Icons.MAPPER_XML_ICON;
         }
         return null;

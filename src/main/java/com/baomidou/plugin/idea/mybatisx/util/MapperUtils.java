@@ -13,6 +13,7 @@ import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.fileTemplates.FileTemplateUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -77,8 +78,14 @@ public final class MapperUtils {
                                                           @NotNull String fileName,
                                                           @NotNull PsiDirectory directory,
                                                           @Nullable Properties pops,
-                                                          @Nullable Project project) throws Exception {
+                                                          @NotNull Project project) throws Exception {
         FileTemplate fileTemplate = FileTemplateManager.getInstance(project).getJ2eeTemplate(fileTemplateName);
+        PsiFile file = directory.findFile(fileName + "." + fileTemplate.getExtension());
+        // ignore file exists
+        if (file != null) {
+            Messages.showMessageDialog("file " + file.getName() + " already exists", "Generate File", Messages.getWarningIcon());
+            return null;
+        }
         return FileTemplateUtil.createFromTemplate(fileTemplate, fileName, pops, directory);
     }
 
@@ -298,12 +305,12 @@ public final class MapperUtils {
     public static <T extends IdDomElement> String getIdSignature(@NotNull T domElement, @NotNull Mapper mapper) {
         Mapper contextMapper = getMapper(domElement);
         String id = getId(domElement);
-        if(id == null) {
+        if (id == null) {
             id = "";
         }
-        String idsignature= getIdSignature(domElement);
+        String idsignature = getIdSignature(domElement);
         //getIdSignature(domElement)
-        return isMapperWithSameNamespace(contextMapper, mapper) ?id :idsignature ;
+        return isMapperWithSameNamespace(contextMapper, mapper) ? id : idsignature;
     }
 
     /**
