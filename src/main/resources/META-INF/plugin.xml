@@ -120,12 +120,12 @@
             implementation="com.baomidou.plugin.idea.mybatisx.refactoring.MapperRefactoringProvider"/>
 
         <!--语法校验，让没有生成代码的方法产生错误-->
-        <localInspection language="JAVA" shortName="MybatisMapperMethodInspection"
+        <localInspection language="JAVA" shortName="MybatisXMapperMethodInspection"
                          id="baomidou.MybatisMapperMethodInspection"
                          displayName="Mapper method inspection"
                          groupName="Mybatis" enabledByDefault="true" level="ERROR"
                          implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperMethodInspection"/>
-        <localInspection language="XML" shortName="MybatisMapperXmlInspection"
+        <localInspection language="XML" shortName="MybatisXMapperXmlInspection"
                          enabledByDefault="true"
                          level="ERROR"
                          id="baomidou.MybatisMapperXmlInspection"
