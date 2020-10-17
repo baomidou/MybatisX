@@ -3,10 +3,10 @@ package com.baomidou.mybatis3.test;
 import com.baomidou.mybatis3.MybatisPlus3Application;
 import com.baomidou.mybatis3.alias.MyAliasBlog;
 import com.baomidou.mybatis3.domain.Blog;
+import com.baomidou.mybatis3.domain.JpaBlog;
+import com.baomidou.mybatis3.mapper.BlogAnnotationMapper;
 import com.baomidou.mybatis3.mapper.BlogDeleteMapper;
 import com.baomidou.mybatis3.mapper.BlogInsertMapper;
-import com.baomidou.mybatis3.mapper.BlogSelectMapper;
-import com.baomidou.mybatis3.mapper.ExampleMapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,19 +17,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MybatisPlus3Application.class)
-public class BlogExampleMapperTest {
+public class BlogAnnotationMapperTest {
 
     @Resource
     BlogInsertMapper blogInsertMapper;
 
     @Resource
-    ExampleMapper exampleMapper;
+    private BlogAnnotationMapper blogAnnotationMapper;
 
     @After
     public void destroyData() {
@@ -87,11 +85,37 @@ public class BlogExampleMapperTest {
 
 
     @Test
-    public void selectByAgeIs() {
-        MyAliasBlog blog = exampleMapper.selectBlogById(1L);
+    public void selectById() {
+        JpaBlog blog = blogAnnotationMapper.selectOneById(1L);
         Assert.assertNotNull(blog);
     }
 
+
+    @Test
+    public void updateTitleById() {
+        int title2 = blogAnnotationMapper.updateTitleById("title2", 1L);
+        Assert.assertEquals(title2, 1);
+    }
+
+    @Test
+    public void delById() {
+        int effectRows = blogAnnotationMapper.delById(1L);
+        Assert.assertEquals(effectRows, 1);
+    }
+
+    @Test
+    public void insertSelective() {
+
+        JpaBlog blogE = new JpaBlog();
+        blogE.setId(9L);
+        blogE.setTitle("title-xx");
+        blogE.setContent("content-xx");
+        blogE.setAge(55);
+        blogE.setMoney(BigDecimal.valueOf(2233));
+        blogE.setCreateTime(new Date());
+        int effectRows = blogAnnotationMapper.insertSelective(blogE);
+        Assert.assertEquals(effectRows, 1);
+    }
 
     @Resource
     private BlogDeleteMapper blogDeleteMapper;

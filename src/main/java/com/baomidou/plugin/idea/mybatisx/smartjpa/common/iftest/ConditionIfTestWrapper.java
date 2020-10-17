@@ -1,6 +1,15 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.EmptyGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisAnnotationGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
+import com.baomidou.plugin.idea.mybatisx.ui.SmartJpaAdvanceUI;
+import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -14,20 +23,25 @@ import java.util.stream.Collectors;
  * @author ls9527
  */
 public class ConditionIfTestWrapper implements ConditionFieldWrapper {
+    private Project project;
     private Set<String> wrapperFields;
     private String allFieldsStr;
     private String resultMap;
     private boolean resultType;
     private String resultTypeClass;
     private Map<String, TxField> txFieldMap;
+    private SmartJpaAdvanceUI.GeneratorEnum generatorType;
+    private Mapper mapper;
 
     /**
      * Instantiates a new Condition if test wrapper.
      *
+     * @param project
      * @param wrapperFields the wrapper fields
      * @param allFields
      */
-    public ConditionIfTestWrapper(Set<String> wrapperFields, List<TxField> allFields) {
+    public ConditionIfTestWrapper(@NotNull Project project, Set<String> wrapperFields, List<TxField> allFields) {
+        this.project = project;
         this.wrapperFields = wrapperFields;
         txFieldMap = allFields.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x));
     }
@@ -64,11 +78,22 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return resultType ? resultTypeClass : null;
     }
 
+    @Override
+    public Generator getGenerator(MapperClassGenerateFactory mapperClassGenerateFactory) {
+        if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_ANNOTATION) {
+            return new MybatisAnnotationGenerator(mapperClassGenerateFactory, mapper, project);
+        } else if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_XML
+            && mapper != null) {
+            return new MybatisXmlGenerator(mapperClassGenerateFactory,mapper, project);
+        }
+        return new EmptyGenerator();
+    }
+
 
     private String getConditionField(String fieldName) {
         TxField txField = txFieldMap.get(fieldName);
         String appender = "";
-        if(Objects.equals(txField.getFieldType(), "java.lang.String")){
+        if (Objects.equals(txField.getFieldType(), "java.lang.String")) {
             appender = " and " + fieldName + " != ''";
         }
         return fieldName + " != null" + appender;
@@ -108,5 +133,13 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
      */
     public void setResultTypeClass(String resultTypeClass) {
         this.resultTypeClass = resultTypeClass;
+    }
+
+    public void setGeneratorType(SmartJpaAdvanceUI.GeneratorEnum generatorType) {
+        this.generatorType = generatorType;
+    }
+
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
     }
 }

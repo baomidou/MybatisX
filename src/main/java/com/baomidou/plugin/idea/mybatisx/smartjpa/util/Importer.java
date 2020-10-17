@@ -65,8 +65,7 @@ public class Importer {
         }
 
         if (newImportList.size() > 0) {
-            PsiJavaFile javaFile = containingFile;
-            PsiImportStatement[] importStatements = javaFile.getImportList().getImportStatements();
+            PsiImportStatement[] importStatements = containingFile.getImportList().getImportStatements();
             Set<String> containedSet = new HashSet<>();
             for (PsiImportStatement s : importStatements) {
                 containedSet.add(s.getQualifiedName());
@@ -74,10 +73,10 @@ public class Importer {
             StringBuilder newImportText = new StringBuilder();
             for (String newImport : newImportList) {
                 if (!containedSet.contains(newImport)) {
-                    newImportText.append("\nimport " + newImport + ";");
+                    newImportText.append("\nimport ").append(newImport).append(";");
                 }
             }
-            PsiPackageStatement packageStatement = javaFile.getPackageStatement();
+            PsiPackageStatement packageStatement = containingFile.getPackageStatement();
             int start = 0;
             if (packageStatement != null) {
                 start = packageStatement.getTextLength() + packageStatement.getTextOffset();

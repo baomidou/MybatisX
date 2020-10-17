@@ -1,4 +1,9 @@
 package com.baomidou.mybatis3.mapper;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -25,6 +30,5 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
 
     MyAliasBlog selectBlogById(Long id);
-
 
 }

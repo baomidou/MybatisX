@@ -2,7 +2,7 @@
     <id>com.baomidou.plugin.idea.mybatisx</id>
     <name>MyBatisX</name>
     <version>1.0.0</version>
-    <vendor email="jobob@qq.com" url="http://mp.baomidou.com">MybatisX</vendor>
+    <vendor email="jobob@qq.com" url="https://gitee.com/baomidou/MybatisX">MybatisX</vendor>
 
     <description><![CDATA[
           MybatisX plugin
@@ -154,11 +154,11 @@
 
         <!-- 根据jpa名字生成方法和xml文件内容 -->
         <intentionAction id="baomidou.GenerateMapperMethodSmartJpaAction">
-            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperMethodSmartJpaAction</className>
+            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateSmartJpaAction</className>
         </intentionAction>
 
         <intentionAction id="baomidou.GenerateMapperMethodSmartAdvanceJpaAction">
-            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperMethodSmartJpaAdvanceAction</className>
+            <className>com.baomidou.plugin.idea.mybatisx.intention.GeneratSmartJpaAdvanceAction</className>
         </intentionAction>
         <!--提示动作 end-->
 

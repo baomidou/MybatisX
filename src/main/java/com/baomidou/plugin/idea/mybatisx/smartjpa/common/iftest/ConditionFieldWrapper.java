@@ -1,5 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
+
 /**
  * The interface Condition field wrapper.
  */
@@ -42,4 +46,7 @@ public interface ConditionFieldWrapper {
      */
     String getResultType();
 
+    Generator getGenerator(MapperClassGenerateFactory mapperClassGenerateFactory);
+
+    void setMapper(Mapper mapper);
 }

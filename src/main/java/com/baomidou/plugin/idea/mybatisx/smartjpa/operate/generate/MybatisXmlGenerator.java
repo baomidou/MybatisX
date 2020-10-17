@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.xml.XmlTag;
@@ -22,6 +23,7 @@ public class MybatisXmlGenerator implements Generator {
      * The constant RESULT_MAP.
      */
     public static final String RESULT_MAP = "resultMap";
+    private MapperClassGenerateFactory mapperClassGenerateFactory;
     private Mapper mapper;
     private Project project;
 
@@ -33,10 +35,12 @@ public class MybatisXmlGenerator implements Generator {
     /**
      * Instantiates a new Mybatis xml generator.
      *
+     * @param mapperClassGenerateFactory
      * @param mapper  the mapper
      * @param project the project
      */
-    public MybatisXmlGenerator(Mapper mapper, @NotNull Project project) {
+    public MybatisXmlGenerator(MapperClassGenerateFactory mapperClassGenerateFactory, Mapper mapper, @NotNull Project project) {
+        this.mapperClassGenerateFactory = mapperClassGenerateFactory;
         this.mapper = mapper;
         this.project = project;
     }
@@ -59,6 +63,9 @@ public class MybatisXmlGenerator implements Generator {
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(select);
+
+        mapperClassGenerateFactory.generateMethod();
+
     }
 
     @Override
@@ -69,6 +76,8 @@ public class MybatisXmlGenerator implements Generator {
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(delete);
+
+        mapperClassGenerateFactory.generateMethod();
     }
 
     @Override
@@ -80,6 +89,9 @@ public class MybatisXmlGenerator implements Generator {
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(insert);
+
+        mapperClassGenerateFactory.generateMethod();
+
     }
 
     @Override
@@ -90,5 +102,8 @@ public class MybatisXmlGenerator implements Generator {
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(update);
+
+        mapperClassGenerateFactory.generateMethod();
+
     }
 }

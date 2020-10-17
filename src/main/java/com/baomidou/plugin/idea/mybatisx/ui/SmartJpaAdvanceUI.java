@@ -17,7 +17,6 @@ public class SmartJpaAdvanceUI {
     public JPanel conditionPanel;
     private JPanel rootPanel;
     private JCheckBox checkAllConditionField;
-    private JComboBox methodCombo;
     private JTextField baseResultMapTextField;
     private JTextField resultMapClassTextField;
     private JRadioButton includeRadioButton;
@@ -25,6 +24,9 @@ public class SmartJpaAdvanceUI {
     private JRadioButton asFieldRadioButton;
     private JTextField baseColumnListTextField;
     private JTextArea columnsTextArea;
+    private JRadioButton xmlGenerateType;
+    private JRadioButton annotationScriptType;
+    private JComboBox scriptTypeCombo;
     private List<TxField> allFields;
 
     private boolean resultType = false;
@@ -85,7 +87,7 @@ public class SmartJpaAdvanceUI {
      * @return the generator type
      */
     public GeneratorEnum getGeneratorType() {
-        if (methodCombo.getSelectedIndex() == 1) {
+        if (annotationScriptType.isSelected()) {
             return GeneratorEnum.MYBATIS_ANNOTATION;
         }
         return GeneratorEnum.MYBATIS_XML;

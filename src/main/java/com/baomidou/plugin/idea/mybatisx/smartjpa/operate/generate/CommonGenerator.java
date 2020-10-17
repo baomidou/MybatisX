@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
@@ -13,6 +14,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +40,7 @@ public class CommonGenerator implements PlatformGenerator {
 
     private CommonGenerator(PsiClass entityClass,
                             String text,
-                           DbmsAdaptor dbms,
+                            DbmsAdaptor dbms,
                             DasTableAdaptor dasTable,
                             String tableName,
                             List<TxField> fields) {
@@ -86,35 +88,44 @@ public class CommonGenerator implements PlatformGenerator {
     }
 
     @Override
-    public void generateMapperXml(PsiMethod psiMethod, Generator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
-        appenderManager.generateMapperXml(
-            text,
-            new LinkedList<>(jpaList),
-            entityClass,
-            psiMethod,
-            tableName,
-            mybatisXmlGenerator,
-            conditionFieldWrapper);
+    public void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
+                                  PsiMethod psiMethod,
+                                  ConditionFieldWrapper conditionFieldWrapper) {
+
+
+
+        WriteCommandAction.runWriteCommandAction(psiMethod.getProject(), () -> {
+            // 生成完整版的内容
+            Generator generator = conditionFieldWrapper.getGenerator(mapperClassGenerateFactory);
+            appenderManager.generateMapperXml(
+                text,
+                new LinkedList<>(jpaList),
+                entityClass,
+                psiMethod,
+                tableName,
+                generator,
+                conditionFieldWrapper);
+        });
 
     }
 
     @Override
     public List<String> getConditionFields() {
         return jpaList.stream()
-            .filter(syntaxAppender->syntaxAppender.getAreaSequence() == AreaSequence.CONDITION
+            .filter(syntaxAppender -> syntaxAppender.getAreaSequence() == AreaSequence.CONDITION
                 && syntaxAppender.getType() == AppendTypeEnum.FIELD &&
                 syntaxAppender instanceof CustomFieldAppender)
-            .map(x-> ((CustomFieldAppender)x).getFieldName())
+            .map(x -> ((CustomFieldAppender) x).getFieldName())
             .collect(Collectors.toList());
     }
 
     @Override
-    public List<TxField> getAllFields(){
+    public List<TxField> getAllFields() {
         return mappingField;
     }
 
     @Override
-    public String getEntityClass(){
+    public String getEntityClass() {
         return entityClass.getQualifiedName();
     }
 }

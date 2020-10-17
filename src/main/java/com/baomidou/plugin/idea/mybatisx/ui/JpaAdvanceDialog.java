@@ -141,7 +141,8 @@ public class JpaAdvanceDialog extends DialogWrapper {
      * @return the generator type
      */
     public SmartJpaAdvanceUI.GeneratorEnum getGeneratorType() {
-
         return smartJpaAdvanceUI.getGeneratorType();
     }
+
+
 }
