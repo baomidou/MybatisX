@@ -7,6 +7,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.intellij.openapi.project.Project;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The type Never contains field wrapper.
  *
@@ -21,12 +24,12 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
     }
 
     @Override
-    public String wrapperConditionText(String fieldName, String templateText) {
+    public String wrapConditionText(String fieldName, String templateText) {
         return templateText;
     }
 
     @Override
-    public String wrapperWhere(String content) {
+    public String wrapWhere(String content) {
         return "where \n" + content;
     }
 
@@ -60,7 +63,16 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
 
     @Override
     public void setMapper(Mapper mapper) {
-
         this.mapper = mapper;
+    }
+
+    @Override
+    public String wrapDefaultDateIfNecessary(String columnName, String fieldValue) {
+        return fieldValue;
+    }
+
+    @Override
+    public List<String> getDefaultDateList() {
+        return Collections.emptyList();
     }
 }

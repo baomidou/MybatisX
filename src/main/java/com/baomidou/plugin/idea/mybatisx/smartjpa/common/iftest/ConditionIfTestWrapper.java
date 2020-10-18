@@ -11,10 +11,7 @@ import com.baomidou.plugin.idea.mybatisx.ui.SmartJpaAdvanceUI;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,31 +21,40 @@ import java.util.stream.Collectors;
  */
 public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     private Project project;
-    private Set<String> wrapperFields;
+    private Set<String> selectedWrapFields;
     private String allFieldsStr;
     private String resultMap;
     private boolean resultType;
     private String resultTypeClass;
     private Map<String, TxField> txFieldMap;
+    /**
+     * 默认字段的关键字：  oracle: SYSDATE, mysql: NOW()
+     */
+    private String defaultDateWord;
     private SmartJpaAdvanceUI.GeneratorEnum generatorType;
     private Mapper mapper;
+    private List<String> defaultDateList;
 
     /**
      * Instantiates a new Condition if test wrapper.
-     *
-     * @param project
-     * @param wrapperFields the wrapper fields
+     *  @param project
+     * @param selectedWrapFields the wrapper fields
      * @param allFields
+     * @param defaultDateWord
      */
-    public ConditionIfTestWrapper(@NotNull Project project, Set<String> wrapperFields, List<TxField> allFields) {
+    public ConditionIfTestWrapper(@NotNull Project project,
+                                  Set<String> selectedWrapFields,
+                                  List<TxField> allFields,
+                                  String defaultDateWord) {
         this.project = project;
-        this.wrapperFields = wrapperFields;
+        this.selectedWrapFields = selectedWrapFields;
         txFieldMap = allFields.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x));
+        this.defaultDateWord = defaultDateWord;
     }
 
     @Override
-    public String wrapperConditionText(String fieldName, String templateText) {
-        if (wrapperFields.contains(fieldName)) {
+    public String wrapConditionText(String fieldName, String templateText) {
+        if (selectedWrapFields.contains(fieldName)) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<if test=\"").append(getConditionField(fieldName)).append("\">");
             stringBuilder.append("\n").append(templateText);
@@ -59,7 +65,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     }
 
     @Override
-    public String wrapperWhere(String content) {
+    public String wrapWhere(String content) {
         return "<where>\n" + content + "\n</where>";
     }
 
@@ -84,7 +90,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
             return new MybatisAnnotationGenerator(mapperClassGenerateFactory, mapper, project);
         } else if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_XML
             && mapper != null) {
-            return new MybatisXmlGenerator(mapperClassGenerateFactory,mapper, project);
+            return new MybatisXmlGenerator(mapperClassGenerateFactory, mapper, project);
         }
         return new EmptyGenerator();
     }
@@ -142,4 +148,30 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     public void setMapper(Mapper mapper) {
         this.mapper = mapper;
     }
+
+    /**
+     * 对于默认值 create_time,update_time, 在 更新和插入的时候替换为数据库默认值的关键字
+     * MYSQL默认时间: NOW()
+     * ORACLE默认时间: SYSDATE
+     * @param columnName 字段名
+     * @param fieldValue
+     * @return
+     */
+    public String wrapDefaultDateIfNecessary(String columnName, String fieldValue) {
+        if (defaultDateList.contains(columnName)) {
+            return defaultDateWord;
+        }
+        return fieldValue;
+    }
+
+    @Override
+    public List<String> getDefaultDateList() {
+        return defaultDateList;
+    }
+
+    public void setDefaultDateList(List<String> defaultDateList) {
+        this.defaultDateList = defaultDateList;
+    }
+
+
 }

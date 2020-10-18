@@ -1,9 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.ui;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,7 @@ public class SmartJpaAdvanceUI {
     private JTextArea columnsTextArea;
     private JRadioButton xmlGenerateType;
     private JRadioButton annotationScriptType;
+    private JTextField defaultDateTextField;
     private JComboBox scriptTypeCombo;
     private List<TxField> allFields;
 
@@ -187,5 +191,13 @@ public class SmartJpaAdvanceUI {
          * Mybatis annotation generator enum.
          */
         MYBATIS_ANNOTATION,
+    }
+
+    public List<String> getDefaultDate() {
+        String text = defaultDateTextField.getText();
+        if (StringUtils.isEmpty(text)) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(text.split(",")).map(String::trim).collect(Collectors.toList());
     }
 }

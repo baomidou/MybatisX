@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suff
 
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
@@ -12,7 +13,7 @@ import java.util.LinkedList;
 public class ParamIgnoreCaseSuffixOperator implements SuffixOperator {
 
 
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
         PsiParameter parameter = parameters.poll();
         return "UPPER(" + fieldName + ")"

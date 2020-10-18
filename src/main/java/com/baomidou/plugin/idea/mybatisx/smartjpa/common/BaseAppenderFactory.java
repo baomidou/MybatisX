@@ -29,7 +29,9 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
     @Override
     public String getFactoryTemplateText(LinkedList<SyntaxAppender> jpaStringList,
                                          PsiClass entityClass,
-                                         LinkedList<PsiParameter> parameters, String tableName, ConditionFieldWrapper conditionFieldWrapper) {
+                                         LinkedList<PsiParameter> parameters,
+                                         String tableName,
+                                         ConditionFieldWrapper conditionFieldWrapper) {
         if (jpaStringList.isEmpty()) {
             return "";
         }
@@ -41,15 +43,13 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         // 加入 mybatis-xml 的 if-test 支持
         // 遍历区域, 生成字符串
         return "\n" + rootSyntaxWrapper.getCollector().stream().map(syntaxAppenderWrapper -> {
-            LinkedList<SyntaxAppenderWrapper> collector = syntaxAppenderWrapper
-                .getCollector();
-            String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName,
+            LinkedList<SyntaxAppenderWrapper> collector = syntaxAppenderWrapper.getCollector();
+            return syntaxAppenderWrapper.getAppender().getTemplateText(tableName,
                 entityClass,
                 parameters,
                 collector,
                 conditionFieldWrapper
             );
-            return templateText;
         }).filter(StringUtils::isNotBlank).collect(Collectors.joining("\n"));
     }
 

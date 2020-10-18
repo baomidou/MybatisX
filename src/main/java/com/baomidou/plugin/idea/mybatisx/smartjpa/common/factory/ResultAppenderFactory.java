@@ -8,11 +8,12 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.BaseAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.intellij.psi.PsiClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,5 +85,27 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
     @Override
     protected AreaSequence getAreaSequence() {
         return AreaSequence.RESULT;
+    }
+
+
+
+    public static class WrapDateCustomFieldAppender extends CustomFieldAppender {
+
+
+        /**
+         * Instantiates a new Custom field appender.
+         *
+         * @param field        the field
+         * @param areaSequence the area sequence
+         */
+        public WrapDateCustomFieldAppender(TxField field, AreaSequence areaSequence) {
+            super(field, areaSequence);
+        }
+
+
+        @Override
+        protected String wrapFieldValueInTemplateText(String columnName, ConditionFieldWrapper conditionFieldWrapper, String fieldValue) {
+            return  conditionFieldWrapper.wrapDefaultDateIfNecessary(columnName, fieldValue);
+        }
     }
 }

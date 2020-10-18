@@ -2,23 +2,14 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
-import com.intellij.database.model.DasObject;
-import com.intellij.database.model.DasTable;
 import com.intellij.database.model.DasTableKey;
-import com.intellij.database.model.ObjectKind;
-import com.intellij.database.psi.DbDataSource;
-import com.intellij.database.psi.DbElement;
-import com.intellij.database.util.DasUtil;
-import com.intellij.database.util.DbUtil;
-import com.intellij.platform.templates.github.GeneratorException;
 import com.intellij.psi.PsiParameter;
-import com.intellij.util.containers.JBIterable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.java.generate.exception.GenerateCodeException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,6 +46,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
         return "BatchWithUnion";
     }
 
+
     /**
      * 批量插入
      */
@@ -72,7 +64,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -104,11 +96,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
                             }
                         }
                     }
-                    //  变更指定字段为当前日期
-                    if (field.getColumnName().equalsIgnoreCase("CREATE_TIME")
-                        || field.getColumnName().equalsIgnoreCase("UPDATE_TIME")) {
-                        fieldStr = "SYSDATE";
-                    }
+                    fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
                     return fieldStr;
                 })
                 .collect(Collectors.joining(",\n"));

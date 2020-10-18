@@ -5,6 +5,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiParameter;
@@ -39,7 +40,7 @@ public class BetweenParameterChanger implements MxParameterChanger {
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
         final PsiParameter begin = parameters.poll();
         final PsiParameter end = parameters.poll();
         final String beginStr = JdbcTypeUtils.wrapperField(begin.getName(), begin.getType().getCanonicalText());

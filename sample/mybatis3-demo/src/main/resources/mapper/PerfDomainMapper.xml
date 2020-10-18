@@ -33,23 +33,6 @@
         </where>
 
     </select>
-    <select id="selectAllByIdAndExact" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from perf_domain
-        where id = #{id,jdbcType=VARCHAR}
-        AND exact = #{exact,jdbcType=VARCHAR}
-
-    </select>
-    <select id="selectAllByIdAndExact" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from perf_domain
-        <where>id = #{id,jdbcType=VARCHAR}
-            AND exact = #{exact,jdbcType=VARCHAR}
-        </where>
-
-    </select>
 
 
 </mapper>

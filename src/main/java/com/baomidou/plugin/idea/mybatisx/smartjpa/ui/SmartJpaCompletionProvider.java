@@ -55,18 +55,17 @@ public class SmartJpaCompletionProvider {
 
         String prefix = CompletionUtil.findJavaIdentifierPrefix(parameters);
         // 按照 mybatisplus3 > mybatisplus2 > resultMap 的顺序查找映射关系
-        final Optional<AreaOperateManager> appenderManagerOptional = getAreaOperateManager(mapperClass, parameters.getEditor());
-        if (!appenderManagerOptional.isPresent()) {
-            logger.info("not support, prefix: {} ", prefix);
+        final Optional<AreaOperateManager> operateManagerOptional = getAreaOperateManager(mapperClass, parameters.getEditor());
+        if (!operateManagerOptional.isPresent()) {
+            logger.info("不支持的区域操作管理器, prefix: {} ", prefix);
             return;
         }
-        AreaOperateManager areaOperateManager = appenderManagerOptional.get();
+        AreaOperateManager areaOperateManager = operateManagerOptional.get();
         // 添加排序
         CompletionResultSet completionResultSet = JavaCompletionSorting.addJavaSorting(parameters, result);
 
-        logger.info("tip prefix:{} ", prefix);
         final LinkedList<SyntaxAppender> splitList = areaOperateManager.splitAppenderByText(prefix);
-        logger.info("split completion ");
+
         if (splitList.size() > 0) {
             final SyntaxAppender last = splitList.getLast();
             last.pollLast(splitList);
@@ -74,10 +73,9 @@ public class SmartJpaCompletionProvider {
         // 将语句划分为可以划分的字符串
         final String splitString = splitList.stream().map(SyntaxAppender::getText).collect(Collectors.joining());
 
-        logger.info("split join :{} ", splitString);
         // 获得一个完成结果集,  可能是原先的也可能是新的
         completionResultSet = this.getCompletionResultSet(completionResultSet, prefix, splitString);
-        logger.info("completion result success");
+
         // 获得提示列表
         List<String> appendList = null;
         if (splitList.size() > 0) {
@@ -139,7 +137,9 @@ public class SmartJpaCompletionProvider {
         }catch (NoClassDefFoundError ignore){
         }
 
-        AreaOperateManager areaOperateManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass,
+        AreaOperateManager areaOperateManager = AreaOperateManagerFactory.getAreaOperateManagerByDbms(dbms,
+            mappingField,
+            entityClass,
             null,
             null);
         foundAreaOperateManager = true;

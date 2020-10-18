@@ -1,9 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.Importer;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -21,6 +21,7 @@ public class MapperClassGenerateFactory {
     private final PsiElement element;
     private final PsiTypeElement statementElement;
     private final TypeDescriptor parameterDescriptor;
+    private ConditionFieldWrapper conditionFieldWrapper;
     private final TypeDescriptor returnDescriptor;
 
     public MapperClassGenerateFactory(Project project,
@@ -28,6 +29,7 @@ public class MapperClassGenerateFactory {
                                       PsiElement element,
                                       PsiTypeElement statementElement,
                                       TypeDescriptor parameterDescriptor,
+                                      ConditionFieldWrapper conditionFieldWrapper,
                                       TypeDescriptor returnDescriptor) {
 
         this.project = project;
@@ -35,11 +37,15 @@ public class MapperClassGenerateFactory {
         this.element = element;
         this.statementElement = statementElement;
         this.parameterDescriptor = parameterDescriptor;
+        this.conditionFieldWrapper = conditionFieldWrapper;
         this.returnDescriptor = returnDescriptor;
     }
 
     public String generateMethodStr() {
-        return returnDescriptor.getContent() + " " + statementElement.getText() + parameterDescriptor.getContent();
+        return returnDescriptor.getContent(conditionFieldWrapper.getDefaultDateList())
+            + " "
+            + statementElement.getText()
+            + parameterDescriptor.getContent(conditionFieldWrapper.getDefaultDateList());
 
     }
 
@@ -56,7 +62,7 @@ public class MapperClassGenerateFactory {
             prefix = prefixParam;
         }
         Document document = editor.getDocument();
-        String newMethodString = prefix + returnDescriptor.getContent() + " " + statementElement.getText() + parameterDescriptor.getContent();
+        String newMethodString = prefix + generateMethodStr();
         TextRange textRange = statementElement.getTextRange();
         PsiFile containingFile = element.getContainingFile();
 

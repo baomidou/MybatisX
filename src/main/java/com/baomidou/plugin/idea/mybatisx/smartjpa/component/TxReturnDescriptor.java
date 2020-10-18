@@ -78,7 +78,7 @@ public class TxReturnDescriptor implements TypeDescriptor {
     }
 
     @Override
-    public String getContent() {
+    public String getContent(List<String> defaultDateList) {
         return simpleName;
     }
 

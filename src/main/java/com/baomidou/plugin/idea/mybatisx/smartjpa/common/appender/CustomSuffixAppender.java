@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -157,13 +158,13 @@ public class CustomSuffixAppender implements SyntaxAppender {
 
     @Override
     public List<AppendTypeCommand> getCommand(String areaPrefix, List<SyntaxAppender> splitList) {
-        return Arrays.asList(new FieldSuffixAppendTypeService(this));
+        return Collections.singletonList(new FieldSuffixAppendTypeService(this));
     }
 
     @Override
     public List<TxParameter> getParameter(TxParameter txParameter) {
         if (mxParameterFinder == null) {
-            return Arrays.asList(txParameter);
+            return Collections.singletonList(txParameter);
         }
         return mxParameterFinder.getParameter(txParameter);
     }
@@ -219,13 +220,11 @@ public class CustomSuffixAppender implements SyntaxAppender {
                 stringBuilder.append(templateText);
                 i++;
             }
-            // field 是不能取值的
-//
         }
 
-        String suffixTemplateText = suffixOperator.getTemplateText(fieldName, parameters);
+        String suffixTemplateText = suffixOperator.getTemplateText(fieldName, parameters,conditionFieldWrapper);
         stringBuilder.append(suffixTemplateText);
-        return conditionFieldWrapper.wrapperConditionText(fieldName, stringBuilder.toString());
+        return conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
     }
 
     protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {

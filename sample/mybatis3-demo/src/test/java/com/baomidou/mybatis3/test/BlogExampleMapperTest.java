@@ -87,7 +87,7 @@ public class BlogExampleMapperTest {
 
 
     @Test
-    public void selectByAgeIs() {
+    public void selectBlogById() {
         MyAliasBlog blog = exampleMapper.selectBlogById(1L);
         Assert.assertNotNull(blog);
     }

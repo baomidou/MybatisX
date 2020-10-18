@@ -2,18 +2,15 @@ package com.baomidou.plugin.idea.mybatisx.intention;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.NeverContainsFieldWrapper;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,8 +40,10 @@ public class GenerateSmartJpaAction extends GeneratSmartJpaAdvanceAction {
 
     @Override
     protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project,
-                                                                       PlatformGenerator platformGenerator,
-                                                                       PsiClass mapperClass) {
+                                                                       PsiClass mapperClass,
+                                                                       String defaultDateWord, List<TxField> allFields,
+                                                                       List<String> conditionFields,
+                                                                       String entityClass) {
         return Optional.of(new NeverContainsFieldWrapper(project));
     }
 

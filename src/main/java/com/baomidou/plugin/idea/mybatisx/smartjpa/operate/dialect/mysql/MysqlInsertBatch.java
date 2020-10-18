@@ -125,6 +125,7 @@ public class MysqlInsertBatch implements CustomStatement {
      * The Operator name.
      */
     String operatorName;
+
     @Override
     public StatementBlock getStatementBlock() {
         return statementBlock;
@@ -173,7 +174,6 @@ public class MysqlInsertBatch implements CustomStatement {
     }
 
 
-
     /**
      * 批量插入
      */
@@ -191,7 +191,7 @@ public class MysqlInsertBatch implements CustomStatement {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             String itemName = "item";
             // 追加列名
@@ -204,7 +204,11 @@ public class MysqlInsertBatch implements CustomStatement {
             final PsiParameter collection = parameters.poll();
             final String collectionName = collection.getName();
             final String fields = mappingField.stream()
-                .map(field -> JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType()))
+                .map(field -> {
+                    String fieldValue = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
+                    fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
+                    return fieldValue;
+                })
                 .collect(Collectors.joining(",\n"));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");

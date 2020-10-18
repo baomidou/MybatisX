@@ -24,11 +24,11 @@ public class AreaOperateManagerFactory {
      * @param tableName    the table name
      * @return the by dbms
      */
-    public static AreaOperateManager getByDbms(DbmsAdaptor dbms,
-                                               List<TxField> mappingField,
-                                               PsiClass entityClass,
-                                               DasTableAdaptor dasTable,
-                                               String tableName) {
+    public static AreaOperateManager getAreaOperateManagerByDbms(DbmsAdaptor dbms,
+                                                                 List<TxField> mappingField,
+                                                                 PsiClass entityClass,
+                                                                 DasTableAdaptor dasTable,
+                                                                 String tableName) {
         if (dbms == DbmsAdaptor.ORACLE) {
             return new OracleManager(mappingField, entityClass, dasTable, tableName);
         }

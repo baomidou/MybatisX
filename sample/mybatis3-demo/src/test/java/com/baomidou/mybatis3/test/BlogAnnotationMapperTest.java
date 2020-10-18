@@ -98,6 +98,12 @@ public class BlogAnnotationMapperTest {
     }
 
     @Test
+    public void updateTitleAndContentByIdAndTitle() {
+        int title2 = blogAnnotationMapper.updateTitleAndContentByIdAndTitle("title2", "content2",1L,"title-a");
+        Assert.assertEquals(title2, 1);
+    }
+
+    @Test
     public void delById() {
         int effectRows = blogAnnotationMapper.delById(1L);
         Assert.assertEquals(effectRows, 1);

@@ -61,7 +61,7 @@ public class InsertOperator extends BaseOperatorManager {
             // insertBatch
 //            this.initInsertBatch(areaName, mappingField);
 
-            this.initCustomArea(areaName,mappingField);
+            this.initCustomArea(areaName, mappingField);
         }
     }
 
@@ -102,7 +102,6 @@ public class InsertOperator extends BaseOperatorManager {
     }
 
 
-
     private void initInsertSelectiveAppender(String areaName, List<TxField> mappingField) {
         String newAreaName = areaName + "Selective";
         final ResultAppenderFactory insertResultAppenderFactory = new InsertResultAppenderFactory(newAreaName) {
@@ -110,7 +109,8 @@ public class InsertOperator extends BaseOperatorManager {
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
                                           LinkedList<PsiParameter> parameters,
-                                          LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+                                          LinkedList<SyntaxAppenderWrapper> collector,
+                                          ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender selective = InsertCustomSuffixAppender.createInsertBySuffixOperator("Selective",
                     new InsertSelectiveSuffixOperator(mappingField),
@@ -157,8 +157,11 @@ public class InsertOperator extends BaseOperatorManager {
         };
         // insert + All
         final SyntaxAppender allAppender =
-            CustomAreaAppender.createCustomAreaAppender(newAreaName, ResultAppenderFactory.RESULT,
-                AreaSequence.AREA, AreaSequence.RESULT, insertResultAppenderFactory);
+            CustomAreaAppender.createCustomAreaAppender(newAreaName,
+                ResultAppenderFactory.RESULT,
+                AreaSequence.AREA,
+                AreaSequence.RESULT,
+                insertResultAppenderFactory);
         insertResultAppenderFactory.registerAppender(allAppender);
 
         StatementBlock statementBlock = new StatementBlock();
@@ -239,7 +242,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             PsiParameter parameter = parameters.poll();
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
@@ -250,8 +253,10 @@ public class InsertOperator extends BaseOperatorManager {
             // values 连接符
             stringBuilder.append("values").append("\n");
             final String fields = mappingField.stream()
-                .map(field -> JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType()))
-                .collect(Collectors.joining(",\n"));
+                .map(field -> {
+                    String fieldValue = JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType());
+                    return conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
+                }).collect(Collectors.joining(",\n"));
             stringBuilder.append("(\n");
             stringBuilder.append(fields).append("\n");
             stringBuilder.append(")").append("\n");
@@ -275,7 +280,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()
@@ -286,7 +291,11 @@ public class InsertOperator extends BaseOperatorManager {
             // values 连接符
             stringBuilder.append("values").append("\n");
             final String fields = mappingField.stream()
-                .map(field -> selective(field.getFieldName(), JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType())))
+                .map(field -> {
+                    String fieldValue = JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType());
+                    fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
+                    return selective(field.getFieldName(), fieldValue);
+                })
                 .collect(Collectors.joining("\n"));
 
             stringBuilder.append(trimFieldStart());

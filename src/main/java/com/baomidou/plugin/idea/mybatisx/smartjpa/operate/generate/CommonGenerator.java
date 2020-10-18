@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
  * 常用的生成器
  */
 public class CommonGenerator implements PlatformGenerator {
+    private final String defaultDateWord;
     private @NotNull LinkedList<SyntaxAppender> jpaList;
     private List<TxField> mappingField;
     private String tableName;
@@ -47,11 +48,16 @@ public class CommonGenerator implements PlatformGenerator {
         this.entityClass = entityClass;
         this.text = text;
         mappingField = fields;
-
+        defaultDateWord = dbms.getDefaultDateWord();
         this.tableName = tableName;
 
-        appenderManager = AreaOperateManagerFactory.getByDbms(dbms, mappingField, entityClass, dasTable, this.tableName);
+        appenderManager = AreaOperateManagerFactory.getAreaOperateManagerByDbms(dbms, mappingField, entityClass, dasTable, this.tableName);
         jpaList = appenderManager.splitAppenderByText(text);
+    }
+
+    @Override
+    public String getDefaultDateWord() {
+        return defaultDateWord;
     }
 
     /**
@@ -77,7 +83,7 @@ public class CommonGenerator implements PlatformGenerator {
     @Override
     public TypeDescriptor getParameter() {
         List<TxParameter> parameters = appenderManager.getParameters(entityClass, new LinkedList<>(jpaList));
-        return new TxParameterDescriptor(parameters);
+        return new TxParameterDescriptor(parameters,mappingField);
     }
 
 
@@ -91,7 +97,6 @@ public class CommonGenerator implements PlatformGenerator {
     public void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
                                   PsiMethod psiMethod,
                                   ConditionFieldWrapper conditionFieldWrapper) {
-
 
 
         WriteCommandAction.runWriteCommandAction(psiMethod.getProject(), () -> {

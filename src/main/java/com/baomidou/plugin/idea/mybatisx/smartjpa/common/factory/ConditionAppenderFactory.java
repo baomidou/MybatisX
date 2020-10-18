@@ -3,12 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.BaseAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.*;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.BetweenParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.BooleanParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.InParameterChanger;
@@ -33,7 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * 条件追加区
@@ -78,12 +72,12 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
 
             // and :  and + field
             final CompositeAppender andAppender = new CompositeAppender(
-                new CustomJoinAppender("And", "AND", AreaSequence.CONDITION),
+                new CustomJoinAppender("And", " AND", AreaSequence.CONDITION),
                 new CustomFieldAppender(field, AreaSequence.CONDITION));
             syntaxAppenderArrayList.add(andAppender);
             // or : or + field
             final CompositeAppender orAppender = new CompositeAppender(
-                new CustomJoinAppender("Or", "OR", AreaSequence.CONDITION),
+                new CustomJoinAppender("Or", " OR", AreaSequence.CONDITION),
                 new CustomFieldAppender(field, AreaSequence.CONDITION));
             syntaxAppenderArrayList.add(orAppender);
         }
@@ -179,7 +173,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                     continue;
                 }
                 // 把字段添加到队尾
-                txParameters.add(TxParameter.createByPsiField(psiField));
+                txParameters.add(TxParameter.createByPsiField(psiField, AreaSequence.CONDITION));
 
             } else if (currentAppender.getType() == AppendTypeEnum.SUFFIX) {
                 // 拿到后缀前面的字段
@@ -213,7 +207,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                     templateText = joinStack.pop() + templateText;
                 }
                 CustomFieldAppender fieldAppender = (CustomFieldAppender) appender;
-                templateText = conditionFieldWrapper.wrapperConditionText(fieldAppender.getFieldName(), templateText);
+                templateText = conditionFieldWrapper.wrapConditionText(fieldAppender.getFieldName(), templateText);
             }
             if (i > 0) {
                 stringBuilder.append("\n");
@@ -222,7 +216,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
             i++;
         }
 
-        return conditionFieldWrapper.wrapperWhere(stringBuilder.toString());
+        return conditionFieldWrapper.wrapWhere(stringBuilder.toString());
     }
 
 

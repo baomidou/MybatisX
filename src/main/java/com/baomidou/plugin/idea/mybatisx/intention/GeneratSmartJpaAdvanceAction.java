@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionIfTestWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -77,7 +79,12 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
             }
 
 
-            Optional<ConditionFieldWrapper> conditionFieldWrapperOptional = getConditionFieldWrapper(project, platformGenerator, mapperClass);
+            Optional<ConditionFieldWrapper> conditionFieldWrapperOptional = getConditionFieldWrapper(project,
+                mapperClass,
+                platformGenerator.getDefaultDateWord(),
+                platformGenerator.getAllFields(),
+                platformGenerator.getConditionFields(),
+                platformGenerator.getEntityClass());
             if (!conditionFieldWrapperOptional.isPresent()) {
                 logger.info("没找到合适的条件包装器, mapperClass: {}", mapperClass.getName());
                 return;
@@ -97,6 +104,7 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
                     element,
                     statementElement,
                     parameterDescriptor,
+                    conditionFieldWrapper,
                     returnDescriptor);
 
             String newMethodString = mapperClassGenerateFactory.generateMethodStr();
@@ -126,16 +134,24 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
      * 创建 条件字段包装器， 用于if,where 这样的标签
      *
      * @param project           the project
-     * @param platformGenerator the platform generator
      * @param mapperClass
+     * @param defaultDateWord
+     * @param allFields
+     * @param conditionFields
+     * @param entityClass
      * @return the condition field wrapper
      */
-    protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project, PlatformGenerator platformGenerator, PsiClass mapperClass) {
+    protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project,
+                                                                       PsiClass mapperClass,
+                                                                       String defaultDateWord,
+                                                                       List<TxField> allFields,
+                                                                       List<String> conditionFields,
+                                                                       String entityClass) {
         // 弹出模态窗口
         JpaAdvanceDialog jpaAdvanceDialog = new JpaAdvanceDialog(project);
-        jpaAdvanceDialog.initFields(platformGenerator.getConditionFields(),
-            platformGenerator.getAllFields(),
-            platformGenerator.getEntityClass());
+        jpaAdvanceDialog.initFields(conditionFields,
+            allFields,
+            entityClass);
         jpaAdvanceDialog.show();
 
         // 模态窗口选择 OK, 生成相关代码
@@ -144,7 +160,7 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
         }
         Set<String> selectedFields = jpaAdvanceDialog.getSelectedFields();
 
-        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(project, selectedFields, platformGenerator.getAllFields());
+        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(project, selectedFields, allFields,defaultDateWord);
 
         conditionIfTestWrapper.setAllFields(jpaAdvanceDialog.getAllFieldsStr());
 
@@ -152,7 +168,7 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
         conditionIfTestWrapper.setResultTypeClass(jpaAdvanceDialog.getResultTypeClass());
         conditionIfTestWrapper.setResultType(jpaAdvanceDialog.isResultType());
         conditionIfTestWrapper.setGeneratorType(jpaAdvanceDialog.getGeneratorType());
-
+        conditionIfTestWrapper.setDefaultDateList(jpaAdvanceDialog.getDefaultDate());
 
         return Optional.of(conditionIfTestWrapper);
     }

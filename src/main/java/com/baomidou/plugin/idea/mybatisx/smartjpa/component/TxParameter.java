@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
 
@@ -7,6 +8,7 @@ import com.intellij.psi.PsiType;
  * The type Tx parameter.
  */
 public class TxParameter {
+    private AreaSequence areaSequence;
     private String typeText;
     private String canonicalTypeText;
     private String name;
@@ -16,16 +18,23 @@ public class TxParameter {
      * Create by psi field tx parameter.
      *
      * @param psiField the psi field
+     * @param areaSequence
      * @return the tx parameter
      */
-    public static TxParameter createByPsiField(PsiField psiField) {
+    public static TxParameter createByPsiField(PsiField psiField,
+                                               AreaSequence areaSequence) {
         TxParameter txParameter = new TxParameter();
         final PsiType type = psiField.getType();
         txParameter.typeText = type.getPresentableText();
         txParameter.canonicalTypeText = type.getCanonicalText();
         txParameter.name = psiField.getName();
         txParameter.paramAnnotation = true;
+        txParameter.areaSequence = areaSequence;
         return txParameter;
+    }
+
+    public AreaSequence getAreaSequence() {
+        return areaSequence;
     }
 
     /**

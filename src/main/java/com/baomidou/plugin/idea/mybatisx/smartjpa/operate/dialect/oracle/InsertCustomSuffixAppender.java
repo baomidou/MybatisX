@@ -47,6 +47,6 @@ public class InsertCustomSuffixAppender extends CustomSuffixAppender {
     @Override
     protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
         InsertCustomSuffixAppender suffixAppender = (InsertCustomSuffixAppender) appender;
-        return suffixAppender.getSuffixOperator().getTemplateText(tableName, parameters);
+        return suffixAppender.getSuffixOperator().getTemplateText(tableName, parameters, conditionFieldWrapper);
     }
 }

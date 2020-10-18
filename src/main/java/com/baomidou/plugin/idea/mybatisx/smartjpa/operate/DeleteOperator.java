@@ -61,14 +61,14 @@ public class DeleteOperator extends BaseOperatorManager {
 
                 // 区域条件 : delete  By : and + field
                 CompositeAppender andAppender = new CompositeAppender(
-                    new CustomJoinAppender("And", "AND", AreaSequence.CONDITION),
+                    new CustomJoinAppender("And", " AND", AreaSequence.CONDITION),
                     new CustomFieldAppender(field, AreaSequence.CONDITION)
                 );
                 resultAppenderFactory.registerAppender(andAppender);
 
                 // 区域条件 : delete  By : or + field
                 CompositeAppender orAppender = new CompositeAppender(
-                    new CustomJoinAppender("Or", "OR", AreaSequence.CONDITION),
+                    new CustomJoinAppender("Or", " OR", AreaSequence.CONDITION),
                     new CustomFieldAppender(field, AreaSequence.CONDITION)
                 );
                 resultAppenderFactory.registerAppender(orAppender);

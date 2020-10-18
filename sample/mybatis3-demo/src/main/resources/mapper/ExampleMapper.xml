@@ -79,6 +79,30 @@
         from t_blog
         where id = #{id,jdbcType=NUMERIC}
     </select>
+    <update id="updateCreateTimeByCreateTime">
+        update t_blog
+        set create_time = SYSDATE
+        <where>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </update>
+    <update id="updateContentAndCreateTimeAndTitleAndMoneyByIdAndCreateTime">
+        update t_blog
+        set content = #{content,jdbcType=VARCHAR},
+        create_time = SYSDATE,
+        title = #{title,jdbcType=VARCHAR},
+        money = #{money,jdbcType=DECIMAL}
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=NUMERIC}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </update>
 
 
 </mapper>

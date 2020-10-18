@@ -94,14 +94,18 @@ public class UpdateOperator extends BaseOperatorManager {
             // field
             // and + field
             final CompositeAppender andAppender = new CompositeAppender(
-                new CustomJoinAppender("And", ",", AreaSequence.RESULT),
-                new CustomFieldAppender(field, AreaSequence.RESULT));
+                new CustomJoinAppender("And", ",\n", AreaSequence.RESULT),
+                new ResultAppenderFactory.WrapDateCustomFieldAppender(field, AreaSequence.RESULT));
             updateFactory.registerAppender(andAppender);
 
             // update + field
             final CompositeAppender areaAppender =
                 new CompositeAppender(
-                    CustomAreaAppender.createCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, AreaSequence.AREA, AreaSequence.RESULT, updateFactory),
+                    CustomAreaAppender.createCustomAreaAppender(areaName,
+                        ResultAppenderFactory.RESULT,
+                        AreaSequence.AREA,
+                        AreaSequence.RESULT,
+                        updateFactory),
                     new CustomFieldAppender(field, AreaSequence.RESULT)
                 );
             updateFactory.registerAppender(areaAppender);
@@ -110,19 +114,19 @@ public class UpdateOperator extends BaseOperatorManager {
     }
 
 
-    @Override
-    public List<TxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
-        List<TxParameter> parameters = super.getParameters(entityClass, jpaStringList);
-        Set<String> collection = new HashSet<>();
-        for (TxParameter parameter : parameters) {
-            String name = parameter.getName();
-            if (!collection.add(name)) {
-                String newName = "old" + StringUtils.upperCaseFirstChar(name);
-                parameter.setName(newName);
-            }
-        }
-        return parameters;
-    }
+//    @Override
+//    public List<TxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+//        List<TxParameter> parameters = super.getParameters(entityClass, jpaStringList);
+//        Set<String> collection = new HashSet<>();
+//        for (TxParameter parameter : parameters) {
+//            String oldParamName = parameter.getName();
+//            if (!collection.add(oldParamName)) {
+//                String newName = "old" + StringUtils.upperCaseFirstChar(oldParamName);
+//                parameter.setName(newName);
+//            }
+//        }
+//        return parameters;
+//    }
 
 
     @Override

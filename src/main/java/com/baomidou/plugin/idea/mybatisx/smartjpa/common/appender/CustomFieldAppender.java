@@ -19,7 +19,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,7 +94,7 @@ public class CustomFieldAppender implements SyntaxAppender {
 
     @Override
     public List<AppendTypeCommand> getCommand(String areaPrefix, List<SyntaxAppender> splitList) {
-        return Arrays.asList(new FieldAppendTypeCommand(this));
+        return Collections.singletonList(new FieldAppendTypeCommand(this));
     }
 
     @Override
@@ -114,13 +113,23 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
-        PsiParameter parameter = parameters.poll();
-        if (parameter == null) {
-            logger.info("字段参数为空, 什么也不做, fieldName: {}", fieldName);
-            return "";
+                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<SyntaxAppenderWrapper> collector,
+                                  ConditionFieldWrapper conditionFieldWrapper) {
+        String defaultDateValue = wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, null);
+        PsiParameter parameter = null;
+        if(StringUtils.isEmpty(defaultDateValue)){
+            parameter = parameters.poll();
         }
-        return columnName + " = " + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
+        String fieldValue = defaultDateValue;
+        if (parameter != null) {
+            fieldValue  = JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
+        }
+        return columnName + " = " + wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, fieldValue);
+    }
+
+    protected String wrapFieldValueInTemplateText(String columnName, ConditionFieldWrapper conditionFieldWrapper, String fieldValue) {
+        return fieldValue;
     }
 
 
@@ -130,6 +139,7 @@ public class CustomFieldAppender implements SyntaxAppender {
 
         // 移除字段符号
         final SyntaxAppender peek = jpaStringList.poll();
+        assert peek != null;
         String text = peek.getText();
         text = StringUtils.lowerCaseFirstChar(text);
         PsiField psiField = fieldMap.get(text);
@@ -137,10 +147,8 @@ public class CustomFieldAppender implements SyntaxAppender {
             logger.info("查找映射字段失败, text: {}", text);
             return Collections.emptyList();
         }
-        return Collections.singletonList(TxParameter.createByPsiField(psiField));
+        return Collections.singletonList(TxParameter.createByPsiField(psiField,areaSequence));
     }
-
-
 
 
     @Override

@@ -5,6 +5,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
@@ -27,7 +28,7 @@ public class InParameterChanger implements MxParameterChanger {
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
         final PsiParameter collection = parameters.poll();
         final String collectionName = collection.getName();
         String itemContent = "#{item}";

@@ -13,9 +13,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
-import com.intellij.database.model.DasTable;
 import com.intellij.database.model.DasTableKey;
-import com.intellij.database.util.DasUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
@@ -93,7 +91,8 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
                                       LinkedList<PsiParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+                                      LinkedList<SyntaxAppenderWrapper> collector,
+                                      ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder("insert all ");
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
                 String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
@@ -136,7 +135,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -168,11 +167,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                             }
                         }
                     }
-                    //  变更指定字段为当前日期
-                    if (field.getColumnName().equalsIgnoreCase("CREATE_TIME")
-                        || field.getColumnName().equalsIgnoreCase("UPDATE_TIME")) {
-                        fieldStr = "SYSDATE";
-                    }
+                    fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(),  fieldStr);
                     return fieldStr;
                 })
                 .collect(Collectors.joining(",\n"));

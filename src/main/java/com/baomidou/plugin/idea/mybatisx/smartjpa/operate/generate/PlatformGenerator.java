@@ -12,6 +12,8 @@ import java.util.List;
  * 平台生成器, 为后续生成 注解, springjpa注解等方式预留
  */
 public interface PlatformGenerator {
+    String getDefaultDateWord();
+
     /**
      * 获取参数
      *

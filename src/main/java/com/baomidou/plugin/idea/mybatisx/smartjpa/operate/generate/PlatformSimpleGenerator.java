@@ -25,7 +25,11 @@ public class PlatformSimpleGenerator {
      * @return the platform generator
      */
     @NotNull
-    public PlatformGenerator getPlatformGenerator(@NotNull Project project, @NotNull PsiElement element, PsiClass entityClass, EntityMappingResolver entityMappingResolver, String text) {
+    public PlatformGenerator getPlatformGenerator(@NotNull Project project,
+                                                  @NotNull PsiElement element,
+                                                  PsiClass entityClass,
+                                                  EntityMappingResolver entityMappingResolver,
+                                                  String text) {
         DbmsAdaptor dbms = getDbmsAdaptor(project, element);
         // 名字默认是从实体上面解析到的
         DasTableAdaptor dasTableAdaptor = findAdaptor(project, entityClass, entityMappingResolver);

@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
@@ -26,7 +27,7 @@ public class FixedSuffixOperator implements SuffixOperator{
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters) {
+    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
         return fieldName
                 + " "

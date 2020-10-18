@@ -17,6 +17,7 @@ public interface TypeDescriptor {
      * 实际的内容
      *
      * @return content
+     * @param defaultDateList
      */
-    String getContent();
+    String getContent(List<String> defaultDateList);
 }

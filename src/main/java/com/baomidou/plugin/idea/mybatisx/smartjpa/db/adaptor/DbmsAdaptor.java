@@ -9,11 +9,17 @@ public enum DbmsAdaptor {
     /**
      * Mysql dbms adaptor.
      */
-    MYSQL,
+    MYSQL("NOW()"),
     /**
      * Oracle dbms adaptor.
      */
-    ORACLE;
+    ORACLE("SYSDATE");
+
+    private final String defaultDate;
+
+    DbmsAdaptor(String defaultDate) {
+        this.defaultDate = defaultDate;
+    }
 
     /**
      * Cast of dbms adaptor.
@@ -26,5 +32,9 @@ public enum DbmsAdaptor {
             return ORACLE;
         }
         return MYSQL;
+    }
+
+    public String getDefaultDateWord() {
+        return defaultDate;
     }
 }
