@@ -13,6 +13,15 @@
     <sql id="Base_Column_List">
 		id,age,content,title,money,create_time
 	</sql>
+    <resultMap id="ChainBaseResultMap"
+               type="com.baomidou.mybatis3.domain.ChainBlog">
+        <id column="id" property="id"  />
+        <result column="age" property="age"/>
+        <result column="content" property="content"/>
+        <result column="title" property="title"/>
+        <result column="money" property="money"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
     <select id="selectAllByAgeAndTitleContainingAndCreateTimeBetweenAndIdInOrderByCreateTimeDesc"
             resultMap="BaseResultMap">
         select

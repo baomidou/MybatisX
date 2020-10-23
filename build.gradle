@@ -44,7 +44,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group 'com.baomidou.plugin.idea.mybatisx'
-version '1.3.5'
+version '1.3.6'
 
 repositories {
     jcenter()
