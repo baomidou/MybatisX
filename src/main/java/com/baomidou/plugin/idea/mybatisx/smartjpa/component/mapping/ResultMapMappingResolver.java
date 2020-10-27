@@ -7,6 +7,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.xml.XmlAttribute;
@@ -27,6 +28,13 @@ import java.util.stream.Collectors;
  */
 public class ResultMapMappingResolver extends JpaMappingResolver implements EntityMappingResolver {
 
+    private Project project;
+
+    public ResultMapMappingResolver(Project project) {
+        super();
+        this.project = project;
+    }
+
     @Override
     public List<TxField> getFields() {
         return fieldList;
@@ -43,7 +51,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
 
     @Override
     public Optional<PsiClass> findEntity(PsiClass mapperClass) {
-        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
+        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(project, mapperClass);
         if (firstMapper.isPresent()) {
             Mapper mapper = firstMapper.get();
             Optional<ResultMap> resultMapOpt = findResultMap(mapper.getResultMaps());

@@ -41,7 +41,7 @@ public class EntityMappingResolverFactory {
 
         entityMappingResolverList.add(new MybatisPlus3MappingResolver());
         entityMappingResolverList.add(new MybatisPlus2MappingResolver());
-        entityMappingResolverList.add(new ResultMapMappingResolver());
+        entityMappingResolverList.add(new ResultMapMappingResolver(project));
         // 自定义mapper的泛型加入了实体类, 实体类必须有@Table注解
         entityMappingResolverList.add(new JpaAnnotationMappingResolver());
         // mapper 类的注释, 可能有点卡顿?
