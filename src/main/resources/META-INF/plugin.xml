@@ -19,6 +19,13 @@
     </description>
 
     <change-notes><![CDATA[
+       <h4>1.3.6</h4>
+      <ul>
+          <li>fixed some bugs</li>
+          <li>fixed advance tip for jpa</li>
+          <li>fixed xml generate for multi module</li>
+          <li>fixed alias scan for springboot</li>
+      </ul>
       <h4>1.3.2</h4>
       <ul>
           <li>fixed some bugs</li>
