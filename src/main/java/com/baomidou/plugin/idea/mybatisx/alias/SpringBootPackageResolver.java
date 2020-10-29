@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.parser.ParserException;
 
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
             }
 
 
-        } catch (ParserException e) {
+        } catch (ParserException| ComposerException e) {
             logger.info("yml parse fail", e);
         } catch (IOException e) {
             logger.error("read alias exception", e);
