@@ -1,22 +1,14 @@
 package com.baomidou.mybatis3.mapper;
-import byte[];
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Select;
+import com.baomidou.mybatis3.alias.MyAliasBlog;
+import com.baomidou.mybatis3.domain.Blog;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import com.baomidou.mybatis3.alias.MyAliasBlog;
-import org.apache.ibatis.annotations.Param;
-
-import com.baomidou.mybatis3.domain.Blog;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 
 public interface ExampleMapper extends BaseMapper<Blog> {
@@ -56,7 +48,6 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
 
     int updateBlobTextByIdAndBlobTextIsNull(@Param("blobText") byte[] blobText, @Param("id") Long id);
-
 
     int updateBlobTextByIdAndBlobTextIn(@Param("blobText") byte[] blobText, @Param("id") Long id, @Param("oldblobText") byte[] oldblobText);
 }

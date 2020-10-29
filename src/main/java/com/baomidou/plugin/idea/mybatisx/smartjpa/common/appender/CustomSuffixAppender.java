@@ -9,6 +9,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffi
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.FieldSuffixAppendTypeService;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
@@ -133,9 +134,10 @@ public class CustomSuffixAppender implements SyntaxAppender {
      * @param tipName      the tip name
      * @param suffix       the suffix
      * @param areaSequence the area sequence
+     * @param mappingField
      * @return syntax appender
      */
-    public static SyntaxAppender createByFixed(String tipName, String suffix, AreaSequence areaSequence) {
+    public static SyntaxAppender createByFixed(String tipName, String suffix, AreaSequence areaSequence, List<TxField> mappingField) {
         CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName){
             @Override
             public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
@@ -143,7 +145,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
             }
 
         };
-        customSuffixAppender.suffixOperator = new FixedSuffixOperator(suffix);
+        customSuffixAppender.suffixOperator = new FixedSuffixOperator(suffix,mappingField);
         customSuffixAppender.areaSequence = areaSequence;
         return customSuffixAppender;
     }

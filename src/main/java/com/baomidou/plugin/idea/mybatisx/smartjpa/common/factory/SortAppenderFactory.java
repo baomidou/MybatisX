@@ -41,7 +41,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
     public List<SyntaxAppender> getSyntaxAppenderList() {
         final List<SyntaxAppender> syntaxAppenderArrayList = new ArrayList<>();
         // order by field : desc
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("Desc", "desc", AreaSequence.SORT));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("Desc", "desc", AreaSequence.SORT, mappingField));
         for (final TxField field : this.mappingField) {
             // order by: field
             final SyntaxAppender appender = new CompositeAppender(
@@ -102,7 +102,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
     @Override
     public void appendDefault(SyntaxAppender syntaxAppender, LinkedList<SyntaxAppender> current) {
         if (syntaxAppender.getType() == AppendTypeEnum.FIELD) {
-            current.addLast(CustomSuffixAppender.createByFixed("Asc", "asc", AreaSequence.SORT));
+            current.addLast(CustomSuffixAppender.createByFixed("Asc", "asc", AreaSequence.SORT, mappingField));
         }
     }
 

@@ -82,6 +82,10 @@ public class CustomFieldAppender implements SyntaxAppender {
         return this.fieldName;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
     @Override
     public String getText() {
         return this.tipName;

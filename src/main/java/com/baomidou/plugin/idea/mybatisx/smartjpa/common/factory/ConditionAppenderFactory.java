@@ -99,10 +99,10 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("GreaterThanEqual", ">=", AreaSequence.CONDITION));
 
         // where x.age is null
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNull", "is null", AreaSequence.CONDITION));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNull", "is null", AreaSequence.CONDITION,mappingField));
         // where x.age not null
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNotNull", "is not null", AreaSequence.CONDITION));
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("NotNull", "is not null", AreaSequence.CONDITION));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNotNull", "is not null", AreaSequence.CONDITION,mappingField));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("NotNull", "is not null", AreaSequence.CONDITION,mappingField));
         // where x.firstname like ?1
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("Like", "like", AreaSequence.CONDITION));
         // where x.firstname not like ?1

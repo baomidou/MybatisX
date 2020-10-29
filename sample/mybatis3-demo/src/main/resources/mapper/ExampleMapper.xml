@@ -106,9 +106,9 @@
     </update>
     <update id="updateBlobTextByIdAndBlobTextIsNull">
         update t_blog
-        set blobText = #{blobText}
+        set blob_text = #{blobText}
         where id = #{id,jdbcType=NUMERIC}
-          AND blobText is null
+          AND blob_text is null
     </update>
     <update id="updateBlobTextByIdAndBlobTextIn">
         update t_blog
@@ -119,12 +119,6 @@
         <foreach collection="oldblobText" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
-    </update>
-    <update id="updateBlobTextByIdAndBlobTextIsNull">
-        update t_blog
-        set blob_text = #{blobText}
-        where id = #{id,jdbcType=NUMERIC}
-          AND blobText is null
     </update>
 
 
