@@ -62,7 +62,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
     }
 
     @Override
-    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
         return Collections.emptyList();
     }
 

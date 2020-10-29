@@ -46,25 +46,13 @@ public class TxParameterDescriptor implements TypeDescriptor {
         return parameterList.add(txParameter);
     }
 
-//    @Override
-//    public List<TxParameter> getParameters(PsiClass entityClass, LinkedList< SyntaxAppender > jpaStringList) {
-//        List<TxParameter> parameters = super.getParameters(entityClass, jpaStringList);
-//        Set<String> collection = new HashSet<>();
-//        for (TxParameter parameter : parameters) {
-//            String oldParamName = parameter.getName();
-//            if (!collection.add(oldParamName)) {
-//                String newName = "old" + StringUtils.upperCaseFirstChar(oldParamName);
-//                parameter.setName(newName);
-//            }
-//        }
-//        return parameters;
-//    }
     /**
      * 参数字符串
      * TODO 关于 updateUpdateTimeByUpdateTime 这种情况会导致两个参数都无法传， 事实上可能需要第一个不需要传，第二个需要传
      * @return
      * @param defaultDateList
      */
+    @Override
     public String getContent(List<String> defaultDateList) {
         Set<String> addedParamNames = new HashSet<>();
         return parameterList.stream()
@@ -103,9 +91,10 @@ public class TxParameterDescriptor implements TypeDescriptor {
      *
      * @return
      */
+    @Override
     public List<String> getImportList() {
         List<String> collect = parameterList.stream()
-            .filter(x -> x.getCanonicalTypeText() != null)
+            .filter(x -> x.getCanonicalTypeText() != null&&!x.isPrimitive())
             .map(TxParameter::getCanonicalTypeText)
             .collect(Collectors.toList());
         if (collect.size() > 0) {

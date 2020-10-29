@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
@@ -10,6 +11,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlockFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
@@ -18,15 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -73,9 +67,10 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
      *
      * @param operatorName the operator name
      */
-    protected void addOperatorName(String operatorName){
+    protected void addOperatorName(String operatorName) {
         operatorNameList.add(operatorName);
     }
+
     @NotNull
     @Override
     public LinkedList<SyntaxAppender> splitAppenderByText(final String splitParam) {
@@ -125,11 +120,12 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         if (firstAreaAppender != null && !this.canExecute(firstAreaAppender.getText())) {
             return Collections.emptyList();
         }
+        CompositeAppender compositeAppender = new CompositeAppender();
+        SyntaxAppenderWrapper rootSyntaxWrapper = new SyntaxAppenderWrapper(null);
+        compositeAppender.toTree(new LinkedList<>(jpaList), rootSyntaxWrapper);
 
-        List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
-        return areaListByJpa.stream().flatMap(x -> x.getMxParameter(entityClass, jpaList).stream()).collect(Collectors.toList());
+        return rootSyntaxWrapper.getMxParameter(entityClass);
     }
-
 
 
     private static final Logger logger = LoggerFactory.getLogger(BaseOperatorManager.class);
@@ -195,12 +191,9 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
      * @param areaName     the area name
      * @param mappingField the mapping field
      */
-    protected void initCustomArea(String areaName, List<TxField> mappingField){
+    protected void initCustomArea(String areaName, List<TxField> mappingField) {
 
     }
-
-
-
 
 
 }

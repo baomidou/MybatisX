@@ -78,7 +78,7 @@ public interface SyntaxAppenderFactory {
      * @param jpaStringList the jpa string list
      * @return the mx parameter
      */
-    List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList);
+    List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList);
 
     /**
      * Gets template text.

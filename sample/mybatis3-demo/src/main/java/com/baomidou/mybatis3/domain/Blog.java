@@ -18,6 +18,8 @@ public class Blog {
    private Integer age;
    @TableField("create_time")
    private Date createTime;
+    @TableField("blob_text")
+   private byte[] blobText;
 
     public Long getId() {
         return id;
@@ -65,5 +67,14 @@ public class Blog {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public byte[] getBlobText() {
+        return blobText;
+    }
+
+    public Blog setBlobText(byte[] blobText) {
+        this.blobText = blobText;
+        return this;
     }
 }

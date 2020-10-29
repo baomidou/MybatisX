@@ -29,6 +29,7 @@ public class ParamAroundSuffixOperator implements SuffixOperator {
         this.suffix = suffix;
     }
 
+    @Override
     public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
         PsiParameter parameter = parameters.poll();

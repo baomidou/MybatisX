@@ -162,7 +162,7 @@ public class MysqlInsertBatch implements CustomStatement {
         }
 
         @Override
-        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
             // 遍历定义的类型
             String defineName = Collection.class.getSimpleName() + "<" + entityClass.getName() + ">";
             // 变量名称

@@ -7,6 +7,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
@@ -34,11 +35,15 @@ public class InParameterChanger implements MxParameterChanger {
         String itemContent = "#{item}";
         // 如果集合的泛型不是空的, 就给遍历的内容加入 jdbcType
         if (collection.getTypeElement() != null) {
-            final @NotNull PsiType[] typeParameters = collection.getTypeElement().getInnermostComponentReferenceElement().getTypeParameters();
-            if (typeParameters.length > 0) {
-                final PsiType typeParameter = typeParameters[0];
-                itemContent = JdbcTypeUtils.wrapperField("item", typeParameter.getCanonicalText());
+            PsiJavaCodeReferenceElement innermostComponentReferenceElement = collection.getTypeElement().getInnermostComponentReferenceElement();
+            if(innermostComponentReferenceElement!=null){
+                final @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
+                if (typeParameters.length > 0) {
+                    final PsiType typeParameter = typeParameters[0];
+                    itemContent = JdbcTypeUtils.wrapperField("item", typeParameter.getCanonicalText());
+                }
             }
+
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(fieldName).append(" ").append(getIn()).append("\n");

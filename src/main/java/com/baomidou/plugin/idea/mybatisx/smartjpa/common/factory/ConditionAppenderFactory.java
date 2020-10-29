@@ -145,14 +145,14 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
     private static final Logger logger = LoggerFactory.getLogger(ConditionAppenderFactory.class);
 
     @Override
-    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
-        SyntaxAppender area = jpaStringList.peek();
+    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
+        SyntaxAppenderWrapper area = jpaStringList.peek();
         if (area == null) {
             return Collections.emptyList();
         }
 
-        if (area.getType() != AppendTypeEnum.AREA ||
-            !getTipText().equals(area.getText())) {
+        if (area.getAppender().getType() != AppendTypeEnum.AREA ||
+            !getTipText().equals(area.getAppender().getText())) {
             return Collections.emptyList();
         }
         // 移除区域标识
@@ -160,13 +160,16 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
 
         Map<String, PsiField> fieldMap = FieldUtil.getStringPsiFieldMap(entityClass);
         LinkedList<TxParameter> txParameters = new LinkedList<>();
-        SyntaxAppender currentAppender = null;
+        SyntaxAppenderWrapper currentAppender = null;
         // 拉到下一个区域
-        while ((currentAppender = jpaStringList.poll()) != null
-            && currentAppender.getType() != AppendTypeEnum.AREA) {
-            if (currentAppender.getType() == AppendTypeEnum.FIELD) {
+        while ((currentAppender = jpaStringList.poll()) != null) {
+            AppendTypeEnum type = currentAppender.getAppender().getType();
+            if (AppendTypeEnum.AREA == type) {
+                break;
+            }
+            if (type == AppendTypeEnum.FIELD) {
 
-                String text = StringUtils.lowerCaseFirstChar(currentAppender.getText());
+                String text = StringUtils.lowerCaseFirstChar(currentAppender.getAppender().getText());
                 PsiField psiField = fieldMap.get(text);
                 if (psiField == null) {
                     logger.info("字段映射失败,语义字段: {} ", text);
@@ -175,10 +178,10 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                 // 把字段添加到队尾
                 txParameters.add(TxParameter.createByPsiField(psiField, AreaSequence.CONDITION));
 
-            } else if (currentAppender.getType() == AppendTypeEnum.SUFFIX) {
+            } else if (type == AppendTypeEnum.SUFFIX) {
                 // 拿到后缀前面的字段
                 TxParameter last = txParameters.pollLast();
-                List<TxParameter> suffixParameters = currentAppender.getParameter(last);
+                List<TxParameter> suffixParameters = currentAppender.getAppender().getParameter(last);
                 txParameters.addAll(suffixParameters);
             }
         }

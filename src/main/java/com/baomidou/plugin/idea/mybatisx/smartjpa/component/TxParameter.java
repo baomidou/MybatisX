@@ -4,6 +4,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * The type Tx parameter.
  */
@@ -13,11 +16,25 @@ public class TxParameter {
     private String canonicalTypeText;
     private String name;
     private boolean paramAnnotation;
+    //
+    private boolean primitive = false;
+
+    private static Set<String> primitiveType = new HashSet<String>() {
+        {
+            add("boolean");
+            add("byte");
+            add("short");
+            add("int");
+            add("long");
+            add("float");
+            add("double");
+        }
+    };
 
     /**
      * Create by psi field tx parameter.
      *
-     * @param psiField the psi field
+     * @param psiField     the psi field
      * @param areaSequence
      * @return the tx parameter
      */
@@ -30,7 +47,29 @@ public class TxParameter {
         txParameter.name = psiField.getName();
         txParameter.paramAnnotation = true;
         txParameter.areaSequence = areaSequence;
+        if (typeIsPrimitive(type)) {
+            txParameter.primitive = true;
+        }
         return txParameter;
+    }
+
+    private static boolean typeIsPrimitive(PsiType type) {
+        return determinePrimitive(type.getCanonicalText()) ||
+            (type.getArrayDimensions() > 0 && determinePrimitive(type.getDeepComponentType().getCanonicalText()));
+    }
+
+    private static boolean determinePrimitive(String canonicalText) {
+        if (canonicalText.startsWith("java.lang")) {
+            return true;
+        }
+        if (primitiveType.contains(canonicalText)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPrimitive() {
+        return primitive;
     }
 
     public AreaSequence getAreaSequence() {

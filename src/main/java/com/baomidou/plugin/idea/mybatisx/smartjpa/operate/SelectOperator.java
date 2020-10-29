@@ -208,7 +208,7 @@ public class SelectOperator extends BaseOperatorManager {
          * @return
          */
         @Override
-        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
+        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
 
             // 移除select 标签
             List<TxParameter> txParameter = super.getMxParameter(entityClass, jpaStringList);

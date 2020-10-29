@@ -25,6 +25,7 @@ public class ParamBeforeSuffixOperator implements SuffixOperator{
         this.operatorName = operatorName;
     }
 
+    @Override
     public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
         PsiParameter parameter = parameters.poll();

@@ -1,8 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.util;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import com.intellij.psi.PsiClass;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The type Syntax appender wrapper.
@@ -64,5 +68,16 @@ public class SyntaxAppenderWrapper {
      */
     public LinkedList<SyntaxAppenderWrapper> getCollector() {
         return collector;
+    }
+
+    public List<TxParameter> getMxParameter(PsiClass entityClass) {
+        if (syntaxAppender == null) {
+            List<TxParameter> list = new ArrayList<>();
+            for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
+                list.addAll(syntaxAppenderWrapper.getAppender().getMxParameter(syntaxAppenderWrapper.getCollector(), entityClass));
+            }
+            return list;
+        }
+        return syntaxAppender.getMxParameter(collector, entityClass);
     }
 }

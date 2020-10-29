@@ -134,13 +134,9 @@ public class CustomFieldAppender implements SyntaxAppender {
 
 
     @Override
-    public List<TxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
+    public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
         Map<String, PsiField> fieldMap = FieldUtil.getStringPsiFieldMap(entityClass);
-
-        // 移除字段符号
-        final SyntaxAppender peek = jpaStringList.poll();
-        assert peek != null;
-        String text = peek.getText();
+        String text = this.getText();
         text = StringUtils.lowerCaseFirstChar(text);
         PsiField psiField = fieldMap.get(text);
         if (psiField == null) {

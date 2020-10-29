@@ -13,6 +13,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 
 import java.util.ArrayList;
@@ -56,16 +57,16 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
 
 
     @Override
-    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
-        SyntaxAppender peek = jpaStringList.poll();
+    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
+        SyntaxAppenderWrapper peek = jpaStringList.poll();
         if (peek == null) {
             return Collections.emptyList();
         }
 
         LinkedList<TxParameter> txParameters = new LinkedList<>();
 
-        while ((peek = jpaStringList.peek()) != null && peek.getType() != AppendTypeEnum.AREA) {
-            txParameters.addAll(peek.getMxParameter(jpaStringList, entityClass));
+        while ((peek = jpaStringList.peek()) != null && peek.getAppender().getType() != AppendTypeEnum.AREA) {
+            txParameters.addAll(peek.getMxParameter(entityClass));
         }
         return txParameters;
     }

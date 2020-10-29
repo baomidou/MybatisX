@@ -28,7 +28,6 @@ public class FixedSuffixOperator implements SuffixOperator{
 
     @Override
     public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-
         return fieldName
                 + " "
                 + operatorName;

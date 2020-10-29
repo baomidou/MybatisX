@@ -10,13 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 符号追加器
@@ -78,7 +72,7 @@ public interface SyntaxAppender {
     default boolean checkAfter(final SyntaxAppender secondAppender, AreaSequence areaSequence) {
         boolean hasAreaCheck = secondAppender.getAreaSequence() == AreaSequence.AREA;
         boolean typeCheck = getType().checkAfter(secondAppender.getType());
-        return hasAreaCheck || typeCheck ;
+        return hasAreaCheck || typeCheck;
     }
 
     /**
@@ -166,13 +160,17 @@ public interface SyntaxAppender {
     /**
      * Gets mx parameter.
      *
-     * @param jpaStringList the jpa string list
+     * @param syntaxAppenderWrapperLinkedList the jpa string list
      * @param entityClass   the entity class
      * @return the mx parameter
      */
-    default List<TxParameter> getMxParameter(LinkedList<SyntaxAppender> jpaStringList, PsiClass entityClass) {
-        jpaStringList.poll();
-        return Collections.emptyList();
+    default List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
+        List<TxParameter> txParameters = new ArrayList<>();
+        SyntaxAppenderWrapper appender;
+        while ((appender = syntaxAppenderWrapperLinkedList.poll())!=null){
+            txParameters.addAll(appender.getMxParameter(entityClass));
+        }
+        return txParameters;
     }
 
     /**

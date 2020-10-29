@@ -13,6 +13,7 @@ import java.util.LinkedList;
 public class ParamIgnoreCaseSuffixOperator implements SuffixOperator {
 
 
+    @Override
     public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
         PsiParameter parameter = parameters.poll();

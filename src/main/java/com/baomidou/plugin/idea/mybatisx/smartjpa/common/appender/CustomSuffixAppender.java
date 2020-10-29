@@ -19,7 +19,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,7 +136,13 @@ public class CustomSuffixAppender implements SyntaxAppender {
      * @return syntax appender
      */
     public static SyntaxAppender createByFixed(String tipName, String suffix, AreaSequence areaSequence) {
-        CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName);
+        CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName){
+            @Override
+            public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
+                return Collections.emptyList();
+            }
+
+        };
         customSuffixAppender.suffixOperator = new FixedSuffixOperator(suffix);
         customSuffixAppender.areaSequence = areaSequence;
         return customSuffixAppender;

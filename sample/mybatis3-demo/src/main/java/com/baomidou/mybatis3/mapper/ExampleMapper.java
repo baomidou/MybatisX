@@ -1,4 +1,5 @@
 package com.baomidou.mybatis3.mapper;
+import byte[];
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Delete;
@@ -54,4 +55,8 @@ public interface ExampleMapper extends BaseMapper<Blog> {
     int updateContentAndCreateTimeAndTitleAndMoneyByIdAndCreateTime(@Param("content") String content, @Param("title") String title, @Param("money") BigDecimal money, @Param("id") Long id, @Param("createTime") Date createTime);
 
 
+    int updateBlobTextByIdAndBlobTextIsNull(@Param("blobText") byte[] blobText, @Param("id") Long id);
+
+
+    int updateBlobTextByIdAndBlobTextIn(@Param("blobText") byte[] blobText, @Param("id") Long id, @Param("oldblobText") byte[] oldblobText);
 }
