@@ -7,6 +7,7 @@ import org.apache.ibatis.type.Alias;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @TableName("t_blog")
 public class Blog {
@@ -20,6 +21,26 @@ public class Blog {
    private Date createTime;
     @TableField("blob_text")
    private byte[] blobText;
+    private JpaBlog[] objects;
+    private List<Integer> ids;
+
+    public JpaBlog[] getObjects() {
+        return objects;
+    }
+
+    public Blog setObjects(JpaBlog[] objects) {
+        this.objects = objects;
+        return this;
+    }
+
+    public List<Integer> getIds() {
+        return ids;
+    }
+
+    public Blog setIds(List<Integer> ids) {
+        this.ids = ids;
+        return this;
+    }
 
     public Long getId() {
         return id;

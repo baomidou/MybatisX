@@ -50,4 +50,10 @@ public interface ExampleMapper extends BaseMapper<Blog> {
     int updateBlobTextByIdAndBlobTextIsNull(@Param("blobText") byte[] blobText, @Param("id") Long id);
 
     int updateBlobTextByIdAndBlobTextIn(@Param("blobText") byte[] blobText, @Param("id") Long id, @Param("oldblobText") byte[] oldblobText);
+
+    List<Blog> selectBlobTextAndAgeAndCreateTimeByIdsInOrderByAge(@Param("ids") List<Integer> ids);
+
+    int delByIdAndAge(@Param("id") Long id, @Param("age") Integer age);
+
+    int updateMoneyAndAgeByMoneyAndContent(@Param("money") BigDecimal money, @Param("age") Integer age, @Param("oldmoney") BigDecimal oldmoney, @Param("content") String content);
 }

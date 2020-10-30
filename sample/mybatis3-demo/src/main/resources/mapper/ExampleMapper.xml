@@ -120,6 +120,29 @@
             #{item}
         </foreach>
     </update>
+    <select id="selectBlobTextAndAgeAndCreateTimeByIdsInOrderByAge" resultMap="BaseResultMap">
+        select blob_text, age, create_time
+        from t_blog
+        where
+        ids in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=NUMERIC}
+        </foreach>
+        order by age
+    </select>
+    <delete id="delByIdAndAge">
+        delete
+        from t_blog
+        where id = #{id,jdbcType=NUMERIC}
+          AND age = #{age,jdbcType=NUMERIC}
+    </delete>
+    <update id="updateMoneyAndAgeByMoneyAndContent">
+        update t_blog
+        set money = #{money,jdbcType=DECIMAL},
+            age   = #{age,jdbcType=NUMERIC}
+        where money = #{oldmoney,jdbcType=DECIMAL}
+          AND content = #{content,jdbcType=VARCHAR}
+    </update>
 
 
 </mapper>

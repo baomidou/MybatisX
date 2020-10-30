@@ -290,7 +290,16 @@ public class SelectOperator extends BaseOperatorManager {
             super(area, areaType, AreaSequence.AREA, AreaSequence.RESULT, syntaxAppenderFactory);
         }
 
-
+        /**
+         * select 标签的字段一定不会生成参数
+         * @param syntaxAppenderWrapperLinkedList the jpa string list
+         * @param entityClass   the entity class
+         * @return
+         */
+        @Override
+        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
+            return Collections.emptyList();
+        }
     }
 
 

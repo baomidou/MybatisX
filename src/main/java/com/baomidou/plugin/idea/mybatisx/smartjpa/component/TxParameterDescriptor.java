@@ -94,8 +94,7 @@ public class TxParameterDescriptor implements TypeDescriptor {
     @Override
     public List<String> getImportList() {
         List<String> collect = parameterList.stream()
-            .filter(x -> x.getCanonicalTypeText() != null&&!x.isPrimitive())
-            .map(TxParameter::getCanonicalTypeText)
+            .flatMap(x -> x.getImportClass().stream())
             .collect(Collectors.toList());
         if (collect.size() > 0) {
             collect.add("org.apache.ibatis.annotations.Param");

@@ -209,4 +209,7 @@ public class CustomAreaAppender implements SyntaxAppender {
         boolean sequenceCheck = (getAreaSequence() == areaSequence);
         return hasAreaCheck || (typeCheck && sequenceCheck);
     }
+
+
+
 }

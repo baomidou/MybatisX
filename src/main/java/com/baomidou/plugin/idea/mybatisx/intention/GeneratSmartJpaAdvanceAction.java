@@ -101,7 +101,6 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
             MapperClassGenerateFactory mapperClassGenerateFactory =
                 new MapperClassGenerateFactory(project,
                     editor,
-                    element,
                     statementElement,
                     parameterDescriptor,
                     conditionFieldWrapper,

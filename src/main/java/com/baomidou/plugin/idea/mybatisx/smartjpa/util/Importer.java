@@ -55,13 +55,7 @@ public class Importer {
                                 PsiJavaFile containingFile,
                                 Document document) {
         if (newImportList.size() > 0) {
-            Iterator<String> iterator = newImportList.iterator();
-            while (iterator.hasNext()) {
-                String u = iterator.next();
-                if (u == null || u.startsWith("java.lang")) {
-                    iterator.remove();
-                }
-            }
+            newImportList.removeIf(u -> u == null || u.startsWith("java.lang"));
         }
 
         if (newImportList.size() > 0) {

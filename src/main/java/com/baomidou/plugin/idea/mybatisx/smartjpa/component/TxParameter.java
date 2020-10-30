@@ -2,10 +2,12 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypeElement;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The type Tx parameter.
@@ -17,7 +19,7 @@ public class TxParameter {
     private String name;
     private boolean paramAnnotation;
     //
-    private boolean primitive = false;
+    private List<String> importClass = Collections.emptyList();
 
     private static Set<String> primitiveType = new HashSet<String>() {
         {
@@ -47,10 +49,30 @@ public class TxParameter {
         txParameter.name = psiField.getName();
         txParameter.paramAnnotation = true;
         txParameter.areaSequence = areaSequence;
-        if (typeIsPrimitive(type)) {
-            txParameter.primitive = true;
+        if (!typeIsPrimitive(type)) {
+            txParameter.importClass = findImportClass(psiField, type);
         }
         return txParameter;
+    }
+
+    private static List<String> findImportClass(PsiField psiField, PsiType type) {
+        PsiTypeElement typeElement = psiField.getTypeElement();
+        if (typeElement != null) {
+            PsiJavaCodeReferenceElement innermostComponentReferenceElement = typeElement.getInnermostComponentReferenceElement();
+            // import List<User> ,  add java.lang.User and com.xx.model.User
+            if (innermostComponentReferenceElement != null) {
+                List<String> importClasses = new ArrayList<>();
+                importClasses.add(innermostComponentReferenceElement.getQualifiedName());
+                @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
+                for (PsiType typeParameter : typeParameters) {
+                    if(!determinePrimitive(typeParameter.getCanonicalText())){
+                        importClasses.add(typeParameter.getCanonicalText());
+                    }
+                }
+                return importClasses;
+            }
+        }
+        return Collections.emptyList();
     }
 
     private static boolean typeIsPrimitive(PsiType type) {
@@ -66,10 +88,6 @@ public class TxParameter {
             return true;
         }
         return false;
-    }
-
-    public boolean isPrimitive() {
-        return primitive;
     }
 
     public AreaSequence getAreaSequence() {
@@ -165,5 +183,9 @@ public class TxParameter {
      */
     public boolean isParamAnnotation() {
         return paramAnnotation;
+    }
+
+    public List<String> getImportClass() {
+        return importClass;
     }
 }

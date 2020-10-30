@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.BaseAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
@@ -45,7 +46,10 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         for (final TxField field : this.mappingField) {
             // order by: field
             final SyntaxAppender appender = new CompositeAppender(
-                    CustomAreaAppender.createCustomAreaAppender(this.getTipText(), getTipText(), AreaSequence.AREA, AreaSequence.SORT, this),
+                    new SortCustomAreaAppender(this.getTipText(), getTipText(),
+                        AreaSequence.AREA,
+                        AreaSequence.SORT,
+                        this),
                     new SortCustomFieldAppender(field, AreaSequence.SORT));
             syntaxAppenderArrayList.add(appender);
             // order by: and field
@@ -54,6 +58,24 @@ public class SortAppenderFactory extends BaseAppenderFactory {
             syntaxAppenderArrayList.add(andAppender);
         }
         return syntaxAppenderArrayList;
+    }
+
+    private class SortCustomAreaAppender extends CustomAreaAppender{
+
+        public SortCustomAreaAppender(String area, String areaType, AreaSequence areaSequence, AreaSequence childAreaSequence, SyntaxAppenderFactory syntaxAppenderFactory) {
+            super(area, areaType, areaSequence, childAreaSequence, syntaxAppenderFactory);
+        }
+
+        /**
+         * OrderBy 标签的字段一定不会生成参数
+         * @param syntaxAppenderWrapperLinkedList the jpa string list
+         * @param entityClass   the entity class
+         * @return
+         */
+        @Override
+        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
