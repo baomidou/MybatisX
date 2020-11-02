@@ -1,0 +1,31 @@
+# ========================================================
+# Gradle 构建参考流水线样例
+# 功能：输出 Gradle 版本信息并完成一个 HelloWorld 的构建
+# ========================================================
+name: gitee-go-gradle-example           # 定义一个唯一 ID 标识为 gitee-go-gradle-example，名称为 “Gradle-流水线示例” 的流水线
+displayName: 'Gradle-流水线示例'
+triggers:                               # 流水线触发器配置
+  push:                                 # 设置 master 分支 在产生代码 push 时精确触发（PRECISE）构建
+    - matchType: PRECISE
+      branch: master
+commitMessage: ''                       # 通过匹配当前提交的 CommitMessage 决定是否执行流水线
+stages:                                 # 构建阶段配置
+  - stage:                              # 定义一个 ID 标识为 gradle-build-stage ,名为 “Gradle Stage” 的阶段
+      name: gradle-build-stage
+      displayName: 'Gradle Stage'
+      failFast: false                   # 允许快速失败，即当 Stage 中有任务失败时，直接结束整个 Stage
+      steps:                            # 构建步骤配置
+        - step: gradlebuild@1           # 采用 Gradle 编译环境
+          name: gradle-build            # 定义一个 ID 标识为 gradle-build ,名为 “Gradle Step” 的阶段
+          displayName: 'Gradle Step'
+          inputs:                       # 构建输入参数设定
+            jdkVersion: 8               # 指定 JDK 环境版本为 8
+            gradleVersion: 5.4          # 指定 Gradle 环境版本为 5.4
+            goals: |                    # 示例脚本：输出 Gradle 版本信息并完成一个 HelloWorld 的构建
+              gradle -v
+              echo 'task helloworld{'               | tee -a build.gradle 
+              echo '    doLast{'                    | tee -a build.gradle 
+              echo '        println "Hello World!"' | tee -a build.gradle 
+              echo '    }'                          | tee -a build.gradle 
+              echo '}'                              | tee -a build.gradle 
+              gradle build
