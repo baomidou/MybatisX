@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate;
 
 
-import cn.kt.DbRemarksCommentGenerator;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.DbRemarksCommentGenerator;
 import com.baomidou.plugin.idea.mybatisx.model.Config;
 import com.baomidou.plugin.idea.mybatisx.model.DbType;
 import com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig;
@@ -25,7 +25,6 @@ import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.intellij.IntellijTableInfo;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
-import org.mybatis.generator.plugins.MapperAnnotationPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,7 +157,6 @@ public class MybatisGenerator {
                         result.addAll(warnings);
                     }
                 } catch (Exception e) {
-                    Messages.showMessageDialog(e.getMessage(), "MybatisGenerator failure", Messages.getErrorIcon());
                     result.add(e.getMessage());
                 }
                 VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
@@ -433,7 +431,6 @@ public class MybatisGenerator {
         serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
         serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
         context.addPluginConfiguration(serializablePlugin);
-
 
         if (config.isNeedToStringHashcodeEquals()) {
             PluginConfiguration equalsHashCodePlugin = new PluginConfiguration();
