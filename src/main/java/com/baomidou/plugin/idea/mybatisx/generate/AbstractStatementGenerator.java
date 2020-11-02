@@ -56,7 +56,7 @@ public abstract class AbstractStatementGenerator {
     /**
      * The constant SELECT_GENERATOR.
      */
-    public static final AbstractStatementGenerator SELECT_GENERATOR = new SelectGenerator("select", "get", "look", "find", "list", "search", "count", "query");
+    public static final AbstractStatementGenerator SELECT_GENERATOR = new SelectGenerator("select", "get", "look", "find", "list", "search", "query");
 
     /**
      * The constant DELETE_GENERATOR.

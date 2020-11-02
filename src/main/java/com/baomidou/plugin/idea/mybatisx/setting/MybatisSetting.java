@@ -1,25 +1,21 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.generate.GenerateModel;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.baomidou.plugin.idea.mybatisx.generate.GenerateModel;
-import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
-
 import org.jdom.Element;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.DELETE_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.INSERT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.SELECT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.*;
 
 /**
  * The type Mybatis setting.
@@ -27,10 +23,11 @@ import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenera
  * @author yanglin
  */
 @State(
-        name = "MybatisSettings",
-        storages = @Storage(value = "$APP_CONFIG$/mybatis.xml"))
+    name = "MybatisSettings",
+    storages = @Storage(value = "$APP_CONFIG$/mybatis.xml"))
 public class MybatisSetting implements PersistentStateComponent<Element> {
 
+    private static final String MAPPER_ICON = "mapperIcon";
     private GenerateModel statementGenerateModel;
 
     private Gson gson = new Gson();
@@ -63,6 +60,7 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
         element.setAttribute(UPDATE_GENERATOR.getId(), gson.toJson(UPDATE_GENERATOR.getPatterns()));
         element.setAttribute(SELECT_GENERATOR.getId(), gson.toJson(SELECT_GENERATOR.getPatterns()));
         element.setAttribute("statementGenerateModel", String.valueOf(statementGenerateModel.getIdentifier()));
+        element.setAttribute("mapperIcon",getMapperIcon());
         return element;
     }
 
@@ -73,6 +71,11 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
         loadState(state, UPDATE_GENERATOR);
         loadState(state, SELECT_GENERATOR);
         statementGenerateModel = GenerateModel.getInstance(state.getAttributeValue("statementGenerateModel"));
+        String mapperIcon = state.getAttributeValue(MAPPER_ICON);
+        if(StringUtils.isEmpty(mapperIcon)){
+            mapperIcon = MapperIcon.BIRD.name();
+        }
+        this.mapperIcon = mapperIcon;
     }
 
     private void loadState(Element state, AbstractStatementGenerator generator) {
@@ -98,5 +101,23 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
      */
     public void setStatementGenerateModel(GenerateModel statementGenerateModel) {
         this.statementGenerateModel = statementGenerateModel;
+    }
+
+    private String mapperIcon;
+
+    public void setMapperIcon(String mapperIcon) {
+        this.mapperIcon = mapperIcon;
+    }
+
+    public String getMapperIcon() {
+        if(mapperIcon == null){
+            mapperIcon = MapperIcon.BIRD.name();
+        }
+        return mapperIcon;
+    }
+
+    public enum MapperIcon{
+        DEFAULT,
+        BIRD;
     }
 }

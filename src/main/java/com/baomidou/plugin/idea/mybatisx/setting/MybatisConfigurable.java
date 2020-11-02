@@ -79,7 +79,10 @@ public class MybatisConfigurable implements SearchableConfigurable {
                 || !joiner.join(INSERT_GENERATOR.getPatterns()).equals(mybatisSettingForm.insertPatternTextField.getText())
                 || !joiner.join(DELETE_GENERATOR.getPatterns()).equals(mybatisSettingForm.deletePatternTextField.getText())
                 || !joiner.join(UPDATE_GENERATOR.getPatterns()).equals(mybatisSettingForm.updatePatternTextField.getText())
-                || !joiner.join(SELECT_GENERATOR.getPatterns()).equals(mybatisSettingForm.selectPatternTextField.getText());
+                || !joiner.join(SELECT_GENERATOR.getPatterns()).equals(mybatisSettingForm.selectPatternTextField.getText())
+         || (mybatisSettingForm.defaultRadioButton.isSelected()?
+            MybatisSetting.MapperIcon.BIRD.name().equals(mybatisSetting.getMapperIcon())
+            :MybatisSetting.MapperIcon.DEFAULT.name().equals(mybatisSetting.getMapperIcon()));
     }
 
     @Override
@@ -89,6 +92,10 @@ public class MybatisConfigurable implements SearchableConfigurable {
         DELETE_GENERATOR.setPatterns(Sets.newHashSet(splitter.split(mybatisSettingForm.deletePatternTextField.getText())));
         UPDATE_GENERATOR.setPatterns(Sets.newHashSet(splitter.split(mybatisSettingForm.updatePatternTextField.getText())));
         SELECT_GENERATOR.setPatterns(Sets.newHashSet(splitter.split(mybatisSettingForm.selectPatternTextField.getText())));
+        String mapperIcon = mybatisSettingForm.defaultRadioButton.isSelected() ?
+            MybatisSetting.MapperIcon.DEFAULT.name() :
+            MybatisSetting.MapperIcon.BIRD.name();
+        mybatisSetting.setMapperIcon(mapperIcon);
     }
 
     @Override
@@ -98,6 +105,16 @@ public class MybatisConfigurable implements SearchableConfigurable {
         mybatisSettingForm.deletePatternTextField.setText(joiner.join(DELETE_GENERATOR.getPatterns()));
         mybatisSettingForm.updatePatternTextField.setText(joiner.join(UPDATE_GENERATOR.getPatterns()));
         mybatisSettingForm.selectPatternTextField.setText(joiner.join(SELECT_GENERATOR.getPatterns()));
+
+        String mapperIcon = mybatisSetting.getMapperIcon();
+        if(mapperIcon==null){
+            mapperIcon = MybatisSetting.MapperIcon.BIRD.name();
+        }
+        if(MybatisSetting.MapperIcon.BIRD.name().equals(mapperIcon)){
+            mybatisSettingForm.birdRadioButton.setSelected(true);
+        }else{
+            mybatisSettingForm.defaultRadioButton.setSelected(true);
+        }
     }
 
     @Override
