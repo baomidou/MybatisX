@@ -5,6 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.TemplateResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
@@ -136,6 +137,11 @@ public class CompositeAppender implements SyntaxAppender {
         }
 
         return stringBuilder.toString();
+    }
+
+    @Override
+    public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
+        return appenderList.stream().flatMap(appender->appender.getMxParameter(syntaxAppenderWrapperLinkedList,entityClass).stream()).collect(Collectors.toList());
     }
 
     @Override

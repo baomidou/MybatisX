@@ -68,12 +68,12 @@ public class SortAppenderFactory extends BaseAppenderFactory {
 
         /**
          * OrderBy 标签的字段一定不会生成参数
-         * @param syntaxAppenderWrapperLinkedList the jpa string list
+         * @param syntaxAppenderWrappers the jpa string list
          * @param entityClass   the entity class
          * @return
          */
         @Override
-        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
+        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers, PsiClass entityClass) {
             return Collections.emptyList();
         }
     }

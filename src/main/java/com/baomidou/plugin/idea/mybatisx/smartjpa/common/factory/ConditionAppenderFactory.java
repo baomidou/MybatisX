@@ -3,7 +3,12 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.BaseAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.*;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomJoinAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.BetweenParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.BooleanParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer.InParameterChanger;
@@ -13,20 +18,15 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -99,10 +99,10 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("GreaterThanEqual", ">=", AreaSequence.CONDITION));
 
         // where x.age is null
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNull", "is null", AreaSequence.CONDITION,mappingField));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNull", "is null", AreaSequence.CONDITION, mappingField));
         // where x.age not null
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNotNull", "is not null", AreaSequence.CONDITION,mappingField));
-        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("NotNull", "is not null", AreaSequence.CONDITION,mappingField));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("IsNotNull", "is not null", AreaSequence.CONDITION, mappingField));
+        syntaxAppenderArrayList.add(CustomSuffixAppender.createByFixed("NotNull", "is not null", AreaSequence.CONDITION, mappingField));
         // where x.firstname like ?1
         syntaxAppenderArrayList.add(CustomSuffixAppender.createByParamJoin("Like", "like", AreaSequence.CONDITION));
         // where x.firstname not like ?1
@@ -146,47 +146,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
 
     @Override
     public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
-        SyntaxAppenderWrapper area = jpaStringList.peek();
-        if (area == null) {
-            return Collections.emptyList();
-        }
-
-        if (area.getAppender().getType() != AppendTypeEnum.AREA ||
-            !getTipText().equals(area.getAppender().getText())) {
-            return Collections.emptyList();
-        }
-        // 移除区域标识
-        jpaStringList.poll();
-
-        Map<String, PsiField> fieldMap = FieldUtil.getStringPsiFieldMap(entityClass);
-        LinkedList<TxParameter> txParameters = new LinkedList<>();
-        SyntaxAppenderWrapper currentAppender = null;
-        // 拉到下一个区域
-        while ((currentAppender = jpaStringList.poll()) != null) {
-            AppendTypeEnum type = currentAppender.getAppender().getType();
-            if (AppendTypeEnum.AREA == type) {
-                break;
-            }
-            if (type == AppendTypeEnum.FIELD) {
-
-                String text = StringUtils.lowerCaseFirstChar(currentAppender.getAppender().getText());
-                PsiField psiField = fieldMap.get(text);
-                if (psiField == null) {
-                    logger.info("字段映射失败,语义字段: {} ", text);
-                    continue;
-                }
-                // 把字段添加到队尾
-                txParameters.add(TxParameter.createByPsiField(psiField, AreaSequence.CONDITION));
-
-            } else if (type == AppendTypeEnum.SUFFIX) {
-                // 拿到后缀前面的字段
-                TxParameter last = txParameters.pollLast();
-                List<TxParameter> suffixParameters = currentAppender.getAppender().getParameter(last);
-                txParameters.addAll(suffixParameters);
-            }
-        }
-
-        return txParameters;
+        return new SyntaxAppenderWrapper(null, jpaStringList).getMxParameter(entityClass);
     }
 
     @Override

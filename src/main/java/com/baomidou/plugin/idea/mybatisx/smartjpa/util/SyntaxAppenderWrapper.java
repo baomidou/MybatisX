@@ -71,13 +71,15 @@ public class SyntaxAppenderWrapper {
     }
 
     public List<TxParameter> getMxParameter(PsiClass entityClass) {
-        if (syntaxAppender == null) {
-            List<TxParameter> list = new ArrayList<>();
+
+        List<TxParameter> list = new ArrayList<>();
+        if (syntaxAppender != null) {
+            list.addAll(syntaxAppender.getMxParameter(collector, entityClass));
+        }else{
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
-                list.addAll(syntaxAppenderWrapper.getAppender().getMxParameter(syntaxAppenderWrapper.getCollector(), entityClass));
+                list.addAll(syntaxAppenderWrapper.getMxParameter(entityClass));
             }
-            return list;
         }
-        return syntaxAppender.getMxParameter(collector, entityClass);
+        return list;
     }
 }

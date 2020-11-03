@@ -17,10 +17,16 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -120,15 +126,15 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         if (firstAreaAppender != null && !this.canExecute(firstAreaAppender.getText())) {
             return Collections.emptyList();
         }
+
+
         CompositeAppender compositeAppender = new CompositeAppender();
         SyntaxAppenderWrapper rootSyntaxWrapper = new SyntaxAppenderWrapper(null);
         compositeAppender.toTree(new LinkedList<>(jpaList), rootSyntaxWrapper);
 
-        return rootSyntaxWrapper.getMxParameter(entityClass);
+        List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
+        return areaListByJpa.stream().flatMap(x -> x.getMxParameter(entityClass, rootSyntaxWrapper.getCollector()).stream()).collect(Collectors.toList());
     }
-
-
-    private static final Logger logger = LoggerFactory.getLogger(BaseOperatorManager.class);
 
 
     /**

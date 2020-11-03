@@ -20,6 +20,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -168,13 +169,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return Collections.singletonList(new FieldSuffixAppendTypeService(this));
     }
 
-    @Override
-    public List<TxParameter> getParameter(TxParameter txParameter) {
-        if (mxParameterFinder == null) {
-            return Collections.singletonList(txParameter);
-        }
-        return mxParameterFinder.getParameter(txParameter);
-    }
 
     /**
      * 后缀后面一定不能添加任何东西了
@@ -229,7 +223,8 @@ public class CustomSuffixAppender implements SyntaxAppender {
             }
         }
 
-        String suffixTemplateText = suffixOperator.getTemplateText(fieldName, parameters,conditionFieldWrapper);
+        String suffixTemplateText = suffixOperator.
+            getTemplateText(fieldName, parameters,conditionFieldWrapper);
         stringBuilder.append(suffixTemplateText);
         return conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
     }
@@ -291,6 +286,30 @@ public class CustomSuffixAppender implements SyntaxAppender {
         boolean sequenceCheck = getAreaSequence().getSequence() == secondAppender.getAreaSequence().getSequence();
         return hasAreaCheck || (typeCheck && sequenceCheck);
     }
+
+    @Override
+    public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList,
+                                            PsiClass entityClass) {
+        List<TxParameter> txParameters = new ArrayList<>();
+        for (SyntaxAppenderWrapper syntaxAppenderWrapper : syntaxAppenderWrapperLinkedList) {
+            List<TxParameter> mxParameter = syntaxAppenderWrapper.getMxParameter(entityClass);
+            if(mxParameter.size()>0){
+                for (TxParameter txParameter : mxParameter) {
+                    txParameters.addAll(getParameter(txParameter));
+                }
+            }
+        }
+        return txParameters;
+    }
+
+    public List<TxParameter> getParameter(TxParameter txParameter) {
+        if (mxParameterFinder == null) {
+            return Collections.singletonList(txParameter);
+        }
+        return mxParameterFinder.getParameter(txParameter);
+    }
+
+
 
     /**
      * Gets suffix operator.

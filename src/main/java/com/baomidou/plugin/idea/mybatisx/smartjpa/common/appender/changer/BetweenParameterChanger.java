@@ -43,6 +43,7 @@ public class BetweenParameterChanger implements MxParameterChanger {
     public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
         final PsiParameter begin = parameters.poll();
         final PsiParameter end = parameters.poll();
+        assert begin != null;
         final String beginStr = JdbcTypeUtils.wrapperField(begin.getName(), begin.getType().getCanonicalText());
         final String endStr = JdbcTypeUtils.wrapperField(end.getName(), end.getType().getCanonicalText());
         return fieldName + SPACE + "between" + SPACE + beginStr  + " and " + endStr;

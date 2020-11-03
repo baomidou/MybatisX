@@ -6,7 +6,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.UpdateOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.BaseDialectManager;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.CustomStatement;
 import com.intellij.psi.PsiClass;
 
 import java.util.List;
@@ -41,6 +40,7 @@ public class MysqlManager extends BaseDialectManager {
                 this.registerStatementBlock(customStatement.getStatementBlock());
                 this.addOperatorName(customStatement.operatorName());
             }
+
         });
 
         this.registerManagers(new UpdateOperator(mappingField));

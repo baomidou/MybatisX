@@ -16,16 +16,13 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +55,7 @@ public class UpdateOperator extends BaseOperatorManager {
             statementBlock.setTagName(areaName);
             statementBlock.setResultAppenderFactory(updateFactory);
             statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(areaName, mappingField));
-            statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
+            statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null, "int"));
             this.registerStatementBlock(statementBlock);
         }
 
@@ -85,6 +82,11 @@ public class UpdateOperator extends BaseOperatorManager {
             return operatorXml + collector.stream().map(syntaxAppenderWrapper -> {
                 return syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
             }).collect(Collectors.joining());
+        }
+
+        @Override
+        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
+            return new SyntaxAppenderWrapper(null, jpaStringList).getMxParameter(entityClass);
         }
     }
 

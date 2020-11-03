@@ -13,8 +13,8 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.CustomStatement;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle.InsertCustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +49,11 @@ public class MysqlInsertBatch implements CustomStatement {
         ResultAppenderFactory appenderFactory = getResultAppenderFactory(mappingField, newAreaName);
         // insert + Batch
         final SyntaxAppender batchAppender =
-            CustomAreaAppender.createCustomAreaAppender(newAreaName, ResultAppenderFactory.RESULT, AreaSequence.AREA, AreaSequence.RESULT, appenderFactory);
+            CustomAreaAppender.createCustomAreaAppender(newAreaName,
+                ResultAppenderFactory.RESULT,
+                AreaSequence.AREA,
+                AreaSequence.RESULT,
+                appenderFactory);
         appenderFactory.registerAppender(batchAppender);
 
         StatementBlock statementBlock = new StatementBlock();
@@ -60,6 +64,7 @@ public class MysqlInsertBatch implements CustomStatement {
 
         this.operatorName = newAreaName;
     }
+
 
     /**
      * Gets result appender factory.
@@ -81,6 +86,7 @@ public class MysqlInsertBatch implements CustomStatement {
                 return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
+
         return appenderFactory;
     }
 

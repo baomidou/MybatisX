@@ -10,7 +10,12 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * 符号追加器
@@ -34,6 +39,11 @@ public interface SyntaxAppender {
         @Override
         public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return "";
+        }
+
+        @Override
+        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
+            return Collections.emptyList();
         }
 
 
@@ -121,16 +131,6 @@ public interface SyntaxAppender {
         }
     }
 
-    /**
-     * Gets parameter.
-     *
-     * @param txParameter the tx parameter
-     * @return the parameter
-     */
-    default List<TxParameter> getParameter(TxParameter txParameter) {
-        return Arrays.asList(txParameter);
-    }
-
 
     /**
      * Gets candidate appender.
@@ -164,15 +164,7 @@ public interface SyntaxAppender {
      * @param entityClass   the entity class
      * @return the mx parameter
      */
-    default List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
-        List<TxParameter> txParameters = new ArrayList<>();
-        SyntaxAppenderWrapper appender;
-        while ((appender = syntaxAppenderWrapperLinkedList.poll())!=null){
-            txParameters.addAll(appender.getMxParameter(entityClass));
-        }
-        return txParameters;
-    }
-
+    List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass);
     /**
      * 转成树
      *
