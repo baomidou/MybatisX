@@ -5,8 +5,8 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Result;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
@@ -18,9 +18,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +31,10 @@ import java.util.stream.Collectors;
  */
 public class ResultMapMappingResolver extends JpaMappingResolver implements EntityMappingResolver {
 
+    //
+    private static final String RESULT_MAP_WITH_BLOBS = "ResultMapWithBLOBs";
+    //
+    private static final String BASE_RESULT_MAP = "BaseResultMap";
     private Project project;
 
     public ResultMapMappingResolver(Project project) {
@@ -78,6 +85,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
 
     /**
      * 添加所有父类的 ResultMap
+     *
      * @param txFields
      * @param currentResultMap
      * @param entityClass
@@ -97,6 +105,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             }
         }
         if (foundResultMap != null) {
+            txFields.addAll(determineIds(entityClass,foundResultMap.getIds()));
             txFields.addAll(determineResults(foundResultMap.getResults(), entityClass));
             addExtends(txFields, foundResultMap, entityClass, resultMaps);
         }
@@ -165,20 +174,36 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
         if (resultMaps.size() == 1) {
             return Optional.ofNullable(resultMaps.get(0));
         }
-        ResultMap mostShortResultMap = null;
-        for (ResultMap resultMap : resultMaps) {
-            String currentMapId = resultMap.getId().getStringValue();
-            if (mostShortResultMap == null) {
-                mostShortResultMap = resultMap;
-            } else {
-                String shortName = mostShortResultMap.getId().getStringValue();
-                assert shortName != null;
-                assert currentMapId != null;
-                if (shortName.length() >= currentMapId.length()) {
-                    mostShortResultMap = resultMap;
+        // 字符串长度维度比较
+        Map<String, ResultMap> allResultMaps = resultMaps.stream().
+            collect(Collectors.toMap(k -> {
+                    String stringValue = k.getId().getStringValue();
+                    return stringValue == null ? "" : stringValue.toUpperCase();
+                },
+                v -> v,
+                BinaryOperator.maxBy(Comparator.comparing(k -> k.getId().getStringValue()))));
+        // find ResultMapWithBLOBs
+        ResultMap resultMap = allResultMaps.get(RESULT_MAP_WITH_BLOBS.toUpperCase());
+        // find BaseResultMap
+        if (resultMap == null) {
+            resultMap = allResultMaps.get(BASE_RESULT_MAP.toUpperCase());
+        }
+        // 短名称优先
+        if (resultMap == null) {
+            for (ResultMap resultMapItem : resultMaps) {
+                String currentMapId = resultMapItem.getId().getStringValue();
+                if (resultMap == null) {
+                    resultMap = resultMapItem;
+                } else {
+                    String shortName = resultMap.getId().getStringValue();
+                    assert shortName != null;
+                    assert currentMapId != null;
+                    if (shortName.length() >= currentMapId.length()) {
+                        resultMap = resultMapItem;
+                    }
                 }
             }
         }
-        return Optional.ofNullable(mostShortResultMap);
+        return Optional.ofNullable(resultMap);
     }
 }

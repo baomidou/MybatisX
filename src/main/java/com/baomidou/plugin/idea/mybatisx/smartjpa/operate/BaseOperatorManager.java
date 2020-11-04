@@ -132,8 +132,14 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         SyntaxAppenderWrapper rootSyntaxWrapper = new SyntaxAppenderWrapper(null);
         compositeAppender.toTree(new LinkedList<>(jpaList), rootSyntaxWrapper);
 
+        LinkedList<SyntaxAppenderWrapper> collector = rootSyntaxWrapper.getCollector();
+
         List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
-        return areaListByJpa.stream().flatMap(x -> x.getMxParameter(entityClass, rootSyntaxWrapper.getCollector()).stream()).collect(Collectors.toList());
+        return areaListByJpa.stream().flatMap(x -> {
+            SyntaxAppenderWrapper poll = collector.poll();
+            LinkedList<SyntaxAppenderWrapper> jpaStringList = poll == null ? new LinkedList<>() : poll.getCollector();
+            return x.getMxParameter(entityClass, jpaStringList).stream();
+        }).collect(Collectors.toList());
     }
 
 
