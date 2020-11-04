@@ -23,6 +23,7 @@ import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class InsertOperator extends BaseOperatorManager {
         public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
             String defineName = entityClass.getName();
             String variableName = StringUtils.lowerCaseFirstChar(defineName);
-            TxParameter parameter = TxParameter.createByOrigin(variableName, defineName, entityClass.getQualifiedName(), false);
+            TxParameter parameter = TxParameter.createByOrigin(variableName, defineName, entityClass.getQualifiedName(), false,Collections.emptyList());
             return Collections.singletonList(parameter);
         }
 

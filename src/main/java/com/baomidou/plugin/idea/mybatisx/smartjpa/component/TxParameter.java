@@ -13,6 +13,7 @@ import java.util.*;
  * The type Tx parameter.
  */
 public class TxParameter {
+    public static final String JAVA_LANG = "java.lang";
     private AreaSequence areaSequence;
     private String typeText;
     private String canonicalTypeText;
@@ -81,7 +82,7 @@ public class TxParameter {
     }
 
     private static boolean determinePrimitive(String canonicalText) {
-        if (canonicalText.startsWith("java.lang")) {
+        if (canonicalText.startsWith(JAVA_LANG)) {
             return true;
         }
         if (primitiveType.contains(canonicalText)) {
@@ -117,7 +118,7 @@ public class TxParameter {
      * @return tx parameter
      */
     public static TxParameter createByOrigin(String name, String typeText, String canonicalTypeText) {
-        return createByOrigin(name, typeText, canonicalTypeText, true);
+        return createByOrigin(name, typeText, canonicalTypeText, true,Collections.emptyList());
     }
 
 
@@ -130,12 +131,13 @@ public class TxParameter {
      * @param paramAnnotation   the param annotation
      * @return tx parameter
      */
-    public static TxParameter createByOrigin(String name, String typeText, String canonicalTypeText, boolean paramAnnotation) {
+    public static TxParameter createByOrigin(String name, String typeText, String canonicalTypeText, boolean paramAnnotation,List<String> importClass) {
         TxParameter txParameter = new TxParameter();
         txParameter.name = name;
         txParameter.typeText = typeText;
         txParameter.canonicalTypeText = canonicalTypeText;
         txParameter.paramAnnotation = paramAnnotation;
+        txParameter.importClass = importClass;
         return txParameter;
     }
 

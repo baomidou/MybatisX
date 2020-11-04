@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 import com.intellij.psi.PsiClass;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class TxReturnDescriptor implements TypeDescriptor {
      */
     public static TxReturnDescriptor createByOrigin(String qualifiedName, String simpleName) {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
-        txReturnDescriptor.qualifiedName = Collections.singletonList(qualifiedName);
+        txReturnDescriptor.qualifiedName = StringUtils.isBlank(qualifiedName) ? Collections.emptyList() : Collections.singletonList(qualifiedName);
         txReturnDescriptor.simpleName = simpleName;
         return txReturnDescriptor;
     }
