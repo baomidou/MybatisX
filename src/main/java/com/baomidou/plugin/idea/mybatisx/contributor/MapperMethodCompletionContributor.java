@@ -135,7 +135,9 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
     private static boolean inCommentOrLiteral(CompletionParameters parameters) {
         HighlighterIterator iterator = ((EditorEx) parameters.getEditor()).getHighlighter().createIterator(parameters.getOffset());
-        if (iterator.atEnd()) return false;
+        if (iterator.atEnd()) {
+            return false;
+        }
 
         IElementType elementType = iterator.getTokenType();
         if (elementType == CustomHighlighterTokenType.WHITESPACE) {

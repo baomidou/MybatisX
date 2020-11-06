@@ -165,7 +165,7 @@
         </intentionAction>
 
         <intentionAction id="baomidou.GenerateMapperMethodSmartAdvanceJpaAction">
-            <className>com.baomidou.plugin.idea.mybatisx.intention.GeneratSmartJpaAdvanceAction</className>
+            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateSmartJpaAdvanceAction</className>
         </intentionAction>
         <!--提示动作 end-->
 

@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingHolder;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.intellij.openapi.project.Project;
@@ -17,30 +17,29 @@ public class PlatformSimpleGenerator {
     /**
      * Gets platform generator.
      *
+     * @param entityClass           the entity class
      * @param project               the project
      * @param element               the element
-     * @param entityClass           the entity class
-     * @param entityMappingResolver the entity mapping resolver
      * @param text                  the text
      * @return the platform generator
      */
     @NotNull
     public PlatformGenerator getPlatformGenerator(@NotNull Project project,
                                                   @NotNull PsiElement element,
-                                                  PsiClass entityClass,
-                                                  EntityMappingResolver entityMappingResolver,
+                                                  EntityMappingHolder entityMappingHolder,
                                                   String text) {
         DbmsAdaptor dbms = getDbmsAdaptor(project, element);
         // 名字默认是从实体上面解析到的
-        DasTableAdaptor dasTableAdaptor = findAdaptor(project, entityClass, entityMappingResolver);
-        String tableName = findTableName(project, entityClass, entityMappingResolver);
+        PsiClass entityClass = entityMappingHolder.getEntityClass();
+        DasTableAdaptor dasTableAdaptor = findAdaptor(project, entityClass, entityMappingHolder.getTableName());
+        String tableName = findTableName(project, entityClass, entityMappingHolder.getTableName());
 
         return CommonGenerator.createEditorAutoCompletion(entityClass,
             text,
             dbms,
             dasTableAdaptor,
             tableName,
-            entityMappingResolver.getFields());
+            entityMappingHolder.getFields());
     }
 
     /**
@@ -51,11 +50,11 @@ public class PlatformSimpleGenerator {
      * @param entityMappingResolver the entity mapping resolver
      * @return the das table adaptor
      */
-    protected DasTableAdaptor findAdaptor(@NotNull Project project, PsiClass entityClass, EntityMappingResolver entityMappingResolver) {
+    protected DasTableAdaptor findAdaptor(@NotNull Project project, PsiClass entityClass, String tableName) {
         DasTableAdaptor dasTableAdaptor = new DasTableAdaptor();
         try {
             // 名字可能会找到合适的表名
-            getTableName(entityClass, project, entityMappingResolver.getTableName(), dasTableAdaptor);
+            getTableName(entityClass, project, tableName, dasTableAdaptor);
         } catch (NoClassDefFoundError ignore) {
         }
         return dasTableAdaptor;
@@ -66,15 +65,14 @@ public class PlatformSimpleGenerator {
      *
      * @param project               the project
      * @param entityClass           the entity class
-     * @param entityMappingResolver the entity mapping resolver
+     * @param tableName             the tableName
      * @return the string
      */
-    protected String findTableName(@NotNull Project project, PsiClass entityClass, EntityMappingResolver entityMappingResolver) {
-        String tableName = entityMappingResolver.getTableName();
+    protected String findTableName(@NotNull Project project, PsiClass entityClass, String tableName) {
         try {
             DasTableAdaptor dasTableAdaptor = new DasTableAdaptor();
             // 名字可能会找到合适的表名
-            tableName = getTableName(entityClass, project, entityMappingResolver.getTableName(), dasTableAdaptor);
+            tableName = getTableName(entityClass, project, tableName, dasTableAdaptor);
         } catch (NoClassDefFoundError ignore) {
         }
         return tableName;

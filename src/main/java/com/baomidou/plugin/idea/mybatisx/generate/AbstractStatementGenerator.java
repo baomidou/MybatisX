@@ -61,7 +61,7 @@ public abstract class AbstractStatementGenerator {
     /**
      * The constant DELETE_GENERATOR.
      */
-    public static final AbstractStatementGenerator DELETE_GENERATOR = new DeleteGenerator("del", "cancel");
+    public static final AbstractStatementGenerator DELETE_GENERATOR = new DeleteGenerator("del","delete", "cancel");
 
     /**
      * The constant INSERT_GENERATOR.

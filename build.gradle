@@ -56,6 +56,8 @@ dependencies {
     compile group: 'com.softwareloop', name: 'mybatis-generator-lombok-plugin', version: '1.0'
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.2'
     testCompile "junit:junit:4.12"
+    testCompile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.0'
+    testCompile group: 'commons-io', name: 'commons-io', version: '2.8.0'
     compileOnly "org.projectlombok:lombok:1.18.0"
 }
 

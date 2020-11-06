@@ -96,20 +96,6 @@ public class TxParameter {
     }
 
     /**
-     * Copy tx parameter.
-     *
-     * @param parameter the parameter
-     * @return the tx parameter
-     */
-    public static TxParameter copy(TxParameter parameter) {
-        TxParameter txParameter = new TxParameter();
-        txParameter.typeText = parameter.getTypeText();
-        txParameter.canonicalTypeText = parameter.getCanonicalTypeText();
-        txParameter.name = parameter.getName();
-        return txParameter;
-    }
-
-    /**
      * Create by origin tx parameter.
      *
      * @param name              变量名

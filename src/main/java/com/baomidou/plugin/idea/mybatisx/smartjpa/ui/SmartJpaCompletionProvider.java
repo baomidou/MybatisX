@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingHolder;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
@@ -119,15 +120,16 @@ public class SmartJpaCompletionProvider {
             return Optional.empty();
         }
         EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(editor.getProject(), mapperClass);
-        PsiClass entityClass = entityMappingResolverFactory.searchEntity();
-        EntityMappingResolver mybatisPlus3MappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
-        if (mybatisPlus3MappingResolver == null) {
+        EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity();
+        PsiClass entityClass = entityMappingHolder.getEntityClass();
+
+        if (entityClass == null) {
             foundAreaOperateManager = false;
             editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
             return Optional.empty();
         }
         // 第一次初始化
-        List<TxField> mappingField = mybatisPlus3MappingResolver.getFields();
+        List<TxField> mappingField = entityMappingHolder.getFields();
         // 旗舰版根据配置生成, 社区版固定为mysql的形式
         DbmsAdaptor dbms = DbmsAdaptor.MYSQL;
         try{

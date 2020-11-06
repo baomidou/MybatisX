@@ -12,7 +12,7 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * @author liushang@zsyjr.com
+ * @author ls9527
  */
 
 public class DbRemarksCommentGenerator implements CommentGenerator {

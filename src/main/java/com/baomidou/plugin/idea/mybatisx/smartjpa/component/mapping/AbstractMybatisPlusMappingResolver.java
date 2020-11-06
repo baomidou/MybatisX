@@ -3,7 +3,16 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiAnnotation;
+import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.PsiLiteralExpression;
+import com.intellij.psi.PsiReferenceList;
+import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -20,27 +29,6 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
      * The constant VALUE.
      */
     public static final String VALUE = "value";
-    /**
-     * 表名
-     */
-    private String tableName;
-
-
-    /**
-     * 字段名列表
-     */
-    private List<TxField> txFields;
-
-
-    /**
-     * Init datas.
-     *
-     * @param entityClass the entity class
-     */
-    protected void initDatas(PsiClass entityClass) {
-        tableName = determineTableName(entityClass);
-        txFields = determineFields(entityClass);
-    }
 
     /**
      * 获得表名注解
@@ -76,13 +64,15 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     @NotNull
     protected abstract String getTableFieldAnnotation(@NotNull PsiField field);
 
-    private String determineTableName(PsiClass psiClass) {
-        PsiAnnotation annotation = psiClass.getAnnotation(getTableNameAnnotation());
+    @Override
+    public Optional<String> findTableName(PsiClass entityClass) {
+        PsiAnnotation annotation = entityClass.getAnnotation(getTableNameAnnotation());
         // 获取 mp 的注解
-        String tableName = getAttributeValue(annotation, VALUE);
+        Optional<String> tableName = Optional.ofNullable(getAttributeValue(annotation, VALUE));
+
         // 获取 jpa 注解
-        if (tableName == null) {
-            tableName = getTableNameByJpaOrCamel(psiClass);
+        if (!tableName.isPresent()) {
+            tableName = getTableNameByJpa(entityClass);
         }
         return tableName;
     }
@@ -128,8 +118,6 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
                     continue;
                 }
 
-                initDatas(entityClass);
-
                 return Optional.ofNullable(entityClass);
             } else {
                 // 递归查找，  通过父类找到entity
@@ -143,6 +131,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         return Optional.empty();
     }
 
+
     /**
      * Gets base mapper class name.
      *
@@ -151,12 +140,8 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     protected abstract String getBaseMapperClassName();
 
     @Override
-    public List<TxField> getFields() {
-        return txFields;
+    public List<TxField> findFields(PsiClass mapperClass, PsiClass entityClass) {
+        return determineFields(entityClass);
     }
 
-    @Override
-    public String getTableName() {
-        return tableName;
-    }
 }

@@ -7,13 +7,9 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 在接口上加入注释, 注释内部加入注解:  @Entity com.xx.xx.User
@@ -27,13 +23,8 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
     public static final String TABLE_ENTITY = "Entity";
 
     @Override
-    public List<TxField> getFields() {
-        return fieldList;
-    }
-
-    @Override
-    public String getTableName() {
-        return tableName;
+    public List<TxField> findFields(PsiClass mapperClass, PsiClass entityClass) {
+        return initDataByCamel(entityClass);
     }
 
     @Override
@@ -47,8 +38,6 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
                     JavaPsiFacade instance = JavaPsiFacade.getInstance(mapperClass.getProject());
                     PsiClass entityClass = instance.findClass(entityText, mapperClass.getResolveScope());
                     if (entityClass != null) {
-                        fieldList = initDataByCamel(entityClass);
-                        tableName = getTableNameByJpaOrCamel(entityClass);
                         return Optional.of(entityClass);
                     }
                 }
@@ -58,14 +47,11 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
         return Optional.empty();
     }
 
-    /**
-     * 字段列表
-     */
-    private List<TxField> fieldList;
-    /**
-     * 表名
-     */
-    private String tableName;
+    @Override
+    public Optional<String> findTableName(PsiClass entityClass) {
+        return  getTableNameByJpa(entityClass);
+    }
+
 
 
 

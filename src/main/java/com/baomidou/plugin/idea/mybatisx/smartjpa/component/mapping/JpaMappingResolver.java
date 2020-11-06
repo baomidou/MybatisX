@@ -43,14 +43,8 @@ public abstract class JpaMappingResolver {
      */
     public static final String TABLE_NAME = "name";
 
-    /**
-     * Gets table name by jpa or camel.
-     *
-     * @param entityClass the entity class
-     * @return the table name by jpa or camel
-     */
-    protected String getTableNameByJpaOrCamel(PsiClass entityClass) {
-        if(entityClass == null){
+    protected Optional<String> getTableNameByJpa(PsiClass entityClass) {
+        if (entityClass == null) {
             throw new IllegalArgumentException("无法确认实体类, 请尝试重新打开Mapper");
         }
         String tableName = null;
@@ -58,13 +52,14 @@ public abstract class JpaMappingResolver {
         if (annotation != null) {
             PsiAnnotationMemberValue originTable = annotation.findAttributeValue(TABLE_NAME);
             PsiLiteralExpression expression = (PsiLiteralExpression) originTable;
+            if (expression == null || expression.getValue() == null) {
+                return Optional.empty();
+            }
             tableName = expression.getValue().toString();
         }
-        if (tableName == null) {
-            tableName = getUnderLineName(entityClass.getName());
-        }
-        return tableName;
+        return Optional.ofNullable(tableName);
     }
+
 
     /**
      * Gets column name by jpa or camel.
@@ -116,7 +111,7 @@ public abstract class JpaMappingResolver {
                                 String canonicalText = type.getCanonicalText();
                                 // 当存在多个类型的时候, 排除主键类型.  java开头的包
                                 if (!canonicalText.startsWith("java")
-                                 &&StringUtils.isNotBlank(canonicalText)) {
+                                    && StringUtils.isNotBlank(canonicalText)) {
                                     PsiClass entityClass = instance.findClass(canonicalText, mapperClass.getResolveScope());
                                     if (entityClass != null) {
                                         PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);

@@ -19,6 +19,7 @@ public class MapperClassGenerateFactory {
     private final Project project;
     private final Editor editor;
     private final PsiTypeElement statementElement;
+    private PsiClass mapperClass;
     private final TypeDescriptor parameterDescriptor;
     private final ConditionFieldWrapper conditionFieldWrapper;
     private final TypeDescriptor returnDescriptor;
@@ -26,6 +27,7 @@ public class MapperClassGenerateFactory {
     public MapperClassGenerateFactory(Project project,
                                       Editor editor,
                                       PsiTypeElement statementElement,
+                                      PsiClass mapperClass,
                                       TypeDescriptor parameterDescriptor,
                                       ConditionFieldWrapper conditionFieldWrapper,
                                       TypeDescriptor returnDescriptor) {
@@ -33,6 +35,7 @@ public class MapperClassGenerateFactory {
         this.project = project;
         this.editor = editor;
         this.statementElement = statementElement;
+        this.mapperClass = mapperClass;
         this.parameterDescriptor = parameterDescriptor;
         this.conditionFieldWrapper = conditionFieldWrapper;
         this.returnDescriptor = returnDescriptor;
@@ -60,23 +63,29 @@ public class MapperClassGenerateFactory {
         }
         Document document = editor.getDocument();
         String newMethodString = prefix + generateMethodStr();
-        TextRange textRange = statementElement.getTextRange();
         PsiFile containingFile = statementElement.getContainingFile();
 
-        document.replaceString(textRange.getStartOffset(), textRange.getEndOffset(), newMethodString);
-
-        CodeStyleManager instance = CodeStyleManager.getInstance(project);
-        instance.reformatText(containingFile, textRange.getStartOffset(), textRange.getStartOffset() + newMethodString.length());
-
+        PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
+        final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
+        statementElement.replace(psiMethod);
+        // reformat
+        PsiMethod methodBySignature = mapperClass.findMethodBySignature(psiMethod, false);
+        if(methodBySignature!=null){
+            TextRange textRange = methodBySignature.getTextRange();
+            CodeStyleManager instance = CodeStyleManager.getInstance(project);
+            instance.reformatText(containingFile, textRange.getStartOffset(), textRange.getEndOffset());
+        }
         // 导入对象
         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
         List<String> importList = new ArrayList<>();
         importList.addAll(importListParam);
         importList.addAll(returnDescriptor.getImportList());
         importList.addAll(parameterDescriptor.getImportList());
-
         Importer importerReturn = Importer.create(importList);
         importerReturn.addImportToFile(psiDocumentManager,(PsiJavaFile) containingFile,document);
+
+
 
 
     }

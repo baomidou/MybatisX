@@ -96,7 +96,12 @@ public class InsertOperator extends BaseOperatorManager {
         public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
             String defineName = entityClass.getName();
             String variableName = StringUtils.lowerCaseFirstChar(defineName);
-            TxParameter parameter = TxParameter.createByOrigin(variableName, defineName, entityClass.getQualifiedName(), false,Collections.emptyList());
+            List<String> importClass = Collections.singletonList(entityClass.getQualifiedName());
+            TxParameter parameter = TxParameter.createByOrigin(variableName,
+                defineName,
+                entityClass.getQualifiedName(),
+                false,
+                importClass);
             return Collections.singletonList(parameter);
         }
 

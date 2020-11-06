@@ -7,6 +7,8 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.xml.XmlTag;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 生成mybatis的xml文件内容.
@@ -47,7 +49,8 @@ public class MybatisXmlGenerator implements Generator {
 
     @Override
     public void generateSelect(String id, String value, String resultMap, String resultType) {
-        XmlTag select = mapper.ensureTagExists().createChildTag("select", null, value, false);
+        XmlTag xmlTag = mapper.ensureTagExists();
+        XmlTag select = xmlTag.createChildTag("select", null, value, false);
         select.setAttribute(ID, id);
         // 是否被映射结果集
         boolean resultMapped = false;
@@ -59,14 +62,20 @@ public class MybatisXmlGenerator implements Generator {
             select.setAttribute(RESULT_TYPE, resultType);
         }
 
-        mapper.ensureTagExists().addSubTag(select, false);
+        xmlTag.addSubTag(select, false);
 
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(select);
 
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("the text of select tag is :"+select.getText());
+        }
         mapperClassGenerateFactory.generateMethod();
 
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(MybatisXmlGenerator.class);
 
     @Override
     public void generateDelete(String id, String value) {

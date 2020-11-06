@@ -15,15 +15,10 @@ public interface EntityMappingResolver {
      * 获取所有字段
      *
      * @return fields
+     * @param mapperClass
+     * @param entityClass
      */
-    List<TxField> getFields();
-
-    /**
-     * 获取所有表名
-     *
-     * @return table name
-     */
-    String getTableName();
+    List<TxField> findFields(PsiClass mapperClass, PsiClass entityClass);
 
     /**
      * 支持 mapper 类
@@ -32,4 +27,13 @@ public interface EntityMappingResolver {
      * @return optional
      */
     Optional<PsiClass> findEntity(PsiClass mapperClass);
+
+    /**
+     *
+     * @param entityClass
+     * @return
+     */
+    Optional<String> findTableName(PsiClass entityClass);
+
+
 }

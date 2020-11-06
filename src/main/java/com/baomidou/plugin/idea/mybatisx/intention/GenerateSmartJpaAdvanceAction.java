@@ -6,6 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionIfTestWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingHolder;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
@@ -37,7 +38,7 @@ import java.util.Set;
  *
  * @author ls9527
  */
-public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction implements IntentionAction {
+public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction implements IntentionAction {
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
@@ -53,8 +54,8 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
                 return;
             }
             EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
-            PsiClass entityClass = entityMappingResolverFactory.searchEntity();
-            EntityMappingResolver entityMappingResolver = entityMappingResolverFactory.getEntityMappingResolver();
+            EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity();
+            PsiClass entityClass = entityMappingHolder.getEntityClass();
             if (entityClass == null) {
                 logger.info("未找到实体类");
                 return;
@@ -67,7 +68,7 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
             if (hasDatabaseComponent) {
                 platformSimpleGenerator = new PlatformDbGenerator();
             }
-            PlatformGenerator platformGenerator = platformSimpleGenerator.getPlatformGenerator(project, element, entityClass, entityMappingResolver, text);
+            PlatformGenerator platformGenerator = platformSimpleGenerator.getPlatformGenerator(project, element, entityMappingHolder, text);
             // 不仅仅是参数的字符串拼接， 还需要导入的对象
             TypeDescriptor parameterDescriptor = platformGenerator.getParameter();
 
@@ -102,6 +103,7 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
                 new MapperClassGenerateFactory(project,
                     editor,
                     statementElement,
+                    mapperClass,
                     parameterDescriptor,
                     conditionFieldWrapper,
                     returnDescriptor);
@@ -114,8 +116,6 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
 
         } catch (ProcessCanceledException e) {
             logger.info("cancel info", e);
-        } catch (Throwable e) {
-            logger.error("JPA生成代码出错", e);
         }
     }
 
@@ -173,7 +173,7 @@ public class GeneratSmartJpaAdvanceAction extends PsiElementBaseIntentionAction 
     }
 
 
-    private static final Logger logger = LoggerFactory.getLogger(GeneratSmartJpaAdvanceAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenerateSmartJpaAdvanceAction.class);
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {

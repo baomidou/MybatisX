@@ -18,7 +18,7 @@ import java.util.Optional;
  *
  * @author ls9527
  */
-public class GenerateSmartJpaAction extends GeneratSmartJpaAdvanceAction {
+public class GenerateSmartJpaAction extends GenerateSmartJpaAdvanceAction {
 
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateSmartJpaAction.class);
@@ -47,5 +47,8 @@ public class GenerateSmartJpaAction extends GeneratSmartJpaAdvanceAction {
         return Optional.of(new NeverContainsFieldWrapper(project));
     }
 
-
+    @Override
+    public boolean startInWriteAction() {
+        return true;
+    }
 }

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -43,21 +44,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
     }
 
     @Override
-    public List<TxField> getFields() {
-        return fieldList;
-    }
-
-    @Override
-    public String getTableName() {
-        return tableName;
-    }
-
-    private String tableName;
-
-    private List<TxField> fieldList;
-
-    @Override
-    public Optional<PsiClass> findEntity(PsiClass mapperClass) {
+    public List<TxField> findFields(PsiClass mapperClass, PsiClass entityClassParam) {
         Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(project, mapperClass);
         if (firstMapper.isPresent()) {
             Mapper mapper = firstMapper.get();
@@ -69,19 +56,43 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
                 GenericAttributeValue<PsiClass> type = resultMap.getType();
                 // 实体类的名字
                 PsiClass entityClass = type.getValue();
-
-                tableName = getTableNameByJpaOrCamel(entityClass);
+                if(entityClass == null){
+                    entityClass = entityClassParam;
+                }
 
                 List<TxField> txFields = new ArrayList<>();
                 txFields.addAll(determineIds(entityClass, resultMap.getIds()));
                 txFields.addAll(determineResults(resultMap.getResults(), entityClass));
                 addExtends(txFields, resultMap, entityClass, mapper.getResultMaps());
-                this.fieldList = txFields;
-                return Optional.of(entityClass);
+                return txFields;
+            }
+        }
+        return Collections.emptyList();
+    }
+
+
+
+    @Override
+    public Optional<PsiClass> findEntity(PsiClass mapperClass) {
+        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(project, mapperClass);
+        if (firstMapper.isPresent()) {
+            Mapper mapper = firstMapper.get();
+            Optional<ResultMap> resultMapOpt = findResultMap(mapper.getResultMaps());
+            if (resultMapOpt.isPresent()) {
+                ResultMap resultMap = resultMapOpt.get();
+                GenericAttributeValue<PsiClass> type = resultMap.getType();
+                // 实体类的名字
+                return Optional.ofNullable(type.getValue());
             }
         }
         return Optional.empty();
     }
+
+    @Override
+    public Optional<String> findTableName(PsiClass entityClass) {
+        return getTableNameByJpa(entityClass);
+    }
+
 
     /**
      * 添加所有父类的 ResultMap
@@ -116,9 +127,9 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
     }
 
     @Nullable
-    private TxField determineField(PsiClass mapperClass, GenericAttributeValue<XmlAttributeValue> property, final XmlTag xmlTag) {
+    private TxField determineField(PsiClass entityClass, GenericAttributeValue<XmlAttributeValue> property, final XmlTag xmlTag) {
         String propertyValue = property.getStringValue();
-        PsiField field = mapperClass.findFieldByName(propertyValue, true);
+        PsiField field = entityClass.findFieldByName(propertyValue, true);
 
         String column = null;
         if (xmlTag != null) {

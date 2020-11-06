@@ -18,8 +18,10 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -109,8 +111,15 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
             // 变量名称
             String variableName = StringUtils.lowerCaseFirstChar(entityClass.getName()) + "Collection";
 
-            TxParameter parameter = TxParameter.createByOrigin(variableName, defineName, Collection.class.getName());
-            return Arrays.asList(parameter);
+            List<String> importClass = new ArrayList<>();
+            importClass.add(Collection.class.getName());
+            importClass.add(entityClass.getQualifiedName());
+            TxParameter parameter = TxParameter.createByOrigin(variableName,
+                defineName,
+                Collection.class.getName(),
+                true,
+                importClass);
+            return Collections.singletonList(parameter);
         }
     }
 

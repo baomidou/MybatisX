@@ -14,7 +14,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
-import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
@@ -83,7 +83,7 @@ public class CommonGenerator implements PlatformGenerator {
     @Override
     public TypeDescriptor getParameter() {
         List<TxParameter> parameters = appenderManager.getParameters(entityClass, new LinkedList<>(jpaList));
-        return new TxParameterDescriptor(parameters,mappingField);
+        return new TxParameterDescriptor(parameters, mappingField);
     }
 
 
@@ -97,9 +97,7 @@ public class CommonGenerator implements PlatformGenerator {
     public void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
                                   PsiMethod psiMethod,
                                   ConditionFieldWrapper conditionFieldWrapper) {
-
-
-        WriteCommandAction.runWriteCommandAction(psiMethod.getProject(), () -> {
+        WriteAction.run(()->{
             // 生成完整版的内容
             Generator generator = conditionFieldWrapper.getGenerator(mapperClassGenerateFactory);
             appenderManager.generateMapperXml(
@@ -111,7 +109,6 @@ public class CommonGenerator implements PlatformGenerator {
                 generator,
                 conditionFieldWrapper);
         });
-
     }
 
     @Override
