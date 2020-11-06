@@ -116,21 +116,6 @@ public class UpdateOperator extends BaseOperatorManager {
     }
 
 
-//    @Override
-//    public List<TxParameter> getParameters(PsiClass entityClass, LinkedList<SyntaxAppender> jpaStringList) {
-//        List<TxParameter> parameters = super.getParameters(entityClass, jpaStringList);
-//        Set<String> collection = new HashSet<>();
-//        for (TxParameter parameter : parameters) {
-//            String oldParamName = parameter.getName();
-//            if (!collection.add(oldParamName)) {
-//                String newName = "old" + StringUtils.upperCaseFirstChar(oldParamName);
-//                parameter.setName(newName);
-//            }
-//        }
-//        return parameters;
-//    }
-
-
     @Override
     public String getTagName() {
         return "update";

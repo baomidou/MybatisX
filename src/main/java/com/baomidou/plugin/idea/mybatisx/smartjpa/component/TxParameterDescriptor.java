@@ -79,7 +79,7 @@ public class TxParameterDescriptor implements TypeDescriptor {
     private String getParameterName(TxParameter txParameter, Set<String> addedParamNames) {
         String paramName = txParameter.getName();
         if (!addedParamNames.add(paramName)) {
-            paramName = "old" + paramName;
+            paramName = "old" + StringUtils.upperCaseFirstChar(paramName);
         }
         String defineAnnotation = "@Param(\"" + paramName + "\")";
         String defineParam = txParameter.getTypeText() + SPACE + paramName;
