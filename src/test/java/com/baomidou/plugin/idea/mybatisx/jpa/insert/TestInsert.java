@@ -1,11 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.jpa.insert;
 
 import com.baomidou.plugin.idea.mybatisx.jpa.BaseJpaTest;
-import com.intellij.database.util.SqlDialects;
 import com.intellij.sql.dialects.SqlDialectMappings;
 import com.intellij.sql.dialects.SqlLanguageDialect;
 import com.intellij.sql.dialects.oracle.OracleDialect;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

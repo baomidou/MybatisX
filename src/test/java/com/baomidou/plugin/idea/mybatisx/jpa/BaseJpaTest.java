@@ -28,10 +28,12 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.impl.FileManager;
+import com.intellij.testFramework.IdeaTestUtil;
 import com.intellij.testFramework.LightProjectDescriptor;
 import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
 import com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import com.intellij.util.lang.JavaVersion;
 import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.reflection.Jdk;
 import org.jetbrains.annotations.NotNull;
@@ -92,8 +94,14 @@ public abstract class BaseJpaTest extends JavaCodeInsightFixtureTestCase {
     protected void tuneFixture(JavaModuleFixtureBuilder moduleBuilder) throws Exception {
         super.tuneFixture(moduleBuilder);
 
-        moduleBuilder.addJdk("/home/karen/tools/jdk1.8.0_261");
+        String javaHome = System.getenv("JAVA_HOME");
+        if(javaHome == null){
+            javaHome = IdeaTestUtil.getMockJdk18Path().getPath();
+        }
+
+        moduleBuilder.addJdk(javaHome);
 
         moduleBuilder.addLibrary("mp3-lib","src/test/testData/lib");
+
     }
 }
