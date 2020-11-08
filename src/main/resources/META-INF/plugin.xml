@@ -1,7 +1,6 @@
 <idea-plugin url="https://gitee.com/baomidou/mybatis-plus" require-restart="false" allow-bundled-update="true">
     <id>com.baomidou.plugin.idea.mybatisx</id>
     <name>MyBatisX</name>
-    <version>1.0.0</version>
     <vendor email="jobob@qq.com" url="https://gitee.com/baomidou/MybatisX">MybatisX</vendor>
 
     <description><![CDATA[

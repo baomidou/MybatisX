@@ -3,8 +3,8 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 import java.util.Collection;
 
 import com.google.common.base.Function;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -42,9 +42,19 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
-        if (element instanceof PsiNameIdentifierOwner
-            && JavaUtils.isElementWithinInterface(element)
-        && !(element instanceof PsiParameter)) {
+        PsiElement foundElement = null;
+        // 类可以跳转
+        if(element instanceof PsiClass){
+            foundElement = element;
+        }
+        // 接口内的方法可以跳转
+        if(element instanceof PsiMethod){
+            if(JavaUtils.isElementWithinInterface(element)){
+                foundElement = element;
+            }
+        }
+        // 可跳转的节点加入跳转标识
+        if (foundElement != null) {
             CommonProcessors.CollectProcessor<IdDomElement> processor = new CommonProcessors.CollectProcessor<>();
             JavaService.getInstance(element.getProject()).process(element, processor);
             Collection<IdDomElement> results = processor.getResults();
@@ -54,8 +64,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         .setAlignment(GutterIconRenderer.Alignment.CENTER)
                         .setTargets(Collections2.transform(results, FUN))
                         .setTooltipTitle("Navigation to target in mapper xml");
-                // TODO 智能跳转到合适的xml
-                result.add(builder.createLineMarkerInfo(((PsiNameIdentifierOwner) element).getNameIdentifier()));
+                result.add(builder.createLineMarkerInfo(((PsiNameIdentifierOwner) foundElement).getNameIdentifier()));
             }
         }
     }

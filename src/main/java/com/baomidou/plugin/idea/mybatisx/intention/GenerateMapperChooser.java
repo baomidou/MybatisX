@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaToken;
 import com.intellij.psi.util.PsiTreeUtil;
 
-import jdk.nashorn.internal.parser.TokenType;
 import org.jetbrains.annotations.NotNull;
 
 /**

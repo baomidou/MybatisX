@@ -2,19 +2,19 @@ buildscript {
     repositories {
         mavenCentral()
         maven {url 'https://plugins.gradle.org/m2/'}
-        maven {url 'https://oss.sonatype.org/content/repositories/snapshots/'}
+        maven {url 'https://oss.sonatype.org/content/repositories/releases/'}
         maven {url 'https://dl.bintray.com/jetbrains/intellij-plugin-service'}
         maven {url 'https://dl.bintray.com/jetbrains/intellij-third-party-dependencies/'}
     }
     dependencies {
-        classpath "org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.5.0-SNAPSHOT"
+        classpath "org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.6.0"
     }
 }
 
-
-apply plugin: 'idea'
-apply plugin: 'java'
-apply plugin: 'org.jetbrains.intellij'
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.6.0'
+}
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
