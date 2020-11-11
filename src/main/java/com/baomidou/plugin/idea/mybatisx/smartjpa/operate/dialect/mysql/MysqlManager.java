@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CountOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
@@ -30,6 +31,8 @@ public class MysqlManager extends BaseDialectManager {
     @Override
     protected void init(List<TxField> mappingField, PsiClass entityClass) {
         this.registerManagers(new SelectOperator(mappingField, entityClass));
+        this.registerManagers(new CountOperator(mappingField, entityClass));
+
 
         this.registerManagers(new InsertOperator(mappingField) {
             @Override

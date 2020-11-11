@@ -35,6 +35,7 @@ public class OracleManager extends BaseDialectManager {
     @Override
     protected void init(List<TxField> mappingField, PsiClass entityClass) {
         registerManagers(new SelectOperator(mappingField, entityClass));
+        this.registerManagers(new CountOperator(mappingField, entityClass));
         this.registerManagers(new InsertOperator(mappingField) {
             @Override
             protected void initCustomArea(String areaName, List<TxField> mappingField) {
