@@ -4,6 +4,8 @@ import com.intellij.psi.PsiClass;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 /**
  * The type Alias desc.
  *
