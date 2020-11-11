@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CountOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
