@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
