@@ -13,7 +13,11 @@ import java.util.Date;
 @Accessors(chain = true)
 @Data
 @Table(name = "t_blog")
-public class JpaBlog {
+public class JpaBlog extends ParentDTO {
+    /**
+     * 用于测试忽略静态字段
+     */
+    private static final long serialVersionUID = 1L;
     @Id
    private Long id;
    private String title;

@@ -143,6 +143,12 @@
         where money = #{oldmoney,jdbcType=DECIMAL}
           AND content = #{content,jdbcType=VARCHAR}
     </update>
+    <select id="selectIdAndContentById" resultMap="BaseResultMap">
+select id, content
+from t_blog
+where
+id = #{id,jdbcType=NUMERIC}
+</select>
 
 
 </mapper>
