@@ -57,11 +57,20 @@ public final class DomUtils {
      * @return boolean
      */
     public static boolean isMybatisFile(@Nullable PsiFile file) {
+        if(file == null){
+            return false;
+        }
         if (!isXmlFile(file)) {
             return false;
         }
         XmlTag rootTag = ((XmlFile) file).getRootTag();
-        return null != rootTag && rootTag.getName().equals("mapper");
+        if(rootTag == null){
+            return false;
+        }
+        if(!rootTag.getName().equals("mapper")){
+            return false;
+        }
+        return true;
     }
 
     /**
