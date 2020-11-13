@@ -15,15 +15,14 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

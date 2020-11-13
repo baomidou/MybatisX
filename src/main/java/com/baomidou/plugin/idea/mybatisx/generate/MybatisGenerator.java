@@ -23,13 +23,29 @@ import com.intellij.psi.PsiElement;
 import org.mybatis.generator.api.IntellijMyBatisGenerator;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.intellij.IntellijTableInfo;
-import org.mybatis.generator.config.*;
+import org.mybatis.generator.config.CommentGeneratorConfiguration;
+import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.GeneratedKey;
+import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.config.JavaTypeResolverConfiguration;
+import org.mybatis.generator.config.ModelType;
+import org.mybatis.generator.config.PluginConfiguration;
+import org.mybatis.generator.config.PropertyRegistry;
+import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
+import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 生成mybatis相关代码

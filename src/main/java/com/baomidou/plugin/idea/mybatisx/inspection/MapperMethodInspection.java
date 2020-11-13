@@ -15,12 +15,15 @@ import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PsiClassUtil;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * The type Mapper method inspection.

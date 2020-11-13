@@ -7,7 +7,11 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The type Tx parameter.

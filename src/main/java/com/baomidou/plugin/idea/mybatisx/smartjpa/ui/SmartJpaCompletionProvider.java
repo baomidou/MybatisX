@@ -3,7 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.ui;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingHolder;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
@@ -119,8 +118,8 @@ public class SmartJpaCompletionProvider {
         if (foundAreaOperateManager != null && !foundAreaOperateManager) {
             return Optional.empty();
         }
-        EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(editor.getProject(), mapperClass);
-        EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity();
+        EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(editor.getProject());
+        EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity(mapperClass);
         PsiClass entityClass = entityMappingHolder.getEntityClass();
 
         if (entityClass == null) {

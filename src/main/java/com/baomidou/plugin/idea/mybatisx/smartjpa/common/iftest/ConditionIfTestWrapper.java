@@ -11,7 +11,10 @@ import com.baomidou.plugin.idea.mybatisx.ui.SmartJpaAdvanceUI;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

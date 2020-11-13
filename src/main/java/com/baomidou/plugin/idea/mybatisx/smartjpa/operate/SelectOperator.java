@@ -16,7 +16,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.appender.SelectCustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;

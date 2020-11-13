@@ -1,26 +1,25 @@
 package com.baomidou.plugin.idea.mybatisx.provider;
 
-import java.util.Collection;
-
-import com.google.common.base.Function;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.util.xml.DomElement;
-import org.jetbrains.annotations.NotNull;
-
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.CommonProcessors;
+import com.intellij.util.xml.DomElement;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 /**
  * The type Mapper line marker provider.

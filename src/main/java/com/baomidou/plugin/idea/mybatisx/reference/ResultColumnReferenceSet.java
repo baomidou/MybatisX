@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.ReferenceSetBase;
@@ -14,17 +15,20 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author yanglin
  */
-public class ResultPropertyReferenceSet extends ReferenceSetBase<PsiReference> {
+public class ResultColumnReferenceSet extends ReferenceSetBase<PsiReference> {
+
+    private PsiClass mapperClass;
 
     /**
      * Instantiates a new Result property reference set.
-     *
-     * @param text    the text
+     *  @param text    the text
      * @param element the element
      * @param offset  the offset
+     * @param mapperClass
      */
-    public ResultPropertyReferenceSet(String text, @NotNull PsiElement element, int offset) {
+    public ResultColumnReferenceSet(String text, @NotNull PsiElement element, int offset, PsiClass mapperClass) {
         super(text, element, offset, DOT_SEPARATOR);
+        this.mapperClass = mapperClass;
     }
 
     @Nullable
@@ -32,7 +36,8 @@ public class ResultPropertyReferenceSet extends ReferenceSetBase<PsiReference> {
     @Override
     protected PsiReference createReference(TextRange range, int index) {
         XmlAttributeValue element = (XmlAttributeValue) getElement();
-        return null == element ? null : new ContextPsiFieldReference(element, range, index);
+        return null == element ? null : new ContextPsiColumnReference(element, range, index,mapperClass);
     }
+
 
 }

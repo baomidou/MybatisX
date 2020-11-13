@@ -4,7 +4,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaToken;
 import com.intellij.psi.util.PsiTreeUtil;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

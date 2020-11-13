@@ -12,7 +12,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.psi.impl.source.codeStyle.CodeFormatterFacade;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

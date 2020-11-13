@@ -15,7 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.*;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.DELETE_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.INSERT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.SELECT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
 
 /**
  * The type Mybatis setting.

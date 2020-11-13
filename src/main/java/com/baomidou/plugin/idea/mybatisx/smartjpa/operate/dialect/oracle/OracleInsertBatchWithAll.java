@@ -11,15 +11,14 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.model.DasTableKey;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;

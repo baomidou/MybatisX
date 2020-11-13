@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import com.baomidou.plugin.idea.mybatisx.reference.ResultPropertyReferenceSet;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -9,8 +10,6 @@ import com.intellij.util.xml.CustomReferenceConverter;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
-import com.baomidou.plugin.idea.mybatisx.reference.ResultPropertyReferenceSet;
-
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

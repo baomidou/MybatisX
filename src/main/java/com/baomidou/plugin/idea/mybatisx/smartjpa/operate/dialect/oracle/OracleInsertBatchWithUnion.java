@@ -11,7 +11,9 @@ import com.intellij.database.model.DasTableKey;
 import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**

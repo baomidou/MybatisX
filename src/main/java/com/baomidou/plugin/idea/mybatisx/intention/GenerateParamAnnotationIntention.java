@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
+import com.baomidou.plugin.idea.mybatisx.service.AnnotationService;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -8,8 +9,6 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.baomidou.plugin.idea.mybatisx.service.AnnotationService;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

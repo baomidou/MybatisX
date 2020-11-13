@@ -150,5 +150,4 @@ where
 id = #{id,jdbcType=NUMERIC}
 </select>
 
-
 </mapper>

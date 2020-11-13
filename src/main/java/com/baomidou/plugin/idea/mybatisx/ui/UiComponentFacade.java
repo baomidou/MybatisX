@@ -13,7 +13,6 @@ import com.intellij.openapi.ui.popup.PopupChooserBuilder;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBList;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
