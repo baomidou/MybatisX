@@ -33,7 +33,7 @@ intellij {
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
 
     updateSinceUntilBuild = false
-
+    downloadSources = true
     publishPlugin {
         username project.hasProperty('publishUsername') ? project.property('publishUsername') : ''
         password project.hasProperty('publishPassword') ? project.property('publishPassword') : ''
