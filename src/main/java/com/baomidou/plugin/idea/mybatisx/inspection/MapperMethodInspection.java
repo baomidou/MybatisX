@@ -11,15 +11,23 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.lang.jvm.JvmMethod;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
+import com.intellij.psi.PsiParameterList;
+import com.intellij.psi.PsiReferenceList;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +84,7 @@ public class MapperMethodInspection extends MapperInspection {
     }
 
 
-    private static final Set<String> statementProviderNames = new HashSet<String>(){
+    private static final Set<String> statementProviderNames = new HashSet<String>() {
         {
             add("org.apache.ibatis.annotations.SelectProvider");
             add("org.apache.ibatis.annotations.UpdateProvider");
@@ -84,6 +92,7 @@ public class MapperMethodInspection extends MapperInspection {
             add("org.apache.ibatis.annotations.DeleteProvider");
         }
     };
+
     private Optional<ProblemDescriptor> checkStatementExists(PsiMethod method, InspectionManager manager, boolean isOnTheFly) {
         PsiIdentifier ide = method.getNameIdentifier();
         // SelectProvider爆红 issue: https://gitee.com/baomidou/MybatisX/issues/I17JQ4
@@ -91,17 +100,50 @@ public class MapperMethodInspection extends MapperInspection {
         if (annotation != null && annotation.length > 0) {
             // 如果存在提供者注解, 就返回验证成功
             for (PsiAnnotation psiAnnotation : annotation) {
-               if(statementProviderNames.contains(psiAnnotation.getQualifiedName())){
-                   return Optional.empty();
-               }
+                if (statementProviderNames.contains(psiAnnotation.getQualifiedName())) {
+                    return Optional.empty();
+                }
             }
         }
         JavaService instance = JavaService.getInstance(method.getProject());
         if (!instance.findStatement(method).isPresent() && null != ide) {
+            if (isMybatisPlusMethod(method)) {
+                return Optional.empty();
+            }
             return Optional.of(manager.createProblemDescriptor(ide, "Statement with id=\"#ref\" not defined in mapper xml",
                 new StatementNotExistsQuickFix(method), ProblemHighlightType.GENERIC_ERROR, isOnTheFly));
         }
         return Optional.empty();
     }
+
+    private boolean isMybatisPlusMethod(PsiMethod method) {
+        PsiClass parentOfType = PsiTreeUtil.getParentOfType(method, PsiClass.class);
+        if (parentOfType == null) {
+            return false;
+        }
+        PsiMethod[] methodsBySignature = parentOfType.findMethodsBySignature(method, true);
+        if(methodsBySignature.length > 1){
+            for (int index = methodsBySignature.length; index > 0; index--) {
+                PsiClass mapperClass = PsiTreeUtil.getParentOfType(methodsBySignature[index - 1], PsiClass.class);
+                if(mapperClass == null){
+                    continue;
+                }
+                if(mybatisPlusBaseMapperNames.contains(mapperClass.getQualifiedName())){
+                    return true;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static Set<String> mybatisPlusBaseMapperNames = new HashSet<String>() {
+        {
+            // mp3
+            add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
+            // mp2
+            add("com.baomidou.mybatisplus.mapper.BaseMapper");
+        }
+    };
 
 }

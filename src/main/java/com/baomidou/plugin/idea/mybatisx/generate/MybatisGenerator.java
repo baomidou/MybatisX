@@ -243,7 +243,7 @@ public class MybatisGenerator {
      * @return
      */
     private TableConfiguration buildTableConfig(Context context) {
-        boolean cleanMode = true;
+        boolean cleanMode = false;
         TableConfiguration tableConfig = new TableConfiguration(context){
             @Override
             public boolean areAnyStatementsEnabled() {
