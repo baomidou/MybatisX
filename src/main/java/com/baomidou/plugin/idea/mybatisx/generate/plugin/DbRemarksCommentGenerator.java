@@ -22,7 +22,6 @@ import java.util.Set;
 
 public class DbRemarksCommentGenerator implements CommentGenerator {
     private Properties properties = new Properties();
-    private boolean columnRemarks;
     private boolean isAnnotations;
 
     public DbRemarksCommentGenerator() {
@@ -62,7 +61,6 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
     @Override
     public void addConfigurationProperties(Properties properties) {
         this.properties.putAll(properties);
-        this.columnRemarks = StringUtility.isTrue(properties.getProperty("columnRemarks"));
         this.isAnnotations = StringUtility.isTrue(properties.getProperty("annotations"));
     }
     @Override
@@ -71,8 +69,7 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
     @Override
     public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         topLevelClass.addJavaDocLine("/**");
-        topLevelClass.addJavaDocLine(" * " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
-        topLevelClass.addJavaDocLine(" * @author ");
+        topLevelClass.addJavaDocLine(" * @TableName " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
         topLevelClass.addJavaDocLine(" */");
         if (this.isAnnotations) {
             topLevelClass.addAnnotation("@Table(name=\"" + introspectedTable.getFullyQualifiedTableNameAtRuntime() + "\")");

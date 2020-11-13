@@ -148,6 +148,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         this.generatorType = generatorType;
     }
 
+    @Override
     public void setMapper(Mapper mapper) {
         this.mapper = mapper;
     }
@@ -160,6 +161,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
      * @param fieldValue
      * @return
      */
+    @Override
     public String wrapDefaultDateIfNecessary(String columnName, String fieldValue) {
         if (defaultDateList.contains(columnName)) {
             return defaultDateWord;

@@ -108,7 +108,7 @@ public class TxParameter {
      * @return tx parameter
      */
     public static TxParameter createByOrigin(String name, String typeText, String canonicalTypeText) {
-        return createByOrigin(name, typeText, canonicalTypeText, true,Collections.emptyList());
+        return createByOrigin(name, typeText, canonicalTypeText, true,Collections.singletonList(canonicalTypeText));
     }
 
 

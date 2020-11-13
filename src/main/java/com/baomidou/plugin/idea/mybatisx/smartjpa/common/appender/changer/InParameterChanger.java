@@ -13,6 +13,7 @@ import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class InParameterChanger implements MxParameterChanger {
         TxParameter collectionParameter = TxParameter.createByOrigin(txParameter.getName() + "List",
                 "Collection<" + txParameter.getTypeText() + ">",
                 "java.util.Collection");
-        return Arrays.asList(collectionParameter);
+        return Collections.singletonList(collectionParameter);
     }
 
     @Override
