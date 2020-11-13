@@ -20,6 +20,7 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     List<Blog> selectByAgeAndTitle(@Param("age") Integer age, @Param("title") String title);
 
+    int countByAgeAndTitle(@Param("age") Integer age, @Param("title") String title);
 
     List<Blog> selectByAgeAndTitleAndContentBetween(@Param("age") Integer age, @Param("title") String title, @Param("beginContent") String beginContent, @Param("endContent") String endContent);
 

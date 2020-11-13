@@ -149,5 +149,12 @@ from t_blog
 where
 id = #{id,jdbcType=NUMERIC}
 </select>
+    <select id="countByAgeAndTitle" resultType="int">
+select count(*)
+ from t_blog
+where
+age = #{age,jdbcType=NUMERIC}
+ AND title = #{title,jdbcType=VARCHAR}
+</select>
 
 </mapper>

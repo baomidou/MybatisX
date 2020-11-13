@@ -24,6 +24,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +48,11 @@ public class SelectOperator extends BaseOperatorManager {
     }
 
     protected Set<String> getPatterns() {
-        return AbstractStatementGenerator.SELECT_GENERATOR.getPatterns();
+        Set<String> patterns = AbstractStatementGenerator.SELECT_GENERATOR.getPatterns();
+        HashSet<String> strings = new HashSet<>(patterns);
+        // 1.4.x 支持countBy 语法, 由于历史原因， 查询必须排除count
+        strings.remove("count");
+        return strings;
     }
 
     /**
