@@ -80,7 +80,7 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
         for (DbDataSource dataSource : dbPsiFacade.getDataSources()) {
             JBIterable<? extends DasNamespace> schemas = DasUtil.getSchemas(dataSource);
             for (DasNamespace schema : schemas) {
-                if (schema.isDisplayed()) {
+                if (schema.isIntrospected()) {
                     DasTable dasTable = DasUtil.findChild(schema, DasTable.class, ObjectKind.TABLE, tableName);
                     if (dasTable != null) {
                         JBIterable<? extends DasColumn> columns = DasUtil.getColumns(dasTable);

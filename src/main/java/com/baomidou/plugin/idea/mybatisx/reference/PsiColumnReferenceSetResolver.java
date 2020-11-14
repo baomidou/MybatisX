@@ -11,8 +11,6 @@ import com.intellij.database.psi.DbElement;
 import com.intellij.database.psi.DbPsiFacade;
 import com.intellij.database.util.DasUtil;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PropertyUtil;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.containers.JBIterable;
 import org.jetbrains.annotations.NotNull;
@@ -51,10 +49,6 @@ public class PsiColumnReferenceSetResolver extends ContextReferenceSetResolver<X
         }
         PsiClass entityClass = clazz.get();
         assert firstText != null;
-        PsiMethod propertySetter = PropertyUtil.findPropertySetter(entityClass, firstText, false, true);
-        if(null == propertySetter){
-            return Optional.empty();
-        }
         EntityMappingResolverFactory entityMappingResolverFactory
             = new EntityMappingResolverFactory(project);
 
@@ -63,7 +57,7 @@ public class PsiColumnReferenceSetResolver extends ContextReferenceSetResolver<X
         for (DbDataSource dataSource : dbPsiFacade.getDataSources()) {
             JBIterable<? extends DasNamespace> schemas = DasUtil.getSchemas(dataSource);
             for (DasNamespace schema : schemas) {
-                if(schema.isDisplayed()){
+                if(schema.isIntrospected()){
                     DasTable dasTable = DasUtil.findChild(schema, DasTable.class, ObjectKind.TABLE, tableName);
                     if(dasTable != null){
                         DasColumn child = DasUtil.findChild(dasTable, DasColumn.class, ObjectKind.COLUMN, firstText);

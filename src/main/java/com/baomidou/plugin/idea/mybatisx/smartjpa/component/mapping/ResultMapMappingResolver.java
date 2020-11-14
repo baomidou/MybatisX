@@ -90,7 +90,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
 
     @Override
     public Optional<String> findTableName(PsiClass entityClass) {
-        return getTableNameByJpa(entityClass);
+        return Optional.empty();
     }
 
 
