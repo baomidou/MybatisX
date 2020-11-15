@@ -1,12 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.intellij.openapi.project.Project;
@@ -17,6 +10,12 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomService;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The type Dom utils.
@@ -57,11 +56,20 @@ public final class DomUtils {
      * @return boolean
      */
     public static boolean isMybatisFile(@Nullable PsiFile file) {
+        if(file == null){
+            return false;
+        }
         if (!isXmlFile(file)) {
             return false;
         }
         XmlTag rootTag = ((XmlFile) file).getRootTag();
-        return null != rootTag && rootTag.getName().equals("mapper");
+        if(rootTag == null){
+            return false;
+        }
+        if(!rootTag.getName().equals("mapper")){
+            return false;
+        }
+        return true;
     }
 
     /**

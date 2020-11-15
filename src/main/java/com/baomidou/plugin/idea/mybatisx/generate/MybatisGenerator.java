@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate;
 
 
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.DaoEntityAnnotationInterfacePlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.DbRemarksCommentGenerator;
 import com.baomidou.plugin.idea.mybatisx.model.Config;
 import com.baomidou.plugin.idea.mybatisx.model.DbType;
@@ -23,13 +24,29 @@ import com.intellij.psi.PsiElement;
 import org.mybatis.generator.api.IntellijMyBatisGenerator;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.intellij.IntellijTableInfo;
-import org.mybatis.generator.config.*;
+import org.mybatis.generator.config.CommentGeneratorConfiguration;
+import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.GeneratedKey;
+import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.config.JavaTypeResolverConfiguration;
+import org.mybatis.generator.config.ModelType;
+import org.mybatis.generator.config.PluginConfiguration;
+import org.mybatis.generator.config.PropertyRegistry;
+import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
+import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 生成mybatis相关代码
@@ -102,11 +119,11 @@ public class MybatisGenerator {
             dbType = DbType.MariaDB;
         } else {
             String failMessage = String.format("db type not support!" +
-                            "\n your driver class:%s" +
-                            "\n current support db type:mysql，mariadb，oracle,postgresql",
-                    driverClass);
+                    "\n your driver class:%s" +
+                    "\n current support db type:mysql，mariadb，oracle,postgresql",
+                driverClass);
             Messages.showMessageDialog(project, failMessage,
-                    "Test Connection Error", Messages.getInformationIcon());
+                "Test Connection Error", Messages.getInformationIcon());
             return result;
         }
 
@@ -152,7 +169,7 @@ public class MybatisGenerator {
                 Set<String> contexts = new HashSet<>();
                 try {
                     IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(configuration, shellCallback, warnings);
-                    intellijMyBatisGenerator.generate(new GeneratorCallback(),contexts,fullyqualifiedTables,intellijTableInfo);
+                    intellijMyBatisGenerator.generate(new GeneratorCallback(), contexts, fullyqualifiedTables, intellijTableInfo);
                     if (!warnings.isEmpty()) {
                         result.addAll(warnings);
                     }
@@ -161,7 +178,6 @@ public class MybatisGenerator {
                 }
                 VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
                 virtualFile.refresh(true, true);
-                virtualFile.refresh(false, true);
             }
         });
         return result;
@@ -220,7 +236,6 @@ public class MybatisGenerator {
     }
 
 
-
     /**
      * 生成table配置
      *
@@ -228,7 +243,13 @@ public class MybatisGenerator {
      * @return
      */
     private TableConfiguration buildTableConfig(Context context) {
-        TableConfiguration tableConfig = new TableConfiguration(context);
+        boolean cleanMode = false;
+        TableConfiguration tableConfig = new TableConfiguration(context){
+            @Override
+            public boolean areAnyStatementsEnabled() {
+                return cleanMode || super.areAnyStatementsEnabled();
+            }
+        };
         tableConfig.setTableName(config.getTableName());
         tableConfig.setDomainObjectName(config.getModelName());
         String schema;
@@ -239,8 +260,8 @@ public class MybatisGenerator {
 
         }
         if (dbType.equals(DbType.MySQL)
-                || dbType.equals(DbType.MariaDB)
-                || dbType.equals(DbType.PostgreSQL)) {
+            || dbType.equals(DbType.MariaDB)
+            || dbType.equals(DbType.PostgreSQL)) {
             tableConfig.setSchema(schema);
         } else {
             tableConfig.setCatalog(schema);
@@ -284,6 +305,13 @@ public class MybatisGenerator {
 
         if (config.isUseTableNameAlias()) {
             tableConfig.setAlias(config.getTableName());
+        }
+
+        if(cleanMode){
+            tableConfig.setInsertStatementEnabled(false);
+            tableConfig.setSelectByPrimaryKeyStatementEnabled(true);
+            tableConfig.setUpdateByPrimaryKeyStatementEnabled(false);
+            tableConfig.setDeleteByPrimaryKeyStatementEnabled(false);
         }
 
 //        if (ignoredColumns != null) {
@@ -432,6 +460,14 @@ public class MybatisGenerator {
         serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
         context.addPluginConfiguration(serializablePlugin);
 
+        PluginConfiguration daoEntityAnnotationPlugin = new PluginConfiguration();
+        daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
+        String domainObjectName = context.getTableConfigurations().get(0).getDomainObjectName();
+        String targetPackage = context.getJavaModelGeneratorConfiguration().getTargetPackage();
+        daoEntityAnnotationPlugin.addProperty("domainName", targetPackage + "." + domainObjectName);
+        context.addPluginConfiguration(daoEntityAnnotationPlugin);
+
+
         if (config.isNeedToStringHashcodeEquals()) {
             PluginConfiguration equalsHashCodePlugin = new PluginConfiguration();
             equalsHashCodePlugin.addProperty("type", "org.mybatis.generator.plugins.EqualsHashCodePlugin");
@@ -451,11 +487,10 @@ public class MybatisGenerator {
         }
 
 
-
         // limit/offset插件
         if (config.isOffsetLimit()) {
             if (DbType.MySQL.equals(dbType)
-                    || DbType.PostgreSQL.equals(dbType)) {
+                || DbType.PostgreSQL.equals(dbType)) {
                 PluginConfiguration mySQLLimitPlugin = new PluginConfiguration();
                 mySQLLimitPlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLLimitPlugin");
                 mySQLLimitPlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLLimitPlugin");
@@ -473,7 +508,7 @@ public class MybatisGenerator {
         //forUpdate 插件
         if (config.isNeedForUpdate()) {
             if (DbType.MySQL.equals(dbType)
-                    || DbType.PostgreSQL.equals(dbType)) {
+                || DbType.PostgreSQL.equals(dbType)) {
                 PluginConfiguration mySQLForUpdatePlugin = new PluginConfiguration();
                 mySQLForUpdatePlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLForUpdatePlugin");
                 mySQLForUpdatePlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLForUpdatePlugin");
@@ -483,18 +518,18 @@ public class MybatisGenerator {
 
         //repository 插件
         if (config.isAnnotationDAO()) {
-                PluginConfiguration repositoryPlugin = new PluginConfiguration();
-                repositoryPlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.RepositoryPlugin");
-                repositoryPlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.RepositoryPlugin");
-                context.addPluginConfiguration(repositoryPlugin);
+            PluginConfiguration repositoryPlugin = new PluginConfiguration();
+            repositoryPlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.RepositoryPlugin");
+            repositoryPlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.RepositoryPlugin");
+            context.addPluginConfiguration(repositoryPlugin);
         }
 
-        if (config.isUseDAOExtendStyle()) {//13
+        if (config.isUseDAOExtendStyle()) {
             if (DbType.MySQL.equals(dbType)
-                    || DbType.PostgreSQL.equals(dbType)) {
+                || DbType.PostgreSQL.equals(dbType)) {
                 PluginConfiguration commonDAOInterfacePlugin = new PluginConfiguration();
-                commonDAOInterfacePlugin.addProperty("type", "cn.kt.CommonDAOInterfacePlugin");
-                commonDAOInterfacePlugin.setConfigurationType("cn.kt.CommonDAOInterfacePlugin");
+                commonDAOInterfacePlugin.addProperty("type", "com.baomidou.plugin.idea.mybatisx.generate.plugin.CommonDAOInterfacePlugin");
+                commonDAOInterfacePlugin.setConfigurationType("com.baomidou.plugin.idea.mybatisx.generate.plugin.CommonDAOInterfacePlugin");
                 context.addPluginConfiguration(commonDAOInterfacePlugin);
             }
         }

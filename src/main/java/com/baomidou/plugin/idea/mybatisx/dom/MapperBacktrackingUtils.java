@@ -1,17 +1,15 @@
 package com.baomidou.plugin.idea.mybatisx.dom;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.xml.XmlAttributeValue;
-import com.intellij.psi.xml.XmlElement;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.DomUtil;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Association;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Collection;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ParameterMap;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
-
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.xml.XmlAttributeValue;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

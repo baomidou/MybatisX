@@ -33,7 +33,7 @@ intellij {
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
 
     updateSinceUntilBuild = false
-
+    downloadSources = true
     publishPlugin {
         username project.hasProperty('publishUsername') ? project.property('publishUsername') : ''
         password project.hasProperty('publishPassword') ? project.property('publishPassword') : ''
@@ -44,7 +44,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group 'com.baomidou.plugin.idea.mybatisx'
-version '1.3.9'
+version '1.4.0'
 
 repositories {
     jcenter()

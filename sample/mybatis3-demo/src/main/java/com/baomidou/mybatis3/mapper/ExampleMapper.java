@@ -20,11 +20,14 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     List<Blog> selectByAgeAndTitle(@Param("age") Integer age, @Param("title") String title);
 
+    int countByAgeAndTitle(@Param("age") Integer age, @Param("title") String title);
 
     List<Blog> selectByAgeAndTitleAndContentBetween(@Param("age") Integer age, @Param("title") String title, @Param("beginContent") String beginContent, @Param("endContent") String endContent);
 
 
     MyAliasBlog selectBlogById(Long id);
+
+    List<Blog> selectIdAndContentById(@Param("id") Long id);
 
     /**
      * 用于测试jpa提示,  结果集区域的createTime不在参数中， xml默认值

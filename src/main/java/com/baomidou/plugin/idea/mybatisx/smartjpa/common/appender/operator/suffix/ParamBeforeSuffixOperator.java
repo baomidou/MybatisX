@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suff
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
@@ -26,13 +27,13 @@ public class ParamBeforeSuffixOperator implements SuffixOperator{
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+    public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
-        PsiParameter parameter = parameters.poll();
+        TxParameter parameter = parameters.poll();
         return fieldName
                 + " "
                 + operatorName
                 + " "
-                + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
+                + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
     }
 }

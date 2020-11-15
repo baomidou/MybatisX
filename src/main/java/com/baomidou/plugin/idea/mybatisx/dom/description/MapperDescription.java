@@ -1,11 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.dom.description;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.util.DomUtils;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomFileDescription;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.DomUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

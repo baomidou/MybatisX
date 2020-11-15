@@ -15,15 +15,14 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,7 +80,7 @@ public class InsertOperator extends BaseOperatorManager {
         @Override
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
-                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder();
             mapperXml.append("insert into " + tableName).append("\n");
@@ -114,7 +113,7 @@ public class InsertOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector,
                                           ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
@@ -148,7 +147,7 @@ public class InsertOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender insertAll = InsertCustomSuffixAppender.createInsertBySuffixOperator("All",
@@ -248,8 +247,8 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-            PsiParameter parameter = parameters.poll();
+        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+            TxParameter parameter = parameters.poll();
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()
@@ -286,7 +285,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()

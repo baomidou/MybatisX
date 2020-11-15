@@ -40,12 +40,13 @@ public class BetweenParameterChanger implements MxParameterChanger {
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-        final PsiParameter begin = parameters.poll();
-        final PsiParameter end = parameters.poll();
+    public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        final TxParameter begin = parameters.poll();
+        final TxParameter end = parameters.poll();
         assert begin != null;
-        final String beginStr = JdbcTypeUtils.wrapperField(begin.getName(), begin.getType().getCanonicalText());
-        final String endStr = JdbcTypeUtils.wrapperField(end.getName(), end.getType().getCanonicalText());
+        assert end != null;
+        final String beginStr = JdbcTypeUtils.wrapperField(begin.getName(), begin.getCanonicalTypeText());
+        final String endStr = JdbcTypeUtils.wrapperField(end.getName(), end.getCanonicalTypeText());
         return fieldName + SPACE + "between" + SPACE + beginStr  + " and " + endStr;
     }
 }

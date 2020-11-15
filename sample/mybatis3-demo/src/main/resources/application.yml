@@ -12,3 +12,5 @@ mybatis-plus:
     mapper-locations: mapper/*.xml
     type-aliases-package: com.baomidou.mybatis3.alias
 
+
+

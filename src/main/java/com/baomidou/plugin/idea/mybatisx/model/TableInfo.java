@@ -4,6 +4,7 @@ import com.intellij.database.model.DasColumn;
 import com.intellij.database.psi.DbTable;
 import com.intellij.database.util.DasUtil;
 import com.intellij.util.containers.JBIterable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

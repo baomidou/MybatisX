@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
+import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
@@ -43,53 +44,6 @@ public abstract class JpaMappingResolver {
      */
     public static final String TABLE_NAME = "name";
 
-    protected Optional<String> getTableNameByJpa(PsiClass entityClass) {
-        if (entityClass == null) {
-            throw new IllegalArgumentException("无法确认实体类, 请尝试重新打开Mapper");
-        }
-        String tableName = null;
-        PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
-        if (annotation != null) {
-            PsiAnnotationMemberValue originTable = annotation.findAttributeValue(TABLE_NAME);
-            PsiLiteralExpression expression = (PsiLiteralExpression) originTable;
-            if (expression == null || expression.getValue() == null) {
-                return Optional.empty();
-            }
-            tableName = expression.getValue().toString();
-        }
-        return Optional.ofNullable(tableName);
-    }
-
-
-    /**
-     * Gets column name by jpa or camel.
-     *
-     * @param field the field
-     * @return the column name by jpa or camel
-     */
-    protected String getColumnNameByJpaOrCamel(PsiField field) {
-        String columnName = null;
-        // 根据jpa的方式修改列名
-        PsiAnnotation annotation = field.getAnnotation(JAVAX_PERSISTENCE_COLUMN);
-        if (annotation != null) {
-            PsiAnnotationMemberValue originFieldAnnotation = annotation.findAttributeValue(COLUMN_NAME);
-            PsiLiteralExpression expression = (PsiLiteralExpression) originFieldAnnotation;
-            columnName = expression.getValue().toString();
-        }
-        // 驼峰转下划线
-        if (columnName == null) {
-            columnName = getUnderLineName(field.getName());
-        }
-        return columnName;
-    }
-
-    @NotNull
-    private String getUnderLineName(String camelName) {
-        String[] strings = org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase(camelName);
-        return Arrays.stream(strings).map(x -> com.baomidou.plugin.idea.mybatisx.util.StringUtils.lowerCaseFirstChar(x))
-            .collect(Collectors.joining("_"));
-    }
-
     /**
      * Find entity class by mapper class optional.
      *
@@ -129,6 +83,51 @@ public abstract class JpaMappingResolver {
         return Optional.empty();
     }
 
+    protected Optional<String> getTableNameByJpa(PsiClass entityClass) {
+        if (entityClass == null) {
+            throw new IllegalArgumentException("无法确认实体类, 请尝试重新打开Mapper");
+        }
+        String tableName = null;
+        PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
+        if (annotation != null) {
+            PsiAnnotationMemberValue originTable = annotation.findAttributeValue(TABLE_NAME);
+            PsiLiteralExpression expression = (PsiLiteralExpression) originTable;
+            if (expression == null || expression.getValue() == null) {
+                return Optional.empty();
+            }
+            tableName = expression.getValue().toString();
+        }
+        return Optional.ofNullable(tableName);
+    }
+
+    /**
+     * Gets column name by jpa or camel.
+     *
+     * @param field the field
+     * @return the column name by jpa or camel
+     */
+    protected String getColumnNameByJpaOrCamel(PsiField field) {
+        String columnName = null;
+        // 根据jpa的方式修改列名
+        PsiAnnotation annotation = field.getAnnotation(JAVAX_PERSISTENCE_COLUMN);
+        if (annotation != null) {
+            PsiAnnotationMemberValue originFieldAnnotation = annotation.findAttributeValue(COLUMN_NAME);
+            PsiLiteralExpression expression = (PsiLiteralExpression) originFieldAnnotation;
+            columnName = expression.getValue().toString();
+        }
+        // 驼峰转下划线
+        if (columnName == null) {
+            columnName = getUnderLineName(field.getName());
+        }
+        return columnName;
+    }
+
+    @NotNull
+    private String getUnderLineName(String camelName) {
+        String[] strings = org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase(camelName);
+        return Arrays.stream(strings).map(x -> com.baomidou.plugin.idea.mybatisx.util.StringUtils.lowerCaseFirstChar(x))
+            .collect(Collectors.joining("_"));
+    }
 
     /**
      * Init data by camel list.
@@ -139,19 +138,31 @@ public abstract class JpaMappingResolver {
     protected List<TxField> initDataByCamel(PsiClass entityClass) {
         // 去除有 static, transient 标记的字段
         List<PsiField> psiFieldList = FieldUtil.getPsiFieldList(entityClass);
-        return psiFieldList.stream().map(field -> {
-            TxField txField = new TxField();
-            txField.setTipName(com.baomidou.plugin.idea.mybatisx.util.StringUtils.upperCaseFirstChar(field.getName()));
-            txField.setFieldType(field.getType().getCanonicalText());
+        return psiFieldList.stream()
+            .filter(this::filterField)
+            .map(field -> {
+                TxField txField = new TxField();
+                txField.setTipName(com.baomidou.plugin.idea.mybatisx.util.StringUtils.upperCaseFirstChar(field.getName()));
+                txField.setFieldType(field.getType().getCanonicalText());
 
-            String columnName = getColumnNameByJpaOrCamel(field);
-            // 实体的字段名称
-            txField.setFieldName(field.getName());
-            // 表的列名
-            txField.setColumnName(columnName);
+                String columnName = getColumnNameByJpaOrCamel(field);
+                // 实体的字段名称
+                txField.setFieldName(field.getName());
+                // 表的列名
+                txField.setColumnName(columnName);
 
-            return txField;
-        }).collect(Collectors.toList());
+                return txField;
+            }).collect(Collectors.toList());
+    }
+
+    /**
+     * JPA 提示忽略静态字段
+     *
+     * @param field
+     * @return
+     */
+    protected boolean filterField(PsiField field) {
+        return !field.hasModifier(JvmModifier.STATIC);
     }
 
 }

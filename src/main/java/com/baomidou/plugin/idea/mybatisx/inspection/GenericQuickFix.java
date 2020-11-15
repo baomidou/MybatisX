@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.inspection;
 
 import com.intellij.codeInspection.LocalQuickFix;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

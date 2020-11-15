@@ -12,13 +12,13 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppend
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -97,7 +97,7 @@ public class DeleteOperator extends BaseOperatorManager {
 
         @Override
         public String getTemplateText(String tableName, PsiClass entityClass,
-                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
 
 

@@ -4,7 +4,6 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.intellij.psi.PsiParameter;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -33,7 +32,7 @@ public class BooleanParameterChanger implements MxParameterChanger {
 
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+    public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
         return fieldName + " = " +booleanValue.toString();
     }
 

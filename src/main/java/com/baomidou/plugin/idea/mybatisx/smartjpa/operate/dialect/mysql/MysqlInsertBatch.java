@@ -20,7 +20,6 @@ import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -78,7 +77,7 @@ public class MysqlInsertBatch implements CustomStatement {
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
         ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {
             @Override
-            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator(batchName(),
                     getSuffixOperator(mappingField),
@@ -159,7 +158,7 @@ public class MysqlInsertBatch implements CustomStatement {
         @Override
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
-                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder("insert into " + tableName);
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
@@ -202,7 +201,7 @@ public class MysqlInsertBatch implements CustomStatement {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             String itemName = "item";
             // 追加列名
@@ -212,7 +211,7 @@ public class MysqlInsertBatch implements CustomStatement {
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("values").append("\n");
-            final PsiParameter collection = parameters.poll();
+            final TxParameter collection = parameters.poll();
             final String collectionName = collection.getName();
             final String fields = mappingField.stream()
                 .map(field -> {

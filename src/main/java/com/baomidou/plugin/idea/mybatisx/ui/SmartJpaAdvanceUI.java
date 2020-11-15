@@ -30,7 +30,7 @@ public class SmartJpaAdvanceUI {
     private JRadioButton xmlGenerateType;
     private JRadioButton annotationScriptType;
     private JTextField defaultDateTextField;
-    private JComboBox scriptTypeCombo;
+    private JScrollPane fieldsScrollPanel;
     private List<TxField> allFields;
 
     private boolean resultType = false;
@@ -56,7 +56,7 @@ public class SmartJpaAdvanceUI {
         });
 
         allColumnRadioButton.addItemListener(e -> {
-            String collect = allFields.stream().map(TxField::getColumnName).collect(Collectors.joining(" ,"));
+            String collect = allFields.stream().map(TxField::getColumnName).collect(Collectors.joining(",\n"));
             columnsTextArea.setText(collect);
             resultType = false;
         });
@@ -69,7 +69,7 @@ public class SmartJpaAdvanceUI {
                     // column as field
                     return x.getColumnName() + " as " + x.getFieldName();
                 }
-            }).collect(Collectors.joining(" ,"));
+            }).collect(Collectors.joining(",\n"));
             columnsTextArea.setText(collect);
             resultType = true;
         });
@@ -93,6 +93,8 @@ public class SmartJpaAdvanceUI {
     public GeneratorEnum getGeneratorType() {
         if (annotationScriptType.isSelected()) {
             return GeneratorEnum.MYBATIS_ANNOTATION;
+        }else if (xmlGenerateType.isSelected()) {
+            return GeneratorEnum.MYBATIS_XML;
         }
         return GeneratorEnum.MYBATIS_XML;
     }

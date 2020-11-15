@@ -6,6 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CountOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
@@ -37,11 +38,12 @@ public class BaseDialectManager implements AreaOperateManager {
      */
     protected void init(final List<TxField> mappingField, PsiClass entityClass) {
         this.registerManagers(new SelectOperator(mappingField,entityClass));
+        this.registerManagers(new CountOperator(mappingField, entityClass));
         this.registerManagers(new InsertOperator(mappingField));
-        this.registerManagers(new UpdateOperator(mappingField));
+        this.registerManagers(new UpdateOperator(mappingField,entityClass));
         this.registerManagers(new DeleteOperator(mappingField));
-
     }
+
 
     /**
      * Register managers.

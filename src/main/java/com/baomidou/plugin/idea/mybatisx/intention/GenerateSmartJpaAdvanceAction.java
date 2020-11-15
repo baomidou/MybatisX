@@ -7,10 +7,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionIfTestW
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingHolder;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformDbGenerator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformSimpleGenerator;
 import com.baomidou.plugin.idea.mybatisx.ui.JpaAdvanceDialog;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
@@ -21,7 +20,12 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiTypeElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
@@ -53,8 +57,8 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                 logger.info("未找到mapper类");
                 return;
             }
-            EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project, mapperClass);
-            EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity();
+            EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project);
+            EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity(mapperClass);
             PsiClass entityClass = entityMappingHolder.getEntityClass();
             if (entityClass == null) {
                 logger.info("未找到实体类");

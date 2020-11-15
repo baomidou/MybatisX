@@ -1,8 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.plugin;
 
 
-
-import java.util.List;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Field;
@@ -15,6 +13,8 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
+
+import java.util.List;
 /**
  * @author ls9527
  */

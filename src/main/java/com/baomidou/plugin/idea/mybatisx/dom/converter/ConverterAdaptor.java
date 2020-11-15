@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.ResolvingConverter;
-
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

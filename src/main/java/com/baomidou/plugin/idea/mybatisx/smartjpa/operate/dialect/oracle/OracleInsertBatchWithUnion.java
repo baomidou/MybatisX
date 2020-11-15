@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
@@ -11,7 +12,9 @@ import com.intellij.database.model.DasTableKey;
 import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +67,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -76,7 +79,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("(").append("\n");
-            final PsiParameter collection = parameters.poll();
+            final TxParameter collection = parameters.poll();
             if (collection == null) {
                 throw new GenerateException("oracle insertBatch 生成失败, 无法获取集合名称");
             }
