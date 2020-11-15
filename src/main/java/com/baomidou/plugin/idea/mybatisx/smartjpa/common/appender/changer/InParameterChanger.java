@@ -1,16 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 
-
-
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -22,20 +18,25 @@ import java.util.List;
 public class InParameterChanger implements MxParameterChanger {
     @Override
     public List<TxParameter> getParameter(TxParameter txParameter) {
-        TxParameter collectionParameter = TxParameter.createByOrigin(txParameter.getName() + "List",
-                "Collection<" + txParameter.getTypeText() + ">",
-                "java.util.Collection");
+        TxParameter collectionParameter = TxParameter.createCollectionByTxParameter(txParameter);
         return Collections.singletonList(collectionParameter);
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(InParameterChanger.class);
+
     @Override
     public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-        final TxParameter collection = parameters.poll();
-        final String collectionName = collection.getName();
-        String itemContent = "#{item}";
+        final TxParameter parameter = parameters.poll();
+        if (parameter == null) {
+            logger.info("parameter is null, can not getTemplateText");
+            return "";
+        }
+        final String collectionName = parameter.getName();
+        String itemName = "item";
+        String itemContent = "#{" + itemName + "}";
         // 如果集合的泛型不是空的, 就给遍历的内容加入 jdbcType
-        if (collection.getItemContent() != null) {
-            itemContent = collection.getItemContent();
+        if (parameter.getItemContent(itemName) != null) {
+            itemContent = parameter.getItemContent(itemName);
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(fieldName).append(" ").append(getIn()).append("\n");
