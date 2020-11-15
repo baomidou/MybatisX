@@ -117,17 +117,17 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<TxParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         String defaultDateValue = wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, null);
-        PsiParameter parameter = null;
+        TxParameter parameter = null;
         if(StringUtils.isEmpty(defaultDateValue)){
             parameter = parameters.poll();
         }
         String fieldValue = defaultDateValue;
         if (parameter != null) {
-            fieldValue  = JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
+            fieldValue  = JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
         }
         return columnName + " = " + wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, fieldValue);
     }

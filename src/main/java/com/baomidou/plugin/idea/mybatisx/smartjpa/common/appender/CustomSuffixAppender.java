@@ -14,7 +14,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
@@ -193,7 +192,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<TxParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         if (collector.size() == 0) {
@@ -229,7 +228,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
     }
 
-    protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
+    protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
         return appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
     }
 

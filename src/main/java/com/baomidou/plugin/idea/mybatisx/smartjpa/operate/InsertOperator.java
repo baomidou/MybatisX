@@ -80,7 +80,7 @@ public class InsertOperator extends BaseOperatorManager {
         @Override
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
-                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder();
             mapperXml.append("insert into " + tableName).append("\n");
@@ -113,7 +113,7 @@ public class InsertOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector,
                                           ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
@@ -147,7 +147,7 @@ public class InsertOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender insertAll = InsertCustomSuffixAppender.createInsertBySuffixOperator("All",
@@ -247,8 +247,8 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-            PsiParameter parameter = parameters.poll();
+        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+            TxParameter parameter = parameters.poll();
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()
@@ -285,7 +285,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()

@@ -40,7 +40,7 @@ public class BaseDialectManager implements AreaOperateManager {
         this.registerManagers(new SelectOperator(mappingField,entityClass));
         this.registerManagers(new CountOperator(mappingField, entityClass));
         this.registerManagers(new InsertOperator(mappingField));
-        this.registerManagers(new UpdateOperator(mappingField));
+        this.registerManagers(new UpdateOperator(mappingField,entityClass));
         this.registerManagers(new DeleteOperator(mappingField));
     }
 

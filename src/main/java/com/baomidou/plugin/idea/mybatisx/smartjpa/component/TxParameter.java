@@ -1,8 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +74,7 @@ public class TxParameter {
                 importClasses.add(innermostComponentReferenceElement.getQualifiedName());
                 @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
                 for (PsiType typeParameter : typeParameters) {
-                    if(!determinePrimitive(typeParameter.getCanonicalText())){
+                    if (!determinePrimitive(typeParameter.getCanonicalText())) {
                         importClasses.add(typeParameter.getCanonicalText());
                     }
                 }
@@ -108,7 +112,7 @@ public class TxParameter {
      * @return tx parameter
      */
     public static TxParameter createByOrigin(String name, String typeText, String canonicalTypeText) {
-        return createByOrigin(name, typeText, canonicalTypeText, true,Collections.singletonList(canonicalTypeText));
+        return createByOrigin(name, typeText, canonicalTypeText, true, Collections.singletonList(canonicalTypeText));
     }
 
 
@@ -121,7 +125,7 @@ public class TxParameter {
      * @param paramAnnotation   the param annotation
      * @return tx parameter
      */
-    public static TxParameter createByOrigin(String name, String typeText, String canonicalTypeText, boolean paramAnnotation,List<String> importClass) {
+    public static TxParameter createByOrigin(String name, String typeText, String canonicalTypeText, boolean paramAnnotation, List<String> importClass) {
         TxParameter txParameter = new TxParameter();
         txParameter.name = name;
         txParameter.typeText = typeText;
@@ -129,6 +133,29 @@ public class TxParameter {
         txParameter.paramAnnotation = paramAnnotation;
         txParameter.importClass = importClass;
         return txParameter;
+    }
+
+    public static TxParameter createByPsiParameter(PsiClass entityClass) {
+        String name = StringUtils.lowerCaseFirstChar(entityClass.getName());
+        return TxParameter.createByOrigin(name,
+            entityClass.getQualifiedName(),
+            entityClass.getQualifiedName(),
+            true,
+            Collections.singletonList(entityClass.getQualifiedName())
+        );
+//
+//        PsiTypeElement typeElement = psiParameter.getTypeElement();
+//        if(typeElement!=null){
+//            PsiJavaCodeReferenceElement innermostComponentReferenceElement = typeElement.getInnermostComponentReferenceElement();
+//            if (innermostComponentReferenceElement != null) {
+//                final @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
+//                if (typeParameters.length > 0) {
+//                    final PsiType typeParameter = typeParameters[0];
+//                    txParameter.itemContent = JdbcTypeUtils.wrapperField("item", typeParameter.getCanonicalText());
+//                }
+//            }
+//        }
+
     }
 
     /**
@@ -179,5 +206,11 @@ public class TxParameter {
 
     public List<String> getImportClass() {
         return importClass;
+    }
+
+    private String itemContent;
+
+    public String getItemContent() {
+        return itemContent;
     }
 }

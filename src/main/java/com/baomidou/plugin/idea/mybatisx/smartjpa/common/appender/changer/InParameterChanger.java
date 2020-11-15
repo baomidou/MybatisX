@@ -12,7 +12,6 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,21 +29,13 @@ public class InParameterChanger implements MxParameterChanger {
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<PsiParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-        final PsiParameter collection = parameters.poll();
+    public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        final TxParameter collection = parameters.poll();
         final String collectionName = collection.getName();
         String itemContent = "#{item}";
         // 如果集合的泛型不是空的, 就给遍历的内容加入 jdbcType
-        if (collection.getTypeElement() != null) {
-            PsiJavaCodeReferenceElement innermostComponentReferenceElement = collection.getTypeElement().getInnermostComponentReferenceElement();
-            if(innermostComponentReferenceElement!=null){
-                final @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
-                if (typeParameters.length > 0) {
-                    final PsiType typeParameter = typeParameters[0];
-                    itemContent = JdbcTypeUtils.wrapperField("item", typeParameter.getCanonicalText());
-                }
-            }
-
+        if (collection.getItemContent() != null) {
+            itemContent = collection.getItemContent();
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(fieldName).append(" ").append(getIn()).append("\n");

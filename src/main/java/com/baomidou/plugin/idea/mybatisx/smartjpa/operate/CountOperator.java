@@ -9,6 +9,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppend
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ResultAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.appender.SelectCustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
@@ -16,7 +17,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -43,7 +43,7 @@ public class CountOperator extends SelectOperator {
         ConditionAppenderFactory conditionAppenderFactory) {
         ResultAppenderFactory selectFactory = new ResultAppenderFactory(areaName) {
             @Override
-            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 return "select count(*) \n" +
                     " from " + tableName;
             }

@@ -8,7 +8,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -37,7 +36,7 @@ public interface SyntaxAppender {
         }
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return "";
         }
 
@@ -154,7 +153,7 @@ public interface SyntaxAppender {
      */
     String getTemplateText(String tableName,
                            PsiClass entityClass,
-                           LinkedList<PsiParameter> parameters,
+                           LinkedList<TxParameter> parameters,
                            LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper);
 
     /**

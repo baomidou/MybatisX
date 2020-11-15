@@ -54,7 +54,7 @@ public class OracleManager extends BaseDialectManager {
                 this.addOperatorName(oracleInsertBatchWithAll.operatorName());
             }
         });
-        registerManagers(new UpdateOperator(mappingField));
+        registerManagers(new UpdateOperator(mappingField, entityClass));
         registerManagers(new DeleteOperator(mappingField));
     }
 }

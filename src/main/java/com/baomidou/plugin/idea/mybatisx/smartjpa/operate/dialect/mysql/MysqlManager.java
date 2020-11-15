@@ -46,7 +46,7 @@ public class MysqlManager extends BaseDialectManager {
 
         });
 
-        this.registerManagers(new UpdateOperator(mappingField));
+        this.registerManagers(new UpdateOperator(mappingField, entityClass));
         this.registerManagers(new DeleteOperator(mappingField));
     }
 }

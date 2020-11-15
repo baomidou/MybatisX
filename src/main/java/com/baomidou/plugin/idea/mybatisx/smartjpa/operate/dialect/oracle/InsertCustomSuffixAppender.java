@@ -5,9 +5,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
 
@@ -45,7 +45,7 @@ public class InsertCustomSuffixAppender extends CustomSuffixAppender {
     }
 
     @Override
-    protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
+    protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
         InsertCustomSuffixAppender suffixAppender = (InsertCustomSuffixAppender) appender;
         return suffixAppender.getSuffixOperator().getTemplateText(tableName, parameters, conditionFieldWrapper);
     }

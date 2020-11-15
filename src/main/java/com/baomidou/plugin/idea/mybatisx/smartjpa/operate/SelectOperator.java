@@ -21,7 +21,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -99,7 +98,7 @@ public class SelectOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector,
                                           ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
@@ -144,7 +143,7 @@ public class SelectOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
                 super.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
@@ -231,7 +230,7 @@ public class SelectOperator extends BaseOperatorManager {
         @Override
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
-                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             if (collector.isEmpty()) {
                 String allFields = conditionFieldWrapper.getAllFields();
@@ -327,7 +326,7 @@ return selectFactory;
         }
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return appenderList
                 .stream()
                 .map(x -> x.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper))
@@ -344,7 +343,7 @@ return selectFactory;
 
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return columnName;
         }
     }

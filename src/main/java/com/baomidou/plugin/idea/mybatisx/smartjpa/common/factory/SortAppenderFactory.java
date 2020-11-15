@@ -16,7 +16,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,14 +103,14 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         @Override
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
-                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return getFieldName();
         }
     }
 
     @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
         StringBuilder stringBuilder = new StringBuilder();
         for (SyntaxAppenderWrapper syntaxAppender : collector) {
             String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), conditionFieldWrapper);
