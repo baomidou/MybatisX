@@ -58,6 +58,7 @@ public class TxParameter {
         txParameter.name = psiField.getName();
         txParameter.paramAnnotation = true;
         txParameter.areaSequence = areaSequence;
+        txParameter.itemContent = JdbcTypeUtils.wrapperField(psiField.getName(), type.getCanonicalText());
         if (!typeIsPrimitive(type)) {
             txParameter.importClass = findImportClass(psiField, type);
         }
@@ -99,6 +100,29 @@ public class TxParameter {
         return false;
     }
 
+    public static TxParameter createCollectionByTxParameter(TxParameter txParameter) {
+        return createByOrigin(txParameter.getName() + "List",
+            "Collection<" + txParameter.getTypeText() + ">",
+            "java.util.Collection");
+    }
+
+    public static TxParameter createByPsiParameter(PsiParameter psiParameter) {
+        TxParameter byOrigin = createByOrigin(psiParameter.getName(), psiParameter.getType().getCanonicalText(), psiParameter.getType().getCanonicalText());
+
+        PsiTypeElement typeElement = psiParameter.getTypeElement();
+        if(typeElement!=null){
+            PsiJavaCodeReferenceElement innermostComponentReferenceElement = typeElement.getInnermostComponentReferenceElement();
+            if (innermostComponentReferenceElement != null) {
+                final @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
+                if (typeParameters.length > 0) {
+                    final PsiType typeParameter = typeParameters[0];
+                    byOrigin.itemContent = JdbcTypeUtils.wrapperField("item", typeParameter.getCanonicalText());
+                }
+            }
+        }
+        return byOrigin;
+    }
+
     public AreaSequence getAreaSequence() {
         return areaSequence;
     }
@@ -132,10 +156,11 @@ public class TxParameter {
         txParameter.canonicalTypeText = canonicalTypeText;
         txParameter.paramAnnotation = paramAnnotation;
         txParameter.importClass = importClass;
+//        txParameter.itemContent = JdbcTypeUtils.wrapperField(name, canonicalTypeText);
         return txParameter;
     }
 
-    public static TxParameter createByPsiParameter(PsiClass entityClass) {
+    public static TxParameter createByEntityClass(PsiClass entityClass) {
         String name = StringUtils.lowerCaseFirstChar(entityClass.getName());
         return TxParameter.createByOrigin(name,
             entityClass.getQualifiedName(),
@@ -143,19 +168,6 @@ public class TxParameter {
             true,
             Collections.singletonList(entityClass.getQualifiedName())
         );
-//
-//        PsiTypeElement typeElement = psiParameter.getTypeElement();
-//        if(typeElement!=null){
-//            PsiJavaCodeReferenceElement innermostComponentReferenceElement = typeElement.getInnermostComponentReferenceElement();
-//            if (innermostComponentReferenceElement != null) {
-//                final @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
-//                if (typeParameters.length > 0) {
-//                    final PsiType typeParameter = typeParameters[0];
-//                    txParameter.itemContent = JdbcTypeUtils.wrapperField("item", typeParameter.getCanonicalText());
-//                }
-//            }
-//        }
-
     }
 
     /**
@@ -210,7 +222,7 @@ public class TxParameter {
 
     private String itemContent;
 
-    public String getItemContent() {
+    public String getItemContent(String item) {
         return itemContent;
     }
 }

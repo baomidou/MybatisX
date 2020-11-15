@@ -12,7 +12,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.factory.ConditionAppend
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.UpdateOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
@@ -56,12 +55,6 @@ public class UpdateAllFieldsConditionAppenderFactory extends ConditionAppenderFa
 
 
         return Collections.singletonList(areaFieldsAppender);
-    }
-
-    @Override
-    public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
-        TxParameter byOrigin = TxParameter.createByPsiParameter(entityClass);
-        return Collections.singletonList(byOrigin);
     }
 
 

@@ -137,10 +137,10 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         Map<String, SyntaxAppenderWrapper> areaAppenderWrapperMap = collector.stream().collect(Collectors.toMap(k -> k.getAppender().getText(), v -> v));
         // 根据区域工厂处理所有区域下的所有符号追加器
         List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
-        return areaListByJpa.stream().flatMap(x -> {
-            SyntaxAppenderWrapper poll = areaAppenderWrapperMap.get(x.getTipText());
+        return areaListByJpa.stream().flatMap(appenderFactory -> {
+            SyntaxAppenderWrapper poll = areaAppenderWrapperMap.get(appenderFactory.getTipText());
             LinkedList<SyntaxAppenderWrapper> jpaStringList = poll == null ? new LinkedList<>() : poll.getCollector();
-            return x.getMxParameter(entityClass, jpaStringList).stream();
+            return appenderFactory.getMxParameter(entityClass, jpaStringList).stream();
         }).collect(Collectors.toList());
     }
 
@@ -184,7 +184,7 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
 
         LinkedList<TxParameter> parameters = Arrays.stream(psiMethod.getParameterList().getParameters())
-            .map(psiParameter -> TxParameter.createByOrigin(psiParameter.getName(),psiParameter.getType().getCanonicalText(),psiParameter.getType().getCanonicalText()))
+            .map(TxParameter::createByPsiParameter)
             .collect(Collectors.toCollection(LinkedList::new));
 
         return areaListByJpa.stream().map(syntaxAppenderFactory -> {
