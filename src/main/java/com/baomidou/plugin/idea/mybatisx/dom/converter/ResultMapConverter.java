@@ -1,15 +1,13 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-import com.intellij.util.xml.ConvertContext;
-import com.intellij.util.xml.DomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.intellij.util.xml.ConvertContext;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

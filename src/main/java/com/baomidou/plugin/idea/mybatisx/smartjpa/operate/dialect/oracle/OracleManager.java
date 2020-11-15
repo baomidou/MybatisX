@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CountOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
@@ -35,6 +36,7 @@ public class OracleManager extends BaseDialectManager {
     @Override
     protected void init(List<TxField> mappingField, PsiClass entityClass) {
         registerManagers(new SelectOperator(mappingField, entityClass));
+        this.registerManagers(new CountOperator(mappingField, entityClass));
         this.registerManagers(new InsertOperator(mappingField) {
             @Override
             protected void initCustomArea(String areaName, List<TxField> mappingField) {
@@ -52,7 +54,7 @@ public class OracleManager extends BaseDialectManager {
                 this.addOperatorName(oracleInsertBatchWithAll.operatorName());
             }
         });
-        registerManagers(new UpdateOperator(mappingField));
+        registerManagers(new UpdateOperator(mappingField, entityClass));
         registerManagers(new DeleteOperator(mappingField));
     }
 }

@@ -5,7 +5,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -50,7 +49,7 @@ public interface SyntaxAppenderFactory {
      */
     String getFactoryTemplateText(LinkedList<SyntaxAppender> jpaStringList,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<TxParameter> parameters,
                                   String tableName,
                                   ConditionFieldWrapper conditionFieldWrapper);
 
@@ -92,8 +91,9 @@ public interface SyntaxAppenderFactory {
      */
     default String getTemplateText(String tableName,
                                    PsiClass entityClass,
-                                   LinkedList<PsiParameter> parameters,
-                                   LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+                                   LinkedList<TxParameter> parameters,
+                                   LinkedList<SyntaxAppenderWrapper> collector,
+                                   ConditionFieldWrapper conditionFieldWrapper) {
         return "";
     }
 

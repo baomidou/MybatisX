@@ -32,5 +32,44 @@ public class TestDelete extends BaseJpaTest {
     }
 
 
+    public void testDeleteByIdIn() throws IOException {
+        launchAction("deleteByIdIn");
+
+        myFixture.checkResultByFile("template/TipMapper.java",
+            "after/delete/DeleteByIdIn.java",
+            true);
+
+        myFixture.checkResultByFile("template/TipMapper.xml",
+            "after/delete/DeleteByIdIn.xml",
+            true);
+
+    }
+
+    public void testDeleteByMoneyBetween() throws IOException {
+        launchAction("deleteByMoneyBetween");
+
+        myFixture.checkResultByFile("template/TipMapper.java",
+            "after/delete/DeleteByMoneyBetween.java",
+            true);
+
+        myFixture.checkResultByFile("template/TipMapper.xml",
+            "after/delete/DeleteByMoneyBetween.xml",
+            true);
+
+    }
+
+    public void testDeleteByMoneyBeforeAndMoneyAfter() throws IOException {
+        launchAction("deleteByMoneyBeforeAndMoneyAfter");
+
+        myFixture.checkResultByFile("template/TipMapper.java",
+            "after/delete/DeleteByMoneyBeforeAndMoneyAfter.java",
+            true);
+
+        myFixture.checkResultByFile("template/TipMapper.xml",
+            "after/delete/DeleteByMoneyBeforeAndMoneyAfter.xml",
+            true);
+
+    }
+
 
 }

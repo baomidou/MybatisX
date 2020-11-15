@@ -1,10 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import com.baomidou.plugin.idea.mybatisx.reference.ResultPropertyReferenceSet;
+import com.baomidou.plugin.idea.mybatisx.reference.ResultColumnReferenceSet;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.psi.ElementManipulators;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.CustomReferenceConverter;
 import com.intellij.util.xml.DomElement;
@@ -14,21 +18,40 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 /**
  * The type Column converter.
  *
- * @author yanglin
+ * @author ls9527
  */
 public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
+
+    public static final String NAMESPACE = "namespace";
 
     @NotNull
     @Override
     public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
-        final String s = value.getStringValue();
-        if (s == null) {
+        String stringValue = value.getStringValue();
+        if (stringValue == null) {
             return PsiReference.EMPTY_ARRAY;
         }
-        return new ResultPropertyReferenceSet(s, element, ElementManipulators.getOffsetInElement(element)).getPsiReferences();
+        int offsetInElement = ElementManipulators.getOffsetInElement(element);
+
+        Optional<PsiClass> mapperClassOptional = findMapperClass(context);
+        PsiClass mapperClass = mapperClassOptional.orElse(null);
+        return new ResultColumnReferenceSet(stringValue, element, offsetInElement,mapperClass).getPsiReferences();
+    }
+
+    private Optional<PsiClass> findMapperClass(ConvertContext context) {
+        XmlTag rootTag = context.getFile().getRootTag();
+        if (rootTag != null) {
+            XmlAttribute namespace = rootTag.getAttribute(NAMESPACE);
+            if (namespace != null) {
+                return JavaUtils.findClazz(context.getProject(), namespace.getValue());
+            }
+        }
+        return Optional.empty();
     }
 
     @Nullable

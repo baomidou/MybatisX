@@ -9,7 +9,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,9 +111,10 @@ public class CompositeAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters,
-                                  LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
-        StringBuilder stringBuilder = new StringBuilder();
+                                  LinkedList<TxParameter> parameters,
+                                  LinkedList<SyntaxAppenderWrapper> collector,
+                                  ConditionFieldWrapper conditionFieldWrapper) {
+
         // 第一个是 and, or
         if (appenderList.peek().getType() == AppendTypeEnum.JOIN
             || appenderList.peek().getType() == AppendTypeEnum.AREA) {
@@ -131,6 +131,7 @@ public class CompositeAppender implements SyntaxAppender {
 
         }
         logger.info("组合字段操作: {}", appenderList.size());
+        StringBuilder stringBuilder = new StringBuilder();
         for (SyntaxAppender appender : appenderList) {
             String templateText = appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
             stringBuilder.append(templateText);

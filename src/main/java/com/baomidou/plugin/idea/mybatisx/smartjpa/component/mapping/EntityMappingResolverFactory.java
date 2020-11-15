@@ -25,11 +25,6 @@ public class EntityMappingResolverFactory {
 
 
     /**
-     * The Mapper class.
-     */
-    PsiClass mapperClass;
-
-    /**
      * The Entity mapping resolver list.
      */
     List<EntityMappingResolver> entityMappingResolverList = new ArrayList<>();
@@ -40,9 +35,8 @@ public class EntityMappingResolverFactory {
      * @param project     the project
      * @param mapperClass the mapper class
      */
-    public EntityMappingResolverFactory(Project project, PsiClass mapperClass) {
+    public EntityMappingResolverFactory(Project project) {
         this.project = project;
-        this.mapperClass = mapperClass;
 
         entityMappingResolverList.add(new JpaAnnotationMappingResolver());
         entityMappingResolverList.add(new MybatisPlus3MappingResolver());
@@ -60,7 +54,7 @@ public class EntityMappingResolverFactory {
      *
      * @return the psi class
      */
-    public EntityMappingHolder searchEntity() {
+    public EntityMappingHolder searchEntity(PsiClass mapperClass) {
         EntityMappingHolder entityMappingHolder = new EntityMappingHolder();
         for (EntityMappingResolver entityMappingResolver : entityMappingResolverList) {
             Optional<PsiClass> entity = entityMappingResolver.findEntity(mapperClass);
@@ -92,6 +86,22 @@ public class EntityMappingResolverFactory {
         }
         return entityMappingHolder;
     }
+
+
+    public String findTableName(PsiClass entityClass) {
+        String tableName = null;
+        for (EntityMappingResolver entityMappingResolver : entityMappingResolverList) {
+            Optional<String> tableNameOptional = entityMappingResolver.findTableName(entityClass);
+            if (tableNameOptional.isPresent()) {
+                tableName = tableNameOptional.get();
+            }
+        }
+        if (tableName == null) {
+            tableName = getUnderLineFromEntityClassName(entityClass.getName());
+        }
+        return tableName;
+    }
+
 
     @NotNull
     private String getUnderLineFromEntityClassName(String camelName) {

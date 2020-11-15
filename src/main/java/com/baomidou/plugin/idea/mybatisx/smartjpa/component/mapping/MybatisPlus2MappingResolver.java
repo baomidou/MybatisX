@@ -2,12 +2,9 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 
 import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 /**
  * The type Mybatis plus 2 mapping resolver.

@@ -21,9 +21,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +42,16 @@ public class SelectOperator extends BaseOperatorManager {
      * @param entityClass  the entity class
      */
     public SelectOperator(List<TxField> mappingField, PsiClass entityClass) {
-        this.init(mappingField, entityClass, AbstractStatementGenerator.SELECT_GENERATOR.getPatterns());
+        Set<String> patterns = getPatterns();
+        this.init(mappingField, entityClass, patterns);
+    }
+
+    protected Set<String> getPatterns() {
+        Set<String> patterns = AbstractStatementGenerator.SELECT_GENERATOR.getPatterns();
+        HashSet<String> strings = new HashSet<>(patterns);
+        // 1.4.x 支持countBy 语法, 由于历史原因， 查询必须排除count
+        strings.remove("count");
+        return strings;
     }
 
     /**
@@ -89,7 +98,7 @@ public class SelectOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector,
                                           ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
@@ -134,7 +143,7 @@ public class SelectOperator extends BaseOperatorManager {
             @Override
             public String getTemplateText(String tableName,
                                           PsiClass entityClass,
-                                          LinkedList<PsiParameter> parameters,
+                                          LinkedList<TxParameter> parameters,
                                           LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 把查询区的参数清空
                 super.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
@@ -172,10 +181,12 @@ public class SelectOperator extends BaseOperatorManager {
         statementBlock.setConditionAppenderFactory(conditionAppenderFactory);
 
         // 结果集区域
-        ResultAppenderFactory resultAppenderFactory = new SelectResultAppenderFactory(areaName);
-        this.initCustomFieldResultAppender(resultAppenderFactory, mappingField, areaName, conditionAppenderFactory);
+
+        ResultAppenderFactory resultAppenderFactory =
+            this.initCustomFieldResultAppender(mappingField, areaName, conditionAppenderFactory);
 
         statementBlock.setResultAppenderFactory(resultAppenderFactory);
+
         //条件区域
         statementBlock.setSortAppenderFactory(sortAppenderFactory);
         statementBlock.setTagName(areaName);
@@ -219,7 +230,7 @@ public class SelectOperator extends BaseOperatorManager {
         @Override
         public String getTemplateText(String tableName,
                                       PsiClass entityClass,
-                                      LinkedList<PsiParameter> parameters,
+                                      LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             if (collector.isEmpty()) {
                 String allFields = conditionFieldWrapper.getAllFields();
@@ -241,10 +252,10 @@ public class SelectOperator extends BaseOperatorManager {
     }
 
 
-    private void initCustomFieldResultAppender(final ResultAppenderFactory selectFactory,
-                                               final List<TxField> mappingField,
+    protected ResultAppenderFactory initCustomFieldResultAppender(final List<TxField> mappingField,
                                                final String areaName,
                                                ConditionAppenderFactory conditionAppenderFactory) {
+        ResultAppenderFactory selectFactory = new SelectResultAppenderFactory(areaName);
         for (TxField field : mappingField) {
             // field
             // and + field
@@ -272,7 +283,7 @@ public class SelectOperator extends BaseOperatorManager {
 
 
         }
-
+return selectFactory;
 
     }
 
@@ -315,7 +326,7 @@ public class SelectOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return appenderList
                 .stream()
                 .map(x -> x.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper))
@@ -332,7 +343,7 @@ public class SelectOperator extends BaseOperatorManager {
 
 
         @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<PsiParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return columnName;
         }
     }

@@ -1,12 +1,11 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
+import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

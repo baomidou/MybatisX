@@ -3,9 +3,9 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
 
@@ -27,8 +27,9 @@ public class TemplateResolver {
      */
     public String getTemplateText(LinkedList<SyntaxAppender> current,
                                   String tableName, PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters,
-                                  LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+                                  LinkedList<TxParameter> parameters,
+                                  LinkedList<SyntaxAppenderWrapper> collector,
+                                  ConditionFieldWrapper conditionFieldWrapper) {
         SyntaxAppender syntaxAppender = null;
         if (current.size() == 1) {
             syntaxAppender = current.poll();

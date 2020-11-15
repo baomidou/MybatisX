@@ -1,8 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.jpa.select;
 
 import com.baomidou.plugin.idea.mybatisx.jpa.BaseJpaTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -14,8 +12,6 @@ import java.io.IOException;
  * JavaCodeInsightFixtureTestCase
  */
 public class TestSelect extends BaseJpaTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(TestSelect.class);
 
 
     public void testSelectById() throws IOException {

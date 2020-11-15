@@ -94,7 +94,7 @@
 
         <!--应用服务-->
         <applicationService id="baomidou.MybatisSetting"
-            serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting"/>
+            serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
 
 
         <!--自动完成提示-->

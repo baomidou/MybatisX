@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
 import com.intellij.openapi.project.Project;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

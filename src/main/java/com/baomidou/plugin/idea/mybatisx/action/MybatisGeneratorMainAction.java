@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.action;
 
 
 import com.baomidou.plugin.idea.mybatisx.ui.MybatisGeneratorMainUI;
-
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;

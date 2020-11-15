@@ -1,10 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.inspection;
 
+import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
-import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

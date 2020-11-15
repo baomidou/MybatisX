@@ -4,7 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.service.EditorService;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
-import com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting;
+import com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings;
 import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
 import com.baomidou.plugin.idea.mybatisx.ui.UiComponentFacade;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
@@ -22,7 +22,6 @@ import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
@@ -154,7 +153,7 @@ public abstract class AbstractStatementGenerator {
      */
     @NotNull
     public static AbstractStatementGenerator[] getGenerators(@NotNull PsiMethod method) {
-        GenerateModel model = MybatisSetting.getInstance().getStatementGenerateModel();
+        GenerateModel model = MybatisXSettings.getInstance().getStatementGenerateModel();
         String target = method.getName();
         List<AbstractStatementGenerator> result = Lists.newArrayList();
         for (AbstractStatementGenerator generator : ALL) {

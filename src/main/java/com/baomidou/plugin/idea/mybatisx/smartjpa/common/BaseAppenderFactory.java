@@ -6,9 +6,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppen
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.command.AppendTypeCommand;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
     @Override
     public String getFactoryTemplateText(LinkedList<SyntaxAppender> jpaStringList,
                                          PsiClass entityClass,
-                                         LinkedList<PsiParameter> parameters,
+                                         LinkedList<TxParameter> parameters,
                                          String tableName,
                                          ConditionFieldWrapper conditionFieldWrapper) {
         if (jpaStringList.isEmpty()) {

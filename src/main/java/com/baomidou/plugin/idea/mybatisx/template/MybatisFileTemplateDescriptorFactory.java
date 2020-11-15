@@ -1,9 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.template;
 
+import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.ide.fileTemplates.FileTemplateDescriptor;
 import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptor;
 import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptorFactory;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 
 /**
  * The type Mybatis file template descriptor factory.

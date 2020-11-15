@@ -19,6 +19,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,7 +118,7 @@ public class CommonGenerator implements PlatformGenerator {
             .filter(syntaxAppender -> syntaxAppender.getAreaSequence() == AreaSequence.CONDITION
                 && syntaxAppender.getType() == AppendTypeEnum.FIELD &&
                 syntaxAppender instanceof CustomFieldAppender)
-            .map(x -> ((CustomFieldAppender) x).getFieldName())
+            .flatMap(x -> Arrays.stream(((CustomFieldAppender) x).getFieldName().split(",")))
             .collect(Collectors.toList());
     }
 

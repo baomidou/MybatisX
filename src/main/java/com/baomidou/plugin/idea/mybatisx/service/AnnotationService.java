@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.service;
 
+import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
@@ -12,9 +14,6 @@ import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

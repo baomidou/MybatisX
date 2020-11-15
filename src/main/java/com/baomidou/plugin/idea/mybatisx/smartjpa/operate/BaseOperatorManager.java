@@ -183,7 +183,8 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
 
         List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
 
-        LinkedList<PsiParameter> parameters = Arrays.stream(psiMethod.getParameterList().getParameters())
+        LinkedList<TxParameter> parameters = Arrays.stream(psiMethod.getParameterList().getParameters())
+            .map(psiParameter -> TxParameter.createByOrigin(psiParameter.getName(),psiParameter.getType().getCanonicalText(),psiParameter.getType().getCanonicalText()))
             .collect(Collectors.toCollection(LinkedList::new));
 
         return areaListByJpa.stream().map(syntaxAppenderFactory -> {

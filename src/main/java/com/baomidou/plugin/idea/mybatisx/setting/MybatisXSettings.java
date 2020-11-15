@@ -15,7 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.*;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.DELETE_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.INSERT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.SELECT_GENERATOR;
+import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
 
 /**
  * The type Mybatis setting.
@@ -23,9 +26,9 @@ import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenera
  * @author yanglin
  */
 @State(
-    name = "MybatisSettings",
+    name = "MybatisXSettings",
     storages = @Storage(value = "$APP_CONFIG$/mybatis.xml"))
-public class MybatisSetting implements PersistentStateComponent<Element> {
+public class MybatisXSettings implements PersistentStateComponent<Element> {
 
     private static final String MAPPER_ICON = "mapperIcon";
     private GenerateModel statementGenerateModel;
@@ -38,7 +41,7 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
     /**
      * Instantiates a new Mybatis setting.
      */
-    public MybatisSetting() {
+    public MybatisXSettings() {
         statementGenerateModel = GenerateModel.START_WITH_MODEL;
     }
 
@@ -47,8 +50,8 @@ public class MybatisSetting implements PersistentStateComponent<Element> {
      *
      * @return the instance
      */
-    public static MybatisSetting getInstance() {
-        return ServiceManager.getService(MybatisSetting.class);
+    public static MybatisXSettings getInstance() {
+        return ServiceManager.getService(MybatisXSettings.class);
     }
 
     @Nullable

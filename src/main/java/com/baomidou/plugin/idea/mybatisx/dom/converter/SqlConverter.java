@@ -1,9 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import com.intellij.util.xml.ConvertContext;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-
+import com.intellij.util.xml.ConvertContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

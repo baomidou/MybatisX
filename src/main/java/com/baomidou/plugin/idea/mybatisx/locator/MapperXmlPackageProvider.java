@@ -1,7 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.locator;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.google.common.collect.Sets;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
@@ -9,9 +10,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiPackage;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

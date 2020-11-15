@@ -4,6 +4,7 @@ import com.baomidou.mybatis3.domain.Blog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 public interface BlogDeleteMapper extends BaseMapper<Blog> {

@@ -20,20 +20,24 @@ import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPackage;
+import com.intellij.ui.ScreenUtil;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 插件主界面
@@ -47,15 +51,12 @@ public class MybatisGeneratorMainUI extends JFrame {
     private PersistentConfig persistentConfig;
     private PsiElement[] psiElements;
     private Map<String, Config> initConfigMap;
-    private Map<String, Config> historyConfigList;
     private Config config;
 
 
     private JPanel contentPane = new JBPanel<>();
     private JButton buttonOK = new JButton("ok");
     private JButton buttonCancel = new JButton("cancel");
-    //    private JButton selectConfigBtn = new JButton("SELECT");
-    private JButton deleteConfigBtn = new JButton("DELETE");
 
 
     private JTextField tableNameField = new JTextField(10);
@@ -80,7 +81,7 @@ public class MybatisGeneratorMainUI extends JFrame {
     private JCheckBox needMapperAnnotationBox = new JCheckBox("Mapper Annotation");
     private JCheckBox useSchemaPrefixBox = new JCheckBox("Use-Schema(使用Schema前缀)");
     private JCheckBox needForUpdateBox = new JCheckBox("Add-ForUpdate(select增加ForUpdate)");
-    private JCheckBox annotationDAOBox = new JCheckBox("Repository-Annotation(Repository注解)");
+    private JCheckBox annotationDAOBox = new JCheckBox("Repository-Annotation");
     private JCheckBox useDAOExtendStyleBox = new JCheckBox("Parent-Interface(公共父接口)");
     private JCheckBox jsr310SupportBox = new JCheckBox("JSR310: Date and Time API");
     private JCheckBox annotationBox = new JCheckBox("JPA-Annotation(JPA注解)");
@@ -103,14 +104,26 @@ public class MybatisGeneratorMainUI extends JFrame {
         this.psiElements = anActionEvent.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
 
         initConfigMap = persistentConfig.getInitConfig();
-        historyConfigList = persistentConfig.getHistoryConfigList();
 
 
         setTitle("mybatis generate tool");
-        setPreferredSize(new Dimension(1200, 700));//设置大小
-        setLocation(120, 100);
+        int width = 800;
+        int height = 600;
+        //设置大小
+        setPreferredSize(new Dimension(width, height));
+        Rectangle mainScreenBounds = ScreenUtil.getMainScreenBounds();
+        int x = (mainScreenBounds.width - width ) / 2;
+        int y = (mainScreenBounds.height - height) / 2;
+        if(x<0){
+            x = 200;
+        }
+        if(y<0){
+            y = 200;
+        }
+        setLocation(x, y);
         pack();
         setVisible(true);
+
         getRootPane().setDefaultButton(buttonOK);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -135,14 +148,32 @@ public class MybatisGeneratorMainUI extends JFrame {
             if (initConfigMap != null) {//单表时，优先使用已经存在的配置
                 config = initConfigMap.get("initConfig");
             }
-            if (historyConfigList == null) {
-                historyConfigList = new HashMap<>();
-            } else {
-                if (historyConfigList.containsKey(tableName)) {
-                    config = historyConfigList.get(tableName);
-                }
-            }
         }
+
+
+
+        /**
+         * project panel
+         */
+        JPanel projectFolderPanel = new JPanel();
+        projectFolderPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel projectLabel = new JLabel("project folder:");
+        projectFolderPanel.add(projectLabel);
+        projectFolderBtn.setTextFieldPreferredWidth(70);
+        if (config != null && !StringUtils.isEmpty(config.getProjectFolder())) {
+            projectFolderBtn.setText(config.getProjectFolder());
+        } else {
+            projectFolderBtn.setText(projectFolder);
+        }
+        projectFolderBtn.addBrowseFolderListener(new TextBrowseFolderListener(
+            FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor()) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                super.actionPerformed(e);
+                projectFolderBtn.setText(projectFolderBtn.getText().replaceAll("\\\\", "/"));
+            }
+        });
+        projectFolderPanel.add(projectFolderBtn);
 
 
         /**
@@ -162,7 +193,7 @@ public class MybatisGeneratorMainUI extends JFrame {
 
         JPanel keyFieldPanel = new JPanel();
         keyFieldPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        keyFieldPanel.add(new JLabel("主键（选填）:"));
+        keyFieldPanel.add(new JLabel("primary key:"));
         if (psiElements.length > 1) {
             keyField.addFocusListener(new JTextFieldHintListener(keyField, "eg:primary key"));
         } else {
@@ -175,29 +206,6 @@ public class MybatisGeneratorMainUI extends JFrame {
         tablePanel.add(tableNameFieldPanel);
         tablePanel.add(keyFieldPanel);
 
-
-        /**
-         * project panel
-         */
-        JPanel projectFolderPanel = new JPanel();
-        projectFolderPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel projectLabel = new JLabel("project folder:");
-        projectFolderPanel.add(projectLabel);
-        projectFolderBtn.setTextFieldPreferredWidth(45);
-        if (config != null && !StringUtils.isEmpty(config.getProjectFolder())) {
-            projectFolderBtn.setText(config.getProjectFolder());
-        } else {
-            projectFolderBtn.setText(projectFolder);
-        }
-        projectFolderBtn.addBrowseFolderListener(new TextBrowseFolderListener(
-                FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor()) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                super.actionPerformed(e);
-                projectFolderBtn.setText(projectFolderBtn.getText().replaceAll("\\\\", "/"));
-            }
-        });
-        projectFolderPanel.add(projectFolderBtn);
 
 
         /**
@@ -311,7 +319,7 @@ public class MybatisGeneratorMainUI extends JFrame {
         /**
          * options
          */
-        JBPanel optionsPanel = new JBPanel(new GridLayout(5, 5, 5, 5));
+        JBPanel optionsPanel = new JBPanel(new GridLayout(6, 4, 5, 5));
         optionsPanel.setBorder(BorderFactory.createTitledBorder("options"));
         if (config == null) {
             commentBox.setSelected(true);
@@ -331,13 +339,13 @@ public class MybatisGeneratorMainUI extends JFrame {
             if (config.isOverrideXML()) {
                 overrideXMLBox.setSelected(true);
             }
-            if(config.isOverrideJava()) {
+            if (config.isOverrideJava()) {
                 overrideJavaBox.setSelected(true);
             }
             if (config.isNeedToStringHashcodeEquals()) {
                 needToStringHashcodeEqualsBox.setSelected(true);
             }
-            if(config.isNeedMapperAnnotation()){
+            if (config.isNeedMapperAnnotation()) {
                 needMapperAnnotationBox.setSelected(true);
             }
             if (config.isUseSchemaPrefix()) {
@@ -413,13 +421,6 @@ public class MybatisGeneratorMainUI extends JFrame {
         this.getContentPane().add(Box.createVerticalStrut(10)); //采用x布局时，添加固定宽度组件隔开
         final DefaultListModel<String> defaultListModel = new DefaultListModel<>();
 
-        if (historyConfigList == null) {
-            historyConfigList = new HashMap<>();
-        }
-        for (String historyConfigName : historyConfigList.keySet()) {
-            defaultListModel.addElement(historyConfigName);
-        }
-        Map<String, Config> finalHistoryConfigList = historyConfigList;
 
         final JBList configJBList = new JBList(defaultListModel);
         configJBList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -431,62 +432,12 @@ public class MybatisGeneratorMainUI extends JFrame {
         JPanel btnPanel = new JPanel();
         btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
         btnPanel.add(new JLabel("      "));//用来占位置
-        btnPanel.add(deleteConfigBtn);
-        configJBList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (configJBList.getSelectedIndex() != -1) {
-                    if (e.getClickCount() == 2) { //双击事件
-                        String configName = (String) configJBList.getSelectedValue();
-                        Config selectedConfig = finalHistoryConfigList.get(configName);
-                        modelPackageField.setText(selectedConfig.getModelPackage());
-                        daoPackageField.setText(selectedConfig.getDaoPackage());
-                        xmlPackageField.setText(selectedConfig.getXmlPackage());
-                        projectFolderBtn.setText(selectedConfig.getProjectFolder());
-                        offsetLimitBox.setSelected(selectedConfig.isOffsetLimit());
-                        commentBox.setSelected(selectedConfig.isComment());
-                        overrideXMLBox.setSelected(selectedConfig.isOverrideXML());
-                        overrideJavaBox.setSelected(selectedConfig.isOverrideJava());
-                        needToStringHashcodeEqualsBox.setSelected(selectedConfig.isNeedToStringHashcodeEquals());
-                        needMapperAnnotationBox.setSelected(selectedConfig.isNeedMapperAnnotation());
-                        useSchemaPrefixBox.setSelected(selectedConfig.isUseSchemaPrefix());
-                        needForUpdateBox.setSelected(selectedConfig.isNeedForUpdate());
-                        annotationDAOBox.setSelected(selectedConfig.isAnnotationDAO());
-                        useDAOExtendStyleBox.setSelected(selectedConfig.isUseDAOExtendStyle());
-                        jsr310SupportBox.setSelected(selectedConfig.isJsr310Support());
-                        annotationBox.setSelected(selectedConfig.isAnnotation());
-                        useActualColumnNamesBox.setSelected(selectedConfig.isUseActualColumnNames());
-                        useTableNameAliasBox.setSelected(selectedConfig.isUseTableNameAlias());
-                        useExampleBox.setSelected(selectedConfig.isUseExample());
-                        useLombokBox.setSelected(selectedConfig.isUseLombokPlugin());
-                    }
-                }
-            }
-        });
-
-        deleteConfigBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                finalHistoryConfigList.remove(configJBList.getSelectedValue());
-                defaultListModel.removeAllElements();
-                for (String historyConfigName : finalHistoryConfigList.keySet()) {
-                    defaultListModel.addElement(historyConfigName);
-                }
-            }
-        });
-
-        JPanel historyConfigPanel = new JPanel();
-        historyConfigPanel.setLayout(new BoxLayout(historyConfigPanel, BoxLayout.Y_AXIS));
-        historyConfigPanel.setBorder(BorderFactory.createTitledBorder("config history"));
-        historyConfigPanel.add(ScrollPane);
-        historyConfigPanel.add(btnPanel);
 
 
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout());
         contentPane.add(mainPanel, BorderLayout.CENTER);
         contentPane.add(paneBottom, BorderLayout.SOUTH);
-        contentPane.add(historyConfigPanel, BorderLayout.WEST);
         setContentPane(contentPane);
 
         buttonOK.addActionListener(new ActionListener() {
@@ -600,15 +551,12 @@ public class MybatisGeneratorMainUI extends JFrame {
                     generator_config.setDaoMvnPath(daoMvnField.getText());
                     generator_config.setXmlMvnPath(xmlMvnField.getText());
                     boolean needSaveConfig = true;
-                    if (historyConfigList != null && historyConfigList.containsKey(tableName)) {
-                        needSaveConfig = false;
-                    }
                     result = new MybatisGenerator(generator_config).execute(anActionEvent, needSaveConfig);
                 }
 
             }
             if (!result.isEmpty()) {
-                Messages.showMessageDialog(Joiner.on("\n").join(result),"warnning",  Messages.getWarningIcon());
+                Messages.showMessageDialog(Joiner.on("\n").join(result), "warnning", Messages.getWarningIcon());
             }
 
         } catch (Exception e1) {

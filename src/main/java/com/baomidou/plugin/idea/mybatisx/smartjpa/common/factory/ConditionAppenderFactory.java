@@ -20,7 +20,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +150,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
 
     @Override
     public String getTemplateText(String tableName, PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<TxParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         StringBuilder stringBuilder = new StringBuilder();

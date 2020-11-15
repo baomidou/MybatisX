@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.template;
 
 import com.intellij.codeInsight.template.impl.DefaultLiveTemplatesProvider;
-
 import org.jetbrains.annotations.Nullable;
 
 /**

@@ -37,7 +37,7 @@ public class PsiFieldReferenceSetResolver extends ContextReferenceSetResolver<Xm
     }
 
     @Override
-    public Optional<PsiField> resolve(@NotNull PsiField current, @NotNull String text) {
+    public Optional<PsiField> resolve(PsiField current, String text) {
         PsiType type = current.getType();
         if (type instanceof PsiClassReferenceType && !((PsiClassReferenceType) type).hasParameters()) {
             PsiClass clazz = ((PsiClassReferenceType) type).resolve();

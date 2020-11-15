@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.provider;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.setting.MybatisSetting;
+import com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.ide.IconProvider;
@@ -21,12 +21,12 @@ import java.util.Optional;
  * mapper.xml 和 mapperClass 的文件图标修改为骚气的小鸟
  */
 public class XmlAndMapperIconProvider extends IconProvider {
-    MybatisSetting instance = MybatisSetting.getInstance();
+    MybatisXSettings instance = MybatisXSettings.getInstance();
 
     @Override
     public @Nullable Icon getIcon(@NotNull PsiElement element, int flags) {
         if(instance.getMapperIcon() != null &&
-            MybatisSetting.MapperIcon.DEFAULT.name().equals(instance.getMapperIcon())){
+            MybatisXSettings.MapperIcon.DEFAULT.name().equals(instance.getMapperIcon())){
             return null;
         }
         Language language = element.getLanguage();
@@ -37,11 +37,9 @@ public class XmlAndMapperIconProvider extends IconProvider {
                 if (firstMapper.isPresent()) {
                     return Icons.MAPPER_CLASS_ICON;
                 }
-                logger.info("mapper class icon , element: {}", element);
             }
         }
         if (MapperUtils.isElementWithinMybatisFile(element)) {
-            logger.info("mapper xml icon , element: {}", element);
             return Icons.MAPPER_XML_ICON;
         }
         return null;

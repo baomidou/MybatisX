@@ -1,9 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.ElementManipulators;
@@ -19,11 +22,6 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.PsiClassConverter;
-import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
-
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

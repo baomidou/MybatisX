@@ -1,13 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.google.common.collect.Sets;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Processor;
-import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAlias;
-import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

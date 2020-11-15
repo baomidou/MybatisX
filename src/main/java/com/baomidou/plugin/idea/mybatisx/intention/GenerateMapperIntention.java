@@ -1,10 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import com.baomidou.plugin.idea.mybatisx.service.EditorService;
+import com.baomidou.plugin.idea.mybatisx.template.MybatisFileTemplateDescriptorFactory;
+import com.baomidou.plugin.idea.mybatisx.ui.ClickableListener;
+import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
+import com.baomidou.plugin.idea.mybatisx.ui.UiComponentFacade;
+import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
@@ -20,18 +24,16 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.baomidou.plugin.idea.mybatisx.service.EditorService;
-import com.baomidou.plugin.idea.mybatisx.template.MybatisFileTemplateDescriptorFactory;
-import com.baomidou.plugin.idea.mybatisx.ui.ClickableListener;
-import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
-import com.baomidou.plugin.idea.mybatisx.ui.UiComponentFacade;
-import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
-import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * The type Generate mapper intention.

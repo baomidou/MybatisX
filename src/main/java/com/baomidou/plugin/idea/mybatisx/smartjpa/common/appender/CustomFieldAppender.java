@@ -9,8 +9,8 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiParameter;
@@ -117,17 +117,17 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
-                                  LinkedList<PsiParameter> parameters,
+                                  LinkedList<TxParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         String defaultDateValue = wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, null);
-        PsiParameter parameter = null;
+        TxParameter parameter = null;
         if(StringUtils.isEmpty(defaultDateValue)){
             parameter = parameters.poll();
         }
         String fieldValue = defaultDateValue;
         if (parameter != null) {
-            fieldValue  = JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getType().getCanonicalText());
+            fieldValue  = JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
         }
         return columnName + " = " + wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, fieldValue);
     }

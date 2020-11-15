@@ -22,4 +22,12 @@
         AND content = #{content,jdbcType=VARCHAR}
         order by age
     </select>
+    <select id="selectByIdAndTitle" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where
+        id = #{id,jdbcType=NUMERIC}
+        AND title = #{title,jdbcType=VARCHAR}
+    </select>
 </mapper>

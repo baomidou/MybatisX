@@ -41,6 +41,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
     @NotNull
     private List<TxField> determineFields(PsiClass psiClass) {
         return Arrays.stream(psiClass.getAllFields())
+            .filter(this::filterField)
             .map(field -> {
                 TxField txField = new TxField();
                 txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
@@ -114,7 +115,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
 
                 PsiClass entityClass = javaPsiFacade.findClass(typeParameter.getCanonicalText(), mapperClass.getResolveScope());
 
-                if(entityClass == null){
+                if (entityClass == null) {
                     continue;
                 }
 

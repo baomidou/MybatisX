@@ -3,11 +3,16 @@ package com.baomidou.plugin.idea.mybatisx.generate.plugin;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.java.*;
+import org.mybatis.generator.api.dom.java.CompilationUnit;
+import org.mybatis.generator.api.dom.java.Field;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.InnerClass;
+import org.mybatis.generator.api.dom.java.InnerEnum;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.internal.util.StringUtility;
 
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
@@ -17,7 +22,6 @@ import java.util.Set;
 
 public class DbRemarksCommentGenerator implements CommentGenerator {
     private Properties properties = new Properties();
-    private boolean columnRemarks;
     private boolean isAnnotations;
 
     public DbRemarksCommentGenerator() {
@@ -57,7 +61,6 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
     @Override
     public void addConfigurationProperties(Properties properties) {
         this.properties.putAll(properties);
-        this.columnRemarks = StringUtility.isTrue(properties.getProperty("columnRemarks"));
         this.isAnnotations = StringUtility.isTrue(properties.getProperty("annotations"));
     }
     @Override
@@ -66,8 +69,7 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
     @Override
     public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         topLevelClass.addJavaDocLine("/**");
-        topLevelClass.addJavaDocLine(" * " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
-        topLevelClass.addJavaDocLine(" * @author ");
+        topLevelClass.addJavaDocLine(" * @TableName " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
         topLevelClass.addJavaDocLine(" */");
         if (this.isAnnotations) {
             topLevelClass.addAnnotation("@Table(name=\"" + introspectedTable.getFullyQualifiedTableNameAtRuntime() + "\")");

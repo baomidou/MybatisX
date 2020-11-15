@@ -1,10 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The interface Intention chooser.

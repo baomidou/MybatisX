@@ -1,13 +1,13 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.intellij.psi.PsiClass;
 
-import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -19,11 +19,11 @@ public class TxParameterDescriptor implements TypeDescriptor {
      * The constant SPACE.
      */
     public static final String SPACE = " ";
+    private final Map<String, TxField> fieldColumnNameMapping;
     /**
      * The Parameter list.
      */
     List<TxParameter> parameterList = new ArrayList<>();
-    private final Map<String, TxField> fieldColumnNameMapping;
 
     /**
      * Instantiates a new Tx parameter descriptor.
@@ -33,7 +33,12 @@ public class TxParameterDescriptor implements TypeDescriptor {
      */
     public TxParameterDescriptor(final List<TxParameter> parameterList, List<TxField> mappingField) {
         this.parameterList = parameterList;
-        fieldColumnNameMapping = mappingField.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x));
+        fieldColumnNameMapping = mappingField.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x, (a, b) -> {
+            if (!a.getFieldType().equals(b.getFieldType())) {
+                throw new RuntimeException("字段类型不匹配, 无法生成SQL");
+            }
+            return a;
+        }));
     }
 
     /**
@@ -49,8 +54,9 @@ public class TxParameterDescriptor implements TypeDescriptor {
     /**
      * 参数字符串
      * TODO 关于 updateUpdateTimeByUpdateTime 这种情况会导致两个参数都无法传， 事实上可能需要第一个不需要传，第二个需要传
-     * @return
+     *
      * @param defaultDateList
+     * @return
      */
     @Override
     public String getContent(List<String> defaultDateList) {
@@ -63,15 +69,16 @@ public class TxParameterDescriptor implements TypeDescriptor {
                 // 字段类型不为空 and 不是默认日期字段
                 return fieldType != null
                     && (txField == null
-                || !defaultDateList.contains(txField.getColumnName())
-                || parameter.getAreaSequence() != AreaSequence.RESULT);
+                    || !defaultDateList.contains(txField.getColumnName())
+                    || parameter.getAreaSequence() != AreaSequence.RESULT);
             })
-            .map(param -> this.getParameterName(param,addedParamNames))
-            .collect(Collectors.joining(",","(",");"));
+            .map(param -> this.getParameterName(param, addedParamNames))
+            .collect(Collectors.joining(",", "(", ");"));
     }
 
     /**
      * 根据是否需要生成注解字段, 生成注解字段
+     *
      * @param txParameter
      * @param addedParamNames
      * @return

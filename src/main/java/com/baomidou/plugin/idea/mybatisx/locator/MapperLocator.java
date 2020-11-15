@@ -1,11 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.locator;
 
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
