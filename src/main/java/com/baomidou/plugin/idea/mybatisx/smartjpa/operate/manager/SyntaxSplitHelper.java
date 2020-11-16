@@ -62,9 +62,12 @@ class SyntaxSplitHelper {
         PriorityQueue<LinkedList<SyntaxAppender>> collect = new PriorityQueue<>(syntaxAppenderComparator);
         for (StatementBlock statementBlock : statementBlockList) {
             LinkedList<SyntaxAppender> priority = statementBlock.findPriority(stringLengthComparator, splitText);
-            collect.add(priority);
+            if(priority.size() > 0){
+                collect.add(priority);
+            }
         }
-        return collect.peek();
+        LinkedList<SyntaxAppender> peek = collect.peek();
+        return peek != null?peek:new LinkedList<>();
     }
 
 }

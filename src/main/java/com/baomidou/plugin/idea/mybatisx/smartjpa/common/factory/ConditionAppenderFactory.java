@@ -65,7 +65,11 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
 
             // 区域 :  By + field
             final CompositeAppender areaFieldAppender = new CompositeAppender(
-                CustomAreaAppender.createCustomAreaAppender(this.getTipText(), getTipText(), AreaSequence.AREA, AreaSequence.CONDITION, this),
+                CustomAreaAppender.createCustomAreaAppender(this.getTipText(),
+                    getTipText(),
+                    AreaSequence.AREA,
+                    AreaSequence.CONDITION,
+                    this),
                 new CustomFieldAppender(field, AreaSequence.CONDITION));
             syntaxAppenderArrayList.add(areaFieldAppender);
 

@@ -156,5 +156,34 @@ where
 age = #{age,jdbcType=NUMERIC}
  AND title = #{title,jdbcType=VARCHAR}
 </select>
+    <update id="updateIdAndContentByAllFields">
+        update t_blog
+        set id      = #{id,jdbcType=NUMERIC},
+            content = #{content,jdbcType=VARCHAR}
+        where
+            AND id = #{id,jdbcType=NUMERIC}
+            AND title = #{title,jdbcType=VARCHAR}
+            AND content = #{content,jdbcType=VARCHAR}
+            AND money = #{money,jdbcType=DECIMAL}
+            AND age = #{age,jdbcType=NUMERIC}
+            AND createTime = #{createTime,jdbcType=TIMESTAMP}
+            AND blobText = #{blobText}
+            AND objects = #{objects}
+            AND ids = #{ids}
+    </update>
+    <update id="updateIdAndContentByALLFields">
+        update t_blog
+        set id      = #{id,jdbcType=NUMERIC},
+            content = #{content,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=NUMERIC}
+          AND title = #{title,jdbcType=VARCHAR}
+          AND content = #{content,jdbcType=VARCHAR}
+          AND money = #{money,jdbcType=DECIMAL}
+          AND age = #{age,jdbcType=NUMERIC}
+          AND createTime = #{createTime,jdbcType=TIMESTAMP}
+          AND blobText = #{blobText}
+          AND objects = #{objects}
+          AND ids = #{ids}
+    </update>
 
 </mapper>
