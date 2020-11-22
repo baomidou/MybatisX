@@ -75,8 +75,6 @@ public class MybatisGeneratorMainUI extends JFrame {
 
     private JCheckBox offsetLimitBox = new JCheckBox("Page(分页)");
     private JCheckBox commentBox = new JCheckBox("comment(实体注释)");
-    private JCheckBox overrideXMLBox = new JCheckBox("Overwrite-Xml");
-    private JCheckBox overrideJavaBox = new JCheckBox("Overwrite-Java");
     private JCheckBox needToStringHashcodeEqualsBox = new JCheckBox("toString/hashCode/equals");
     private JCheckBox needMapperAnnotationBox = new JCheckBox("Mapper Annotation");
     private JCheckBox useSchemaPrefixBox = new JCheckBox("Use-Schema(使用Schema前缀)");
@@ -89,7 +87,7 @@ public class MybatisGeneratorMainUI extends JFrame {
     private JCheckBox useTableNameAliasBox = new JCheckBox("Use-Alias(启用别名查询)");
     private JCheckBox useExampleBox = new JCheckBox("Use-Example");
     private JCheckBox useLombokBox = new JCheckBox("Use-Lombox");
-
+    private JCheckBox useSimpleModeBox = new JCheckBox("Use-SimpleMode");
 
     /**
      * Instantiates a new Mybatis generator main ui.
@@ -112,12 +110,12 @@ public class MybatisGeneratorMainUI extends JFrame {
         //设置大小
         setPreferredSize(new Dimension(width, height));
         Rectangle mainScreenBounds = ScreenUtil.getMainScreenBounds();
-        int x = (mainScreenBounds.width - width ) / 2;
+        int x = (mainScreenBounds.width - width) / 2;
         int y = (mainScreenBounds.height - height) / 2;
-        if(x<0){
+        if (x < 0) {
             x = 200;
         }
-        if(y<0){
+        if (y < 0) {
             y = 200;
         }
         setLocation(x, y);
@@ -149,7 +147,6 @@ public class MybatisGeneratorMainUI extends JFrame {
                 config = initConfigMap.get("initConfig");
             }
         }
-
 
 
         /**
@@ -205,7 +202,6 @@ public class MybatisGeneratorMainUI extends JFrame {
         tablePanel.setBorder(BorderFactory.createTitledBorder("table setting"));
         tablePanel.add(tableNameFieldPanel);
         tablePanel.add(keyFieldPanel);
-
 
 
         /**
@@ -323,11 +319,7 @@ public class MybatisGeneratorMainUI extends JFrame {
         optionsPanel.setBorder(BorderFactory.createTitledBorder("options"));
         if (config == null) {
             commentBox.setSelected(true);
-            overrideXMLBox.setSelected(true);
-            overrideJavaBox.setSelected(true);
-            useSchemaPrefixBox.setSelected(true);
             useLombokBox.setSelected(true);
-
         } else {
             if (config.isOffsetLimit()) {
                 offsetLimitBox.setSelected(true);
@@ -336,12 +328,6 @@ public class MybatisGeneratorMainUI extends JFrame {
                 commentBox.setSelected(true);
             }
 
-            if (config.isOverrideXML()) {
-                overrideXMLBox.setSelected(true);
-            }
-            if (config.isOverrideJava()) {
-                overrideJavaBox.setSelected(true);
-            }
             if (config.isNeedToStringHashcodeEquals()) {
                 needToStringHashcodeEqualsBox.setSelected(true);
             }
@@ -379,22 +365,22 @@ public class MybatisGeneratorMainUI extends JFrame {
                 useLombokBox.setSelected(true);
             }
         }
-        optionsPanel.add(offsetLimitBox);
+
         optionsPanel.add(commentBox);
-        optionsPanel.add(overrideXMLBox);
-        optionsPanel.add(overrideJavaBox);
-        optionsPanel.add(needToStringHashcodeEqualsBox);
+        optionsPanel.add(useLombokBox);
+        optionsPanel.add(useSimpleModeBox);
+        optionsPanel.add(annotationBox);
         optionsPanel.add(needMapperAnnotationBox);
         optionsPanel.add(useSchemaPrefixBox);
-        optionsPanel.add(needForUpdateBox);
         optionsPanel.add(annotationDAOBox);
         optionsPanel.add(useDAOExtendStyleBox);
         optionsPanel.add(jsr310SupportBox);
-        optionsPanel.add(annotationBox);
         optionsPanel.add(useActualColumnNamesBox);
         optionsPanel.add(useTableNameAliasBox);
+        optionsPanel.add(needToStringHashcodeEqualsBox);
         optionsPanel.add(useExampleBox);
-        optionsPanel.add(useLombokBox);
+        optionsPanel.add(needForUpdateBox);
+        optionsPanel.add(offsetLimitBox);
 
         JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         mainPanel.setBorder(new EmptyBorder(10, 30, 5, 40));
@@ -487,8 +473,6 @@ public class MybatisGeneratorMainUI extends JFrame {
 
                 generator_config.setOffsetLimit(offsetLimitBox.getSelectedObjects() != null);
                 generator_config.setComment(commentBox.getSelectedObjects() != null);
-                generator_config.setOverrideXML(overrideXMLBox.getSelectedObjects() != null);
-                generator_config.setOverrideJava(overrideJavaBox.getSelectedObjects() != null);
                 generator_config.setNeedToStringHashcodeEquals(needToStringHashcodeEqualsBox.getSelectedObjects() != null);
                 generator_config.setNeedMapperAnnotation(needMapperAnnotationBox.getSelectedObjects() != null);
                 generator_config.setUseSchemaPrefix(useSchemaPrefixBox.getSelectedObjects() != null);
@@ -501,7 +485,7 @@ public class MybatisGeneratorMainUI extends JFrame {
                 generator_config.setUseTableNameAlias(useTableNameAliasBox.getSelectedObjects() != null);
                 generator_config.setUseExample(useExampleBox.getSelectedObjects() != null);
                 generator_config.setUseLombokPlugin(useLombokBox.getSelectedObjects() != null);
-
+                generator_config.setSimpleMode(useSimpleModeBox.getSelectedObjects() != null);
                 generator_config.setModelMvnPath(modelMvnField.getText());
                 generator_config.setDaoMvnPath(daoMvnField.getText());
                 generator_config.setXmlMvnPath(xmlMvnField.getText());
@@ -529,11 +513,9 @@ public class MybatisGeneratorMainUI extends JFrame {
                     generator_config.setDaoName(modelName + daoPostfixField.getText());
                     generator_config.setModelName(modelName);
                     generator_config.setPrimaryKey(primaryKey);
-
                     generator_config.setOffsetLimit(offsetLimitBox.getSelectedObjects() != null);
+
                     generator_config.setComment(commentBox.getSelectedObjects() != null);
-                    generator_config.setOverrideXML(overrideXMLBox.getSelectedObjects() != null);
-                    generator_config.setOverrideJava(overrideJavaBox.getSelectedObjects() != null);
                     generator_config.setNeedToStringHashcodeEquals(needToStringHashcodeEqualsBox.getSelectedObjects() != null);
                     generator_config.setNeedMapperAnnotation(needMapperAnnotationBox.getSelectedObjects() != null);
                     generator_config.setUseSchemaPrefix(useSchemaPrefixBox.getSelectedObjects() != null);
@@ -546,7 +528,7 @@ public class MybatisGeneratorMainUI extends JFrame {
                     generator_config.setUseTableNameAlias(useTableNameAliasBox.getSelectedObjects() != null);
                     generator_config.setUseExample(useExampleBox.getSelectedObjects() != null);
                     generator_config.setUseLombokPlugin(useLombokBox.getSelectedObjects() != null);
-
+                    generator_config.setSimpleMode(useSimpleModeBox.getSelectedObjects() != null);
                     generator_config.setModelMvnPath(modelMvnField.getText());
                     generator_config.setDaoMvnPath(daoMvnField.getText());
                     generator_config.setXmlMvnPath(xmlMvnField.getText());

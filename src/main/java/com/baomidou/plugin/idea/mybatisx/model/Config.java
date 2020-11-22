@@ -598,23 +598,6 @@ public class Config {
 		return useTableNameAlias;
 	}
 
-    /**
-     * Is override xml boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isOverrideXML() {
-		return overrideXML;
-	}
-
-    /**
-     * Sets override xml.
-     *
-     * @param overrideXML the override xml
-     */
-    public void setOverrideXML(boolean overrideXML) {
-		this.overrideXML = overrideXML;
-	}
 
     /**
      * Sets use dao extend style.
@@ -707,21 +690,16 @@ public class Config {
 	}
 
 
-    /**
-     * Is override java boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isOverrideJava() {
-		return overrideJava;
-	}
+	boolean simpleMode = false;
+    public boolean getSimpleMode() {
+        return simpleMode;
+    }
 
-    /**
-     * Sets override java.
-     *
-     * @param overrideJava the override java
-     */
-    public void setOverrideJava(boolean overrideJava) {
-		this.overrideJava = overrideJava;
-	}
+    public boolean isSimpleMode() {
+        return simpleMode;
+    }
+
+    public void setSimpleMode(boolean simpleMode) {
+        this.simpleMode = simpleMode;
+    }
 }
