@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.reference;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingHolder;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.model.DasColumn;
 import com.intellij.database.model.DasNamespace;
 import com.intellij.database.model.DasTable;
@@ -21,6 +22,7 @@ import com.intellij.util.containers.JBIterable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -58,14 +60,32 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
         this.mapperClass = mapperClass;
     }
 
+    /**
+     * 如果能找到正确的列, 线条转到正确的列
+     * 无法找到数据库的列, 引用当前节点
+     *
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public PsiElement resolve() {
+        PsiElement element = null;
         Optional<DbElement> resolved = resolver.resolve(index);
-        return resolved.orElse(null);
+        if (resolved.isPresent()) {
+            element = resolved.get();
+        }
+        if (element == null) {
+            element = super.myElement.getOriginalElement();
+        }
+        return element;
     }
 
+    /**
+     * 获取用于提示的变量列表
+     *
+     * @return
+     */
     @NotNull
     @Override
     public Object[] getVariants() {
@@ -75,24 +95,34 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
             = new EntityMappingResolverFactory(project);
         EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity(mapperClass);
         String tableName = entityMappingHolder.getTableName();
+        if (StringUtils.isEmpty(tableName)) {
+            return new Object[0];
+        }
         DbPsiFacade dbPsiFacade = DbPsiFacade.getInstance(project);
-        List<DbElement> dbElementList = new LinkedList<>();
+        List<DbElement> dbElementList = getDbElements(tableName, dbPsiFacade);
+        return dbElementList.size() > 0 ? dbElementList.toArray() : PsiReference.EMPTY_ARRAY;
+    }
+
+    @NotNull
+    private List<DbElement> getDbElements(String tableName, DbPsiFacade dbPsiFacade) {
         for (DbDataSource dataSource : dbPsiFacade.getDataSources()) {
             JBIterable<? extends DasNamespace> schemas = DasUtil.getSchemas(dataSource);
             for (DasNamespace schema : schemas) {
                 if (schema.isIntrospected()) {
                     DasTable dasTable = DasUtil.findChild(schema, DasTable.class, ObjectKind.TABLE, tableName);
                     if (dasTable != null) {
+                        List<DbElement> dbElementList = new LinkedList<>();
                         JBIterable<? extends DasColumn> columns = DasUtil.getColumns(dasTable);
                         for (DasColumn column : columns) {
                             DbElement element = dbPsiFacade.findElement(column);
                             dbElementList.add(element);
                         }
+                        return dbElementList;
                     }
                 }
             }
         }
-        return dbElementList.size() > 0 ? dbElementList.toArray() : PsiReference.EMPTY_ARRAY;
+        return Collections.emptyList();
     }
 
 

@@ -40,7 +40,7 @@ public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> impleme
 
         Optional<PsiClass> mapperClassOptional = findMapperClass(context);
         PsiClass mapperClass = mapperClassOptional.orElse(null);
-        return new ResultColumnReferenceSet(stringValue, element, offsetInElement,mapperClass).getPsiReferences();
+        return new ResultColumnReferenceSet(stringValue, element, offsetInElement, mapperClass).getPsiReferences();
     }
 
     private Optional<PsiClass> findMapperClass(ConvertContext context) {
