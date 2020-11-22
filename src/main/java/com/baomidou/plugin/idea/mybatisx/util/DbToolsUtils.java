@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijColumnInfo;
 import com.intellij.database.model.DasColumn;
 import com.intellij.database.model.DasTableKey;
 import com.intellij.database.model.DasTypedObject;
@@ -10,8 +12,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.containers.JBIterable;
 import com.rits.cloning.Cloner;
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.generator.api.intellij.IntellijColumnInfo;
-import org.mybatis.generator.api.intellij.IntellijTableInfo;
 
 import java.util.ArrayList;
 import java.util.List;

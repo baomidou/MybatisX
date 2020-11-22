@@ -55,6 +55,7 @@ public class MybatisGeneratorSettingUI  {
     private JCheckBox useTableNameAliasBox = new JCheckBox("Use-Alias(启用别名查询)");
     private JCheckBox useExampleBox = new JCheckBox("Use-Example");
     private JCheckBox useLombokBox = new JCheckBox("Use-Lombox");
+    private JCheckBox useSimpleModeBox = new JCheckBox("Use-SimpleMode");
 
     private PersistentConfig config;
 
@@ -175,22 +176,23 @@ public class MybatisGeneratorSettingUI  {
 //        默认不使用 lombok
 //        useLombokBox.setSelected(true);
 
-        optionsPanel.add(offsetLimitBox);
+
         optionsPanel.add(commentBox);
         optionsPanel.add(overrideXMLBox);
         optionsPanel.add(overrideJavaBox);
-        optionsPanel.add(needToStringHashcodeEqualsBox);
+        optionsPanel.add(useLombokBox);
+        optionsPanel.add(useSimpleModeBox);
         optionsPanel.add(useSchemaPrefixBox);
         optionsPanel.add(needForUpdateBox);
         optionsPanel.add(annotationDAOBox);
-        optionsPanel.add(useDAOExtendStyleBox);
         optionsPanel.add(jsr310SupportBox);
         optionsPanel.add(annotationBox);
         optionsPanel.add(useActualColumnNamesBox);
         optionsPanel.add(useTableNameAliasBox);
+        optionsPanel.add(needToStringHashcodeEqualsBox);
         optionsPanel.add(useExampleBox);
-        optionsPanel.add(useLombokBox);
-
+        optionsPanel.add(useDAOExtendStyleBox);
+        optionsPanel.add(offsetLimitBox);
         /**
          * 设置面板内容
          */
@@ -214,8 +216,6 @@ public class MybatisGeneratorSettingUI  {
             projectFolderBtn.setText(config.getProjectFolder());
             offsetLimitBox.setSelected(config.isOffsetLimit());
             commentBox.setSelected(config.isComment());
-            overrideXMLBox.setSelected(config.isOverrideXML());
-            overrideJavaBox.setSelected(config.isOverrideJava());
             needToStringHashcodeEqualsBox.setSelected(config.isNeedToStringHashcodeEquals());
             useSchemaPrefixBox.setSelected(config.isUseSchemaPrefix());
             needForUpdateBox.setSelected(config.isNeedForUpdate());
@@ -227,6 +227,7 @@ public class MybatisGeneratorSettingUI  {
             useTableNameAliasBox.setSelected(config.isUseTableNameAlias());
             useExampleBox.setSelected(config.isUseExample());
             useLombokBox.setSelected(config.isUseLombokPlugin());
+            useSimpleModeBox.setSelected(config.getSimpleMode());
         } else {
             modelPackageField.addFocusListener(new JTextFieldHintListener(modelPackageField, "generator"));
             daoPackageField.addFocusListener(new JTextFieldHintListener(daoPackageField, "generator"));
@@ -272,8 +273,6 @@ public class MybatisGeneratorSettingUI  {
 
         config.setOffsetLimit(offsetLimitBox.getSelectedObjects() != null);
         config.setComment(commentBox.getSelectedObjects() != null);
-        config.setOverrideXML(overrideXMLBox.getSelectedObjects() != null);
-        config.setOverrideJava(overrideJavaBox.getSelectedObjects() != null);
         config.setNeedToStringHashcodeEquals(needToStringHashcodeEqualsBox.getSelectedObjects() != null);
         config.setUseSchemaPrefix(useSchemaPrefixBox.getSelectedObjects() != null);
         config.setNeedForUpdate(needForUpdateBox.getSelectedObjects() != null);
@@ -285,6 +284,7 @@ public class MybatisGeneratorSettingUI  {
         config.setUseTableNameAlias(useTableNameAliasBox.getSelectedObjects() != null);
         config.setUseExample(useExampleBox.getSelectedObjects() != null);
         config.setUseLombokPlugin(useLombokBox.getSelectedObjects() != null);
+        config.setSimpleMode(useSimpleModeBox.getSelectedObjects() != null);
         initConfig.put(config.getName(), config);
         this.config.setInitConfig(initConfig);
 
