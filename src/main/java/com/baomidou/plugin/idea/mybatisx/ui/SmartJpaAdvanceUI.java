@@ -25,7 +25,6 @@ public class SmartJpaAdvanceUI {
     private JRadioButton includeRadioButton;
     private JRadioButton allColumnRadioButton;
     private JRadioButton asFieldRadioButton;
-    private JTextField baseColumnListTextField;
     private JTextArea columnsTextArea;
     private JRadioButton xmlGenerateType;
     private JRadioButton annotationScriptType;
@@ -50,9 +49,9 @@ public class SmartJpaAdvanceUI {
                 }
             }
         });
-
+        String baseColumnList = "BaseColumnList";
         includeRadioButton.addItemListener(e -> {
-            includeAllResults();
+            includeAllResults(baseColumnList);
         });
 
         allColumnRadioButton.addItemListener(e -> {
@@ -75,11 +74,11 @@ public class SmartJpaAdvanceUI {
         });
 
         // 假装执行了选中 includeAllRadio的事件
-        includeAllResults();
+        includeAllResults(baseColumnList);
     }
 
-    private void includeAllResults() {
-        String includeSql = "<include refid=\"" + baseColumnListTextField.getText() + "\"/>";
+    private void includeAllResults(String columnNames) {
+        String includeSql = "<include refid=\"" + columnNames + "\"/>";
         columnsTextArea.setText(includeSql);
         resultType = false;
     }

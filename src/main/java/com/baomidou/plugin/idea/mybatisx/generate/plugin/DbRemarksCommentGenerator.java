@@ -10,6 +10,9 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.xml.TextElement;
+import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.mybatis.generator.config.MergeConstants;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
 import org.mybatis.generator.internal.util.StringUtility;
 
@@ -64,6 +67,18 @@ public class DbRemarksCommentGenerator extends DefaultCommentGenerator implement
             method.addJavaDocLine(" * " + introspectedColumn.getRemarks());
         }
         this.addJavadocTag(method, false);
+        method.addJavaDocLine(" */");
+    }
+
+    @Override
+    public void addComment(XmlElement xmlElement) {
+        xmlElement.addElement(new TextElement("<!--" + MergeConstants.NEW_ELEMENT_TAG + "-->"));
+    }
+
+    @Override
+    public void addGeneralMethodComment(Method method, IntrospectedTable introspectedTable) {
+        method.addJavaDocLine("/**");
+        method.addJavaDocLine(" * " + MergeConstants.NEW_ELEMENT_TAG);
         method.addJavaDocLine(" */");
     }
 

@@ -42,8 +42,6 @@ public class MybatisGeneratorSettingUI  {
 
     private JCheckBox offsetLimitBox = new JCheckBox("Page(分页)");
     private JCheckBox commentBox = new JCheckBox("comment(实体注释)");
-    private JCheckBox overrideXMLBox = new JCheckBox("Overwrite-Xml");
-    private JCheckBox overrideJavaBox = new JCheckBox("Overwrite-Java");
     private JCheckBox needToStringHashcodeEqualsBox = new JCheckBox("toString/hashCode/equals");
     private JCheckBox useSchemaPrefixBox = new JCheckBox("Use-Schema(使用Schema前缀)");
     private JCheckBox needForUpdateBox = new JCheckBox("Add-ForUpdate(select增加ForUpdate)");
@@ -126,8 +124,8 @@ public class MybatisGeneratorSettingUI  {
         daoPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         daoPanel.setBorder(BorderFactory.createTitledBorder("dao setting"));
 
-        daoPanel.add(new JLabel("dao postfix:"));
-        daoPostfixField.setText("Dao");
+        daoPanel.add(new JLabel("dao suffix:"));
+        daoPostfixField.setText("Mapper");
         daoPanel.add(daoPostfixField);
 
         JLabel labelLeft5 = new JLabel("package:");
@@ -166,20 +164,16 @@ public class MybatisGeneratorSettingUI  {
         /**
          * options panel
          */
-        JBPanel optionsPanel = new JBPanel(new GridLayout(5, 5, 5, 5));
+        JBPanel optionsPanel = new JBPanel(new GridLayout(6, 4, 5, 5));
         optionsPanel.setBorder(BorderFactory.createTitledBorder("options panel"));
 
         commentBox.setSelected(true);
-        overrideXMLBox.setSelected(true);
-        overrideJavaBox.setSelected(true);
         useSchemaPrefixBox.setSelected(true);
 //        默认不使用 lombok
 //        useLombokBox.setSelected(true);
 
 
         optionsPanel.add(commentBox);
-        optionsPanel.add(overrideXMLBox);
-        optionsPanel.add(overrideJavaBox);
         optionsPanel.add(useLombokBox);
         optionsPanel.add(useSimpleModeBox);
         optionsPanel.add(useSchemaPrefixBox);
