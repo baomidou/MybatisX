@@ -70,19 +70,29 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
             if (mybatis != null) {
                 config = mybatis;
             }
-            if (config == null && jsonObject.containsKey("mybatis-plus")) {
-                config = jsonObject.get("mybatis-plus");
+            if (config == null) {
+                if (jsonObject.containsKey("mybatis-plus")) {
+                    config = jsonObject.get("mybatis-plus");
+                }
+                if (jsonObject.containsKey("mybatisPlus")) {
+                    config = jsonObject.get("mybatisPlus");
+                }
             }
+            Object typeAliasesPackage = null;
             if (config != null) {
                 Map mapConfig = (Map) config;
-                Object typeAliasesPackage = mapConfig.get("type-aliases-package");
-                if (typeAliasesPackage != null && !StringUtils.isEmpty(typeAliasesPackage.toString())) {
+                typeAliasesPackage = mapConfig.get("type-aliases-package");
+                if (typeAliasesPackage == null) {
+                    typeAliasesPackage = mapConfig.get("typeAliasesPackage");
+                }
+            }
+            if (typeAliasesPackage != null) {
+                if (!StringUtils.isEmpty(typeAliasesPackage.toString())) {
                     classSet.add(typeAliasesPackage.toString());
                 }
             }
 
-
-        } catch (ParserException| ComposerException e) {
+        } catch (ParserException | ComposerException e) {
             logger.info("yml parse fail", e);
         } catch (IOException e) {
             logger.error("read alias exception", e);

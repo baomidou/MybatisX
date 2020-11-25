@@ -57,7 +57,7 @@ public class PsiColumnReferenceSetResolver extends ContextReferenceSetResolver<X
         for (DbDataSource dataSource : dbPsiFacade.getDataSources()) {
             JBIterable<? extends DasNamespace> schemas = DasUtil.getSchemas(dataSource);
             for (DasNamespace schema : schemas) {
-                if(schema.isIntrospected()){
+                if(DasUtil.IS_INTROSPECTED.value(schema)){
                     DasTable dasTable = DasUtil.findChild(schema, DasTable.class, ObjectKind.TABLE, tableName);
                     if(dasTable != null){
                         DasColumn child = DasUtil.findChild(dasTable, DasColumn.class, ObjectKind.COLUMN, firstText);
