@@ -61,36 +61,40 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     private void readAliasesPackage(Set<String> classSet, VirtualFile configurationFile) {
         Yaml yaml = new Yaml();
         try (InputStream inputStream = configurationFile.getInputStream();) {
-            Map jsonObject = yaml.loadAs(inputStream, Map.class);
-            if (jsonObject == null) {
-                return;
-            }
-            Object config = null;
-            Object mybatis = jsonObject.get("mybatis");
-            if (mybatis != null) {
-                config = mybatis;
-            }
-            if (config == null) {
-                if (jsonObject.containsKey("mybatis-plus")) {
-                    config = jsonObject.get("mybatis-plus");
+            Iterable<Object> objects = yaml.loadAll(inputStream);
+            for (Object object : objects) {
+                Map jsonObject = (Map) object;
+                if (jsonObject == null) {
+                    return;
                 }
-                if (jsonObject.containsKey("mybatisPlus")) {
-                    config = jsonObject.get("mybatisPlus");
+                Object config = null;
+                Object mybatis = jsonObject.get("mybatis");
+                if (mybatis != null) {
+                    config = mybatis;
+                }
+                if (config == null) {
+                    if (jsonObject.containsKey("mybatis-plus")) {
+                        config = jsonObject.get("mybatis-plus");
+                    }
+                    if (jsonObject.containsKey("mybatisPlus")) {
+                        config = jsonObject.get("mybatisPlus");
+                    }
+                }
+                Object typeAliasesPackage = null;
+                if (config != null) {
+                    Map mapConfig = (Map) config;
+                    typeAliasesPackage = mapConfig.get("type-aliases-package");
+                    if (typeAliasesPackage == null) {
+                        typeAliasesPackage = mapConfig.get("typeAliasesPackage");
+                    }
+                }
+                if (typeAliasesPackage != null) {
+                    if (!StringUtils.isEmpty(typeAliasesPackage.toString())) {
+                        classSet.add(typeAliasesPackage.toString());
+                    }
                 }
             }
-            Object typeAliasesPackage = null;
-            if (config != null) {
-                Map mapConfig = (Map) config;
-                typeAliasesPackage = mapConfig.get("type-aliases-package");
-                if (typeAliasesPackage == null) {
-                    typeAliasesPackage = mapConfig.get("typeAliasesPackage");
-                }
-            }
-            if (typeAliasesPackage != null) {
-                if (!StringUtils.isEmpty(typeAliasesPackage.toString())) {
-                    classSet.add(typeAliasesPackage.toString());
-                }
-            }
+
 
         } catch (ParserException | ComposerException e) {
             logger.info("yml parse fail", e);
