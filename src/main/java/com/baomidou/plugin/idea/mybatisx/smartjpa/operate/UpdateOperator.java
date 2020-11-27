@@ -147,7 +147,14 @@ public class UpdateOperator extends BaseOperatorManager {
     }
 
     @Override
-    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, Generator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod,
+                                  String tableName,
+                                  Generator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
         String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
         mybatisXmlGenerator.generateUpdate(id, mapperXml);
     }

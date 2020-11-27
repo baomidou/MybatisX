@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
@@ -69,14 +70,14 @@ public interface AreaOperateManager {
 
     /**
      * Generate mapper xml.
-     *
-     * @param id                    the id
+     *  @param id                    the id
      * @param jpaList               输入的文本
      * @param entityClass           类
      * @param psiMethod             方法
      * @param tableName             表名
      * @param mybatisXmlGenerator   the mybatis xml generator
      * @param conditionFieldWrapper the condition field wrapper
+     * @param resultFields
      */
     void generateMapperXml(String id,
                            LinkedList<SyntaxAppender> jpaList,
@@ -84,6 +85,7 @@ public interface AreaOperateManager {
                            PsiMethod psiMethod,
                            String tableName,
                            Generator mybatisXmlGenerator,
-                           ConditionFieldWrapper conditionFieldWrapper);
+                           ConditionFieldWrapper conditionFieldWrapper,
+                           List<TxField> resultFields);
 
 }

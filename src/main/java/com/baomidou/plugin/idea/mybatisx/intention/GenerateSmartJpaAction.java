@@ -40,10 +40,11 @@ public class GenerateSmartJpaAction extends GenerateSmartJpaAdvanceAction {
 
     @Override
     protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project,
-                                                                       PsiClass mapperClass,
-                                                                       String defaultDateWord, List<TxField> allFields,
+                                                                       String defaultDateWord,
+                                                                       List<TxField> allFields,
+                                                                       List<String> resultFields,
                                                                        List<String> conditionFields,
-                                                                       String entityClass) {
+                                                                       PsiClass entityClass)  {
         return Optional.of(new NeverContainsFieldWrapper(project));
     }
 

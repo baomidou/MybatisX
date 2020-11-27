@@ -2,15 +2,14 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.StringUtils;
+import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 生成mybatis的xml文件内容.
@@ -49,12 +48,12 @@ public class MybatisAnnotationGenerator implements Generator {
     }
 
     @Override
-    public void generateSelect(String id, String value, String resultMap, String resultType) {
+    public void generateSelect(String id, String value, Boolean isResultType, String resultMap, String resultType, List<TxField> resultFields, PsiClass entityClass) {
         List<String> importClass = new ArrayList<>();
 
         String text = "<script>" + value + "</script>";
         String resultMapAnnotationPrefix = "";
-        if (StringUtils.isNotBlank(resultMap)) {
+        if (!isResultType) {
             resultMapAnnotationPrefix = "@ResultMap(\"BaseResultMap\")";
             importClass.add("org.apache.ibatis.annotations.ResultMap");
         }
@@ -69,7 +68,7 @@ public class MybatisAnnotationGenerator implements Generator {
         text = text.replaceAll("\"", "\\\\\"");
         String[] split = text.split("\n");
         if (split.length > 1) {
-            text = Arrays.stream(split).collect(Collectors.joining("\" \n + \""));
+            text = String.join("\" \n + \"", split);
         }
         return text;
     }

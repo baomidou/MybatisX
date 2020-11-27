@@ -26,7 +26,7 @@ public class MapperClassGenerateFactory {
     private final Project project;
     private final Editor editor;
     private final PsiTypeElement statementElement;
-    private PsiClass mapperClass;
+    private final PsiClass mapperClass;
     private final TypeDescriptor parameterDescriptor;
     private final ConditionFieldWrapper conditionFieldWrapper;
     private final TypeDescriptor returnDescriptor;
@@ -48,7 +48,18 @@ public class MapperClassGenerateFactory {
         this.returnDescriptor = returnDescriptor;
     }
 
-    public String generateMethodStr() {
+    public String generateMethodStr(String resultType) {
+        if (resultType != null) {
+            String simpleName = null;
+            int beginIndex = resultType.lastIndexOf(".");
+            if (beginIndex != -1) {
+                simpleName = resultType.substring(beginIndex + 1);
+            }
+            if (simpleName == null) {
+                simpleName = resultType;
+            }
+            returnDescriptor.initResultType(resultType, simpleName);
+        }
         return returnDescriptor.getContent(conditionFieldWrapper.getDefaultDateList())
             + " "
             + statementElement.getText()
@@ -69,7 +80,7 @@ public class MapperClassGenerateFactory {
             prefix = prefixParam;
         }
         Document document = editor.getDocument();
-        String newMethodString = prefix + generateMethodStr();
+        String newMethodString = prefix + generateMethodStr(conditionFieldWrapper.getResultType());
         PsiFile containingFile = statementElement.getContainingFile();
 
         PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
@@ -77,7 +88,7 @@ public class MapperClassGenerateFactory {
         statementElement.replace(psiMethod);
         // reformat
         PsiMethod methodBySignature = mapperClass.findMethodBySignature(psiMethod, false);
-        if(methodBySignature!=null){
+        if (methodBySignature != null) {
             TextRange textRange = methodBySignature.getTextRange();
             CodeStyleManager instance = CodeStyleManager.getInstance(project);
             instance.reformatText(containingFile, textRange.getStartOffset(), textRange.getEndOffset());
@@ -90,9 +101,7 @@ public class MapperClassGenerateFactory {
         importList.addAll(returnDescriptor.getImportList());
         importList.addAll(parameterDescriptor.getImportList());
         Importer importerReturn = Importer.create(importList);
-        importerReturn.addImportToFile(psiDocumentManager,(PsiJavaFile) containingFile,document);
-
-
+        importerReturn.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document);
 
 
     }

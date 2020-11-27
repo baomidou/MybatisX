@@ -19,7 +19,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +63,8 @@ public class InsertOperator extends BaseOperatorManager {
             this.initCustomArea(areaName, mappingField);
         }
     }
+
+
 
 
     private class InsertResultAppenderFactory extends ResultAppenderFactory {
@@ -227,7 +228,8 @@ public class InsertOperator extends BaseOperatorManager {
                                   PsiMethod psiMethod,
                                   String tableName,
                                   Generator mybatisXmlGenerator,
-                                  ConditionFieldWrapper conditionFieldWrapper) {
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
         String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
         mybatisXmlGenerator.generateInsert(id, mapperXml);
     }

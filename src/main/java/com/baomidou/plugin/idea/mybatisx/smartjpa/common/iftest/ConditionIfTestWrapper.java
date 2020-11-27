@@ -84,9 +84,13 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
 
     @Override
     public String getResultType() {
-        return resultType ? resultTypeClass : null;
+        return resultTypeClass;
     }
 
+    @Override
+    public Boolean isResultType() {
+        return resultType;
+    }
     @Override
     public Generator getGenerator(MapperClassGenerateFactory mapperClassGenerateFactory) {
         if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_ANNOTATION) {

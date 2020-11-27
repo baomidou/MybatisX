@@ -44,4 +44,5 @@
           AND ids = #{ids}
     </update>
 
+
 </mapper>

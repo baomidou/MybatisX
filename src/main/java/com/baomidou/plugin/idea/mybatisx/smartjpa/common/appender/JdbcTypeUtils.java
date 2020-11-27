@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -29,7 +30,6 @@ public class JdbcTypeUtils {
     }
 
 
-
     /**
      * 后续提取类， 先用静态的
      *
@@ -38,7 +38,7 @@ public class JdbcTypeUtils {
     private static Map<String, String> fieldJdbcType = new ConcurrentHashMap<>();
 
     static {
-        fieldJdbcType.put("java.lang.Byte","NUMERIC");
+        fieldJdbcType.put("java.lang.Byte", "NUMERIC");
         fieldJdbcType.put("java.lang.Short", "NUMERIC");
         fieldJdbcType.put("java.lang.Integer", "NUMERIC");
         fieldJdbcType.put("java.lang.Long", "NUMERIC");
@@ -48,5 +48,9 @@ public class JdbcTypeUtils {
         fieldJdbcType.put("java.lang.String", "VARCHAR");
         fieldJdbcType.put("java.util.Date", "TIMESTAMP");
         fieldJdbcType.put("java.math.BigDecimal", "DECIMAL");
+    }
+
+    public static Optional<String> findJdbcTypeByJavaType(String javaType) {
+        return Optional.ofNullable(fieldJdbcType.get(javaType));
     }
 }

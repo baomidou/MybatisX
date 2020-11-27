@@ -1,7 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.FieldUtil;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
@@ -13,7 +15,6 @@ import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.PsiReferenceParameterList;
 import com.intellij.psi.PsiType;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -65,7 +66,7 @@ public abstract class JpaMappingResolver {
                                 String canonicalText = type.getCanonicalText();
                                 // 当存在多个类型的时候, 排除主键类型.  java开头的包
                                 if (!canonicalText.startsWith("java")
-                                    && StringUtils.isNotBlank(canonicalText)) {
+                                    && !StringUtils.isEmpty(canonicalText)) {
                                     PsiClass entityClass = instance.findClass(canonicalText, mapperClass.getResolveScope());
                                     if (entityClass != null) {
                                         PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
@@ -113,7 +114,12 @@ public abstract class JpaMappingResolver {
         if (annotation != null) {
             PsiAnnotationMemberValue originFieldAnnotation = annotation.findAttributeValue(COLUMN_NAME);
             PsiLiteralExpression expression = (PsiLiteralExpression) originFieldAnnotation;
-            columnName = expression.getValue().toString();
+            if (expression != null) {
+                Object value = expression.getValue();
+                if (value != null) {
+                    columnName = value.toString();
+                }
+            }
         }
         // 驼峰转下划线
         if (columnName == null) {
@@ -125,7 +131,7 @@ public abstract class JpaMappingResolver {
     @NotNull
     private String getUnderLineName(String camelName) {
         String[] strings = org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase(camelName);
-        return Arrays.stream(strings).map(x -> com.baomidou.plugin.idea.mybatisx.util.StringUtils.lowerCaseFirstChar(x))
+        return Arrays.stream(strings).map(StringUtils::lowerCaseFirstChar)
             .collect(Collectors.joining("_"));
     }
 
@@ -150,7 +156,8 @@ public abstract class JpaMappingResolver {
                 txField.setFieldName(field.getName());
                 // 表的列名
                 txField.setColumnName(columnName);
-
+                Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());
+                jdbcTypeByJavaType.ifPresent(txField::setJdbcType);
                 return txField;
             }).collect(Collectors.toList());
     }

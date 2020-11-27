@@ -20,4 +20,8 @@ public interface TypeDescriptor {
      * @param defaultDateList
      */
     String getContent(List<String> defaultDateList);
+
+    default void initResultType(String qualifiedName, String simpleName){
+
+    }
 }

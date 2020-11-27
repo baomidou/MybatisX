@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 在mapper类中通过名字生成方法和xml内容
@@ -85,9 +86,9 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
 
 
             Optional<ConditionFieldWrapper> conditionFieldWrapperOptional = getConditionFieldWrapper(project,
-                mapperClass,
                 platformGenerator.getDefaultDateWord(),
                 platformGenerator.getAllFields(),
+                platformGenerator.getResultFields(),
                 platformGenerator.getConditionFields(),
                 platformGenerator.getEntityClass());
             if (!conditionFieldWrapperOptional.isPresent()) {
@@ -112,15 +113,24 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                     conditionFieldWrapper,
                     returnDescriptor);
 
-            String newMethodString = mapperClassGenerateFactory.generateMethodStr();
+            String newMethodString = mapperClassGenerateFactory.generateMethodStr(conditionFieldWrapper.getResultType());
             PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
             final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
-            platformGenerator.generateMapperXml(mapperClassGenerateFactory, psiMethod, conditionFieldWrapper);
+
+            List<TxField> resultTxFields = getResultTxFields(platformGenerator.getAllFields(), platformGenerator.getResultFields());
+            platformGenerator.generateMapperXml(mapperClassGenerateFactory,
+                psiMethod,
+                conditionFieldWrapper,
+                resultTxFields);
 
 
         } catch (ProcessCanceledException e) {
             logger.info("cancel info", e);
         }
+    }
+
+    private List<TxField> getResultTxFields(List<TxField> allFields, List<String> resultFields) {
+        return allFields.stream().filter(field -> resultFields.contains(field.getTipName())).collect(Collectors.toList());
     }
 
     private boolean findDatabaseComponent() {
@@ -136,23 +146,24 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
     /**
      * 创建 条件字段包装器， 用于if,where 这样的标签
      *
-     * @param project           the project
-     * @param mapperClass
+     * @param project         the project
      * @param defaultDateWord
      * @param allFields
+     * @param resultFields
      * @param conditionFields
      * @param entityClass
      * @return the condition field wrapper
      */
     protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project,
-                                                                       PsiClass mapperClass,
                                                                        String defaultDateWord,
                                                                        List<TxField> allFields,
+                                                                       List<String> resultFields,
                                                                        List<String> conditionFields,
-                                                                       String entityClass) {
+                                                                       PsiClass entityClass) {
         // 弹出模态窗口
         JpaAdvanceDialog jpaAdvanceDialog = new JpaAdvanceDialog(project);
         jpaAdvanceDialog.initFields(conditionFields,
+            resultFields,
             allFields,
             entityClass);
         jpaAdvanceDialog.show();
@@ -163,7 +174,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
         }
         Set<String> selectedFields = jpaAdvanceDialog.getSelectedFields();
 
-        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(project, selectedFields, allFields,defaultDateWord);
+        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(project, selectedFields, allFields, defaultDateWord);
 
         conditionIfTestWrapper.setAllFields(jpaAdvanceDialog.getAllFieldsStr());
 

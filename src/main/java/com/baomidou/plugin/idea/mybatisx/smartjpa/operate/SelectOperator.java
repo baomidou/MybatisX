@@ -253,8 +253,8 @@ public class SelectOperator extends BaseOperatorManager {
 
 
     protected ResultAppenderFactory initCustomFieldResultAppender(final List<TxField> mappingField,
-                                               final String areaName,
-                                               ConditionAppenderFactory conditionAppenderFactory) {
+                                                                  final String areaName,
+                                                                  ConditionAppenderFactory conditionAppenderFactory) {
         ResultAppenderFactory selectFactory = new SelectResultAppenderFactory(areaName);
         for (TxField field : mappingField) {
             // field
@@ -283,7 +283,7 @@ public class SelectOperator extends BaseOperatorManager {
 
 
         }
-return selectFactory;
+        return selectFactory;
 
     }
 
@@ -303,8 +303,9 @@ return selectFactory;
 
         /**
          * select 标签的字段一定不会生成参数
+         *
          * @param syntaxAppenderWrappers the jpa string list
-         * @param entityClass   the entity class
+         * @param entityClass            the entity class
          * @return
          */
         @Override
@@ -349,13 +350,22 @@ return selectFactory;
     }
 
     @Override
-    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList,
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
                                   PsiClass entityClass,
                                   PsiMethod psiMethod, String tableName,
-                                  Generator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+                                  Generator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
         String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
 
-        mybatisXmlGenerator.generateSelect(id, mapperXml,conditionFieldWrapper.getResultMap(), conditionFieldWrapper.getResultType());
+        mybatisXmlGenerator.generateSelect(id,
+            mapperXml,
+            conditionFieldWrapper.isResultType(),
+            conditionFieldWrapper.getResultMap(),
+            conditionFieldWrapper.getResultType(),
+            resultFields,
+            entityClass);
     }
 
     @Override

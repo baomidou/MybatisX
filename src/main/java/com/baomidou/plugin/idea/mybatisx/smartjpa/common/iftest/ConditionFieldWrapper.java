@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
+import com.intellij.psi.PsiClass;
 
 import java.util.List;
 
@@ -47,6 +48,8 @@ public interface ConditionFieldWrapper {
      * @return the result type
      */
     String getResultType();
+
+    Boolean isResultType();
 
     Generator getGenerator(MapperClassGenerateFactory mapperClassGenerateFactory);
 

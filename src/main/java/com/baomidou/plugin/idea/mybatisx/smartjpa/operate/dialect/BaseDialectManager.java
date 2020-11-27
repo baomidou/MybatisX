@@ -129,7 +129,8 @@ public class BaseDialectManager implements AreaOperateManager {
                                   PsiMethod psiMethod,
                                   String tableNameByEntityName,
                                   Generator mybatisXmlGenerator,
-                                  ConditionFieldWrapper conditionFieldWrapper) {
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
         if (jpaList.size() == 0 || jpaList.get(0).getType() != AppendTypeEnum.AREA) {
             return;
         }
@@ -137,8 +138,15 @@ public class BaseDialectManager implements AreaOperateManager {
 
         for (AreaOperateManager typeManager : this.typeManagers) {
             if (typeManager.support(syntaxAppender.getText())) {
-                typeManager.generateMapperXml(id, jpaList, entityClass, psiMethod, tableNameByEntityName, mybatisXmlGenerator, conditionFieldWrapper);
-                return;
+                typeManager.generateMapperXml(id,
+                    jpaList,
+                    entityClass,
+                    psiMethod,
+                    tableNameByEntityName,
+                    mybatisXmlGenerator,
+                    conditionFieldWrapper,
+                    resultFields);
+                break;
             }
         }
     }

@@ -20,8 +20,11 @@ import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -97,8 +100,9 @@ public class CommonGenerator implements PlatformGenerator {
     @Override
     public void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
                                   PsiMethod psiMethod,
-                                  ConditionFieldWrapper conditionFieldWrapper) {
-        WriteAction.run(()->{
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
+        WriteAction.run(() -> {
             // 生成完整版的内容
             Generator generator = conditionFieldWrapper.getGenerator(mapperClassGenerateFactory);
             appenderManager.generateMapperXml(
@@ -108,7 +112,8 @@ public class CommonGenerator implements PlatformGenerator {
                 psiMethod,
                 tableName,
                 generator,
-                conditionFieldWrapper);
+                conditionFieldWrapper,
+                resultFields);
         });
     }
 
@@ -128,7 +133,29 @@ public class CommonGenerator implements PlatformGenerator {
     }
 
     @Override
-    public String getEntityClass() {
-        return entityClass.getQualifiedName();
+    public PsiClass getEntityClass() {
+        return entityClass;
+    }
+
+    private Set<String> notNeedsResult = new HashSet<String>() {
+        {
+            add("update");
+            add("insert");
+            add("delete");
+        }
+    };
+
+    @Override
+    public List<String> getResultFields() {
+        SyntaxAppender peek = jpaList.peek();
+        if (peek == null || notNeedsResult.contains(peek.getText())) {
+            return Collections.emptyList();
+        }
+        return jpaList.stream()
+            .filter(syntaxAppender -> syntaxAppender.getAreaSequence() == AreaSequence.RESULT
+                && syntaxAppender.getType() == AppendTypeEnum.FIELD &&
+                syntaxAppender instanceof CustomFieldAppender)
+            .flatMap(x -> Arrays.stream(x.getText().split(",")))
+            .collect(Collectors.toList());
     }
 }

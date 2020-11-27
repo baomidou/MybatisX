@@ -100,10 +100,21 @@ public class CountOperator extends SelectOperator {
 
 
     @Override
-    public void generateMapperXml(String id, LinkedList<SyntaxAppender> jpaList, PsiClass entityClass, PsiMethod psiMethod, String tableName, Generator mybatisXmlGenerator, ConditionFieldWrapper conditionFieldWrapper) {
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod,
+                                  String tableName,
+                                  Generator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
 
         String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
 
-        mybatisXmlGenerator.generateSelect(id, mapperXml, null, "int");
+        mybatisXmlGenerator.generateSelect(id,
+            mapperXml,
+            conditionFieldWrapper.isResultType(),
+            null,
+            "int", resultFields, entityClass);
     }
 }
