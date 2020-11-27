@@ -107,7 +107,7 @@ public abstract class ContextReferenceSetResolver<F extends PsiElement, K extend
      * @return the optional
      */
     @NotNull
-    public Optional<K> resolve(K current, String text){
+    public Optional<K> resolve(K current, String text) {
         return Optional.empty();
     }
 

@@ -56,20 +56,30 @@ public final class DomUtils {
      * @return boolean
      */
     public static boolean isMybatisFile(@Nullable PsiFile file) {
-        if(file == null){
-            return false;
+        Boolean mybatisFile = null;
+        if (file == null) {
+            mybatisFile = false;
         }
-        if (!isXmlFile(file)) {
-            return false;
+        if (mybatisFile == null) {
+            if (!isXmlFile(file)) {
+                mybatisFile = false;
+            }
         }
-        XmlTag rootTag = ((XmlFile) file).getRootTag();
-        if(rootTag == null){
-            return false;
+        if (mybatisFile == null) {
+            XmlTag rootTag = ((XmlFile) file).getRootTag();
+            if (rootTag == null) {
+                mybatisFile = false;
+            }
+            if (mybatisFile == null) {
+                if (!"mapper".equals(rootTag.getName())) {
+                    mybatisFile = false;
+                }
+            }
         }
-        if(!rootTag.getName().equals("mapper")){
-            return false;
+        if (mybatisFile == null) {
+            mybatisFile = true;
         }
-        return true;
+        return mybatisFile;
     }
 
     /**

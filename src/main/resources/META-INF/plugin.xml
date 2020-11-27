@@ -114,9 +114,6 @@
         <fileTemplateGroup id="baomidou.MybatisFileTemplateDescriptorFactory"
             implementation="com.baomidou.plugin.idea.mybatisx.template.MybatisFileTemplateDescriptorFactory"/>
 
-        <!--编辑mapper文件时，实现参数提示,  在第一次输入#{}的时候,延迟提示.  没必要 -->
-        <!--        <typedHandler implementation="com.baomidou.plugin.idea.mybatisx.action.MybatisTypedHandler" id="mybatis" order="first"/>-->
-
         <!--附加的LiveTemplate模板-->
         <!-- 影响了不重启插件， 取消这个扩展 -->
         <defaultLiveTemplatesProvider id="baomidou.SqlLiveTemplateProvider"

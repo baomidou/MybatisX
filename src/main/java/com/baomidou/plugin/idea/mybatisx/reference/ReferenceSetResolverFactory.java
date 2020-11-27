@@ -27,7 +27,4 @@ public final class ReferenceSetResolverFactory {
         return new PsiFieldReferenceSetResolver(target);
     }
 
-    public static <F extends XmlAttributeValue> ContextReferenceSetResolver<XmlAttributeValue, DbElement> createPsiColumnResolver(@NotNull F target) {
-        return new PsiColumnReferenceSetResolver(target);
-    }
 }
