@@ -19,9 +19,14 @@ public class TxField {
      * 表的列名
      */
     private String columnName;
-
+    /**
+     * 字段类型
+     */
     private String fieldType;
-
+    /**
+     * 字段jdbc类型
+     */
+    private String jdbcType;
     /**
      * Gets field type.
      *
@@ -93,5 +98,13 @@ public class TxField {
      */
     public void setColumnName(final String columnName) {
         this.columnName = columnName;
+    }
+
+    public String getJdbcType() {
+        return jdbcType;
+    }
+
+    public void setJdbcType(String jdbcType) {
+        this.jdbcType = jdbcType;
     }
 }

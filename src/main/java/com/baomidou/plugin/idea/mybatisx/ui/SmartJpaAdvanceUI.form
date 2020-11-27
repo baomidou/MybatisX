@@ -31,7 +31,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="BaseResultMap"/>
+              <text value=""/>
             </properties>
           </component>
           <component id="20269" class="javax.swing.JLabel">

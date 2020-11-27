@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.ui;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.psi.PsiClass;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jetbrains.annotations.Nullable;
@@ -74,12 +75,12 @@ public class JpaAdvanceDialog extends DialogWrapper {
 
     /**
      * Init fields.
-     *
-     * @param conditionFields the condition fields
+     *  @param conditionFields the condition fields
+     * @param resultFields
      * @param allFields       the all fields
      * @param entityClass     the entity class
      */
-    public void initFields(List<String> conditionFields, List<TxField> allFields, String entityClass) {
+    public void initFields(List<String> conditionFields, List<String> resultFields, List<TxField> allFields, PsiClass entityClass) {
         if (conditionFields.size() > 0) {
             JPanel conditionPanel = smartJpaAdvanceUI.getConditionPanel();
             // 默认 5 列
@@ -101,9 +102,7 @@ public class JpaAdvanceDialog extends DialogWrapper {
                 conditionPanel.add(checkBox, constraints);
             }
         }
-
-        smartJpaAdvanceUI.initResultFields(allFields);
-        smartJpaAdvanceUI.setResultType(entityClass);
+        smartJpaAdvanceUI.init(allFields,entityClass,resultFields);
 
     }
 

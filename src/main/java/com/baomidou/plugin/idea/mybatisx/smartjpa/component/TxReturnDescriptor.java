@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 import com.intellij.psi.PsiClass;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -83,4 +84,12 @@ public class TxReturnDescriptor implements TypeDescriptor {
         return simpleName;
     }
 
+    @Override
+    public void initResultType(String qualifiedName, String simpleName) {
+        List<String> strings = new ArrayList<>();
+        strings.add(qualifiedName);
+        strings.addAll(this.qualifiedName);
+        this.qualifiedName = strings;
+        this.simpleName = simpleName;
+    }
 }

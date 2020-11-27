@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Id;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Result;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -147,6 +148,8 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             txField.setFieldName(field.getName());
             txField.setFieldType(field.getType().getCanonicalText());
             txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
+            Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());
+            jdbcTypeByJavaType.ifPresent(txField::setJdbcType);
             return txField;
         }
         return null;

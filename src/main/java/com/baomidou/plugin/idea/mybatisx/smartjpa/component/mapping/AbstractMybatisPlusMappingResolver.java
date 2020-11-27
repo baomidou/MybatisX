@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.JavaPsiFacade;
@@ -52,6 +53,8 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
                 txField.setFieldName(field.getName());
                 // 表的列名
                 txField.setColumnName(columnName);
+                Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());
+                jdbcTypeByJavaType.ifPresent(txField::setJdbcType);
                 return txField;
             }).collect(Collectors.toList());
     }

@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFact
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 
 import java.util.List;
@@ -33,8 +34,12 @@ public interface PlatformGenerator {
      * @param mapperClassGenerateFactory             PSI 方法描述
      * @param psiMethod
      * @param conditionFieldWrapper the condition field wrapper
+     * @param resultFields
      */
-    void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory, PsiMethod psiMethod, ConditionFieldWrapper conditionFieldWrapper);
+    void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
+                           PsiMethod psiMethod,
+                           ConditionFieldWrapper conditionFieldWrapper,
+                           List<TxField> resultFields);
 
     /**
      * Gets condition fields.
@@ -55,5 +60,7 @@ public interface PlatformGenerator {
      *
      * @return the entity class
      */
-    String getEntityClass();
+    PsiClass getEntityClass();
+
+    List<String>  getResultFields();
 }

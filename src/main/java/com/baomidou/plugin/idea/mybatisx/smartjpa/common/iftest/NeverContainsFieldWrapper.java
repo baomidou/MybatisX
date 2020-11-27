@@ -6,6 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.EmptyGenerato
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +52,11 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
     @Override
     public String getResultType() {
         return null;
+    }
+
+    @Override
+    public Boolean isResultType() {
+        return false;
     }
 
     @Override

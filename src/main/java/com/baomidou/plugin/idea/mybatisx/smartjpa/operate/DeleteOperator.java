@@ -118,7 +118,8 @@ public class DeleteOperator extends BaseOperatorManager {
                                   PsiMethod psiMethod,
                                   String tableName,
                                   Generator mybatisXmlGenerator,
-                                  ConditionFieldWrapper conditionFieldWrapper) {
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
         String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
         mybatisXmlGenerator.generateDelete(id, mapperXml);
     }

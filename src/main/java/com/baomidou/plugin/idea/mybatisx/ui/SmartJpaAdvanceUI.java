@@ -1,7 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.ui;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import com.intellij.psi.PsiClass;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,6 +36,8 @@ public class SmartJpaAdvanceUI {
     private List<TxField> allFields;
 
     private boolean resultType = false;
+    private List<String> resultFields;
+    private PsiClass entityClass;
 
     /**
      * Instantiates a new Smart jpa advance ui.
@@ -77,6 +82,20 @@ public class SmartJpaAdvanceUI {
         includeAllResults(baseColumnList);
     }
 
+    @Nullable
+    private String getEntityClassName(PsiClass entityClass) {
+        String qualifiedName = null;
+        if (CollectionUtils.isNotEmpty(resultFields)) {
+            String collect = String.join("", resultFields);
+            qualifiedName = entityClass.getQualifiedName() + collect + "DTO";
+        }
+        if (qualifiedName == null) {
+
+            qualifiedName = entityClass.getQualifiedName();
+        }
+        return qualifiedName;
+    }
+
     private void includeAllResults(String columnNames) {
         String includeSql = "<include refid=\"" + columnNames + "\"/>";
         columnsTextArea.setText(includeSql);
@@ -92,7 +111,7 @@ public class SmartJpaAdvanceUI {
     public GeneratorEnum getGeneratorType() {
         if (annotationScriptType.isSelected()) {
             return GeneratorEnum.MYBATIS_ANNOTATION;
-        }else if (xmlGenerateType.isSelected()) {
+        } else if (xmlGenerateType.isSelected()) {
             return GeneratorEnum.MYBATIS_XML;
         }
         return GeneratorEnum.MYBATIS_XML;
@@ -134,14 +153,6 @@ public class SmartJpaAdvanceUI {
         return columnsTextArea.getText();
     }
 
-    /**
-     * Init result fields.
-     *
-     * @param allFields the all fields
-     */
-    public void initResultFields(List<TxField> allFields) {
-        this.allFields = allFields;
-    }
 
     /**
      * Gets result map.
@@ -170,13 +181,27 @@ public class SmartJpaAdvanceUI {
         return resultType;
     }
 
-    /**
-     * Sets result type.
-     *
-     * @param entityClass the entity class
-     */
-    public void setResultType(String entityClass) {
-        resultMapClassTextField.setText(entityClass);
+
+    public void init(List<TxField> allFields, PsiClass entityClass, List<String> resultFields) {
+        this.allFields = allFields;
+        this.resultFields = resultFields;
+        String entityClassName = getEntityClassName(entityClass);
+        resultMapClassTextField.setText(entityClassName);
+
+        String resultMapName = getResultMapName(entityClass);
+        baseResultMapTextField.setText(resultMapName);
+    }
+
+    private String getResultMapName(PsiClass entityClass) {
+        String qualifiedName = null;
+        if (CollectionUtils.isNotEmpty(resultFields)) {
+            String collect = String.join("", resultFields);
+            qualifiedName = entityClass.getName() + collect + "Map";
+        }
+        if (qualifiedName == null) {
+            qualifiedName = "BaseResultMap";
+        }
+        return qualifiedName;
     }
 
 

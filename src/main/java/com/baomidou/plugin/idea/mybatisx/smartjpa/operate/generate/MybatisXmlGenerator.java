@@ -2,13 +2,27 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.psi.JavaDirectoryService;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 生成mybatis的xml文件内容.
@@ -48,31 +62,100 @@ public class MybatisXmlGenerator implements Generator {
     }
 
     @Override
-    public void generateSelect(String id, String value, String resultMap, String resultType) {
+    public void generateSelect(String id,
+                               String value,
+                               Boolean isResultType,
+                               String resultMap,
+                               String resultType,
+                               List<TxField> resultFields,
+                               PsiClass entityClass) {
+        generateSelectTag(id, value, isResultType, resultMap, resultType, resultFields, entityClass);
+
+        mapperClassGenerateFactory.generateMethod();
+
+    }
+
+    private void generateResultMapTag(String resultMap,
+                                      String resultType,
+                                      List<TxField> resultFields) {
+        XmlTag xmlTag = mapper.ensureTagExists();
+        XmlTag resultMapTag = xmlTag.createChildTag("resultMap", null, null, false);
+        resultMapTag.setAttribute("id", resultMap);
+        resultMapTag.setAttribute("type", resultType);
+
+        for (TxField resultField : resultFields) {
+            XmlTag result = resultMapTag.createChildTag("result", null, null, false);
+            result.setAttribute("column", resultField.getColumnName());
+            result.setAttribute("property", resultField.getFieldName());
+            if (resultField.getJdbcType() != null) {
+                result.setAttribute("jdbcType", resultField.getJdbcType());
+            }
+            resultMapTag.addSubTag(result, false);
+        }
+        xmlTag.addSubTag(resultMapTag, false);
+    }
+
+    private void generateSelectTag(String id,
+                                   String value,
+                                   Boolean isResultType,
+                                   String resultMap,
+                                   String resultType,
+                                   List<TxField> resultFields,
+                                   PsiClass entityClass) {
         XmlTag xmlTag = mapper.ensureTagExists();
         XmlTag select = xmlTag.createChildTag("select", null, value, false);
         select.setAttribute(ID, id);
         // 是否被映射结果集
-        boolean resultMapped = false;
-        if (StringUtils.isNotBlank(resultMap)) {
-            select.setAttribute(RESULT_MAP, resultMap);
-            resultMapped = true;
-        }
-        if (!resultMapped && StringUtils.isNotBlank(resultType)) {
+        if (isResultType) {
             select.setAttribute(RESULT_TYPE, resultType);
+        } else {
+            select.setAttribute(RESULT_MAP, resultMap);
+            if (isGenerateResultMap(xmlTag, resultMap)) {
+                generateResultMapClass(entityClass, resultType, resultFields);
+                generateResultMapTag(resultMap, resultType, resultFields);
+            }
         }
+
 
         xmlTag.addSubTag(select, false);
-
         CodeStyleManager instance = CodeStyleManager.getInstance(project);
         instance.reformat(select);
 
+    }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("the text of select tag is :"+select.getText());
+    private void generateResultMapClass(PsiClass entityClass, String resultType, List<TxField> resultFields) {
+        JavaDirectoryService instance = JavaDirectoryService.getInstance();
+        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+        PsiFile fileFromText = psiFileFactory.createFileFromText("Hello", StdFileTypes.JAVA, "public class Hello{}");
+        fileFromText.setName("Hello");
+//        JavaPsiFacade psiFileFactory = JavaPsiFacade.getInstance(project);
+//        PsiElementFactory elementFactory = psiFileFactory.getElementFactory();
+//        PsiClass resultMapClass = elementFactory.createClassFromText("public class Hello{}", entityClass);
+
+        LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+        localFileSystem.refreshFiles(Collections.singletonList(fileFromText.getVirtualFile()));
+    }
+
+
+    private boolean isGenerateResultMap(XmlTag xmlTag, String resultMapId) {
+        Boolean generate = null;
+        if ("BaseResultMap".equals(resultMapId) || "BlobResultMap".equals(resultMapId)) {
+            generate = false;
         }
-        mapperClassGenerateFactory.generateMethod();
 
+        if (generate == null) {
+            @NotNull XmlTag[] resultMaps = xmlTag.findSubTags("resultMap");
+            for (XmlTag resultMap : resultMaps) {
+                XmlAttribute id = resultMap.getAttribute("id");
+                if (id != null && resultMapId.equals(id.getValue())) {
+                    generate = false;
+                }
+            }
+        }
+        if (generate == null) {
+            generate = true;
+        }
+        return generate;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(MybatisXmlGenerator.class);
