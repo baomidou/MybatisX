@@ -40,7 +40,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
     };
 
     @Override
-    protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
+    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
         PsiElement foundElement = null;
         // 类可以跳转
         if(element instanceof PsiClass){

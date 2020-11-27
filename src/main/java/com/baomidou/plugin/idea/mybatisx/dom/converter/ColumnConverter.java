@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
 import com.baomidou.plugin.idea.mybatisx.reference.ResultColumnReferenceSet;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -48,7 +49,10 @@ public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> impleme
         if (rootTag != null) {
             XmlAttribute namespace = rootTag.getAttribute(NAMESPACE);
             if (namespace != null) {
-                return JavaUtils.findClazz(context.getProject(), namespace.getValue());
+                String value = namespace.getValue();
+                if (!StringUtils.isEmpty(value)) {
+                    return JavaUtils.findClazz(context.getProject(), value);
+                }
             }
         }
         return Optional.empty();

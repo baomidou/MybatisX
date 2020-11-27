@@ -33,7 +33,8 @@ public class TestInsert extends BaseJpaTest {
             true);
 
     }
-//    int insertBatch(@Param("blogCollection") Collection<Blog> blogCollection);
+
+    //    int insertBatch(@Param("blogCollection") Collection<Blog> blogCollection);
     public void testInsertBatch() throws IOException {
         launchAction("insertBatch");
 
@@ -47,7 +48,6 @@ public class TestInsert extends BaseJpaTest {
 
     }
 
-    // default insert all
     //   int insertAll(Blog blog);
     public void testInsertAll() throws IOException {
         launchAction("insertAll");
@@ -62,8 +62,7 @@ public class TestInsert extends BaseJpaTest {
 
     }
 
-    //   TODO     oracle 的批量插入
-    //    int insertBatchWithUnion(@Param("blogCollection") Collection<Blog> blogCollection);
+    //   oracle 的批量插入
     public void testInsertBatchWithUnion() throws IOException {
         SqlLanguageDialect defaultSqlDialect = SqlDialectMappings.getDefaultSqlDialect();
         SqlDialectMappings.setDefaultSqlDialect(OracleDialect.INSTANCE);
@@ -82,8 +81,7 @@ public class TestInsert extends BaseJpaTest {
     }
 
 
-    // TODO     oracle 的批量插入
-//    int insertBatchWithAll(@Param("blogCollection")Collection<Blog> blogCollection);
+    // oracle 的批量插入
     public void testInsertBatchWithAll() throws IOException {
         SqlLanguageDialect defaultSqlDialect = SqlDialectMappings.getDefaultSqlDialect();
         SqlDialectMappings.setDefaultSqlDialect(OracleDialect.INSTANCE);

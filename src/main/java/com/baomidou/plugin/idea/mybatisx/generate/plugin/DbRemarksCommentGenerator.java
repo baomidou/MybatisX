@@ -128,7 +128,6 @@ public class DbRemarksCommentGenerator extends DefaultCommentGenerator implement
                     + introspectedColumn.getContext().getEndingDelimiter();
             }
             if (!column.equals(introspectedColumn.getJavaProperty())) {
-                //@Column
                 field.addAnnotation("@Column(name = \"" + column + "\")");
             }
         }

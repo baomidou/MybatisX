@@ -3,6 +3,7 @@
 <configuration>
     <settings>
         <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="logPrefix" value="dao."/>
     </settings>
 
     <typeAliases>

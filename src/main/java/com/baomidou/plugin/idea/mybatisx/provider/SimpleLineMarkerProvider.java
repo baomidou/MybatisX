@@ -27,14 +27,15 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
         if (!isTheElement(element)) {
+            logger.info("element: {}", element.getText());
             return;
         }
-        logger.info("getLineMarkerInfo start, element: {}", element);
+
         Optional<? extends T[]> processResult = apply((F) element);
         if (processResult.isPresent()) {
             T[] arrays = processResult.get();
             NavigationGutterIconBuilder navigationGutterIconBuilder = NavigationGutterIconBuilder.create(getIcon());
-            if (arrays != null && arrays.length > 0) {
+            if (arrays.length > 0) {
                 navigationGutterIconBuilder.setTooltipTitle(getTooltip(arrays[0], element));
             }
             navigationGutterIconBuilder.setTargets(arrays);

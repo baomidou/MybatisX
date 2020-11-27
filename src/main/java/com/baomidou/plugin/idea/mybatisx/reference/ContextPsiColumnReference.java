@@ -37,7 +37,7 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
     /**
      * The Resolver.
      */
-    protected ContextReferenceSetResolver<XmlAttributeValue, DbElement> resolver;
+    protected PsiColumnReferenceSetResolver resolver;
     private PsiClass mapperClass;
 
     /**
@@ -56,7 +56,7 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
     public ContextPsiColumnReference(XmlAttributeValue element, TextRange range, int index, PsiClass mapperClass) {
         super(element, range, false);
         this.index = index;
-        resolver = ReferenceSetResolverFactory.createPsiColumnResolver(element);
+        resolver = new PsiColumnReferenceSetResolver(element);
         this.mapperClass = mapperClass;
     }
 
@@ -71,13 +71,22 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
     @Override
     public PsiElement resolve() {
         PsiElement element = null;
-        Optional<DbElement> resolved = resolver.resolve(index);
+        Optional<DasTable> resolved = resolver.resolve(index);
+        // 找到表则加入字段验证
         if (resolved.isPresent()) {
-            element = resolved.get();
+            DasTable dasTable = resolved.get();
+            Optional<DbElement> columns = resolver.findColumns(dasTable);
+            if (columns.isPresent()) {
+                element = columns.get();
+            }
         }
+        // 找不到表的情况下，用原有节点代替
         if (element == null) {
-            element = super.myElement.getOriginalElement();
+            if (!resolved.isPresent()) {
+                element = super.myElement.getOriginalElement();
+            }
         }
+
         return element;
     }
 
@@ -108,17 +117,15 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
         for (DbDataSource dataSource : dbPsiFacade.getDataSources()) {
             JBIterable<? extends DasNamespace> schemas = DasUtil.getSchemas(dataSource);
             for (DasNamespace schema : schemas) {
-                if (DasUtil.IS_INTROSPECTED.value(schema)) {
-                    DasTable dasTable = DasUtil.findChild(schema, DasTable.class, ObjectKind.TABLE, tableName);
-                    if (dasTable != null) {
-                        List<DbElement> dbElementList = new LinkedList<>();
-                        JBIterable<? extends DasColumn> columns = DasUtil.getColumns(dasTable);
-                        for (DasColumn column : columns) {
-                            DbElement element = dbPsiFacade.findElement(column);
-                            dbElementList.add(element);
-                        }
-                        return dbElementList;
+                DasTable dasTable = DasUtil.findChild(schema, DasTable.class, ObjectKind.TABLE, tableName);
+                if (dasTable != null) {
+                    List<DbElement> dbElementList = new LinkedList<>();
+                    JBIterable<? extends DasColumn> columns = DasUtil.getColumns(dasTable);
+                    for (DasColumn column : columns) {
+                        DbElement element = dbPsiFacade.findElement(column);
+                        dbElementList.add(element);
                     }
+                    return dbElementList;
                 }
             }
         }
@@ -131,7 +138,7 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
      *
      * @return the resolver
      */
-    public ContextReferenceSetResolver<XmlAttributeValue, DbElement> getResolver() {
+    public PsiColumnReferenceSetResolver getResolver() {
         return resolver;
     }
 
@@ -140,7 +147,7 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
      *
      * @param resolver the resolver
      */
-    public void setResolver(ContextReferenceSetResolver<XmlAttributeValue, DbElement> resolver) {
+    public void setResolver(PsiColumnReferenceSetResolver resolver) {
         this.resolver = resolver;
     }
 

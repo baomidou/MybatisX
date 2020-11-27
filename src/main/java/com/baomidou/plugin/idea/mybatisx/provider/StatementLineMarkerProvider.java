@@ -14,7 +14,9 @@ import com.google.common.collect.ImmutableSet;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.psi.xml.XmlToken;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.Nls;
@@ -31,12 +33,12 @@ import java.util.Optional;
  *
  * @author yanglin
  */
-public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag, PsiElement> {
+public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlToken, PsiElement> {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
 
+    private static final String MAPPER_CLASS = Mapper.class.getSimpleName().toLowerCase();
     private static final ImmutableSet<String> TARGET_TYPES = ImmutableSet.of(
-        Mapper.class.getSimpleName().toLowerCase(),
         Select.class.getSimpleName().toLowerCase(),
         Insert.class.getSimpleName().toLowerCase(),
         Update.class.getSimpleName().toLowerCase(),
@@ -45,13 +47,13 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
 
     @Override
     public boolean isTheElement(@NotNull PsiElement element) {
-        return element instanceof XmlTag
-            && isTargetType(((XmlTag) element).getName())
+        return element instanceof XmlToken
+            && isTargetType((XmlToken) element)
             && MapperUtils.isElementWithinMybatisFile(element);
     }
 
     @Override
-    public Optional<? extends PsiElement[]> apply(@NotNull XmlTag from) {
+    public Optional<? extends PsiElement[]> apply(@NotNull XmlToken from) {
         DomElement domElement = DomUtil.getDomElement(from);
         if (null == domElement) {
             return Optional.empty();
@@ -74,8 +76,33 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
         }
     }
 
-    private boolean isTargetType(@NotNull String name) {
-        return TARGET_TYPES.contains(name);
+    private boolean isTargetType(@NotNull XmlToken token) {
+        Boolean targetType = null;
+        if (MAPPER_CLASS.equals(token.getText())) {
+            // 判断当前元素是开始节点
+            PsiElement nextSibling = token.getNextSibling();
+            if (nextSibling instanceof PsiWhiteSpace) {
+                targetType = true;
+            }
+        }
+        if (targetType == null) {
+            if (TARGET_TYPES.contains(token.getText())) {
+                PsiElement parent = token.getParent();
+                // 判断当前节点是标签
+                if (parent instanceof XmlTag) {
+                    // 判断当前元素是开始节点
+                    PsiElement nextSibling = token.getNextSibling();
+                    if (nextSibling instanceof PsiWhiteSpace) {
+                        targetType = true;
+                    }
+                }
+            }
+        }
+        if (targetType == null) {
+            targetType = false;
+        }
+        return targetType;
+
     }
 
 
@@ -101,7 +128,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTag
             PsiMethod psiMethod = (PsiMethod) element;
             PsiClass containingClass = psiMethod.getContainingClass();
             if (containingClass != null) {
-                text = containingClass.getName() + "#" +psiMethod.getName();
+                text = containingClass.getName() + "#" + psiMethod.getName();
             }
         }
         if (text == null && element instanceof PsiClass) {
