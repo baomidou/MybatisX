@@ -23,8 +23,6 @@ public class SmartJpaAdvanceUI {
     public JPanel conditionPanel;
     private JPanel rootPanel;
     private JCheckBox checkAllConditionField;
-    private JTextField baseResultMapTextField;
-    private JTextField resultMapClassTextField;
     private JRadioButton includeRadioButton;
     private JRadioButton allColumnRadioButton;
     private JRadioButton asFieldRadioButton;
@@ -33,6 +31,8 @@ public class SmartJpaAdvanceUI {
     private JRadioButton annotationScriptType;
     private JTextField defaultDateTextField;
     private JScrollPane fieldsScrollPanel;
+    private JRadioButton radioUseEntityClass;
+    private JRadioButton radioCreateCustomClass;
     private List<TxField> allFields;
 
     private boolean resultType = false;
@@ -78,19 +78,32 @@ public class SmartJpaAdvanceUI {
             resultType = true;
         });
 
+        radioCreateCustomClass.addItemListener(e -> {
+            this.useDefaultEntityClass = false;
+        });
+        radioUseEntityClass.addItemListener(e -> {
+            this.useDefaultEntityClass = true;
+        });
+
         // 假装执行了选中 includeAllRadio的事件
         includeAllResults(baseColumnList);
     }
 
+    private boolean useDefaultEntityClass = true;
+
     @Nullable
     private String getEntityClassName(PsiClass entityClass) {
         String qualifiedName = null;
-        if (CollectionUtils.isNotEmpty(resultFields)) {
-            String collect = String.join("", resultFields);
-            qualifiedName = entityClass.getQualifiedName() + collect + "DTO";
+        if (useDefaultEntityClass) {
+            qualifiedName = entityClass.getQualifiedName();
         }
         if (qualifiedName == null) {
-
+            if (CollectionUtils.isNotEmpty(resultFields)) {
+                String collect = String.join("", resultFields);
+                qualifiedName = entityClass.getQualifiedName() + collect + "DTO";
+            }
+        }
+        if (qualifiedName == null) {
             qualifiedName = entityClass.getQualifiedName();
         }
         return qualifiedName;
@@ -160,7 +173,20 @@ public class SmartJpaAdvanceUI {
      * @return the result map
      */
     public String getResultMap() {
-        return baseResultMapTextField.getText();
+        String qualifiedName = null;
+        if (useDefaultEntityClass) {
+            qualifiedName = "BaseResultMap";
+        }
+        if (qualifiedName == null) {
+            if (CollectionUtils.isNotEmpty(resultFields)) {
+                String collect = String.join("", resultFields);
+                qualifiedName = entityClass.getName() + collect + "Map";
+            }
+        }
+        if (qualifiedName == null) {
+            qualifiedName = "BaseResultMap";
+        }
+        return qualifiedName;
     }
 
     /**
@@ -169,7 +195,7 @@ public class SmartJpaAdvanceUI {
      * @return the result type class
      */
     public String getResultTypeClass() {
-        return resultMapClassTextField.getText();
+        return getEntityClassName(entityClass);
     }
 
     /**
@@ -181,29 +207,11 @@ public class SmartJpaAdvanceUI {
         return resultType;
     }
 
-
     public void init(List<TxField> allFields, PsiClass entityClass, List<String> resultFields) {
         this.allFields = allFields;
         this.resultFields = resultFields;
-        String entityClassName = getEntityClassName(entityClass);
-        resultMapClassTextField.setText(entityClassName);
-
-        String resultMapName = getResultMapName(entityClass);
-        baseResultMapTextField.setText(resultMapName);
+        this.entityClass = entityClass;
     }
-
-    private String getResultMapName(PsiClass entityClass) {
-        String qualifiedName = null;
-        if (CollectionUtils.isNotEmpty(resultFields)) {
-            String collect = String.join("", resultFields);
-            qualifiedName = entityClass.getName() + collect + "Map";
-        }
-        if (qualifiedName == null) {
-            qualifiedName = "BaseResultMap";
-        }
-        return qualifiedName;
-    }
-
 
     /**
      * The enum Generator enum.

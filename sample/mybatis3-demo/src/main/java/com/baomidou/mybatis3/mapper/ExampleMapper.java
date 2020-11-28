@@ -1,6 +1,6 @@
 package com.baomidou.mybatis3.mapper;
-import java.util.List;
 import com.baomidou.mybatis3.domain.BlogAgeContentDTO;
+import java.util.List;
 
 import com.baomidou.mybatis3.domain.Blog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -12,6 +12,6 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     int updateIdAndContentByALLFields(@Param("id") Long id, @Param("content") String content);
 
-    selectAgeAndContentById
+    List<BlogAgeContentDTO> selectAgeAndContentById(@Param("id") Long id);
 
 }

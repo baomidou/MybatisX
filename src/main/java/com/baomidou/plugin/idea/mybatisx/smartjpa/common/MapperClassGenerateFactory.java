@@ -48,17 +48,17 @@ public class MapperClassGenerateFactory {
         this.returnDescriptor = returnDescriptor;
     }
 
-    public String generateMethodStr(String resultType) {
-        if (resultType != null) {
+    public String generateMethodStr(String returnClassName) {
+        if (returnClassName != null) {
             String simpleName = null;
-            int beginIndex = resultType.lastIndexOf(".");
+            int beginIndex = returnClassName.lastIndexOf(".");
             if (beginIndex != -1) {
-                simpleName = resultType.substring(beginIndex + 1);
+                simpleName = returnClassName.substring(beginIndex + 1);
             }
             if (simpleName == null) {
-                simpleName = resultType;
+                simpleName = returnClassName;
             }
-            returnDescriptor.initResultType(resultType, simpleName);
+            returnDescriptor.initResultType(returnClassName, simpleName);
         }
         return returnDescriptor.getContent(conditionFieldWrapper.getDefaultDateList())
             + " "

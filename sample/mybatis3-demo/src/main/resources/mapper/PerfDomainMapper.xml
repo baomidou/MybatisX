@@ -20,7 +20,8 @@
         , down
 
     </select>
-    <select id="selectAllByIdAndExact" resultMap="BaseResultMap">
+
+    <select id="selectAllByIdAndExact" resultType="PerfDomain">
         select
         <include refid="Base_Column_List"/>
         from perf_domain
