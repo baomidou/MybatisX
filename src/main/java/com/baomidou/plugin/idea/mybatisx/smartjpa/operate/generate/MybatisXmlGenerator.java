@@ -3,17 +3,9 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
-import com.intellij.openapi.fileTypes.StdFileTypes;
+import com.baomidou.plugin.idea.mybatisx.util.ClassCreator;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.psi.JavaDirectoryService;
-import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
@@ -21,8 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 生成mybatis的xml文件内容.
@@ -124,16 +117,18 @@ public class MybatisXmlGenerator implements Generator {
     }
 
     private void generateResultMapClass(PsiClass entityClass, String resultType, List<TxField> resultFields) {
-        JavaDirectoryService instance = JavaDirectoryService.getInstance();
-        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-        PsiFile fileFromText = psiFileFactory.createFileFromText("Hello", StdFileTypes.JAVA, "public class Hello{}");
-        fileFromText.setName("Hello");
-//        JavaPsiFacade psiFileFactory = JavaPsiFacade.getInstance(project);
-//        PsiElementFactory elementFactory = psiFileFactory.getElementFactory();
-//        PsiClass resultMapClass = elementFactory.createClassFromText("public class Hello{}", entityClass);
 
-        LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
-        localFileSystem.refreshFiles(Collections.singletonList(fileFromText.getVirtualFile()));
+        Set<String> allowFields = resultFields.stream().map(TxField::getFieldName).collect(Collectors.toSet());
+        String dtoName = null;
+        int i = resultType.lastIndexOf(".");
+        if (i > -1) {
+            dtoName = resultType.substring(i + 1);
+        }
+        if (dtoName == null) {
+            dtoName = resultType;
+        }
+        ClassCreator classCreator = new ClassCreator();
+        classCreator.createFromAllowedFields(allowFields, entityClass, dtoName);
     }
 
 

@@ -30,12 +30,7 @@ public class GenerateSmartJpaAction extends GenerateSmartJpaAdvanceAction {
         return "[MybatisX] Generate Mybatis Sql";
     }
 
-    @Nls(capitalization = Nls.Capitalization.Sentence)
-    @NotNull
-    @Override
-    public String getFamilyName() {
-        return "Statement Complete";
-    }
+
 
 
     @Override

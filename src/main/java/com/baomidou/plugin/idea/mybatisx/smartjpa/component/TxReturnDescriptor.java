@@ -16,6 +16,8 @@ public class TxReturnDescriptor implements TypeDescriptor {
     private TxReturnDescriptor() {
     }
 
+    private boolean wrapperList = false;
+
     /**
      * Create collection by psi class tx return descriptor.
      *
@@ -26,6 +28,7 @@ public class TxReturnDescriptor implements TypeDescriptor {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
         txReturnDescriptor.qualifiedName = Arrays.asList("java.util.List", psiClass.getQualifiedName());
         txReturnDescriptor.simpleName = "List<" + psiClass.getName() + ">";
+        txReturnDescriptor.wrapperList = true;
         return txReturnDescriptor;
     }
 
@@ -39,6 +42,7 @@ public class TxReturnDescriptor implements TypeDescriptor {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
         txReturnDescriptor.qualifiedName = Collections.singletonList(psiClass.getQualifiedName());
         txReturnDescriptor.simpleName = psiClass.getName();
+        txReturnDescriptor.wrapperList = false;
         return txReturnDescriptor;
     }
 
@@ -53,6 +57,7 @@ public class TxReturnDescriptor implements TypeDescriptor {
         TxReturnDescriptor txReturnDescriptor = new TxReturnDescriptor();
         txReturnDescriptor.qualifiedName = StringUtils.isBlank(qualifiedName) ? Collections.emptyList() : Collections.singletonList(qualifiedName);
         txReturnDescriptor.simpleName = simpleName;
+        txReturnDescriptor.wrapperList = false;
         return txReturnDescriptor;
     }
 
@@ -90,6 +95,10 @@ public class TxReturnDescriptor implements TypeDescriptor {
         strings.add(qualifiedName);
         strings.addAll(this.qualifiedName);
         this.qualifiedName = strings;
-        this.simpleName = simpleName;
+        String simpleNameStr = simpleName;
+        if (wrapperList) {
+            simpleNameStr =  "List<" + simpleName + ">";
+        }
+        this.simpleName = simpleNameStr;
     }
 }

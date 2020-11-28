@@ -1,10 +1,10 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven {url 'https://plugins.gradle.org/m2/'}
-        maven {url 'https://oss.sonatype.org/content/repositories/releases/'}
-        maven {url 'https://dl.bintray.com/jetbrains/intellij-plugin-service'}
-        maven {url 'https://dl.bintray.com/jetbrains/intellij-third-party-dependencies/'}
+        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
+        maven { url 'https://dl.bintray.com/jetbrains/intellij-plugin-service' }
+        maven { url 'https://dl.bintray.com/jetbrains/intellij-third-party-dependencies/' }
     }
     dependencies {
         classpath "org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.6.0"
@@ -27,7 +27,7 @@ intellij {
 //    type 'IC'  // 社区版
 //    plugins = ['java'] //Bundled plugin dependencies
     type 'IU' // 企业版
-    plugins = ['java', 'Spring', 'SpringBoot','DatabaseTools'] //Bundled plugin dependencies
+    plugins = ['java', 'Spring', 'SpringBoot', 'DatabaseTools'] //Bundled plugin dependencies
 
     pluginName 'MybatisX'
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
@@ -52,7 +52,6 @@ repositories {
 }
 
 dependencies {
-//    compile fileTree(dir: 'lib', includes: ['*jar'])
     compile group: 'com.softwareloop', name: 'mybatis-generator-lombok-plugin', version: '1.0'
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.2'
     compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: '1.4.0'
