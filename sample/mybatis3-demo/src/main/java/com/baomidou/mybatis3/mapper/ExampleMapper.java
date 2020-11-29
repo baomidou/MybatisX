@@ -19,5 +19,4 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     List<BlogAgeContentDTO> selectAgeAndContentById(@Param("id") Long id);
 
-    selectAgeAndContentByIdAndTitle
 }
