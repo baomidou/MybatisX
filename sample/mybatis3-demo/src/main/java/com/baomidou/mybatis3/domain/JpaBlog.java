@@ -19,13 +19,13 @@ public class JpaBlog extends ParentDTO {
      */
     private static final long serialVersionUID = 1L;
     @Id
-   private Long id;
-   private String title;
-   private String content;
-   private BigDecimal money;
-   private Integer age;
-   @Column(name = "create_time")
-   private Date createTime;
+    private Long id;
+    private String title;
+    private String content;
+    private BigDecimal money;
+    private Integer age;
+    @Column(name = "create_time")
+    private Date createTime;
 
     public Long getId() {
         return id;

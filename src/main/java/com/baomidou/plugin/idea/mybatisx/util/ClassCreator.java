@@ -1,20 +1,34 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
+import com.intellij.codeInsight.actions.FileInEditorProcessor;
+import com.intellij.codeInsight.actions.LastRunReformatCodeOptionsProvider;
+import com.intellij.codeInsight.actions.ReformatCodeRunOptions;
+import com.intellij.codeInsight.actions.TextRangeType;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.util.IncorrectOperationException;
 
-import java.io.OutputStream;
+import java.io.IOException;
 import java.util.Set;
 
+/**
+ * 创建类, 可能有更便捷的方式创建实体类. 有待优化
+ */
 public class ClassCreator {
     public void createFromAllowedFields(Set<String> allowFields, PsiClass entityClass, String dtoName) {
+        PsiDirectory directory = entityClass.getContainingFile().getParent();
+        if (directory == null) {
+
+            return;
+        }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("package").append(" ");
         stringBuilder.append(((PsiJavaFile) entityClass.getParent()).getPackageName());
@@ -58,17 +72,29 @@ public class ClassCreator {
 
         stringBuilder.append("}");
 
-        assert entityClass != null;
         WriteAction.run(() -> {
-            PsiDirectory directory = entityClass.getContainingFile().getParent();
-            PsiFile file = directory.createFile(dtoName + ".java");
-            VirtualFile virtualFile = file.getVirtualFile();
+            try {
 
-            try (OutputStream outputStream = virtualFile.getOutputStream(null);) {
-                outputStream.write(stringBuilder.toString().getBytes());
-            } catch (Exception e) {
 
+                PsiFile file = directory.createFile(dtoName + ".java");
+
+                VirtualFile virtualFile = file.getVirtualFile();
+                virtualFile.setBinaryContent(stringBuilder.toString().getBytes());
+
+                // 格式化代码
+                LastRunReformatCodeOptionsProvider provider = new LastRunReformatCodeOptionsProvider(PropertiesComponent.getInstance());
+                provider.saveCodeCleanupState(true);
+                provider.saveOptimizeImportsState(true);
+                provider.saveRearrangeCodeState(true);
+
+                ReformatCodeRunOptions currentRunOptions = provider.getLastRunOptions(file);
+
+                currentRunOptions.setProcessingScope(TextRangeType.WHOLE_FILE);
+                new FileInEditorProcessor(file, null, currentRunOptions).processCode();
+
+            } catch (PsiInvalidElementAccessException | IOException | IncorrectOperationException e) {
             }
+
         });
     }
 }

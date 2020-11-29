@@ -43,6 +43,19 @@
           AND objects = #{objects}
           AND ids = #{ids}
     </update>
+    <resultMap id="BlogIdTitleMap" type="com.baomidou.mybatis3.domain.BlogIdTitleDTO">
+        <result column="id" property="id" jdbcType="NUMERIC"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectIdAndTitleById" resultMap="BlogIdTitleMap">
+        select id, title
+        from t_blog
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=NUMERIC}
+            </if>
+        </where>
+    </select>
     <resultMap id="BlogAgeContentMap" type="com.baomidou.mybatis3.domain.BlogAgeContentDTO">
         <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="age" property="age" jdbcType="NUMERIC"/>
