@@ -91,6 +91,19 @@
                 #{ids})
 
     </insert>
+    <resultMap id="BlogTitleContentMap" type="com.baomidou.mybatis3.domain.BlogTitleContentDTO">
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectTitleAndContentByTitle" resultMap="BlogTitleContentMap">
+        select title, content
+        from t_blog
+        <where>
+            <if test="title != null and title != ''">
+                title = #{title,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
 
 
 </mapper>

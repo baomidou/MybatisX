@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.spring.CommonSpringModel;
 import com.intellij.spring.model.SpringBeanPointer;
+import com.intellij.spring.model.SpringModelSearchParameters;
 import com.intellij.spring.model.utils.SpringModelUtils;
 import com.intellij.spring.model.utils.SpringPropertyUtils;
 import org.jetbrains.annotations.NotNull;
@@ -52,11 +53,21 @@ public class BeanAliasResolver extends PackageAliasResolver {
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
-        CommonSpringModel springModel = SpringModelUtils.getInstance().getSpringModel(element);
-
+        Set<String> packages = new HashSet<>();
         Set<PsiClass> classes = findSqlSessionFactories(MAPPER_ALIAS_PACKAGE_CLASSES);
-
-        return determinePackages(classes, springModel.getAllCommonBeans());
+        for (PsiClass sqlSessionFactoryClass : classes) {
+            CommonSpringModel springModel = SpringModelUtils.getInstance().getPsiClassSpringModel(sqlSessionFactoryClass);
+            SpringModelSearchParameters.BeanClass beanClass = SpringModelSearchParameters.BeanClass.byClass(sqlSessionFactoryClass);
+            springModel.processByClass(beanClass, springBeanPointer -> {
+                String propertyStringValue = SpringPropertyUtils.getPropertyStringValue(springBeanPointer.getSpringBean(), MAPPER_ALIAS_PROPERTY);
+                if (!StringUtils.isEmpty(propertyStringValue)) {
+                    packages.add(propertyStringValue);
+                    return true;
+                }
+                return false;
+            });
+        }
+        return packages;
     }
 
     private Set<PsiClass> findSqlSessionFactories(List<String> mapperAliasPackageClasses) {
@@ -66,20 +77,6 @@ public class BeanAliasResolver extends PackageAliasResolver {
             clazz.ifPresent(sqlSessionFactorySet::add);
         }
         return sqlSessionFactorySet;
-    }
-
-    private Set<String> determinePackages(Set<PsiClass> sqlSessionFactoryClasses, @NotNull Collection<SpringBeanPointer> allCommonBeans) {
-        Set<String> res = Sets.newHashSet();
-        for (SpringBeanPointer pointer : allCommonBeans) {
-            PsiClass beanClass = pointer.getBeanClass();
-            if (beanClass != null && sqlSessionFactoryClasses.contains(beanClass)) {
-                String propertyStringValue = SpringPropertyUtils.getPropertyStringValue(pointer.getSpringBean(), MAPPER_ALIAS_PROPERTY);
-                if (!StringUtils.isEmpty(propertyStringValue)) {
-                    res.add(propertyStringValue);
-                }
-            }
-        }
-        return res;
     }
 
 }

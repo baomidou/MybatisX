@@ -2,12 +2,13 @@ package com.baomidou.plugin.idea.mybatisx.alias;
 
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.extensions.ExtensionPointName;
+import com.intellij.openapi.module.JavaModuleType;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.spring.CommonSpringModel;
 import com.intellij.spring.boot.model.SpringBootModelConfigFileContributor;
-import com.intellij.spring.model.utils.SpringModelUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -43,15 +44,16 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
-        CommonSpringModel springModel = SpringModelUtils.getInstance().getSpringModel(element);
-
         Set<String> classSet = new HashSet<>();
         ExtensionPointName<SpringBootModelConfigFileContributor> objectExtensionPointName = ExtensionPointName.create("com.intellij.spring.boot.modelConfigFileContributor");
         List<SpringBootModelConfigFileContributor> extensionList = objectExtensionPointName.getExtensionList();
         for (SpringBootModelConfigFileContributor extension : extensionList) {
-            List<VirtualFile> configurationFiles = extension.getConfigurationFiles(springModel.getModule(), true);
-            for (VirtualFile configurationFile : configurationFiles) {
-                readAliasesPackage(classSet, configurationFile);
+            Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
+            for (Module module : modulesOfType) {
+                List<VirtualFile> configurationFiles = extension.getConfigurationFiles(module, true);
+                for (VirtualFile configurationFile : configurationFiles) {
+                    readAliasesPackage(classSet, configurationFile);
+                }
             }
         }
 
