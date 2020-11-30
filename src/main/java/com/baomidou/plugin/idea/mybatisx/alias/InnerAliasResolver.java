@@ -19,44 +19,45 @@ import java.util.Set;
  * @author yanglin
  */
 public class InnerAliasResolver extends AliasResolver {
-    private final Set<AliasDesc> innerAliasDescs = getAliasDescSet();
+    private Set<AliasDesc> innerAliasDescs = null;
 
     private Set<AliasDesc> getAliasDescSet() {
         Set<AliasDesc> aliasDescs = new HashSet<>();
-        addAliasDesc(aliasDescs,"java.lang.String", "string");
-        addAliasDesc(aliasDescs,"java.lang.Byte", "byte");
-        addAliasDesc(aliasDescs,"java.lang.Long", "long");
-        addAliasDesc(aliasDescs,"java.lang.Short", "short");
-        addAliasDesc(aliasDescs,"java.lang.Integer", "int");
-        addAliasDesc(aliasDescs,"java.lang.Integer", "integer");
-        addAliasDesc(aliasDescs,"java.lang.Double", "double");
-        addAliasDesc(aliasDescs,"java.lang.Float", "float");
-        addAliasDesc(aliasDescs,"java.lang.Boolean", "boolean");
-        addAliasDesc(aliasDescs,"java.util.Date", "date");
-        addAliasDesc(aliasDescs,"java.math.BigDecimal", "decimal");
-        addAliasDesc(aliasDescs,"java.lang.Object", "object");
-        addAliasDesc(aliasDescs,"java.util.Map", "map");
-        addAliasDesc(aliasDescs,"java.util.HashMap", "hashmap");
-        addAliasDesc(aliasDescs,"java.util.List", "list");
-        addAliasDesc(aliasDescs,"java.util.ArrayList", "arraylist");
-        addAliasDesc(aliasDescs,"java.util.Collection", "collection");
-        addAliasDesc(aliasDescs,"java.util.Iterator", "iterator");
+        addAliasDesc(aliasDescs, "java.lang.String", "string");
+        addAliasDesc(aliasDescs, "java.lang.Byte", "byte");
+        addAliasDesc(aliasDescs, "java.lang.Long", "long");
+        addAliasDesc(aliasDescs, "java.lang.Short", "short");
+        addAliasDesc(aliasDescs, "java.lang.Integer", "int");
+        addAliasDesc(aliasDescs, "java.lang.Integer", "integer");
+        addAliasDesc(aliasDescs, "java.lang.Double", "double");
+        addAliasDesc(aliasDescs, "java.lang.Float", "float");
+        addAliasDesc(aliasDescs, "java.lang.Boolean", "boolean");
+        addAliasDesc(aliasDescs, "java.util.Date", "date");
+        addAliasDesc(aliasDescs, "java.math.BigDecimal", "decimal");
+        addAliasDesc(aliasDescs, "java.lang.Object", "object");
+        addAliasDesc(aliasDescs, "java.util.Map", "map");
+        addAliasDesc(aliasDescs, "java.util.HashMap", "hashmap");
+        addAliasDesc(aliasDescs, "java.util.List", "list");
+        addAliasDesc(aliasDescs, "java.util.ArrayList", "arraylist");
+        addAliasDesc(aliasDescs, "java.util.Collection", "collection");
+        addAliasDesc(aliasDescs, "java.util.Iterator", "iterator");
         return aliasDescs;
     }
 
-    private void addAliasDesc(Set<AliasDesc> aliasDescs, String clazz,String alias) {
+    private void addAliasDesc(Set<AliasDesc> aliasDescs, String clazz, String alias) {
         Optional<PsiClass> psiClassOptional = JavaUtils.findClazz(project, clazz);
-        if(psiClassOptional.isPresent()){
+        if (psiClassOptional.isPresent()) {
             PsiClass psiClass = psiClassOptional.get();
             AliasDesc aliasDesc = AliasDesc.create(psiClass, alias);
             aliasDescs.add(aliasDesc);
-        }else{
-            logger.error("无法找到别名映射, class: {}, alias: {}",clazz,alias);
+        } else {
+            logger.error("无法找到别名映射, class: {}, alias: {}", clazz, alias);
         }
 
     }
 
     private static final Logger logger = LoggerFactory.getLogger(InnerAliasResolver.class);
+
     /**
      * Instantiates a new Inner alias resolver.
      *
@@ -66,9 +67,23 @@ public class InnerAliasResolver extends AliasResolver {
         super(project);
     }
 
+    /**
+     * 支持延迟识别, 当项目第一次打开时，可能未配置JDK， 在未配置JDK时， 内部别名无法注册。
+     * 这里支持等手动配置JDK后才开始缓存
+     * @param element the element
+     * @return
+     */
     @NotNull
     @Override
     public Set<AliasDesc> getClassAliasDescriptions(@Nullable PsiElement element) {
+        if (innerAliasDescs == null) {
+            Set<AliasDesc> aliasDescSet = getAliasDescSet();
+            if (!aliasDescSet.isEmpty()) {
+                synchronized (this){
+                    this.innerAliasDescs = aliasDescSet;
+                }
+            }
+        }
         return innerAliasDescs;
     }
 
