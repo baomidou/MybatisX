@@ -69,6 +69,28 @@
             </if>
         </where>
     </select>
+    <insert id="insertAll">
+        insert into t_blog
+        (id,
+         title,
+         content,
+         money,
+         age,
+         create_time,
+         blob_text,
+         objects,
+         ids)
+        values (#{id,jdbcType=NUMERIC},
+                #{title,jdbcType=VARCHAR},
+                #{content,jdbcType=VARCHAR},
+                #{money,jdbcType=DECIMAL},
+                #{age,jdbcType=NUMERIC},
+                NOW(),
+                #{blobText},
+                #{objects},
+                #{ids})
+
+    </insert>
 
 
 </mapper>

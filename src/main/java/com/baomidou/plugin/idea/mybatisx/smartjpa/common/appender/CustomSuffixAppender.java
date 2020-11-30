@@ -138,14 +138,14 @@ public class CustomSuffixAppender implements SyntaxAppender {
      * @return syntax appender
      */
     public static SyntaxAppender createByFixed(String tipName, String suffix, AreaSequence areaSequence, List<TxField> mappingField) {
-        CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName){
+        CustomSuffixAppender customSuffixAppender = new CustomSuffixAppender(tipName) {
             @Override
             public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
                 return Collections.emptyList();
             }
 
         };
-        customSuffixAppender.suffixOperator = new FixedSuffixOperator(suffix,mappingField);
+        customSuffixAppender.suffixOperator = new FixedSuffixOperator(suffix, mappingField);
         customSuffixAppender.areaSequence = areaSequence;
         return customSuffixAppender;
     }
@@ -199,6 +199,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
             logger.info("这个后缀没有参数, suffix: {}", this.getText());
         }
 
+        String templateText = null;
         StringBuilder stringBuilder = new StringBuilder();
         String fieldName = null;
         int i = 0;
@@ -208,24 +209,28 @@ public class CustomSuffixAppender implements SyntaxAppender {
             // 兼容insert 语句生成,后缀没有字段的情况
             if (appender instanceof CustomFieldAppender) {
                 CustomFieldAppender field = (CustomFieldAppender) appender;
-                fieldName = field.getFieldName();
+                String fieldTemplateText = field.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
+                templateText = conditionFieldWrapper.wrapConditionText(field.getFieldName(), fieldTemplateText);
                 break;
             }
             if (appender instanceof CustomJoinAppender) {
-                String templateText =
+                String joinTemplateText =
                     getFieldTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper, appender);
                 if (i > 0) {
                     stringBuilder.append(" ");
                 }
-                stringBuilder.append(templateText);
+                stringBuilder.append(joinTemplateText);
                 i++;
             }
         }
+        if (templateText == null) {
+            String suffixTemplateText = suffixOperator.
+                getTemplateText(fieldName, parameters, conditionFieldWrapper);
+            stringBuilder.append(suffixTemplateText);
+            templateText = conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
+        }
 
-        String suffixTemplateText = suffixOperator.
-            getTemplateText(fieldName, parameters,conditionFieldWrapper);
-        stringBuilder.append(suffixTemplateText);
-        return conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
+        return templateText;
     }
 
     protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
@@ -292,7 +297,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
         List<TxParameter> txParameters = new ArrayList<>();
         for (SyntaxAppenderWrapper syntaxAppenderWrapper : syntaxAppenderWrapperLinkedList) {
             List<TxParameter> mxParameter = syntaxAppenderWrapper.getMxParameter(entityClass);
-            if(mxParameter.size()>0){
+            if (mxParameter.size() > 0) {
                 for (TxParameter txParameter : mxParameter) {
                     txParameters.addAll(getParameter(txParameter));
                 }
@@ -307,7 +312,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
         }
         return mxParameterFinder.getParameter(txParameter);
     }
-
 
 
     /**
