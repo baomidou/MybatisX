@@ -27,10 +27,10 @@ public class ParamBeforeSuffixOperator implements SuffixOperator{
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+    public String getTemplateText(String columnName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
         TxParameter parameter = parameters.poll();
-        return fieldName
+        return columnName
                 + " "
                 + operatorName
                 + " "

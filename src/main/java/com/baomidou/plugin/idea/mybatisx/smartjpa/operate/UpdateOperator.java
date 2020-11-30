@@ -59,27 +59,7 @@ public class UpdateOperator extends BaseOperatorManager {
             StatementBlock statementBlock = new StatementBlock();
             statementBlock.setTagName(areaName);
             statementBlock.setResultAppenderFactory(updateFactory);
-            statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(areaName, mappingField){
-                @Override
-                public List<SyntaxAppender> initAppender(List<TxField> mappingField, String resultAreaName) {
-                    List<SyntaxAppender> syntaxAppenders = super.initAppender(mappingField, resultAreaName);
-                    // 区域 :  By + allFields
-
-                    AllTxFields field = new AllTxFields(mappingField, entityClass);
-                    ConditionAllFieldAppender customAllFieldAppender = new ConditionAllFieldAppender(field, AreaSequence.CONDITION, mappingField);
-                    final CompositeAppender areaFieldsAppender = new CompositeAppender(
-                        CustomAreaAppender.createCustomAreaAppender(this.getTipText(),
-                            getTipText(),
-                            AreaSequence.AREA,
-                            AreaSequence.CONDITION,
-                            this),
-                        customAllFieldAppender);
-                    syntaxAppenders.add(customAllFieldAppender);
-
-                    syntaxAppenders.add(areaFieldsAppender);
-                    return syntaxAppenders;
-                }
-            });
+            statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(areaName, mappingField));
             statementBlock.setReturnWrapper(anInt);
             this.registerStatementBlock(statementBlock);
         }
