@@ -3,6 +3,8 @@ package com.baomidou.mybatis3.test;
 import com.baomidou.mybatis3.MybatisPlus3Application;
 import com.baomidou.mybatis3.alias.MyAliasBlog;
 import com.baomidou.mybatis3.domain.Blog;
+import com.baomidou.mybatis3.domain.BlogAgeContentDTO;
+import com.baomidou.mybatis3.domain.BlogTitleContentDTO;
 import com.baomidou.mybatis3.mapper.BlogDeleteMapper;
 import com.baomidou.mybatis3.mapper.BlogInsertMapper;
 import com.baomidou.mybatis3.mapper.BlogSelectMapper;
@@ -83,6 +85,13 @@ public class BlogExampleMapperTest {
         blogF.setMoney(BigDecimal.valueOf(5500));
         blogF.setCreateTime(new Date());
         blogInsertMapper.insertAll(blogF);
+    }
+
+
+    @Test
+    public void selectByIdIn() {
+        List<BlogTitleContentDTO> blogTitleContentDTOS = exampleMapper.selectTitleAndContentById(1L);
+        Assert.assertEquals(blogTitleContentDTOS.size(), 1);
     }
 
 
