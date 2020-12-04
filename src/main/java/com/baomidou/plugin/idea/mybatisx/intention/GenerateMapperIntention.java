@@ -82,7 +82,7 @@ public class GenerateMapperIntention extends GenericIntention {
         ListSelectionListener popupListener = new ListSelectionListener() {
             @Override
             public void selected(int index) {
-                processGenerate(editor, clazz, pathMap.get(keys.get(index)));
+                processGenerate(project,editor, clazz, pathMap.get(keys.get(index)));
             }
 
             @Override
@@ -118,7 +118,7 @@ public class GenerateMapperIntention extends GenericIntention {
         VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
         VirtualFile vf = uiComponentFacade.showSingleFolderSelectionDialog("Select target folder", baseDir, baseDir);
         if (null != vf) {
-            processGenerate(editor, clazz, PsiManager.getInstance(project).findDirectory(vf));
+            processGenerate(project, editor, clazz, PsiManager.getInstance(project).findDirectory(vf));
         }
     }
 
@@ -142,7 +142,7 @@ public class GenerateMapperIntention extends GenericIntention {
         return result;
     }
 
-    private void processGenerate(Editor editor, PsiClass mapperClass, PsiDirectory directory) {
+    private void processGenerate(Project project, Editor editor, PsiClass mapperClass, PsiDirectory directory) {
         if (null == directory) {
             return;
         }
@@ -159,7 +159,7 @@ public class GenerateMapperIntention extends GenericIntention {
                 Objects.requireNonNull(mapperClass.getName()),
                 directory,
                 properties,
-                editor.getProject());
+                project);
             if (psiFile != null) {
                 EditorService.getInstance(mapperClass.getProject()).scrollTo(psiFile, 0);
             }

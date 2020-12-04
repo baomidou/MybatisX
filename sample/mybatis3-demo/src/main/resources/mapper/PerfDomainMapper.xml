@@ -21,7 +21,7 @@
 
     </select>
 
-    <select id="selectAllByIdAndExact" resultType="PerfDomain">
+    <select id="selectAllByIdAndExact" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from perf_domain
