@@ -22,7 +22,10 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     Blog insertAll(Blog blog);
 
+
+
     List<BlogTitleContentDTO> selectTitleAndContentByTitle(@Param("title") String title);
 //    insertAll
 //        updateAgeAndContentByMoneyAndCreateTime
+    List<BlogTitleContentDTO> selectTitleAndContentById(@Param("id") Long id);
 }

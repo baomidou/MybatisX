@@ -94,6 +94,18 @@
     <resultMap id="BlogTitleContentMap" type="com.baomidou.mybatis3.domain.BlogTitleContentDTO">
         <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
+        <association property="child" >
+            <result column="title" property="title" jdbcType="VARCHAR"/>
+            <result column="content" property="content" jdbcType="VARCHAR"/>
+            <association property="childOther" >
+                <result column="title" property="title" jdbcType="VARCHAR"/>
+                <result column="content" property="content" jdbcType="VARCHAR"/>
+            </association>
+            <collection property="childList" >
+                <result column="title" property="title" jdbcType="VARCHAR"/>
+                <result column="content" property="content" jdbcType="VARCHAR"/>
+            </collection>
+        </association>
     </resultMap>
     <select id="selectTitleAndContentByTitle" resultMap="BlogTitleContentMap">
         select title, content
@@ -101,6 +113,15 @@
         <where>
             <if test="title != null and title != ''">
                 title = #{title,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectTitleAndContentById" resultMap="BlogTitleContentMap">
+        select title, content
+        from t_blog
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=NUMERIC}
             </if>
         </where>
     </select>
