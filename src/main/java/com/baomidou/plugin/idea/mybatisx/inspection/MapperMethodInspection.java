@@ -11,23 +11,16 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.lang.jvm.JvmMethod;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiParameterList;
-import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -70,10 +63,13 @@ public class MapperMethodInspection extends MapperInspection {
                 PsiClass clazz = select.getResultType().getValue();
                 PsiIdentifier ide = method.getNameIdentifier();
                 if (null != ide && null == select.getResultMap().getValue()) {
-                    if (target.isPresent() && (null == clazz || !target.get().equals(clazz))) {
-                        return Optional.of(manager.createProblemDescriptor(ide, "Result type not match for select id=\"#ref\"",
-                            new ResultTypeQuickFix(select, target.get()), ProblemHighlightType.GENERIC_ERROR, isOnTheFly));
-                    } else if (!target.isPresent() && null != clazz) {
+                    boolean match = target.isPresent();
+                    if (match) {
+                        if (clazz != null && !isInheritor(clazz, target.get())) {
+                            match = false;
+                        }
+                    }
+                    if (!match) {
                         return Optional.of(manager.createProblemDescriptor(ide, "Result type not match for select id=\"#ref\"",
                             (LocalQuickFix) null, ProblemHighlightType.GENERIC_ERROR, isOnTheFly));
                     }
@@ -81,6 +77,10 @@ public class MapperMethodInspection extends MapperInspection {
             }
         }
         return Optional.empty();
+    }
+
+    private boolean isInheritor(PsiClass child, PsiClass parent) {
+        return child.isInheritor(parent, true);
     }
 
 
