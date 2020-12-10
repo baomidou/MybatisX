@@ -1,7 +1,6 @@
 package com.baomidou.mybatis3.test;
 
 import com.baomidou.mybatis3.MybatisPlus3Application;
-import com.baomidou.mybatis3.alias.MyAliasBlog;
 import com.baomidou.mybatis3.domain.Blog;
 import com.baomidou.mybatis3.domain.JpaBlog;
 import com.baomidou.mybatis3.mapper.BlogAnnotationMapper;

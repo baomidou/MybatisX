@@ -16,6 +16,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.tree.IElementType;
@@ -78,7 +79,9 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (ProcessCanceledException e) {
             logger.info("未知的取消原因", e);
-        } catch (Throwable e) {
+        } catch(PsiInvalidElementAccessException e){
+            logger.info("无法访问节点", e);
+        }catch (Throwable e) {
             logger.error("自动提示异常", e);
         }
 
