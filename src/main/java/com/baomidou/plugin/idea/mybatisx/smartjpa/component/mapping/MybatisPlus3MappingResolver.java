@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiField;
 import org.jetbrains.annotations.NotNull;
@@ -43,10 +44,10 @@ public class MybatisPlus3MappingResolver extends AbstractMybatisPlusMappingResol
             columnName = getAttributeValue(fieldAnnotation, AbstractMybatisPlusMappingResolver.VALUE);
         }
         PsiAnnotation idAnnotation = field.getAnnotation(TABLE_ID);
-        if (columnName == null && idAnnotation != null) {
+        if (StringUtils.isEmpty(columnName) && idAnnotation != null) {
             columnName = getAttributeValue(idAnnotation, AbstractMybatisPlusMappingResolver.VALUE);
         }
-        if (columnName == null) {
+        if (StringUtils.isEmpty(columnName)) {
             columnName = field.getName();
         }
         return columnName;

@@ -3,7 +3,7 @@
 <mapper namespace="com.baomidou.mybatis3.mapper.ExampleMapper">
     <resultMap id="BaseResultMap"
                type="com.baomidou.mybatis3.domain.Blog">
-        <id column="id" property="id"/>
+        <result column="id" property="id"/>
         <result column="age" property="age"/>
         <result column="content" property="content"/>
         <result column="title" property="title"/>
@@ -94,18 +94,14 @@
     <resultMap id="BlogTitleContentMap" type="com.baomidou.mybatis3.domain.BlogTitleContentDTO">
         <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
-        <association property="child" >
+        <association property="childOther" >
             <result column="title" property="title" jdbcType="VARCHAR"/>
             <result column="content" property="content" jdbcType="VARCHAR"/>
-            <association property="childOther" >
-                <result column="title" property="title" jdbcType="VARCHAR"/>
-                <result column="content" property="content" jdbcType="VARCHAR"/>
-            </association>
-            <collection property="childList" >
-                <result column="title" property="title" jdbcType="VARCHAR"/>
-                <result column="content" property="content" jdbcType="VARCHAR"/>
-            </collection>
         </association>
+        <collection property="childList" javaType="com.baomidou.mybatis3.domain.BlogTitleContentDTOChild" >
+            <result column="title" property="title" jdbcType="VARCHAR"/>
+            <result column="content" property="content" jdbcType="VARCHAR"/>
+        </collection>
     </resultMap>
     <select id="selectTitleAndContentByTitle" resultMap="BlogTitleContentMap">
         select title, content
@@ -124,6 +120,13 @@
                 id = #{id,jdbcType=NUMERIC}
             </if>
         </where>
+    </select>
+    <select id="selectOneById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where
+        id = #{id,jdbcType=NUMERIC}
     </select>
 
 

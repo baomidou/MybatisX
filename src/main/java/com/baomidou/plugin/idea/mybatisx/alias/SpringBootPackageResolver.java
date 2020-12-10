@@ -6,6 +6,7 @@ import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.spring.boot.model.SpringBootModelConfigFileContributor;
@@ -41,6 +42,8 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         super(project);
     }
 
+    Key<Set<String>> scannedFile = new Key<>("scannedFile");
+
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
@@ -62,47 +65,54 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
 
     private void readAliasesPackage(Set<String> classSet, VirtualFile configurationFile) {
         Yaml yaml = new Yaml();
-        try (InputStream inputStream = configurationFile.getInputStream();) {
+        try (InputStream inputStream = configurationFile.getInputStream()) {
             Iterable<Object> objects = yaml.loadAll(inputStream);
             for (Object object : objects) {
-                Map jsonObject = (Map) object;
-                if (jsonObject == null) {
-                    return;
-                }
-                Object config = null;
-                Object mybatis = jsonObject.get("mybatis");
-                if (mybatis != null) {
-                    config = mybatis;
-                }
-                if (config == null) {
-                    if (jsonObject.containsKey("mybatis-plus")) {
-                        config = jsonObject.get("mybatis-plus");
-                    }
-                    if (jsonObject.containsKey("mybatisPlus")) {
-                        config = jsonObject.get("mybatisPlus");
-                    }
-                }
-                Object typeAliasesPackage = null;
-                if (config != null) {
-                    Map mapConfig = (Map) config;
-                    typeAliasesPackage = mapConfig.get("type-aliases-package");
-                    if (typeAliasesPackage == null) {
-                        typeAliasesPackage = mapConfig.get("typeAliasesPackage");
-                    }
-                }
+                Object config = findConfig(object);
+                Object typeAliasesPackage = findAliasPackage(config);
                 if (typeAliasesPackage != null) {
                     if (!StringUtils.isEmpty(typeAliasesPackage.toString())) {
                         classSet.add(typeAliasesPackage.toString());
                     }
                 }
             }
-
-
         } catch (ParserException | ComposerException e) {
             logger.info("yml parse fail", e);
         } catch (IOException e) {
             logger.error("read alias exception", e);
         }
+    }
+
+    private Object findAliasPackage(Object config) {
+        Object typeAliasesPackage = null;
+        if (config != null) {
+            if (config instanceof Map) {
+                Map mapConfig = (Map) config;
+                typeAliasesPackage = mapConfig.get("type-aliases-package");
+                if (typeAliasesPackage == null) {
+                    typeAliasesPackage = mapConfig.get("typeAliasesPackage");
+                }
+            }
+        }
+        return typeAliasesPackage;
+    }
+
+    @Nullable
+    private Object findConfig(Object object) {
+        Object config = null;
+        if (object instanceof Map) {
+            Map jsonObject = (Map) object;
+            Object mybatis = jsonObject.get("mybatis");
+            if (mybatis != null) {
+                if (jsonObject.containsKey("mybatis-plus")) {
+                    config = jsonObject.get("mybatis-plus");
+                }
+                if (jsonObject.containsKey("mybatisPlus")) {
+                    config = jsonObject.get("mybatisPlus");
+                }
+            }
+        }
+        return config;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);

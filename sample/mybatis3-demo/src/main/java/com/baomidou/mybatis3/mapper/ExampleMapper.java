@@ -18,14 +18,19 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     List<BlogIdTitleDTO> selectIdAndTitleById(@Param("id") Long id);
 
+    Blog selectOneById(@Param("id") Long id);
+
     List<BlogAgeContentDTO> selectAgeAndContentById(@Param("id") Long id);
 
     Blog insertAll(Blog blog);
 
 
-
     List<BlogTitleContentDTO> selectTitleAndContentByTitle(@Param("title") String title);
-//    insertAll
+
+    //    insertAll
 //        updateAgeAndContentByMoneyAndCreateTime
     List<BlogTitleContentDTO> selectTitleAndContentById(@Param("id") Long id);
+
+
+
 }

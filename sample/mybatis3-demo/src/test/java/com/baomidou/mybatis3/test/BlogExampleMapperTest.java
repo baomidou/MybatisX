@@ -1,13 +1,10 @@
 package com.baomidou.mybatis3.test;
 
 import com.baomidou.mybatis3.MybatisPlus3Application;
-import com.baomidou.mybatis3.alias.MyAliasBlog;
 import com.baomidou.mybatis3.domain.Blog;
-import com.baomidou.mybatis3.domain.BlogAgeContentDTO;
 import com.baomidou.mybatis3.domain.BlogTitleContentDTO;
 import com.baomidou.mybatis3.mapper.BlogDeleteMapper;
 import com.baomidou.mybatis3.mapper.BlogInsertMapper;
-import com.baomidou.mybatis3.mapper.BlogSelectMapper;
 import com.baomidou.mybatis3.mapper.ExampleMapper;
 import org.junit.After;
 import org.junit.Assert;
@@ -19,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

@@ -1,21 +1,13 @@
 package com.baomidou.mybatis3.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlogTitleContentDTO {
     private String title;
     private String content;
-    private BlogTitleContentDTO child;
-    private BlogTitleContentDTOChild childOther;
-    private List<BlogTitleContentDTOChild> childList;
-
-    public BlogTitleContentDTO getChild() {
-        return child;
-    }
-
-    public void setChild(BlogTitleContentDTO child) {
-        this.child = child;
-    }
+    private BlogTitleContentDTOChild childOther = new BlogTitleContentDTOChild();
+    private List<BlogTitleContentDTOChild> childList = new ArrayList<>();
 
     public BlogTitleContentDTOChild getChildOther() {
         return childOther;

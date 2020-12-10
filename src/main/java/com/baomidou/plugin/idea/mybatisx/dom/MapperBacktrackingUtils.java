@@ -8,13 +8,15 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypeElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
 import com.intellij.util.xml.GenericAttributeValue;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,22 +48,13 @@ public final class MapperBacktrackingUtils {
 
         Collection collection = DomUtil.getParentOfType(domElement, Collection.class, true);
         if (null != collection && !isWithinSameTag(collection, attributeValue)) {
-            return Optional.ofNullable(collection.getOfType().getValue());
+            PsiClass collectionClass = findLeastParentType(collection, attributeValue.getProject());
+            return Optional.ofNullable(collectionClass);
         }
 
         Association association = DomUtil.getParentOfType(domElement, Association.class, true);
         if (null != association && !isWithinSameTag(association, attributeValue)) {
-            PsiClass associationClass = association.getJavaType().getValue();
-
-            if (associationClass == null) {
-                String rawText = association.getProperty().getRawText();
-                if (StringUtils.isNotBlank(rawText)) {
-                    PsiClass leastParentType = findLeastParentType(domElement, attributeValue.getProject());
-                    if (leastParentType != null) {
-                        associationClass = leastParentType;
-                    }
-                }
-            }
+            PsiClass associationClass = findLeastParentType(association, attributeValue.getProject());
             return Optional.ofNullable(associationClass);
         }
 
@@ -82,12 +75,13 @@ public final class MapperBacktrackingUtils {
         DomElement currentElement = domElement;
         PsiClass currentClass = null;
         do {
-
             if (currentElement instanceof Association) {
+                boolean foundClass = false;
                 Association association = (Association) currentElement;
                 PsiClass javaType = association.getJavaType().getValue();
                 if (javaType != null) {
                     currentClass = javaType;
+                    foundClass = true;
                 }
                 if (currentClass == null) {
                     XmlAttributeValue value = association.getProperty().getValue();
@@ -102,18 +96,23 @@ public final class MapperBacktrackingUtils {
                                 Optional<PsiClass> fieldClassOptional = JavaUtils.findClazz(project, fieldTypeClassName);
                                 if (fieldClassOptional.isPresent()) {
                                     currentClass = fieldClassOptional.get();
+                                    foundClass = true;
                                 }
                             }
                         }
                     }
                 }
-                if (currentClass == null) {
+                if (!foundClass) {
                     break;
                 }
             } else if (currentElement instanceof Collection) {
+                boolean foundClass = false;
                 Collection collection = (Collection) currentElement;
                 GenericAttributeValue<PsiClass> type = collection.getOfType();
-                currentClass = type.getValue();
+                if (type.getValue() != null) {
+                    currentClass = type.getValue();
+                    foundClass = true;
+                }
                 if (currentClass == null) {
                     XmlAttributeValue value = collection.getProperty().getValue();
                     if (value != null) {
@@ -123,17 +122,20 @@ public final class MapperBacktrackingUtils {
                             Optional<PsiField> settablePsiField = JavaUtils.findSettablePsiField(leastParentType, propertyName);
                             if (settablePsiField.isPresent()) {
                                 PsiField psiField = settablePsiField.get();
-                                // TODO fixed type java.lang.List<XXDto>
-                                String fieldTypeClassName = psiField.getType().getCanonicalText();
-                                Optional<PsiClass> fieldClassOptional = JavaUtils.findClazz(project, fieldTypeClassName);
-                                if (fieldClassOptional.isPresent()) {
-                                    currentClass = fieldClassOptional.get();
+                                Optional<String> genericClassOfListByField = findGenericClassOfListByField(psiField);
+                                if (genericClassOfListByField.isPresent()) {
+                                    String fieldTypeClassName = genericClassOfListByField.get();
+                                    Optional<PsiClass> fieldClassOptional = JavaUtils.findClazz(project, fieldTypeClassName);
+                                    if (fieldClassOptional.isPresent()) {
+                                        currentClass = fieldClassOptional.get();
+                                        foundClass = true;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                if (currentClass == null) {
+                if (!foundClass) {
                     break;
                 }
             } else if (currentElement instanceof ResultMap) {
@@ -144,6 +146,21 @@ public final class MapperBacktrackingUtils {
             currentElement = currentElement.getParent();
         } while (currentClass == null);
         return currentClass;
+    }
+
+    private static Optional<String> findGenericClassOfListByField(PsiField psiField) {
+        PsiTypeElement typeElement = psiField.getTypeElement();
+        if (typeElement != null) {
+            PsiJavaCodeReferenceElement innermostComponentReferenceElement = typeElement.getInnermostComponentReferenceElement();
+            if (innermostComponentReferenceElement != null) {
+                PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
+                if (typeParameters.length == 1) {
+                    PsiType typeParameter = typeParameters[0];
+                    return Optional.of(typeParameter.getCanonicalText());
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -158,4 +175,15 @@ public final class MapperBacktrackingUtils {
         return null != xmlElement && domElement.getXmlTag().equals(xmlTag);
     }
 
+    public static Optional<PsiClass> getEntityClass(XmlAttributeValue attributeValue) {
+        DomElement domElement = DomUtil.getDomElement(attributeValue);
+        if (null == domElement) {
+            return Optional.empty();
+        }
+        ResultMap resultMap = DomUtil.getParentOfType(domElement, ResultMap.class, true);
+        if (null != resultMap && !isWithinSameTag(resultMap, attributeValue)) {
+            return Optional.ofNullable(resultMap.getType().getValue());
+        }
+        return Optional.empty();
+    }
 }
