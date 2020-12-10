@@ -199,7 +199,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
             logger.info("这个后缀没有参数, suffix: {}", this.getText());
         }
 
-        String templateText = null;
         StringBuilder stringBuilder = new StringBuilder();
         String fieldName = null;
         int i = 0;
@@ -209,13 +208,17 @@ public class CustomSuffixAppender implements SyntaxAppender {
             // 兼容insert 语句生成,后缀没有字段的情况
             if (appender instanceof CustomFieldAppender) {
                 CustomFieldAppender field = (CustomFieldAppender) appender;
-                String fieldTemplateText = field.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-                templateText = conditionFieldWrapper.wrapConditionText(field.getFieldName(), fieldTemplateText);
+                fieldName = field.getFieldName();
                 break;
             }
             if (appender instanceof CustomJoinAppender) {
                 String joinTemplateText =
-                    getFieldTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper, appender);
+                    getFieldTemplateText(tableName,
+                        entityClass,
+                        parameters,
+                        collector,
+                        conditionFieldWrapper,
+                        appender);
                 if (i > 0) {
                     stringBuilder.append(" ");
                 }
@@ -223,17 +226,19 @@ public class CustomSuffixAppender implements SyntaxAppender {
                 i++;
             }
         }
-        if (templateText == null) {
-            String suffixTemplateText = suffixOperator.
-                getTemplateText(fieldName, parameters, conditionFieldWrapper);
-            stringBuilder.append(suffixTemplateText);
-            templateText = conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
-        }
+        String suffixTemplateText = suffixOperator.
+            getTemplateText(fieldName, parameters, conditionFieldWrapper);
+        stringBuilder.append(suffixTemplateText);
 
-        return templateText;
+        return conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
     }
 
-    protected String getFieldTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper, SyntaxAppender appender) {
+    protected String getFieldTemplateText(String tableName,
+                                          PsiClass entityClass,
+                                          LinkedList<TxParameter> parameters,
+                                          LinkedList<SyntaxAppenderWrapper> collector,
+                                          ConditionFieldWrapper conditionFieldWrapper,
+                                          SyntaxAppender appender) {
         return appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
     }
 
