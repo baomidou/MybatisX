@@ -28,11 +28,9 @@ import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Configuration;
-import org.mybatis.generator.config.ConnectionFactoryConfiguration;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.GeneratedKey;
 import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
@@ -43,7 +41,6 @@ import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
-import org.mybatis.generator.internal.ObjectFactory;
 import org.mybatis.generator.plugins.EqualsHashCodePlugin;
 import org.mybatis.generator.plugins.MapperAnnotationPlugin;
 import org.mybatis.generator.plugins.ToStringPlugin;
@@ -57,9 +54,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
-import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 /**
  * 生成mybatis相关代码
@@ -145,7 +139,7 @@ public class MybatisGenerator {
             public void run() {
 
                 Configuration configuration = new Configuration();
-                Context context = new Context(ModelType.CONDITIONAL){
+                Context context = new Context(ModelType.CONDITIONAL) {
                     @Override
                     public void validate(List<String> errors) {
 
@@ -192,6 +186,11 @@ public class MybatisGenerator {
                     }
                 } catch (Exception e) {
                     result.add(e.getMessage());
+                }
+                if (!config.getSimpleMode()) {
+                    if (intellijTableInfo.getPrimaryKeyColumns().size() == 0) {
+                        Messages.showWarningDialog("the table does not exists primary key, can not generate method like ByPrimaryKey", "Generate Info");
+                    }
                 }
                 VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
                 virtualFile.refresh(true, true);
@@ -460,11 +459,11 @@ public class MybatisGenerator {
         if (config.isNeedToStringHashcodeEquals()) {
             PluginConfiguration equalsHashCodePlugin = new PluginConfiguration();
             equalsHashCodePlugin.addProperty("type", EqualsHashCodePlugin.class.getName());
-            equalsHashCodePlugin.setConfigurationType( EqualsHashCodePlugin.class.getName());
+            equalsHashCodePlugin.setConfigurationType(EqualsHashCodePlugin.class.getName());
             context.addPluginConfiguration(equalsHashCodePlugin);
             PluginConfiguration toStringPluginPlugin = new PluginConfiguration();
             toStringPluginPlugin.addProperty("type", ToStringPlugin.class.getName());
-            toStringPluginPlugin.setConfigurationType( ToStringPlugin.class.getName());
+            toStringPluginPlugin.setConfigurationType(ToStringPlugin.class.getName());
             context.addPluginConfiguration(toStringPluginPlugin);
         }
 
