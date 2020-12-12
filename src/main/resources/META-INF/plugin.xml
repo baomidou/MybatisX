@@ -137,10 +137,6 @@
                          implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperXmlInspection"/>
         <!--实体类属性检测-->
 
-        <!--代码检测抑制器,用于过滤一些spring自带的校验规则-->
-        <lang.inspectionSuppressor language="JAVA" id="baomidou.SpringInspectionsFilter"
-                                   implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.SpringInspectionsFilter"/>
-
         <!--提示动作 start-->
         <!--生成参数注解-->
         <intentionAction id="baomidou.GenerateParamAnnotationIntention">
