@@ -6,6 +6,8 @@ import com.baomidou.mybatis3.domain.BlogTitleContentDTO;
 import com.baomidou.mybatis3.mapper.BlogDeleteMapper;
 import com.baomidou.mybatis3.mapper.BlogInsertMapper;
 import com.baomidou.mybatis3.mapper.ExampleMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -88,6 +90,15 @@ public class BlogExampleMapperTest {
     public void selectByIdIn() {
         List<BlogTitleContentDTO> blogTitleContentDTOS = exampleMapper.selectTitleAndContentById(1L);
         Assert.assertEquals(blogTitleContentDTOS.size(), 1);
+    }
+
+    @Test
+    public void selectByTitle() {
+        Page<Blog> page = new Page<>();
+        page.setCurrent(1);
+        page.setSize(10);
+        exampleMapper.selectByTitle(page,"baomidou-b");
+        Assert.assertEquals(page.getTotal(), 1);
     }
 
 

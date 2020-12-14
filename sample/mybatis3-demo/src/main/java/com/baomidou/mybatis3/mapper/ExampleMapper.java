@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.baomidou.mybatis3.domain.Blog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 
@@ -32,5 +34,6 @@ public interface ExampleMapper extends BaseMapper<Blog> {
     List<BlogTitleContentDTO> selectTitleAndContentById(@Param("id") Long id);
 
 
+    IPage<Blog> selectByTitle(Page<Blog> page, @Param("title") String title);
 
 }
