@@ -49,6 +49,15 @@
         where createTime between #{beginCreateTime,jdbcType=TIMESTAMP} and #{endCreateTime,jdbcType=TIMESTAMP}
 
     </select>
+    <select id="selectTitleById" resultType="java.lang.String">
+        select title
+        from t_blog
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=NUMERIC}
+            </if>
+        </where>
+    </select>
 
 
 </mapper>

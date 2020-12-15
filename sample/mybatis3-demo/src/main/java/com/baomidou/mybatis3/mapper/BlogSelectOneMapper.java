@@ -1,5 +1,6 @@
 package com.baomidou.mybatis3.mapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.baomidou.mybatis3.domain.Blog;
@@ -24,5 +25,5 @@ public interface BlogSelectOneMapper extends BaseMapper<Blog> {
 
     List<Blog> selectAllByCreateTimeBetween(@Param("beginCreateTime") Date beginCreateTime, @Param("endCreateTime") Date endCreateTime);
 
-    
+    List<String> selectTitleById(@Param("id") Long id);
 }

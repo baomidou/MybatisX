@@ -65,13 +65,18 @@ public class MapperMethodInspection extends MapperInspection {
                 if (null != ide && null == select.getResultMap().getValue()) {
                     boolean match = target.isPresent();
                     if (match) {
-                        if (clazz != null && !isInheritor(clazz, target.get())) {
+                        if (!equalsOrInheritor(clazz, target.get())) {
                             match = false;
                         }
                     }
                     if (!match) {
-                        return Optional.of(manager.createProblemDescriptor(ide, "Result type not match for select id=\"#ref\"",
-                            (LocalQuickFix) null, ProblemHighlightType.GENERIC_ERROR, isOnTheFly));
+                        String descriptionTemplate = "Result type not match for select id=\"#ref\"";
+                        ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(ide,
+                            descriptionTemplate,
+                            (LocalQuickFix) null,
+                            ProblemHighlightType.GENERIC_ERROR,
+                            isOnTheFly);
+                        return Optional.of(problemDescriptor);
                     }
                 }
             }
@@ -79,8 +84,11 @@ public class MapperMethodInspection extends MapperInspection {
         return Optional.empty();
     }
 
-    private boolean isInheritor(PsiClass child, PsiClass parent) {
-        return child.isInheritor(parent, true);
+    private boolean equalsOrInheritor(PsiClass child, PsiClass parent) {
+        if (child == null) {
+            return false;
+        }
+        return child.equals(parent) || child.isInheritor(parent, true);
     }
 
 
@@ -122,13 +130,13 @@ public class MapperMethodInspection extends MapperInspection {
             return false;
         }
         PsiMethod[] methodsBySignature = parentOfType.findMethodsBySignature(method, true);
-        if(methodsBySignature.length > 1){
+        if (methodsBySignature.length > 1) {
             for (int index = methodsBySignature.length; index > 0; index--) {
                 PsiClass mapperClass = PsiTreeUtil.getParentOfType(methodsBySignature[index - 1], PsiClass.class);
-                if(mapperClass == null){
+                if (mapperClass == null) {
                     continue;
                 }
-                if(mybatisPlusBaseMapperNames.contains(mapperClass.getQualifiedName())){
+                if (mybatisPlusBaseMapperNames.contains(mapperClass.getQualifiedName())) {
                     return true;
                 }
             }
