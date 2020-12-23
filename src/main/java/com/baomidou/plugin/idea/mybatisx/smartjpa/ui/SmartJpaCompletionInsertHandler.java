@@ -8,8 +8,6 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 选择自动填充时, 再次提示
@@ -37,5 +35,4 @@ public class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElem
         });
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionInsertHandler.class);
 }

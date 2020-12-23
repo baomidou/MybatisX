@@ -97,10 +97,7 @@
             serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
 
 
-        <!--自动完成提示-->
         <!-- xml 标签提示 -->
-        <completion.contributor id="baomidou.TestParamContributor" language="XML"
-                                implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.TestParamContributor"/>
         <!-- 在mapper.xml内部, 进行智能提示, 例如: #{提示位置} -->
         <completion.contributor id="baomidou.SqlParamCompletionContributor" language="SQL"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.SqlParamCompletionContributor"

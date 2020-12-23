@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.dom.model;
 import com.baomidou.plugin.idea.mybatisx.dom.converter.ColumnConverter;
 import com.baomidou.plugin.idea.mybatisx.dom.converter.JdbcTypeConverter;
 import com.baomidou.plugin.idea.mybatisx.dom.converter.PropertyConverter;
+import com.baomidou.plugin.idea.mybatisx.dom.converter.TypeHandlerConverter;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.Convert;
@@ -25,11 +26,27 @@ public interface PropertyGroup extends DomElement {
     @Convert(PropertyConverter.class)
     GenericAttributeValue<XmlAttributeValue> getProperty();
 
+    /**
+     * column
+     * @return
+     */
     @Attribute("column")
     @Convert(ColumnConverter.class)
     GenericAttributeValue<XmlAttributeValue> getColumn();
 
+    /**
+     * jdbcType
+     * @return
+     */
     @Attribute("jdbcType")
     @Convert(JdbcTypeConverter.class)
     GenericAttributeValue<XmlAttributeValue> getJdbcType();
+
+    /**
+     * jdbcType
+     * @return
+     */
+    @Attribute("typeHandler")
+    @Convert(TypeHandlerConverter.class)
+    GenericAttributeValue<XmlAttributeValue> getTypeHandler();
 }
