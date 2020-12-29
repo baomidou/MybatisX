@@ -30,4 +30,5 @@ public class MapperDescription extends DomFileDescription<Mapper> {
         return DomUtils.isMybatisFile(file);
     }
 
+
 }

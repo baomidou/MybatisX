@@ -13,6 +13,9 @@ import org.apache.ibatis.annotations.Param;
 
 
 public interface ExampleMapper extends BaseMapper<Blog> {
+
+
+
     int updateIdAndContentByAllFields(@Param("id") Long id, @Param("content") String content);
 
 
@@ -34,5 +37,6 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
 
     IPage<Blog> selectByTitle(Page<Blog> page, @Param("title") String title);
+
 
 }
