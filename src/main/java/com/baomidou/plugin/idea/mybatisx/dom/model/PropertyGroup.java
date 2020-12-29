@@ -31,7 +31,7 @@ public interface PropertyGroup extends DomElement {
      * @return
      */
     @Attribute("column")
-    @Convert(ColumnConverter.class)
+    @Convert(value = ColumnConverter.class, soft = true)
     GenericAttributeValue<XmlAttributeValue> getColumn();
 
     /**

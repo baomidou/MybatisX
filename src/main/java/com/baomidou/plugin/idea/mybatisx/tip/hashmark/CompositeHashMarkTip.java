@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * #提示的内容, 不仅仅只是字段， 还包括mybatis支持的7大属性配置
+ * #{}提示的内容, 不仅仅只是字段， 还包括mybatis支持的7大属性配置
  *
  * @author ls9527
  */

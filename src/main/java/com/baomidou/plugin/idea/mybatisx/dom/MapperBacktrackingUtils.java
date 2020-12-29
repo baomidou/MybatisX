@@ -74,7 +74,7 @@ public final class MapperBacktrackingUtils {
     private static PsiClass findLeastParentType(DomElement domElement, @NotNull Project project) {
         DomElement currentElement = domElement;
         PsiClass currentClass = null;
-        do {
+        while (true){
             if (currentElement instanceof Association) {
                 boolean foundClass = false;
                 Association association = (Association) currentElement;
@@ -143,8 +143,12 @@ public final class MapperBacktrackingUtils {
                 GenericAttributeValue<PsiClass> type = association.getType();
                 currentClass = type.getValue();
             }
+
+            if (currentClass == null) {
+                break;
+            }
             currentElement = currentElement.getParent();
-        } while (currentClass == null);
+        }
         return currentClass;
     }
 

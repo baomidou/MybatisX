@@ -80,13 +80,6 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
                 element = columns.get();
             }
         }
-        // 找不到表的情况下，用原有节点代替
-        if (element == null) {
-            if (!resolved.isPresent()) {
-                element = super.myElement.getOriginalElement();
-            }
-        }
-
         return element;
     }
 

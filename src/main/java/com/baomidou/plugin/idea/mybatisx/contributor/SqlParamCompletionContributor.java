@@ -46,8 +46,11 @@ public class SqlParamCompletionContributor extends CompletionContributor {
                 // 如果当前的内容在CRUD节点内
                 idDomElement.ifPresent(domElement -> new CompositeHashMarkTip(position.getProject(), result, domElement)
                     .addElementForPsiParameter(position.getText(), editorCaret));
+                // 如果在#{}里面输入字符, 则阻断原生SQL提示
+                result.stopHere();
             }
         }
+
     }
 
     private boolean shouldAddElement(PsiFile file, int offset) {
