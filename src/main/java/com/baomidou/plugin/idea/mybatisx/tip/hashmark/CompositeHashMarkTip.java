@@ -1,18 +1,27 @@
 package com.baomidou.plugin.idea.mybatisx.tip.hashmark;
 
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
+import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.*;
+import com.baomidou.plugin.idea.mybatisx.util.Icons;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiAnnotation;
+import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.psi.PsiConstantEvaluationHelper;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.PsiParameterList;
+import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +37,9 @@ import java.util.Optional;
 public class CompositeHashMarkTip {
 
     private Project project;
-    private CompletionResultSet result;
-    private IdDomElement element;
 
-    public CompositeHashMarkTip(Project project, CompletionResultSet result, IdDomElement element) {
+    public CompositeHashMarkTip(Project project ) {
         this.project = project;
-        this.result = result;
-        this.element = element;
     }
 
     private static List<HashMarkTip> hashMarkTips = new ArrayList<HashMarkTip>() {
@@ -60,9 +65,11 @@ public class CompositeHashMarkTip {
      * @param wrappedText
      * @param editorCaret
      */
-    public void addElementForPsiParameter(String wrappedText,
+    public void addElementForPsiParameter(CompletionResultSet result,
+                                          IdDomElement idDomElement,
+                                          String wrappedText,
                                           int editorCaret) {
-        Optional<PsiMethod> methodOptional = JavaUtils.findMethod(project, element);
+        Optional<PsiMethod> methodOptional = JavaUtils.findMethod(project, idDomElement);
         if (!methodOptional.isPresent()) {
             logger.info("the psiMethod is null");
             return;
@@ -94,7 +101,7 @@ public class CompositeHashMarkTip {
         // tip 7 types
         String latestText = findLatestText(wrappedText, editorCaret);
         if (!StringUtils.isEmpty(latestText)) {
-            Mapper mapper = MapperUtils.getMapper(element);
+            Mapper mapper = MapperUtils.getMapper(idDomElement);
             for (HashMarkTip hashMarkTip : hashMarkTips) {
                 String tipText = "," + hashMarkTip.getName() + "=";
                 if (latestText.startsWith(tipText)) {
@@ -117,7 +124,7 @@ public class CompositeHashMarkTip {
                 String tipText = "," + hashMarkTip.getName() + "=";
                 LookupElementBuilder element = LookupElementBuilder.create(tipText)
                     .withInsertHandler(hashMarkTipInsertHandler)
-                    .withPsiElement(this.element.getXmlTag());
+                    .withPsiElement(idDomElement.getXmlTag());
                 completionResultSet.addElement(element);
             }
         }
@@ -158,4 +165,51 @@ public class CompositeHashMarkTip {
         return wrappedText.substring(editorCaret);
     }
 
+    public PsiElement findReference(PsiElement myElement) {
+        GroupTwo domElement = DomUtil.findDomElement(myElement, GroupTwo.class);
+        if (domElement != null) {
+            PsiMethod psiMethod = domElement.getId().getValue();
+            if (psiMethod == null) {
+                return null;
+            }
+            PsiParameterList parameterList = psiMethod.getParameterList();
+            if (parameterList ==null || parameterList.isEmpty()) {
+                return null;
+            }
+            String fieldName = findFieldName(myElement);
+
+            PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
+            for (PsiParameter psiParameter : parameterList.getParameters()) {
+                PsiAnnotation annotation = psiParameter.getAnnotation(Annotation.PARAM.getQualifiedName());
+                if (annotation != null) {
+                    PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
+                    Object o = constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
+                    if (o instanceof String && o.equals(fieldName)) {
+                        return psiMethod;
+                    }
+                }else{
+                    // 兼容java8开启 -parameters 参数的方式，这种方式不需要@Param参数
+                    if(psiParameter.getName().equals(fieldName)){
+                        return psiMethod;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private String findFieldName(PsiElement myElement) {
+        String text = myElement.getText();
+        String latestText = null;
+        int firstSplit = text.indexOf(",");
+        int endIndex = text.indexOf("}");
+        if (firstSplit != -1) {
+            latestText = text.substring(2, firstSplit);
+        }
+        if (latestText == null && endIndex > -1) {
+            latestText = text.substring(2, endIndex);
+        }
+        return latestText;
+    }
 }

@@ -44,8 +44,8 @@ public class SqlParamCompletionContributor extends CompletionContributor {
                 int offset = injectedLanguageManager.injectedToHost(position, position.getTextOffset());
                 Optional<IdDomElement> idDomElement = MapperUtils.findParentIdDomElement(topLevelFile.findElementAt(offset));
                 // 如果当前的内容在CRUD节点内
-                idDomElement.ifPresent(domElement -> new CompositeHashMarkTip(position.getProject(), result, domElement)
-                    .addElementForPsiParameter(position.getText(), editorCaret));
+                idDomElement.ifPresent(domElement -> new CompositeHashMarkTip(position.getProject())
+                    .addElementForPsiParameter(result, domElement, position.getText(), editorCaret));
                 // 如果在#{}里面输入字符, 则阻断原生SQL提示
                 result.stopHere();
             }
