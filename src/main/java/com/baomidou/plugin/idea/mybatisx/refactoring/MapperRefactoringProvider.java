@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
 import com.intellij.refactoring.listeners.RefactoringElementListenerProvider;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
@@ -51,9 +52,13 @@ public class MapperRefactoringProvider implements RefactoringElementListenerProv
         Collection<Mapper> mappers = MapperUtils.findMappers(oldClazz.getProject(), oldClazz);
         try {
             for (Mapper mapper : mappers) {
-                VirtualFile vf = mapper.getXmlTag().getOriginalElement().getContainingFile().getVirtualFile();
-                if (null != vf) {
-                    vf.rename(MapperRefactoringProvider.this, newClazz.getName() + "." + vf.getExtension());
+                XmlTag xmlTag = mapper.getXmlTag();
+                if (xmlTag != null) {
+                    PsiElement originalElement = xmlTag.getOriginalElement();
+                    VirtualFile vf = originalElement.getContainingFile().getVirtualFile();
+                    if (null != vf) {
+                        vf.rename(MapperRefactoringProvider.this, newClazz.getName() + "." + vf.getExtension());
+                    }
                 }
             }
         } catch (IOException e) {
