@@ -2,12 +2,10 @@ package com.baomidou.plugin.idea.mybatisx.alias;
 
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.google.common.collect.Sets;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.spring.CommonSpringModel;
-import com.intellij.spring.model.SpringBeanPointer;
 import com.intellij.spring.model.SpringModelSearchParameters;
 import com.intellij.spring.model.utils.SpringModelUtils;
 import com.intellij.spring.model.utils.SpringPropertyUtils;
@@ -54,7 +52,7 @@ public class BeanAliasResolver extends PackageAliasResolver {
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
         Set<String> packages = new HashSet<>();
-        Set<PsiClass> classes = findSqlSessionFactories(MAPPER_ALIAS_PACKAGE_CLASSES);
+        Set<PsiClass> classes = findSqlSessionFactories();
         for (PsiClass sqlSessionFactoryClass : classes) {
             CommonSpringModel springModel = SpringModelUtils.getInstance().getPsiClassSpringModel(sqlSessionFactoryClass);
             SpringModelSearchParameters.BeanClass beanClass = SpringModelSearchParameters.BeanClass.byClass(sqlSessionFactoryClass);
@@ -70,9 +68,9 @@ public class BeanAliasResolver extends PackageAliasResolver {
         return packages;
     }
 
-    private Set<PsiClass> findSqlSessionFactories(List<String> mapperAliasPackageClasses) {
+    private Set<PsiClass> findSqlSessionFactories() {
         Set<PsiClass> sqlSessionFactorySet = new HashSet<>();
-        for (String mapperAliasPackageClass : mapperAliasPackageClasses) {
+        for (String mapperAliasPackageClass : BeanAliasResolver.MAPPER_ALIAS_PACKAGE_CLASSES) {
             Optional<PsiClass> clazz = JavaUtils.findClazz(project, mapperAliasPackageClass);
             clazz.ifPresent(sqlSessionFactorySet::add);
         }

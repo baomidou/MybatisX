@@ -19,9 +19,6 @@ import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.google.common.base.Strings;
 import com.intellij.database.model.RawConnectionConfig;
 import com.intellij.database.psi.DbTable;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
@@ -84,21 +81,15 @@ public class MybatisGenerator {
      * @return the list
      * @throws Exception the exception
      */
-    public List<String> execute(final AnActionEvent anActionEvent, boolean saveConfig) throws Exception {
+    public List<String> execute(final PsiElement psiElement, Project project,boolean saveConfig) throws Exception {
         List<String> result = new ArrayList<>();
-        this.project = anActionEvent.getData(PlatformDataKeys.PROJECT);
+        this.project = project;
         this.persistentConfig = PersistentConfig.getInstance(project);
 
         if (saveConfig) {
             saveConfig();//执行前 先保存一份当前配置
         }
-        final PsiElement[] psiElements = anActionEvent.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
 
-        if (psiElements == null || psiElements.length == 0) {
-            result.add("can not generate! \nplease select table");
-            return result;
-        }
-        PsiElement psiElement = psiElements[0];
         if (!(psiElement instanceof DbTable)) {
             result.add("can not generate! \nplease select table");
             return result;
@@ -106,23 +97,23 @@ public class MybatisGenerator {
 
         intellijTableInfo = DbToolsUtils.buildIntellijTableInfo((DbTable) psiElement);
 
-        RawConnectionConfig connectionConfig = ((DbTable) psiElements[0]).getDataSource().getConnectionConfig();
+        RawConnectionConfig connectionConfig = ((DbTable) psiElement).getDataSource().getConnectionConfig();
 
         String driverClass = connectionConfig.getDriverClass();
         if (driverClass.contains("mysql")) {
-            currentDbName = ((DbTable) psiElements[0]).getParent().getName();
+            currentDbName = ((DbTable) psiElement).getParent().getName();
             dbType = DbType.MySQL;
         } else if (driverClass.contains("oracle")) {
-            currentDbName = ((DbTable) psiElements[0]).getParent().getName();
+            currentDbName = ((DbTable) psiElement).getParent().getName();
             dbType = DbType.Oracle;
         } else if (driverClass.contains("postgresql")) {
-            currentDbName = ((DbTable) psiElements[0]).getParent().getParent().getName();
+            currentDbName = ((DbTable) psiElement).getParent().getParent().getName();
             dbType = DbType.PostgreSQL;
         } else if (driverClass.contains("sqlserver")) {
-            currentDbName = ((DbTable) psiElements[0]).getParent().getName();
+            currentDbName = ((DbTable) psiElement).getParent().getName();
             dbType = DbType.SqlServer;
         } else if (driverClass.contains("mariadb")) {
-            currentDbName = ((DbTable) psiElements[0]).getParent().getName();
+            currentDbName = ((DbTable) psiElement).getParent().getName();
             dbType = DbType.MariaDB;
         } else {
             String failMessage = String.format("db type not support!" +

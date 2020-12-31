@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.model;
 
+import com.intellij.psi.PsiMethod;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -21,7 +22,7 @@ public interface IdDomElement extends DomElement {
     @Required
     @NameValue
     @Attribute("id")
-    GenericAttributeValue<String> getId();
+    GenericAttributeValue<PsiMethod> getId();
 
     /**
      * Sets value.

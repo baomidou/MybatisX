@@ -45,8 +45,4 @@ public class XmlAndMapperIconProvider extends IconProvider {
         return null;
     }
 
-    /**
-     * The Logger.
-     */
-    Logger logger = LoggerFactory.getLogger(XmlAndMapperIconProvider.class);
 }

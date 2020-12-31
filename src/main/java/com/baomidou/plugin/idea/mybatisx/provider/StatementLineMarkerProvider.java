@@ -35,8 +35,6 @@ import java.util.Optional;
  */
 public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlToken, PsiElement> {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
-
     private static final String MAPPER_CLASS = Mapper.class.getSimpleName().toLowerCase();
     private static final ImmutableSet<String> TARGET_TYPES = ImmutableSet.of(
         Select.class.getSimpleName().toLowerCase(),
