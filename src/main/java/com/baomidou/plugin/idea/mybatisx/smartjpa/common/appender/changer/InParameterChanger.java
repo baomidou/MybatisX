@@ -16,13 +16,13 @@ import java.util.List;
  * The type In parameter changer.
  */
 public class InParameterChanger implements MxParameterChanger {
+    private static final Logger logger = LoggerFactory.getLogger(InParameterChanger.class);
+
     @Override
     public List<TxParameter> getParameter(TxParameter txParameter) {
         TxParameter collectionParameter = TxParameter.createCollectionByTxParameter(txParameter);
         return Collections.singletonList(collectionParameter);
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(InParameterChanger.class);
 
     @Override
     public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {

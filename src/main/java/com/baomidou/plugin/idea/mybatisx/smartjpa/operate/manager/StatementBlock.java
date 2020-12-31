@@ -166,8 +166,8 @@ public class StatementBlock {
      */
     public LinkedList<SyntaxAppender> findPriority(Comparator<SyntaxAppender> stringLengthComparator,
                                                    String splitStr) {
-        if(StringUtils.isNoneBlank(splitStr)&&
-            !(getTagName().startsWith(splitStr) || splitStr.startsWith(getTagName()))){
+        if (StringUtils.isNoneBlank(splitStr) &&
+            !(getTagName().startsWith(splitStr) || splitStr.startsWith(getTagName()))) {
             return new LinkedList<>();
         }
         String replaceStr = splitStr;
@@ -191,8 +191,8 @@ public class StatementBlock {
             }
             syntaxAppenderList.add(priorityAppender);
             if (priorityAppender.getAreaSequence() == AreaSequence.AREA) {
-                currentArea = ((CustomAreaAppender)priorityAppender).getChildAreaSequence();
-            }else{
+                currentArea = ((CustomAreaAppender) priorityAppender).getChildAreaSequence();
+            } else {
                 currentArea = priorityAppender.getAreaSequence();
             }
             replaceStr = replaceStr.substring(priorityAppender.getText().length());

@@ -112,7 +112,7 @@ public class DbRemarksCommentGenerator extends DefaultCommentGenerator implement
                 }
             }
             if (introspectedColumn.isIdentity()) {
-                if (introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement().equals("JDBC")) {
+                if ("JDBC".equals(introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement())) {
                     field.addAnnotation("@GeneratedValue(generator = \"JDBC\")");
                 } else {
                     field.addAnnotation("@GeneratedValue(strategy = GenerationType.IDENTITY)");

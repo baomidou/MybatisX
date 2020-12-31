@@ -1,7 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -89,7 +87,7 @@ public final class DomUtils {
             return false;
         }
         XmlTag rootTag = ((XmlFile) file).getRootTag();
-        return null != rootTag && rootTag.getName().equals("configuration");
+        return null != rootTag && "configuration".equals(rootTag.getName());
     }
 
     /**
@@ -103,7 +101,7 @@ public final class DomUtils {
             return false;
         }
         XmlTag rootTag = ((XmlFile) file).getRootTag();
-        return null != rootTag && rootTag.getName().equals("beans");
+        return null != rootTag && "beans".equals(rootTag.getName());
     }
 
     /**

@@ -1,9 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.plugin.helper;
 
 
-
-import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijColumnInfo;
-
 import java.util.List;
 
 public class IntellijTableInfo {

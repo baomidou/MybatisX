@@ -30,7 +30,7 @@ public class GenerateStatementChooser extends JavaFileIntentionChooser {
         //  不应该判断当前模块是不是已经有了这个mapper. 因为无法判断
         // !isTargetPresentInXml(method) &&
         return null != method && null != clazz &&
-                !JavaUtils.isAnyAnnotationPresent(method, Annotation.STATEMENT_SYMMETRIES) &&
-                isTargetPresentInXml(clazz);
+            !JavaUtils.isAnyAnnotationPresent(method, Annotation.STATEMENT_SYMMETRIES) &&
+            isTargetPresentInXml(clazz);
     }
 }

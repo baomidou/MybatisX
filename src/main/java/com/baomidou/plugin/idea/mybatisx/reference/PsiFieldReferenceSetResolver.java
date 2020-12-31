@@ -51,13 +51,13 @@ public class PsiFieldReferenceSetResolver extends ContextReferenceSetResolver<Xm
     @Override
     public Optional<PsiField> getStartElement(@Nullable String firstText) {
         Optional<PsiClass> clazz = MapperBacktrackingUtils.getPropertyClazz(getElement());
-        if(!clazz.isPresent()){
+        if (!clazz.isPresent()) {
             return Optional.empty();
         }
         PsiClass psiClass = clazz.get();
         assert firstText != null;
         PsiMethod propertySetter = PropertyUtil.findPropertySetter(psiClass, firstText, false, true);
-        return null == propertySetter ? Optional.empty() : Optional.ofNullable(PropertyUtil.findPropertyField(psiClass,firstText,false));
+        return null == propertySetter ? Optional.empty() : Optional.ofNullable(PropertyUtil.findPropertyField(psiClass, firstText, false));
     }
 
 }

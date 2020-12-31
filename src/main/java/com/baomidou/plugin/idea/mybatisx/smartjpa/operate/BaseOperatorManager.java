@@ -14,7 +14,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,9 +34,8 @@ import java.util.stream.Collectors;
  */
 public abstract class BaseOperatorManager implements AreaOperateManager {
 
-    private Set<String> operatorNameList = new HashSet<>();
-
     private final StatementBlockFactory syntaxAppenderFactoryManager = new StatementBlockFactory();
+    private Set<String> operatorNameList = new HashSet<>();
 
     /**
      * Gets operator name list.

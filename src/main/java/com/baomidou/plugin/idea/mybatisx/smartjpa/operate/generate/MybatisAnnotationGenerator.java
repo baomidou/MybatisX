@@ -39,7 +39,7 @@ public class MybatisAnnotationGenerator implements Generator {
      *
      * @param mapperClassGenerateFactory
      * @param mapper
-     * @param project                     the project
+     * @param project                    the project
      */
     public MybatisAnnotationGenerator(MapperClassGenerateFactory mapperClassGenerateFactory, Mapper mapper, @NotNull Project project) {
         this.mapperClassGenerateFactory = mapperClassGenerateFactory;

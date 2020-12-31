@@ -22,38 +22,11 @@ import java.util.stream.Collectors;
  * The type Custom area appender.
  */
 public class CustomAreaAppender implements SyntaxAppender {
-    @Override
-    public String toString() {
-        return "CustomAreaAppender{" +
-            "area='" + area + '\'' +
-            ", areaType='" + areaType + '\'' +
-            ", areaSequence=" + areaSequence +
-            ", syntaxAppenderFactory=" + syntaxAppenderFactory +
-            ", childAreaSequence=" + childAreaSequence +
-            '}';
-    }
-
-    /**
-     * Gets syntax appender factory.
-     *
-     * @return the syntax appender factory
-     */
-    public SyntaxAppenderFactory getSyntaxAppenderFactory() {
-        return syntaxAppenderFactory;
-    }
-
     private final String area;
-
     private final String areaType;
-
     private AreaSequence areaSequence;
-
     private SyntaxAppenderFactory syntaxAppenderFactory;
-
-    @Override
-    public AreaSequence getAreaSequence() {
-        return areaSequence;
-    }
+    private AreaSequence childAreaSequence;
 
     /**
      * Instantiates a new Custom area appender.
@@ -71,7 +44,6 @@ public class CustomAreaAppender implements SyntaxAppender {
         this.childAreaSequence = childAreaSequence;
         this.syntaxAppenderFactory = syntaxAppenderFactory;
     }
-
 
     /**
      * Instantiates a new Custom area appender.
@@ -132,6 +104,31 @@ public class CustomAreaAppender implements SyntaxAppender {
     }
 
     @Override
+    public String toString() {
+        return "CustomAreaAppender{" +
+            "area='" + area + '\'' +
+            ", areaType='" + areaType + '\'' +
+            ", areaSequence=" + areaSequence +
+            ", syntaxAppenderFactory=" + syntaxAppenderFactory +
+            ", childAreaSequence=" + childAreaSequence +
+            '}';
+    }
+
+    /**
+     * Gets syntax appender factory.
+     *
+     * @return the syntax appender factory
+     */
+    public SyntaxAppenderFactory getSyntaxAppenderFactory() {
+        return syntaxAppenderFactory;
+    }
+
+    @Override
+    public AreaSequence getAreaSequence() {
+        return areaSequence;
+    }
+
+    @Override
     public String getText() {
         return this.area;
     }
@@ -172,7 +169,7 @@ public class CustomAreaAppender implements SyntaxAppender {
 
     @Override
     public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
-        return syntaxAppenderFactory.getTemplateText(tableName, entityClass, parameters, collector,conditionFieldWrapper);
+        return syntaxAppenderFactory.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
     }
 
     @Override
@@ -181,7 +178,6 @@ public class CustomAreaAppender implements SyntaxAppender {
             .flatMap(parameter -> parameter.getMxParameter(entityClass).stream())
             .collect(Collectors.toList());
     }
-
 
     @Override
     public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
@@ -197,9 +193,6 @@ public class CustomAreaAppender implements SyntaxAppender {
             }
         }
     }
-
-
-    private AreaSequence childAreaSequence;
 
     /**
      * Gets child area sequence.
@@ -217,7 +210,6 @@ public class CustomAreaAppender implements SyntaxAppender {
         boolean sequenceCheck = (getAreaSequence() == areaSequence);
         return hasAreaCheck || (typeCheck && sequenceCheck);
     }
-
 
 
 }

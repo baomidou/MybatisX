@@ -14,22 +14,6 @@ public class MergeJavaCallBack extends DefaultShellCallback {
         super(overwrite);
     }
 
-    @Override
-    public boolean isMergeSupported() {
-        return true;
-    }
-
-    @Override
-    public String mergeJavaFile(String newFileSource, File existingFile, String[] javadocTags, String fileEncoding) throws ShellException {
-        String result = newFileSource;
-        System.out.println(result);
-        String existingFileFullPath = existingFile.getAbsolutePath();
-        if (isClassInterface(existingFileFullPath)) {
-            result = readFile(existingFileFullPath);
-        }
-        return result;
-    }
-
     public static String readFile(String fileName) {
         File file = new File(fileName);
         BufferedReader reader = null;
@@ -52,6 +36,22 @@ public class MergeJavaCallBack extends DefaultShellCallback {
             }
         }
         return builder.toString();
+    }
+
+    @Override
+    public boolean isMergeSupported() {
+        return true;
+    }
+
+    @Override
+    public String mergeJavaFile(String newFileSource, File existingFile, String[] javadocTags, String fileEncoding) throws ShellException {
+        String result = newFileSource;
+        System.out.println(result);
+        String existingFileFullPath = existingFile.getAbsolutePath();
+        if (isClassInterface(existingFileFullPath)) {
+            result = readFile(existingFileFullPath);
+        }
+        return result;
     }
 
     private boolean isClassInterface(String fileName) {

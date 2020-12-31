@@ -19,15 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class StatementBlockFactory {
 
+    private static final Logger logger = LoggerFactory.getLogger(StatementBlockFactory.class);
     private final List<StatementBlock> blockList = new ArrayList<>();
-
+    private Map<String, StatementBlock> appenderFactoryMap = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new Statement block factory.
      */
     public StatementBlockFactory() {
     }
-
 
     /**
      * Split appender by text linked list.
@@ -53,10 +53,6 @@ public class StatementBlockFactory {
         appenderFactoryMap.put(statementBlock.getTagName(), statementBlock);
 
     }
-
-    private Map<String, StatementBlock> appenderFactoryMap = new ConcurrentHashMap<>();
-
-    private static final Logger logger = LoggerFactory.getLogger(StatementBlockFactory.class);
 
     /**
      * Find area list by jpa list.

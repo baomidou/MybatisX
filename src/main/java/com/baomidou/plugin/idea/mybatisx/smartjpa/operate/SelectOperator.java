@@ -196,6 +196,78 @@ public class SelectOperator extends BaseOperatorManager {
         this.addOperatorName(areaName);
     }
 
+    protected ResultAppenderFactory initCustomFieldResultAppender(final List<TxField> mappingField,
+                                                                  final String areaName,
+                                                                  ConditionAppenderFactory conditionAppenderFactory) {
+        ResultAppenderFactory selectFactory = new SelectResultAppenderFactory(areaName);
+        for (TxField field : mappingField) {
+            // field
+            // and + field
+            CompositeAppender andAppender = new SelectCompositeAppender(
+                new CustomJoinAppender("And", ",", AreaSequence.RESULT),
+                new SelectFieldAppender(field));
+            selectFactory.registerAppender(andAppender);
+
+            // select + field
+            CompositeAppender areaAppender =
+                new SelectCompositeAppender(
+                    new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, selectFactory),
+                    new SelectFieldAppender(field)
+                );
+            selectFactory.registerAppender(areaAppender);
+
+
+            // 区域条件 : select + By + field
+            CompositeAppender areaByAppender = new CompositeAppender(
+                new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, selectFactory),
+                CustomAreaAppender.createCustomAreaAppender("By", "By", AreaSequence.AREA, AreaSequence.CONDITION, conditionAppenderFactory),
+                new CustomFieldAppender(field, AreaSequence.CONDITION)
+            );
+            selectFactory.registerAppender(areaByAppender);
+
+
+        }
+        return selectFactory;
+
+    }
+
+    @Override
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod, String tableName,
+                                  Generator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
+
+        mybatisXmlGenerator.generateSelect(id,
+            mapperXml,
+            conditionFieldWrapper.isResultType(),
+            conditionFieldWrapper.getResultMap(),
+            conditionFieldWrapper.getResultType(),
+            resultFields,
+            entityClass);
+    }
+
+    @Override
+    public String getTagName() {
+        return "select";
+    }
+
+    // 查询类型的结果集区域,  字段拼接部分, 只需要字段名称就可以了
+    private static class SelectFieldAppender extends CustomFieldAppender {
+
+        private SelectFieldAppender(TxField txField) {
+            super(txField, AreaSequence.RESULT);
+        }
+
+
+        @Override
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+            return columnName;
+        }
+    }
 
     /**
      * 查询特定的结果追加工厂
@@ -251,42 +323,6 @@ public class SelectOperator extends BaseOperatorManager {
 
     }
 
-
-    protected ResultAppenderFactory initCustomFieldResultAppender(final List<TxField> mappingField,
-                                                                  final String areaName,
-                                                                  ConditionAppenderFactory conditionAppenderFactory) {
-        ResultAppenderFactory selectFactory = new SelectResultAppenderFactory(areaName);
-        for (TxField field : mappingField) {
-            // field
-            // and + field
-            CompositeAppender andAppender = new SelectCompositeAppender(
-                new CustomJoinAppender("And", ",", AreaSequence.RESULT),
-                new SelectFieldAppender(field));
-            selectFactory.registerAppender(andAppender);
-
-            // select + field
-            CompositeAppender areaAppender =
-                new SelectCompositeAppender(
-                    new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, selectFactory),
-                    new SelectFieldAppender(field)
-                );
-            selectFactory.registerAppender(areaAppender);
-
-
-            // 区域条件 : select + By + field
-            CompositeAppender areaByAppender = new CompositeAppender(
-                new SelectCustomAreaAppender(areaName, ResultAppenderFactory.RESULT, selectFactory),
-                CustomAreaAppender.createCustomAreaAppender("By", "By", AreaSequence.AREA, AreaSequence.CONDITION, conditionAppenderFactory),
-                new CustomFieldAppender(field, AreaSequence.CONDITION)
-            );
-            selectFactory.registerAppender(areaByAppender);
-
-
-        }
-        return selectFactory;
-
-    }
-
     private class SelectCustomAreaAppender extends CustomAreaAppender {
 
 
@@ -314,7 +350,6 @@ public class SelectOperator extends BaseOperatorManager {
         }
     }
 
-
     private class SelectCompositeAppender extends CompositeAppender {
 
         /**
@@ -333,43 +368,5 @@ public class SelectOperator extends BaseOperatorManager {
                 .map(x -> x.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper))
                 .collect(Collectors.joining(","));
         }
-    }
-
-    // 查询类型的结果集区域,  字段拼接部分, 只需要字段名称就可以了
-    private static class SelectFieldAppender extends CustomFieldAppender {
-
-        private SelectFieldAppender(TxField txField) {
-            super(txField, AreaSequence.RESULT);
-        }
-
-
-        @Override
-        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
-            return columnName;
-        }
-    }
-
-    @Override
-    public void generateMapperXml(String id,
-                                  LinkedList<SyntaxAppender> jpaList,
-                                  PsiClass entityClass,
-                                  PsiMethod psiMethod, String tableName,
-                                  Generator mybatisXmlGenerator,
-                                  ConditionFieldWrapper conditionFieldWrapper,
-                                  List<TxField> resultFields) {
-        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
-
-        mybatisXmlGenerator.generateSelect(id,
-            mapperXml,
-            conditionFieldWrapper.isResultType(),
-            conditionFieldWrapper.getResultMap(),
-            conditionFieldWrapper.getResultType(),
-            resultFields,
-            entityClass);
-    }
-
-    @Override
-    public String getTagName() {
-        return "select";
     }
 }

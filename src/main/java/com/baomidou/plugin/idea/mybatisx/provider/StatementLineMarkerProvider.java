@@ -22,8 +22,6 @@ import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.Optional;
@@ -105,9 +103,11 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
 
 
     @Override
-    public @Nullable("null means disabled") @Nls(
+    public @Nullable("null means disabled")
+    @Nls(
         capitalization = Nls.Capitalization.Sentence
-    ) String getName() {
+    )
+    String getName() {
         return "statement line marker";
     }
 

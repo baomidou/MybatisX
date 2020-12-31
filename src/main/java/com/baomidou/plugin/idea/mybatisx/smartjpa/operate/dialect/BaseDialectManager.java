@@ -37,10 +37,10 @@ public class BaseDialectManager implements AreaOperateManager {
      * @param entityClass  the entity class
      */
     protected void init(final List<TxField> mappingField, PsiClass entityClass) {
-        this.registerManagers(new SelectOperator(mappingField,entityClass));
+        this.registerManagers(new SelectOperator(mappingField, entityClass));
         this.registerManagers(new CountOperator(mappingField, entityClass));
         this.registerManagers(new InsertOperator(mappingField));
-        this.registerManagers(new UpdateOperator(mappingField,entityClass));
+        this.registerManagers(new UpdateOperator(mappingField, entityClass));
         this.registerManagers(new DeleteOperator(mappingField));
     }
 
@@ -50,7 +50,7 @@ public class BaseDialectManager implements AreaOperateManager {
      *
      * @param areaOperateManager the area operate manager
      */
-    protected void registerManagers(AreaOperateManager areaOperateManager){
+    protected void registerManagers(AreaOperateManager areaOperateManager) {
         this.typeManagers.add(areaOperateManager);
     }
 
@@ -83,7 +83,7 @@ public class BaseDialectManager implements AreaOperateManager {
             results.addAll(typeManager.getCompletionContent());
         }
         return results;
-}
+    }
 
     @Override
     public List<TxParameter> getParameters(PsiClass entityClass,

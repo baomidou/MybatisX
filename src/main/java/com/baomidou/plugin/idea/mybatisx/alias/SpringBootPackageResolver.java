@@ -37,6 +37,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     private static final String YML = "yml";
     private static final String YAML = "yaml";
     private static final String PROPERTIES = "properties";
+    private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);
 
     /**
      * Instantiates a new Bean alias resolver.
@@ -160,8 +161,6 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         }
         return config;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);
 
 
 }

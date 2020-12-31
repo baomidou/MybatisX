@@ -7,6 +7,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 
 /**
  * 提示 resultMap
+ *
  * @author ls9527
  */
 public class ResultMapHashMarkTip implements HashMarkTip {

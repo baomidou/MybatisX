@@ -25,6 +25,6 @@ public class GenerateParamChooser extends JavaFileIntentionChooser {
         PsiParameter parameter = PsiTreeUtil.getParentOfType(element, PsiParameter.class);
         PsiMethod method = PsiTreeUtil.getParentOfType(element, PsiMethod.class);
         return (null != parameter && !JavaUtils.isAnnotationPresent(parameter, Annotation.PARAM)) ||
-                (null != method && !JavaUtils.isAllParameterWithAnnotation(method, Annotation.PARAM));
+            (null != method && !JavaUtils.isAllParameterWithAnnotation(method, Annotation.PARAM));
     }
 }

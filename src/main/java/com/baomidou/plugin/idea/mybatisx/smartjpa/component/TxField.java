@@ -27,6 +27,7 @@ public class TxField {
      * 字段jdbc类型
      */
     private String jdbcType;
+
     /**
      * Gets field type.
      *

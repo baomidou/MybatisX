@@ -16,12 +16,12 @@ public interface TypeDescriptor {
     /**
      * 实际的内容
      *
-     * @return content
      * @param defaultDateList
+     * @return content
      */
     String getContent(List<String> defaultDateList);
 
-    default void initResultType(String qualifiedName, String simpleName){
+    default void initResultType(String qualifiedName, String simpleName) {
 
     }
 }

@@ -35,12 +35,14 @@ public class MybatisPlus2MappingResolver extends AbstractMybatisPlusMappingResol
     }
 
     @Override
-    protected @NotNull String getTableNameAnnotation() {
+    protected @NotNull
+    String getTableNameAnnotation() {
         return TABLE_NAME;
     }
 
     @Override
-    protected @NotNull String getTableFieldAnnotation(@NotNull PsiField field) {
+    protected @NotNull
+    String getTableFieldAnnotation(@NotNull PsiField field) {
         String columnName = null;
         // 获取 mp 的 TableField 注解
         PsiAnnotation fieldAnnotation = field.getAnnotation(TABLE_FIELD);

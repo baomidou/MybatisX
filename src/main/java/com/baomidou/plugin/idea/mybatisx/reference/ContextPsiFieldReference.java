@@ -80,7 +80,7 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
      *
      * @return the resolver
      */
-    public ContextReferenceSetResolver<XmlAttributeValue, PsiField>  getResolver() {
+    public ContextReferenceSetResolver<XmlAttributeValue, PsiField> getResolver() {
         return resolver;
     }
 
@@ -89,7 +89,7 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
      *
      * @param resolver the resolver
      */
-    public void setResolver(ContextReferenceSetResolver<XmlAttributeValue, PsiField>  resolver) {
+    public void setResolver(ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver) {
         this.resolver = resolver;
     }
 

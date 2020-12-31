@@ -160,10 +160,11 @@ public interface SyntaxAppender {
      * Gets mx parameter.
      *
      * @param syntaxAppenderWrapperLinkedList the jpa string list
-     * @param entityClass   the entity class
+     * @param entityClass                     the entity class
      * @return the mx parameter
      */
     List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass);
+
     /**
      * 转成树
      *

@@ -32,14 +32,14 @@ public class MybatisXmlGenerator implements Generator {
      * The constant RESULT_MAP.
      */
     public static final String RESULT_MAP = "resultMap";
-    private MapperClassGenerateFactory mapperClassGenerateFactory;
-    private Mapper mapper;
-    private Project project;
-
     /**
      * The constant RESULT_TYPE.
      */
     public static final String RESULT_TYPE = "resultType";
+    private static final Logger logger = LoggerFactory.getLogger(MybatisXmlGenerator.class);
+    private MapperClassGenerateFactory mapperClassGenerateFactory;
+    private Mapper mapper;
+    private Project project;
 
     /**
      * Instantiates a new Mybatis xml generator.
@@ -131,7 +131,6 @@ public class MybatisXmlGenerator implements Generator {
         classCreator.createFromAllowedFields(allowFields, entityClass, dtoName);
     }
 
-
     private boolean isGenerateResultMap(XmlTag xmlTag, String resultMapId) {
         Boolean generate = null;
         if ("BaseResultMap".equals(resultMapId) || "BlobResultMap".equals(resultMapId)) {
@@ -152,8 +151,6 @@ public class MybatisXmlGenerator implements Generator {
         }
         return generate;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(MybatisXmlGenerator.class);
 
     @Override
     public void generateDelete(String id, String value) {

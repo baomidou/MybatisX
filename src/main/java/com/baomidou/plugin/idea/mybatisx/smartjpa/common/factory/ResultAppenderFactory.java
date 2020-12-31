@@ -74,7 +74,6 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
     }
 
 
-
     public static class WrapDateCustomFieldAppender extends CustomFieldAppender {
 
 
@@ -91,7 +90,7 @@ public class ResultAppenderFactory extends BaseAppenderFactory {
 
         @Override
         protected String wrapFieldValueInTemplateText(String columnName, ConditionFieldWrapper conditionFieldWrapper, String fieldValue) {
-            return  conditionFieldWrapper.wrapDefaultDateIfNecessary(columnName, fieldValue);
+            return conditionFieldWrapper.wrapDefaultDateIfNecessary(columnName, fieldValue);
         }
     }
 }

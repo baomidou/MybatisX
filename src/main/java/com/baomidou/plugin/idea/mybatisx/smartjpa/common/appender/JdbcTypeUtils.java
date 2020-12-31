@@ -12,25 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JdbcTypeUtils {
     /**
-     * Wrapper field string.
-     *
-     * @param paramName     the param name
-     * @param canonicalText the canonical text
-     * @return the string
-     */
-    public static String wrapperField(String paramName, @NotNull String canonicalText) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("#{").append(paramName);
-        String jdbcType = fieldJdbcType.get(canonicalText);
-        if (StringUtils.isNotBlank(jdbcType)) {
-            stringBuilder.append(",jdbcType=").append(jdbcType);
-        }
-        stringBuilder.append("}");
-        return stringBuilder.toString();
-    }
-
-
-    /**
      * 后续提取类， 先用静态的
      *
      * @return
@@ -48,6 +29,24 @@ public class JdbcTypeUtils {
         fieldJdbcType.put("java.lang.String", "VARCHAR");
         fieldJdbcType.put("java.util.Date", "TIMESTAMP");
         fieldJdbcType.put("java.math.BigDecimal", "DECIMAL");
+    }
+
+    /**
+     * Wrapper field string.
+     *
+     * @param paramName     the param name
+     * @param canonicalText the canonical text
+     * @return the string
+     */
+    public static String wrapperField(String paramName, @NotNull String canonicalText) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("#{").append(paramName);
+        String jdbcType = fieldJdbcType.get(canonicalText);
+        if (StringUtils.isNotBlank(jdbcType)) {
+            stringBuilder.append(",jdbcType=").append(jdbcType);
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 
     public static Optional<String> findJdbcTypeByJavaType(String javaType) {

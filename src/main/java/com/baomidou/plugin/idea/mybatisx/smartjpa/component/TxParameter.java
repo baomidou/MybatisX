@@ -22,14 +22,6 @@ import java.util.Set;
  */
 public class TxParameter {
     public static final String JAVA_LANG = "java.lang";
-    private AreaSequence areaSequence;
-    private String typeText;
-    private String canonicalTypeText;
-    private String name;
-    private boolean paramAnnotation;
-    //
-    private List<String> importClass = Collections.emptyList();
-
     private static Set<String> primitiveType = new HashSet<String>() {
         {
             add("boolean");
@@ -41,6 +33,14 @@ public class TxParameter {
             add("double");
         }
     };
+    private AreaSequence areaSequence;
+    private String typeText;
+    private String canonicalTypeText;
+    private String name;
+    private boolean paramAnnotation;
+    //
+    private List<String> importClass = Collections.emptyList();
+    private String itemContent;
 
     /**
      * Create by psi field tx parameter.
@@ -110,7 +110,7 @@ public class TxParameter {
         TxParameter byOrigin = createByOrigin(psiParameter.getName(), psiParameter.getType().getCanonicalText(), psiParameter.getType().getCanonicalText());
 
         PsiTypeElement typeElement = psiParameter.getTypeElement();
-        if(typeElement!=null){
+        if (typeElement != null) {
             PsiJavaCodeReferenceElement innermostComponentReferenceElement = typeElement.getInnermostComponentReferenceElement();
             if (innermostComponentReferenceElement != null) {
                 final @NotNull PsiType[] typeParameters = innermostComponentReferenceElement.getTypeParameters();
@@ -121,10 +121,6 @@ public class TxParameter {
             }
         }
         return byOrigin;
-    }
-
-    public AreaSequence getAreaSequence() {
-        return areaSequence;
     }
 
     /**
@@ -170,6 +166,10 @@ public class TxParameter {
         );
     }
 
+    public AreaSequence getAreaSequence() {
+        return areaSequence;
+    }
+
     /**
      * 字段类型简称
      *
@@ -178,7 +178,6 @@ public class TxParameter {
     public String getTypeText() {
         return typeText;
     }
-
 
     /**
      * Gets canonical type text.
@@ -219,8 +218,6 @@ public class TxParameter {
     public List<String> getImportClass() {
         return importClass;
     }
-
-    private String itemContent;
 
     public String getItemContent(String item) {
         return itemContent;

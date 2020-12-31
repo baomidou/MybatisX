@@ -81,7 +81,7 @@ public class MybatisGenerator {
      * @return the list
      * @throws Exception the exception
      */
-    public List<String> execute(final PsiElement psiElement, Project project,boolean saveConfig) throws Exception {
+    public List<String> execute(final PsiElement psiElement, Project project, boolean saveConfig) throws Exception {
         List<String> result = new ArrayList<>();
         this.project = project;
         this.persistentConfig = PersistentConfig.getInstance(project);

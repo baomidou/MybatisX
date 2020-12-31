@@ -29,16 +29,6 @@ public class AliasFacade {
     private List<AliasResolver> resolvers;
 
     /**
-     * Gets instance.
-     *
-     * @param project the project
-     * @return the instance
-     */
-    public static final AliasFacade getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, AliasFacade.class);
-    }
-
-    /**
      * Instantiates a new Alias facade.
      *
      * @param project the project
@@ -48,6 +38,16 @@ public class AliasFacade {
         this.resolvers = new ArrayList<>();
         this.javaPsiFacade = JavaPsiFacade.getInstance(project);
         initResolvers();
+    }
+
+    /**
+     * Gets instance.
+     *
+     * @param project the project
+     * @return the instance
+     */
+    public static final AliasFacade getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, AliasFacade.class);
     }
 
     private void initResolvers() {

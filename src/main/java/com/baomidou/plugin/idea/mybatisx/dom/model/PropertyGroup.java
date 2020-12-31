@@ -28,6 +28,7 @@ public interface PropertyGroup extends DomElement {
 
     /**
      * column
+     *
      * @return
      */
     @Attribute("column")
@@ -36,6 +37,7 @@ public interface PropertyGroup extends DomElement {
 
     /**
      * jdbcType
+     *
      * @return
      */
     @Attribute("jdbcType")
@@ -44,6 +46,7 @@ public interface PropertyGroup extends DomElement {
 
     /**
      * jdbcType
+     *
      * @return
      */
     @Attribute("typeHandler")

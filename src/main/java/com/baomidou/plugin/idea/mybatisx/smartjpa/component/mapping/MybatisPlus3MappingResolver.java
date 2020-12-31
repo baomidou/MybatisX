@@ -19,11 +19,11 @@ public class MybatisPlus3MappingResolver extends AbstractMybatisPlusMappingResol
      * The constant TABLE_NAME.
      */
     public static final String TABLE_NAME = "com.baomidou.mybatisplus.annotation.TableName";
-    private static final String TABLE_ID = "com.baomidou.mybatisplus.annotation.TableId";
     /**
      * The constant BASE_MAPPER.
      */
     public static final String BASE_MAPPER = "com.baomidou.mybatisplus.core.mapper.BaseMapper";
+    private static final String TABLE_ID = "com.baomidou.mybatisplus.annotation.TableId";
 
     /**
      * Instantiates a new Mybatis plus 3 mapping resolver.
@@ -32,12 +32,14 @@ public class MybatisPlus3MappingResolver extends AbstractMybatisPlusMappingResol
     }
 
     @Override
-    protected @NotNull String getTableNameAnnotation() {
+    protected @NotNull
+    String getTableNameAnnotation() {
         return TABLE_NAME;
     }
 
     @Override
-    protected @NotNull String getTableFieldAnnotation(@NotNull PsiField field) {
+    protected @NotNull
+    String getTableFieldAnnotation(@NotNull PsiField field) {
         String columnName = null;
         PsiAnnotation fieldAnnotation = field.getAnnotation(TABLE_FIELD);
         if (fieldAnnotation != null) {

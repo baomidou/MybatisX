@@ -45,6 +45,8 @@ import java.util.stream.Collectors;
  */
 public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction implements IntentionAction {
 
+    private static final Logger logger = LoggerFactory.getLogger(GenerateSmartJpaAdvanceAction.class);
+
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
         try {
@@ -143,7 +145,6 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
         return true;
     }
 
-
     /**
      * 创建 条件字段包装器， 用于if,where 这样的标签
      *
@@ -183,9 +184,9 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
 
         conditionIfTestWrapper.setResultMap(jpaAdvanceDialog.getResultMap());
         conditionIfTestWrapper.setResultType(jpaAdvanceDialog.isResultType());
-        if(isSelect){
+        if (isSelect) {
             conditionIfTestWrapper.setResultTypeClass(jpaAdvanceDialog.getResultTypeClass());
-        }else{
+        } else {
             conditionIfTestWrapper.setResultTypeClass("int");
         }
         conditionIfTestWrapper.setGeneratorType(jpaAdvanceDialog.getGeneratorType());
@@ -193,9 +194,6 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
 
         return Optional.of(conditionIfTestWrapper);
     }
-
-
-    private static final Logger logger = LoggerFactory.getLogger(GenerateSmartJpaAdvanceAction.class);
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {

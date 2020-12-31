@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * 参考 com.intellij.spring.el.contextProviders.extensions.SpringElCommentReferenceContributor
+ *
  * @author ls9527
  */
 public class ContextHashMarkReferenceContributor extends PsiReferenceContributor {
@@ -33,7 +34,8 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
         registrar.registerReferenceProvider(EL_VAR_COMMENT, new PsiReferenceProvider() {
 
             @Override
-            public @NotNull PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+            public @NotNull
+            PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
                 if (!(element instanceof XmlToken)) {
                     return PsiReference.EMPTY_ARRAY;
                 }
@@ -41,7 +43,7 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
                 String value = literalExpression.getText();
 
                 if ((value != null && value.startsWith(SIMPLE_PREFIX_STR))) {
-                    TextRange  property = new TextRange(SIMPLE_PREFIX_STR.length(),value.length()-SIMPLE_PREFIX_STR.length());
+                    TextRange property = new TextRange(SIMPLE_PREFIX_STR.length(), value.length() - SIMPLE_PREFIX_STR.length());
                     return new PsiReference[]{new HashMarkReference(element, property)};
                 }
                 return PsiReference.EMPTY_ARRAY;
@@ -59,7 +61,8 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
         }
 
         @Override
-        public @Nullable PsiElement resolve() {
+        public @Nullable
+        PsiElement resolve() {
             return compositeHashMarkTip.findReference(this.myElement);
         }
     }

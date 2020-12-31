@@ -74,7 +74,7 @@ public final class MapperBacktrackingUtils {
     private static PsiClass findLeastParentType(DomElement domElement, @NotNull Project project) {
         DomElement currentElement = domElement;
         PsiClass currentClass = null;
-        while (true){
+        while (true) {
             if (currentElement instanceof Association) {
                 boolean foundClass = false;
                 Association association = (Association) currentElement;

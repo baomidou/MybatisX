@@ -19,7 +19,17 @@ import java.util.Set;
  * @author yanglin
  */
 public class InnerAliasResolver extends AliasResolver {
+    private static final Logger logger = LoggerFactory.getLogger(InnerAliasResolver.class);
     private volatile Set<AliasDesc> innerAliasDescs = null;
+
+    /**
+     * Instantiates a new Inner alias resolver.
+     *
+     * @param project the project
+     */
+    public InnerAliasResolver(Project project) {
+        super(project);
+    }
 
     private Set<AliasDesc> getAliasDescSet() {
         Set<AliasDesc> aliasDescs = new HashSet<>();
@@ -56,20 +66,10 @@ public class InnerAliasResolver extends AliasResolver {
 
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(InnerAliasResolver.class);
-
-    /**
-     * Instantiates a new Inner alias resolver.
-     *
-     * @param project the project
-     */
-    public InnerAliasResolver(Project project) {
-        super(project);
-    }
-
     /**
      * 支持延迟识别, 当项目第一次打开时，可能未配置JDK， 在未配置JDK时， 内部别名无法注册。
      * 这里支持等手动配置JDK后才开始缓存
+     *
      * @param element the element
      * @return
      */
@@ -79,7 +79,7 @@ public class InnerAliasResolver extends AliasResolver {
         if (innerAliasDescs == null) {
             Set<AliasDesc> aliasDescSet = getAliasDescSet();
             if (!aliasDescSet.isEmpty()) {
-                synchronized (this){
+                synchronized (this) {
                     this.innerAliasDescs = aliasDescSet;
                 }
             }

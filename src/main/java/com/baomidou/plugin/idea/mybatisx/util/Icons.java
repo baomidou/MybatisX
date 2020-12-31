@@ -45,7 +45,7 @@ public interface Icons {
     /**
      * The constant SPRING_INJECTION_ICON.
      * 锤子不好看, 就用代表mapper文件的图标好了
-     *  Icon SPRING_INJECTION_ICON = IconLoader.getIcon("/images/injection.png");
+     * Icon SPRING_INJECTION_ICON = IconLoader.getIcon("/images/injection.png");
      */
     Icon SPRING_INJECTION_ICON = MAPPER_CLASS_ICON;
 }

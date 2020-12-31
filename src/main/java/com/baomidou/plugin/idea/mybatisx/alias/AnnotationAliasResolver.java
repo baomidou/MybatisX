@@ -48,9 +48,9 @@ public class AnnotationAliasResolver extends AliasResolver {
         Optional<PsiClass> clazz = Annotation.ALIAS.toPsiClass(project);
         if (clazz.isPresent()) {
             Collection<PsiClass> res = AnnotatedElementsSearch.searchPsiClasses(clazz.get(), GlobalSearchScope.allScope(project)).findAll();
-            return res.stream().map(psiClass-> {
+            return res.stream().map(psiClass -> {
                 Optional<String> txt = JavaUtils.getAnnotationValueText(psiClass, Annotation.ALIAS);
-                if (!txt.isPresent()){
+                if (!txt.isPresent()) {
                     return null;
                 }
                 AliasDesc ad = new AliasDesc();

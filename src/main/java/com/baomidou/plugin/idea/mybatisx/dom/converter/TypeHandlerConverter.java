@@ -4,18 +4,29 @@ import com.baomidou.plugin.idea.mybatisx.reference.ContextReferenceSetResolver;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.ElementManipulators;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.util.ReferenceSetBase;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.Query;
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.ConvertContext;
+import com.intellij.util.xml.CustomReferenceConverter;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.GenericDomValue;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The type Jdbc type converter.
@@ -23,6 +34,8 @@ import java.util.*;
  * @author ls9527
  */
 public class TypeHandlerConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
+
+    private static final String ORG_APACHE_IBATIS_TYPE_TYPE_HANDLER = "org.apache.ibatis.type.TypeHandler";
 
     @NotNull
     @Override
@@ -45,6 +58,16 @@ public class TypeHandlerConverter extends ConverterAdaptor<XmlAttributeValue> im
         return null;
     }
 
+    private Collection<PsiClass> searchTypeHandler(Project project) {
+        Optional<PsiClass> typeHandlerOptional = JavaUtils.findClazz(project, ORG_APACHE_IBATIS_TYPE_TYPE_HANDLER);
+        if (typeHandlerOptional.isPresent()) {
+            PsiClass psiClass = typeHandlerOptional.get();
+            Query<PsiClass> search = ClassInheritorsSearch.search(psiClass, true);
+            return search.findAll();
+
+        }
+        return Collections.emptyList();
+    }
 
     private class TypeHandlerReference extends ReferenceSetBase<PsiReference> {
 
@@ -62,20 +85,6 @@ public class TypeHandlerConverter extends ConverterAdaptor<XmlAttributeValue> im
 
     }
 
-    private static final String ORG_APACHE_IBATIS_TYPE_TYPE_HANDLER = "org.apache.ibatis.type.TypeHandler";
-
-    private Collection<PsiClass> searchTypeHandler(Project project) {
-        Optional<PsiClass> typeHandlerOptional = JavaUtils.findClazz(project, ORG_APACHE_IBATIS_TYPE_TYPE_HANDLER);
-        if (typeHandlerOptional.isPresent()) {
-            PsiClass psiClass = typeHandlerOptional.get();
-            Query<PsiClass> search = ClassInheritorsSearch.search(psiClass, true);
-            return search.findAll();
-
-        }
-        return Collections.emptyList();
-    }
-
-
     private class JdbcTypePsiReferenceBase extends PsiReferenceBase<XmlAttributeValue> {
         private final ContextReferenceSetResolver<XmlAttributeValue, PsiClass> resolver;
         private int index;
@@ -88,7 +97,8 @@ public class TypeHandlerConverter extends ConverterAdaptor<XmlAttributeValue> im
 
 
         @Override
-        public @Nullable PsiElement resolve() {
+        public @Nullable
+        PsiElement resolve() {
             String value = myElement.getValue();
             Optional<PsiClass> psiClassOptional = JavaUtils.findClazz(myElement.getProject(), value);
             if (!psiClassOptional.isPresent()) {
@@ -132,7 +142,8 @@ public class TypeHandlerConverter extends ConverterAdaptor<XmlAttributeValue> im
         }
 
         @Override
-        public @NotNull Optional<PsiClass> getStartElement(@Nullable String firstText) {
+        public @NotNull
+        Optional<PsiClass> getStartElement(@Nullable String firstText) {
             if (firstText == null) {
                 return Optional.empty();
             }
@@ -148,7 +159,8 @@ public class TypeHandlerConverter extends ConverterAdaptor<XmlAttributeValue> im
 
 
         @Override
-        public @NotNull String getText() {
+        public @NotNull
+        String getText() {
             return getElement().getValue();
         }
 

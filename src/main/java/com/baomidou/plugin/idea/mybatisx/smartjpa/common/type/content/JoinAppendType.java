@@ -1,8 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.type.content;
 
 
-
-
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.type.AppendType;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 

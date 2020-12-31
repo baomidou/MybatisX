@@ -57,7 +57,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
                 GenericAttributeValue<PsiClass> type = resultMap.getType();
                 // 实体类的名字
                 PsiClass entityClass = type.getValue();
-                if(entityClass == null){
+                if (entityClass == null) {
                     entityClass = entityClassParam;
                 }
 
@@ -70,7 +70,6 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
         }
         return Collections.emptyList();
     }
-
 
 
     @Override
@@ -117,7 +116,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             }
         }
         if (foundResultMap != null) {
-            txFields.addAll(determineIds(entityClass,foundResultMap.getIds()));
+            txFields.addAll(determineIds(entityClass, foundResultMap.getIds()));
             txFields.addAll(determineResults(foundResultMap.getResults(), entityClass));
             addExtends(txFields, foundResultMap, entityClass, resultMaps);
         }

@@ -34,6 +34,7 @@ public class FixedSuffixOperator implements SuffixOperator {
 
     /**
      * 通过字段名称找到表的列名, 然后拼接列名和操作符，例如  username is null
+     *
      * @param fieldName  the field name 字段名称
      * @param parameters
      */

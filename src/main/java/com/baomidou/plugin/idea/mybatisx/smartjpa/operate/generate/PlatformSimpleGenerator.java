@@ -17,10 +17,10 @@ public class PlatformSimpleGenerator {
     /**
      * Gets platform generator.
      *
-     * @param entityClass           the entity class
-     * @param project               the project
-     * @param element               the element
-     * @param text                  the text
+     * @param entityClass the entity class
+     * @param project     the project
+     * @param element     the element
+     * @param text        the text
      * @return the platform generator
      */
     @NotNull
@@ -63,9 +63,9 @@ public class PlatformSimpleGenerator {
     /**
      * Find table name string.
      *
-     * @param project               the project
-     * @param entityClass           the entity class
-     * @param tableName             the tableName
+     * @param project     the project
+     * @param entityClass the entity class
+     * @param tableName   the tableName
      * @return the string
      */
     protected String findTableName(@NotNull Project project, PsiClass entityClass, String tableName) {
@@ -86,7 +86,7 @@ public class PlatformSimpleGenerator {
      * @return the dbms adaptor
      */
     protected DbmsAdaptor getDbmsAdaptor(@NotNull Project project, @NotNull PsiElement element) {
-      return DbmsAdaptor.MYSQL;
+        return DbmsAdaptor.MYSQL;
     }
 
 

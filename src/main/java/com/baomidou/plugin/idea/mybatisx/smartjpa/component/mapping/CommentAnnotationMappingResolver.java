@@ -37,7 +37,7 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
             PsiDocTag tableEntity = docComment.findTagByName(TABLE_ENTITY);
             if (tableEntity != null) {
                 PsiDocTagValue valueElement = tableEntity.getValueElement();
-                if(valueElement != null){
+                if (valueElement != null) {
                     String entityText = valueElement.getText();
                     if (StringUtils.isNotBlank(entityText)) {
                         JavaPsiFacade instance = JavaPsiFacade.getInstance(mapperClass.getProject());
@@ -60,7 +60,7 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
             PsiDocTag tableNameTag = docComment.findTagByName(TABLE_NAME);
             if (tableNameTag != null) {
                 PsiDocTagValue valueElement = tableNameTag.getValueElement();
-                if(valueElement != null){
+                if (valueElement != null) {
                     String tableNameText = valueElement.getText();
                     if (StringUtils.isNotBlank(tableNameText)) {
                         return Optional.of(tableNameText);
@@ -68,10 +68,8 @@ public class CommentAnnotationMappingResolver extends JpaMappingResolver impleme
                 }
             }
         }
-        return  getTableNameByJpa(entityClass);
+        return getTableNameByJpa(entityClass);
     }
-
-
 
 
 }

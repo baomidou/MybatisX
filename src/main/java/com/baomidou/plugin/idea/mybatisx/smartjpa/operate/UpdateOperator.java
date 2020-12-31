@@ -14,8 +14,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.extension.AllTxFields;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.extension.ConditionAllFieldAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
@@ -40,7 +38,7 @@ public class UpdateOperator extends BaseOperatorManager {
      */
     public UpdateOperator(final List<TxField> mappingField, PsiClass entityClass) {
         this.setOperatorNameList(AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns());
-        this.init(mappingField,entityClass);
+        this.init(mappingField, entityClass);
     }
 
     /**
@@ -64,6 +62,48 @@ public class UpdateOperator extends BaseOperatorManager {
             this.registerStatementBlock(statementBlock);
         }
 
+    }
+
+    private void initResultAppender(final ResultAppenderFactory updateFactory, final List<TxField> mappingField, final String areaName) {
+        for (final TxField field : mappingField) {
+            // field
+            // and + field
+            final CompositeAppender andAppender = new CompositeAppender(
+                new CustomJoinAppender("And", ",\n", AreaSequence.RESULT),
+                new ResultAppenderFactory.WrapDateCustomFieldAppender(field, AreaSequence.RESULT));
+            updateFactory.registerAppender(andAppender);
+
+            // update + field
+            final CompositeAppender areaAppender =
+                new CompositeAppender(
+                    CustomAreaAppender.createCustomAreaAppender(areaName,
+                        ResultAppenderFactory.RESULT,
+                        AreaSequence.AREA,
+                        AreaSequence.RESULT,
+                        updateFactory),
+                    new CustomFieldAppender(field, AreaSequence.RESULT)
+                );
+            updateFactory.registerAppender(areaAppender);
+
+        }
+    }
+
+    @Override
+    public String getTagName() {
+        return "update";
+    }
+
+    @Override
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod,
+                                  String tableName,
+                                  Generator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
+        mybatisXmlGenerator.generateUpdate(id, mapperXml);
     }
 
     private class UpdateResultAppenderFactory extends ResultAppenderFactory {
@@ -93,49 +133,5 @@ public class UpdateOperator extends BaseOperatorManager {
         public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
             return new SyntaxAppenderWrapper(null, jpaStringList).getMxParameter(entityClass);
         }
-    }
-
-
-    private void initResultAppender(final ResultAppenderFactory updateFactory, final List<TxField> mappingField, final String areaName) {
-        for (final TxField field : mappingField) {
-            // field
-            // and + field
-            final CompositeAppender andAppender = new CompositeAppender(
-                new CustomJoinAppender("And", ",\n", AreaSequence.RESULT),
-                new ResultAppenderFactory.WrapDateCustomFieldAppender(field, AreaSequence.RESULT));
-            updateFactory.registerAppender(andAppender);
-
-            // update + field
-            final CompositeAppender areaAppender =
-                new CompositeAppender(
-                    CustomAreaAppender.createCustomAreaAppender(areaName,
-                        ResultAppenderFactory.RESULT,
-                        AreaSequence.AREA,
-                        AreaSequence.RESULT,
-                        updateFactory),
-                    new CustomFieldAppender(field, AreaSequence.RESULT)
-                );
-            updateFactory.registerAppender(areaAppender);
-
-        }
-    }
-
-
-    @Override
-    public String getTagName() {
-        return "update";
-    }
-
-    @Override
-    public void generateMapperXml(String id,
-                                  LinkedList<SyntaxAppender> jpaList,
-                                  PsiClass entityClass,
-                                  PsiMethod psiMethod,
-                                  String tableName,
-                                  Generator mybatisXmlGenerator,
-                                  ConditionFieldWrapper conditionFieldWrapper,
-                                  List<TxField> resultFields) {
-        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
-        mybatisXmlGenerator.generateUpdate(id, mapperXml);
     }
 }

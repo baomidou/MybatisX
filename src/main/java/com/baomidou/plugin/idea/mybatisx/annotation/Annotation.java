@@ -75,35 +75,6 @@ public class Annotation implements Cloneable {
     private Map<String, AnnotationValue> attributePairs;
 
     /**
-     * The interface Annotation value.
-     */
-    public interface AnnotationValue {
-    }
-
-    /**
-     * The type String value.
-     */
-    public static class StringValue implements AnnotationValue {
-
-        private String value;
-
-        /**
-         * Instantiates a new String value.
-         *
-         * @param value the value
-         */
-        public StringValue(@NotNull String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return "\"" + value + "\"";
-        }
-
-    }
-
-    /**
      * Instantiates a new Annotation.
      *
      * @param label         the label
@@ -220,6 +191,35 @@ public class Annotation implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new IllegalStateException();
         }
+    }
+
+    /**
+     * The interface Annotation value.
+     */
+    public interface AnnotationValue {
+    }
+
+    /**
+     * The type String value.
+     */
+    public static class StringValue implements AnnotationValue {
+
+        private final String value;
+
+        /**
+         * Instantiates a new String value.
+         *
+         * @param value the value
+         */
+        public StringValue(@NotNull String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "\"" + value + "\"";
+        }
+
     }
 
 }

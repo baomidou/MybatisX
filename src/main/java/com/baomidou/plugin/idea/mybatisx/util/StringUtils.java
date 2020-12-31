@@ -7,14 +7,14 @@ public class StringUtils {
     /**
      * Upper case first char string.
      *
-     * @param _str the str
+     * @param str the str
      * @return the string
      */
-    public static String upperCaseFirstChar(String _str) {
-        if (_str == null) {
+    public static String upperCaseFirstChar(String str) {
+        if (str == null) {
             return null;
         } else {
-            return _str.isEmpty() ? _str : _str.substring(0, 1).toUpperCase() + _str.substring(1);
+            return str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
         }
     }
 
@@ -22,14 +22,14 @@ public class StringUtils {
     /**
      * Lower case first char string.
      *
-     * @param _str the str
+     * @param str the str
      * @return the string
      */
-    public static String lowerCaseFirstChar(String _str) {
-        if (_str == null) {
+    public static String lowerCaseFirstChar(String str) {
+        if (str == null) {
             return null;
         } else {
-            return _str.isEmpty() ? _str : _str.substring(0, 1).toLowerCase() + _str.substring(1);
+            return str.isEmpty() ? str : str.substring(0, 1).toLowerCase() + str.substring(1);
         }
     }
 

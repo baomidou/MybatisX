@@ -56,10 +56,10 @@ public class InjectionLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
 
         NavigationGutterIconBuilder<PsiElement> builder =
-                NavigationGutterIconBuilder.create(Icons.SPRING_INJECTION_ICON)
-                        .setAlignment(GutterIconRenderer.Alignment.CENTER)
-                        .setTarget(psiClass)
-                        .setTooltipTitle("Data access object found - " + psiClass.getQualifiedName());
+            NavigationGutterIconBuilder.create(Icons.SPRING_INJECTION_ICON)
+                .setAlignment(GutterIconRenderer.Alignment.CENTER)
+                .setTarget(psiClass)
+                .setTooltipTitle("Data access object found - " + psiClass.getQualifiedName());
         result.add(builder.createLineMarkerInfo(field.getNameIdentifier()));
     }
 

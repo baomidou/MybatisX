@@ -11,11 +11,12 @@ import java.util.List;
 public interface Generator {
     /**
      * Generate select.
-     * @param id        the id
-     * @param value     the value
+     *
+     * @param id           the id
+     * @param value        the value
      * @param resultType
-     * @param resultMap the result map
-     * @param resultSet the result set
+     * @param resultMap    the result map
+     * @param resultSet    the result set
      * @param resultFields
      * @param entityClass
      */

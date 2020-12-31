@@ -11,8 +11,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.Optional;
@@ -24,9 +22,10 @@ public class XmlAndMapperIconProvider extends IconProvider {
     MybatisXSettings instance = MybatisXSettings.getInstance();
 
     @Override
-    public @Nullable Icon getIcon(@NotNull PsiElement element, int flags) {
-        if(instance.getMapperIcon() != null &&
-            MybatisXSettings.MapperIcon.DEFAULT.name().equals(instance.getMapperIcon())){
+    public @Nullable
+    Icon getIcon(@NotNull PsiElement element, int flags) {
+        if (instance.getMapperIcon() != null &&
+            MybatisXSettings.MapperIcon.DEFAULT.name().equals(instance.getMapperIcon())) {
             return null;
         }
         Language language = element.getLanguage();

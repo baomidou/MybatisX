@@ -4,14 +4,13 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suff
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
-import com.intellij.psi.PsiParameter;
 
 import java.util.LinkedList;
 
 /**
  * 字段比较
  */
-public class ParamBeforeSuffixOperator implements SuffixOperator{
+public class ParamBeforeSuffixOperator implements SuffixOperator {
     /**
      * 比较符号
      */
@@ -31,9 +30,9 @@ public class ParamBeforeSuffixOperator implements SuffixOperator{
 
         TxParameter parameter = parameters.poll();
         return columnName
-                + " "
-                + operatorName
-                + " "
-                + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
+            + " "
+            + operatorName
+            + " "
+            + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
     }
 }

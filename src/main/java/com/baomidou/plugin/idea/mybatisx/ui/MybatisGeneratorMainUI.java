@@ -491,7 +491,7 @@ public class MybatisGeneratorMainUI extends JFrame {
                 generator_config.setXmlMvnPath(xmlMvnField.getText());
 
 
-                result = new MybatisGenerator(generator_config).execute(psiElements[0], project,true);
+                result = new MybatisGenerator(generator_config).execute(psiElements[0], project, true);
             } else {
 
                 for (PsiElement psiElement : psiElements) {
@@ -532,7 +532,7 @@ public class MybatisGeneratorMainUI extends JFrame {
                     generator_config.setModelMvnPath(modelMvnField.getText());
                     generator_config.setDaoMvnPath(daoMvnField.getText());
                     generator_config.setXmlMvnPath(xmlMvnField.getText());
-                    result = new MybatisGenerator(generator_config).execute(psiElement, project,true);
+                    result = new MybatisGenerator(generator_config).execute(psiElement, project, true);
                 }
 
             }

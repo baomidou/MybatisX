@@ -16,7 +16,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,6 +29,16 @@ import java.util.stream.Collectors;
  * The type Mysql insert batch.
  */
 public class MysqlInsertBatch implements CustomStatement {
+
+    /**
+     * The Statement block.
+     */
+    StatementBlock statementBlock;
+    /**
+     * The Operator name.
+     */
+    String operatorName;
+
 
     /**
      * Instantiates a new Mysql insert batch.
@@ -65,7 +74,6 @@ public class MysqlInsertBatch implements CustomStatement {
 
         this.operatorName = newAreaName;
     }
-
 
     /**
      * Gets result appender factory.
@@ -122,16 +130,6 @@ public class MysqlInsertBatch implements CustomStatement {
     protected SuffixOperator getSuffixOperator(List<TxField> mappingField) {
         return new InsertBatchSuffixOperator(mappingField);
     }
-
-    /**
-     * The Statement block.
-     */
-    StatementBlock statementBlock;
-
-    /**
-     * The Operator name.
-     */
-    String operatorName;
 
     @Override
     public StatementBlock getStatementBlock() {

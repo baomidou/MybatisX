@@ -74,11 +74,11 @@ public class MybatisConfigurable implements SearchableConfigurable {
     @Override
     public boolean isModified() {
         return mybatisXSettings.getStatementGenerateModel().getIdentifier() != mybatisSettingForm.modelComboBox.getSelectedIndex()
-                || !joiner.join(INSERT_GENERATOR.getPatterns()).equals(mybatisSettingForm.insertPatternTextField.getText())
-                || !joiner.join(DELETE_GENERATOR.getPatterns()).equals(mybatisSettingForm.deletePatternTextField.getText())
-                || !joiner.join(UPDATE_GENERATOR.getPatterns()).equals(mybatisSettingForm.updatePatternTextField.getText())
-                || !joiner.join(SELECT_GENERATOR.getPatterns()).equals(mybatisSettingForm.selectPatternTextField.getText())
-         || (mybatisSettingForm.defaultRadioButton.isSelected()?
+            || !joiner.join(INSERT_GENERATOR.getPatterns()).equals(mybatisSettingForm.insertPatternTextField.getText())
+            || !joiner.join(DELETE_GENERATOR.getPatterns()).equals(mybatisSettingForm.deletePatternTextField.getText())
+            || !joiner.join(UPDATE_GENERATOR.getPatterns()).equals(mybatisSettingForm.updatePatternTextField.getText())
+            || !joiner.join(SELECT_GENERATOR.getPatterns()).equals(mybatisSettingForm.selectPatternTextField.getText())
+            || (mybatisSettingForm.defaultRadioButton.isSelected() ?
             MybatisXSettings.MapperIcon.BIRD.name().equals(mybatisXSettings.getMapperIcon())
             : MybatisXSettings.MapperIcon.DEFAULT.name().equals(mybatisXSettings.getMapperIcon()));
     }
@@ -105,12 +105,12 @@ public class MybatisConfigurable implements SearchableConfigurable {
         mybatisSettingForm.selectPatternTextField.setText(joiner.join(SELECT_GENERATOR.getPatterns()));
 
         String mapperIcon = mybatisXSettings.getMapperIcon();
-        if(mapperIcon==null){
+        if (mapperIcon == null) {
             mapperIcon = MybatisXSettings.MapperIcon.BIRD.name();
         }
-        if(MybatisXSettings.MapperIcon.BIRD.name().equals(mapperIcon)){
+        if (MybatisXSettings.MapperIcon.BIRD.name().equals(mapperIcon)) {
             mybatisSettingForm.birdRadioButton.setSelected(true);
-        }else{
+        } else {
             mybatisSettingForm.defaultRadioButton.setSelected(true);
         }
     }

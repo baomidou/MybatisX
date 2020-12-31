@@ -4,7 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 
-public class NumericScaleHashMarkTip  implements HashMarkTip{
+public class NumericScaleHashMarkTip implements HashMarkTip {
     @Override
     public String getName() {
         return "numericScale";

@@ -31,9 +31,10 @@ public interface PlatformGenerator {
 
     /**
      * 生成mapper方法
-     * @param mapperClassGenerateFactory             PSI 方法描述
+     *
+     * @param mapperClassGenerateFactory PSI 方法描述
      * @param psiMethod
-     * @param conditionFieldWrapper the condition field wrapper
+     * @param conditionFieldWrapper      the condition field wrapper
      * @param resultFields
      */
     void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
@@ -62,5 +63,5 @@ public interface PlatformGenerator {
      */
     PsiClass getEntityClass();
 
-    List<String>  getResultFields();
+    List<String> getResultFields();
 }

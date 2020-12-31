@@ -31,17 +31,24 @@ import java.util.stream.Collectors;
  * 常用的生成器
  */
 public class CommonGenerator implements PlatformGenerator {
-    private final String defaultDateWord;
-    private @NotNull LinkedList<SyntaxAppender> jpaList;
-    private List<TxField> mappingField;
-    private String tableName;
-    private PsiClass entityClass;
     /**
      * The Appender manager.
      */
     final AreaOperateManager appenderManager;
+    private final String defaultDateWord;
+    private @NotNull
+    LinkedList<SyntaxAppender> jpaList;
+    private List<TxField> mappingField;
+    private String tableName;
+    private PsiClass entityClass;
     private String text;
-
+    private Set<String> notNeedsResult = new HashSet<String>() {
+        {
+            add("update");
+            add("insert");
+            add("delete");
+        }
+    };
 
     private CommonGenerator(PsiClass entityClass,
                             String text,
@@ -57,11 +64,6 @@ public class CommonGenerator implements PlatformGenerator {
 
         appenderManager = AreaOperateManagerFactory.getAreaOperateManagerByDbms(dbms, mappingField, entityClass, dasTable, this.tableName);
         jpaList = appenderManager.splitAppenderByText(text);
-    }
-
-    @Override
-    public String getDefaultDateWord() {
-        return defaultDateWord;
     }
 
     /**
@@ -83,13 +85,16 @@ public class CommonGenerator implements PlatformGenerator {
         return new CommonGenerator(entityClass, text, dbms, dasTable, tableName, fields);
     }
 
+    @Override
+    public String getDefaultDateWord() {
+        return defaultDateWord;
+    }
 
     @Override
     public TypeDescriptor getParameter() {
         List<TxParameter> parameters = appenderManager.getParameters(entityClass, new LinkedList<>(jpaList));
         return new TxParameterDescriptor(parameters, mappingField);
     }
-
 
     @Override
     public TypeDescriptor getReturn() {
@@ -136,14 +141,6 @@ public class CommonGenerator implements PlatformGenerator {
     public PsiClass getEntityClass() {
         return entityClass;
     }
-
-    private Set<String> notNeedsResult = new HashSet<String>() {
-        {
-            add("update");
-            add("insert");
-            add("delete");
-        }
-    };
 
     @Override
     public List<String> getResultFields() {

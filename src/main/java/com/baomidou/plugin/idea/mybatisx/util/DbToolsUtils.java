@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
-import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijColumnInfo;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
 import com.intellij.database.model.DasColumn;
 import com.intellij.database.model.DasTableKey;
 import com.intellij.database.model.DasTypedObject;
@@ -20,7 +20,7 @@ import java.util.List;
  * The type Db tools utils.
  */
 public class DbToolsUtils {
-    private static final Cloner myCloner = new Cloner();
+    private static final Cloner MY_CLONER = new Cloner();
 
     /**
      * Build intellij table info intellij table info.
@@ -52,7 +52,7 @@ public class DbToolsUtils {
                 String columnName = iterate.next();
                 for (IntellijColumnInfo intellijColumnInfo : intellijColumnInfos) {
                     if (columnName.equals(intellijColumnInfo.getName())) {
-                        IntellijColumnInfo info = myCloner.deepClone(intellijColumnInfo);
+                        IntellijColumnInfo info = MY_CLONER.deepClone(intellijColumnInfo);
                         info.setKeySeq(s);
                         primaryColumnInfos.add(info);
                         s++;
@@ -156,7 +156,7 @@ public class DbToolsUtils {
                 return 5;
             } else if (fixed.contains("DATETIME")) {
                 return 93;
-            } else if (fixed.equals("DATE") && databaseType.equals("Oracle")) {
+            } else if ("DATE".equals(fixed) && "Oracle".equals(databaseType)) {
                 return 93;
             } else if (fixed.contains("NUMBER")) {
                 return 3;
@@ -179,7 +179,7 @@ public class DbToolsUtils {
                     return 6;
                 } else if (fixed.contains("DOUBLE")) {
                     return 8;
-                } else if (fixed.equals("CHAR") && !fixed.contains("VAR")) {
+                } else if ("CHAR".equals(fixed)) {
                     return 1;
                 } else if (fixed.contains("INT") && !fixed.contains("INTERVAL")) {
                     return 4;

@@ -13,8 +13,8 @@ public interface SuffixOperator {
     /**
      * Gets template text.
      *
-     * @param fieldName  the field name
-     * @param parameters the parameters
+     * @param fieldName             the field name
+     * @param parameters            the parameters
      * @param conditionFieldWrapper
      * @return the template text
      */

@@ -38,12 +38,11 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
      * The Resolver.
      */
     protected PsiColumnReferenceSetResolver resolver;
-    private PsiClass mapperClass;
-
     /**
      * The Index.
      */
     protected int index;
+    private PsiClass mapperClass;
 
     /**
      * Instantiates a new Context psi field reference.
