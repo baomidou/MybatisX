@@ -2,11 +2,11 @@ package com.baomidou.plugin.idea.mybatisx.alias;
 
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.extensions.ExtensionPointName;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.spring.boot.model.SpringBootModelConfigFileContributor;
@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -32,6 +33,10 @@ import java.util.Set;
  * @author ls9527
  */
 public class SpringBootPackageResolver extends PackageAliasResolver {
+
+    private static final String YML = "yml";
+    private static final String YAML = "yaml";
+    private static final String PROPERTIES = "properties";
 
     /**
      * Instantiates a new Bean alias resolver.
@@ -42,12 +47,10 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         super(project);
     }
 
-    Key<Set<String>> scannedFile = new Key<>("scannedFile");
-
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
-        Set<String> classSet = new HashSet<>();
+        Set<String> pkgSet = new HashSet<>();
         ExtensionPointName<SpringBootModelConfigFileContributor> objectExtensionPointName = ExtensionPointName.create("com.intellij.spring.boot.modelConfigFileContributor");
         List<SpringBootModelConfigFileContributor> extensionList = objectExtensionPointName.getExtensionList();
         for (SpringBootModelConfigFileContributor extension : extensionList) {
@@ -55,16 +58,59 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
             for (Module module : modulesOfType) {
                 List<VirtualFile> configurationFiles = extension.getConfigurationFiles(module, true);
                 for (VirtualFile configurationFile : configurationFiles) {
-                    readAliasesPackage(classSet, configurationFile);
+                    readAliasesPackage(pkgSet, configurationFile);
                 }
             }
         }
 
-        return classSet;
+        return pkgSet;
     }
 
-    private void readAliasesPackage(Set<String> classSet, VirtualFile configurationFile) {
+    private void readAliasesPackage(Set<String> pkgSet, VirtualFile configurationFile) {
+        FileType fileType = configurationFile.getFileType();
+        // yml ,yaml 后缀读取支持
+        if (fileType.getDefaultExtension().equals(YML) ||
+            fileType.getDefaultExtension().equals(YAML)) {
+            readClassesFromYaml(pkgSet, configurationFile);
+        }
+        // properties 读取支持
+        if (fileType.getDefaultExtension().equals(PROPERTIES)) {
+            readClassesFromProperties(pkgSet, configurationFile);
+        }
+    }
+
+    private void readClassesFromProperties(Set<String> pkgSet, VirtualFile configurationFile) {
+        Properties properties = new Properties();
+        try (InputStream inputStream = configurationFile.getInputStream()) {
+            properties.load(inputStream);
+            String typeAliasesPackage = findTypeAliasesPackageByProperties(properties);
+            if (typeAliasesPackage != null) {
+                if (!StringUtils.isEmpty(typeAliasesPackage)) {
+                    pkgSet.add(typeAliasesPackage);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
+        }
+    }
+
+    private String findTypeAliasesPackageByProperties(Properties properties) {
+        String typeAliasesPackage = properties.getProperty("mybatis.type-aliases-package");
+        if (typeAliasesPackage == null) {
+            typeAliasesPackage = properties.getProperty("mybatis.typeAliasesPackage");
+        }
+        if (typeAliasesPackage == null) {
+            typeAliasesPackage = properties.getProperty("mybatis-plus.type-aliases-package");
+        }
+        if (typeAliasesPackage == null) {
+            typeAliasesPackage = properties.getProperty("mybatis-plus.typeAliasesPackage");
+        }
+        return typeAliasesPackage;
+    }
+
+    private void readClassesFromYaml(Set<String> classSet, VirtualFile configurationFile) {
         Yaml yaml = new Yaml();
+
         try (InputStream inputStream = configurationFile.getInputStream()) {
             Iterable<Object> objects = yaml.loadAll(inputStream);
             for (Object object : objects) {
@@ -77,9 +123,9 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                 }
             }
         } catch (ParserException | ComposerException e) {
-            logger.info("yml parse fail", e);
+            logger.info("yml parse fail, fileName: {}", configurationFile.getName(), e);
         } catch (IOException e) {
-            logger.error("read alias exception", e);
+            logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
         }
     }
 

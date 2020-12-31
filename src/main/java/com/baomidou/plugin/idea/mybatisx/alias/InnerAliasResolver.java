@@ -19,7 +19,7 @@ import java.util.Set;
  * @author yanglin
  */
 public class InnerAliasResolver extends AliasResolver {
-    private Set<AliasDesc> innerAliasDescs = null;
+    private volatile Set<AliasDesc> innerAliasDescs = null;
 
     private Set<AliasDesc> getAliasDescSet() {
         Set<AliasDesc> aliasDescs = new HashSet<>();
