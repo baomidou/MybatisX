@@ -30,6 +30,9 @@ public class SqlParamCompletionContributor extends CompletionContributor {
             return;
         }
         PsiElement position = parameters.getOriginalPosition();
+        if (position == null) {
+            return;
+        }
         Editor editor = parameters.getEditor();
         Project project = editor.getProject();
         if (project == null) {
