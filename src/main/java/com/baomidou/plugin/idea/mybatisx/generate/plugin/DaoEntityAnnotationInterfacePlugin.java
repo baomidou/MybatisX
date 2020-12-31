@@ -22,6 +22,7 @@ public class DaoEntityAnnotationInterfacePlugin extends PluginAdapter {
         interfaze.addJavaDocLine(" */");
         return true;
     }
+
     @Override
     public boolean validate(List<String> list) {
         return true;

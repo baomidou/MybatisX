@@ -75,7 +75,7 @@ public class SyntaxAppenderWrapper {
         List<TxParameter> list = new ArrayList<>();
         if (syntaxAppender != null) {
             list.addAll(syntaxAppender.getMxParameter(collector, entityClass));
-        }else{
+        } else {
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
                 list.addAll(syntaxAppenderWrapper.getMxParameter(entityClass));
             }

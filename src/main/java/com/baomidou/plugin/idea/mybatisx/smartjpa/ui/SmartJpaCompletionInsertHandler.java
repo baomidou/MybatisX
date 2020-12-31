@@ -31,7 +31,7 @@ public class SmartJpaCompletionInsertHandler implements InsertHandler<LookupElem
     public void handleInsert(@NotNull InsertionContext context, @NotNull LookupElement item) {
         context.setLaterRunnable(() -> {
             CodeCompletionHandlerBase handler = CodeCompletionHandlerBase.createHandler(CompletionType.BASIC);
-            handler.invokeCompletion(project,editor,1,true);
+            handler.invokeCompletion(project, editor, 1, true);
         });
     }
 

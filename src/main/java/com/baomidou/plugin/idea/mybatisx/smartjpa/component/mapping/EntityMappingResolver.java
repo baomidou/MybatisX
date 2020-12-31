@@ -14,9 +14,9 @@ public interface EntityMappingResolver {
     /**
      * 获取所有字段
      *
-     * @return fields
      * @param mapperClass
      * @param entityClass
+     * @return fields
      */
     List<TxField> findFields(PsiClass mapperClass, PsiClass entityClass);
 
@@ -29,7 +29,6 @@ public interface EntityMappingResolver {
     Optional<PsiClass> findEntity(PsiClass mapperClass);
 
     /**
-     *
      * @param entityClass
      * @return
      */

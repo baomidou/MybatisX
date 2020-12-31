@@ -9,7 +9,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
 import com.intellij.database.model.DasTableKey;
-import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
@@ -45,7 +44,8 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
     }
 
     @Override
-    protected @NotNull String batchName() {
+    protected @NotNull
+    String batchName() {
         return "BatchWithUnion";
     }
 

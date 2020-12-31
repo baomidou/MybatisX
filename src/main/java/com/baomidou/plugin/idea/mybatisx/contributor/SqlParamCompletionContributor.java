@@ -13,6 +13,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ import java.util.Optional;
 public class SqlParamCompletionContributor extends CompletionContributor {
 
     @Override
-    public void fillCompletionVariants(CompletionParameters parameters, final CompletionResultSet result) {
+    public void fillCompletionVariants(CompletionParameters parameters, final @NotNull CompletionResultSet result) {
         if (parameters.getCompletionType() != CompletionType.BASIC) {
             return;
         }

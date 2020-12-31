@@ -38,6 +38,7 @@ public class SmartJpaAdvanceUI {
     private boolean resultType = false;
     private List<String> resultFields;
     private PsiClass entityClass;
+    private boolean useDefaultEntityClass = true;
 
     /**
      * Instantiates a new Smart jpa advance ui.
@@ -88,8 +89,6 @@ public class SmartJpaAdvanceUI {
         // 假装执行了选中 includeAllRadio的事件
         includeAllResults(baseColumnList);
     }
-
-    private boolean useDefaultEntityClass = true;
 
     @Nullable
     private String getEntityClassName(PsiClass entityClass) {
@@ -213,6 +212,14 @@ public class SmartJpaAdvanceUI {
         this.entityClass = entityClass;
     }
 
+    public List<String> getDefaultDate() {
+        String text = defaultDateTextField.getText();
+        if (StringUtils.isEmpty(text)) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(text.split(",")).map(String::trim).collect(Collectors.toList());
+    }
+
     /**
      * The enum Generator enum.
      */
@@ -225,13 +232,5 @@ public class SmartJpaAdvanceUI {
          * Mybatis annotation generator enum.
          */
         MYBATIS_ANNOTATION,
-    }
-
-    public List<String> getDefaultDate() {
-        String text = defaultDateTextField.getText();
-        if (StringUtils.isEmpty(text)) {
-            return Collections.emptyList();
-        }
-        return Arrays.stream(text.split(",")).map(String::trim).collect(Collectors.toList());
     }
 }

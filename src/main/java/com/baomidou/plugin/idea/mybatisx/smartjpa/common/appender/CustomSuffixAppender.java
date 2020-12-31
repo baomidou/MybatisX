@@ -29,12 +29,14 @@ import java.util.List;
  */
 public class CustomSuffixAppender implements SyntaxAppender {
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomSuffixAppender.class);
     private final String tipName;
     /**
      * The Suffix operator.
      */
     protected SuffixOperator suffixOperator;
     private MxParameterChanger mxParameterFinder;
+    private AreaSequence areaSequence;
 
 
     /**
@@ -58,7 +60,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
         this.suffixOperator = suffixOperator;
         this.areaSequence = areaSequence;
     }
-
 
     /**
      * Create by param join custom suffix appender.
@@ -106,7 +107,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return customSuffixAppender;
     }
 
-
     /**
      * Create by parameter changer custom suffix appender.
      *
@@ -121,11 +121,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
         customSuffixAppender.suffixOperator = mxParameterFinder;
         customSuffixAppender.areaSequence = areaSequence;
         return customSuffixAppender;
-    }
-
-    @Override
-    public AreaSequence getAreaSequence() {
-        return areaSequence;
     }
 
     /**
@@ -150,8 +145,10 @@ public class CustomSuffixAppender implements SyntaxAppender {
         return customSuffixAppender;
     }
 
-    private AreaSequence areaSequence;
-
+    @Override
+    public AreaSequence getAreaSequence() {
+        return areaSequence;
+    }
 
     @Override
     public String getText() {
@@ -167,7 +164,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
     public List<AppendTypeCommand> getCommand(String areaPrefix, List<SyntaxAppender> splitList) {
         return Collections.singletonList(new FieldSuffixAppendTypeService(this));
     }
-
 
     /**
      * 后缀后面一定不能添加任何东西了
@@ -186,8 +182,6 @@ public class CustomSuffixAppender implements SyntaxAppender {
         }
         return false;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomSuffixAppender.class);
 
     @Override
     public String getTemplateText(String tableName,

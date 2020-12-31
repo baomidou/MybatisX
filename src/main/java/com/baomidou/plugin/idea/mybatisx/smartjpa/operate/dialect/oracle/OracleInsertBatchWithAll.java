@@ -15,7 +15,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.model.DasTableKey;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -49,14 +48,15 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
     }
 
     @Override
-    protected @NotNull String batchName() {
+    protected @NotNull
+    String batchName() {
         return "BatchWithAll";
     }
 
     @Override
     @NotNull
     protected SuffixOperator getSuffixOperator(List<TxField> mappingField) {
-        return new InsertBatchSuffixOperator(tableName,mappingField);
+        return new InsertBatchSuffixOperator(tableName, mappingField);
     }
 
 
@@ -175,7 +175,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                             }
                         }
                     }
-                    fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(),  fieldStr);
+                    fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
                     return fieldStr;
                 })
                 .collect(Collectors.joining(",\n"));

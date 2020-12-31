@@ -15,6 +15,7 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
 import java.util.List;
+
 /**
  * @author ls9527
  */
@@ -29,7 +30,7 @@ public class MySQLLimitPlugin extends PluginAdapter {
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         PrimitiveTypeWrapper integerWrapper = FullyQualifiedJavaType.getIntInstance().getPrimitiveTypeWrapper();
         PrimitiveTypeWrapper longWrapper = (new FullyQualifiedJavaType("long")).getPrimitiveTypeWrapper();
-        Field limit = new Field("limit",integerWrapper);
+        Field limit = new Field("limit", integerWrapper);
         limit.setVisibility(JavaVisibility.PRIVATE);
         topLevelClass.addField(limit);
         Method setLimit = new Method("setLimit");
@@ -42,7 +43,7 @@ public class MySQLLimitPlugin extends PluginAdapter {
         getLimit.setReturnType(integerWrapper);
         getLimit.addBodyLine("return limit;");
         topLevelClass.addMethod(getLimit);
-        Field offset = new Field("offset",longWrapper);
+        Field offset = new Field("offset", longWrapper);
         offset.setVisibility(JavaVisibility.PRIVATE);
         topLevelClass.addField(offset);
         Method setOffset = new Method("setOffset");

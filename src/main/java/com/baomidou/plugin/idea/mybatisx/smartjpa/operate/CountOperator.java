@@ -92,7 +92,7 @@ public class CountOperator extends SelectOperator {
         statementBlock.setResultAppenderFactory(resultAppenderFactory);
 
         statementBlock.setTagName(areaName);
-        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
+        statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null, "int"));
         this.registerStatementBlock(statementBlock);
 
         this.addOperatorName(areaName);

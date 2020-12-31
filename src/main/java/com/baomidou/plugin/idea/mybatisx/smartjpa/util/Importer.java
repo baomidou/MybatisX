@@ -44,6 +44,21 @@ public class Importer {
     }
 
     /**
+     * Commit and save document.
+     *
+     * @param psiDocumentManager the psi document manager
+     * @param document           the document
+     */
+    public static void commitAndSaveDocument(PsiDocumentManager psiDocumentManager, Document document) {
+        if (document != null) {
+            psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+            psiDocumentManager.commitDocument(document);
+            FileDocumentManager.getInstance().saveDocument(document);
+
+        }
+    }
+
+    /**
      * Add import to file.
      *
      * @param psiDocumentManager the psi document manager
@@ -79,21 +94,6 @@ public class Importer {
                 document.insertString(start, insertText);
                 commitAndSaveDocument(psiDocumentManager, document);
             }
-        }
-    }
-
-    /**
-     * Commit and save document.
-     *
-     * @param psiDocumentManager the psi document manager
-     * @param document           the document
-     */
-    public static void commitAndSaveDocument(PsiDocumentManager psiDocumentManager, Document document) {
-        if (document != null) {
-            psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
-            psiDocumentManager.commitDocument(document);
-            FileDocumentManager.getInstance().saveDocument(document);
-
         }
     }
 }

@@ -70,7 +70,8 @@ public interface AreaOperateManager {
 
     /**
      * Generate mapper xml.
-     *  @param id                    the id
+     *
+     * @param id                    the id
      * @param jpaList               输入的文本
      * @param entityClass           类
      * @param psiMethod             方法

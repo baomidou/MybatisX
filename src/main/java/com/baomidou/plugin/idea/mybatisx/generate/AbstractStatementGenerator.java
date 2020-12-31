@@ -60,7 +60,7 @@ public abstract class AbstractStatementGenerator {
     /**
      * The constant DELETE_GENERATOR.
      */
-    public static final AbstractStatementGenerator DELETE_GENERATOR = new DeleteGenerator("del","delete", "cancel");
+    public static final AbstractStatementGenerator DELETE_GENERATOR = new DeleteGenerator("del", "delete", "cancel");
 
     /**
      * The constant INSERT_GENERATOR.
@@ -82,6 +82,16 @@ public abstract class AbstractStatementGenerator {
             return vf.getCanonicalPath();
         }
     };
+    private Set<String> patterns;
+
+    /**
+     * Instantiates a new Abstract statement generator.
+     *
+     * @param patterns the patterns
+     */
+    public AbstractStatementGenerator(@NotNull String... patterns) {
+        this.patterns = Sets.newHashSet(patterns);
+    }
 
     /**
      * 获取方法的返回类型
@@ -162,17 +172,6 @@ public abstract class AbstractStatementGenerator {
             }
         }
         return CollectionUtils.isNotEmpty(result) ? result.toArray(new AbstractStatementGenerator[result.size()]) : ALL.toArray(new AbstractStatementGenerator[ALL.size()]);
-    }
-
-    private Set<String> patterns;
-
-    /**
-     * Instantiates a new Abstract statement generator.
-     *
-     * @param patterns the patterns
-     */
-    public AbstractStatementGenerator(@NotNull String... patterns) {
-        this.patterns = Sets.newHashSet(patterns);
     }
 
     /**

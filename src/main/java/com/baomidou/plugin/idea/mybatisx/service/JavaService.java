@@ -96,7 +96,9 @@ public class JavaService {
     @SuppressWarnings("unchecked")
     public void process(@NotNull PsiMethod psiMethod, @NotNull Processor<IdDomElement> processor) {
         PsiClass psiClass = psiMethod.getContainingClass();
-        if (null == psiClass) return;
+        if (null == psiClass) {
+            return;
+        }
         String id = psiClass.getQualifiedName() + "." + psiMethod.getName();
         Collection<Mapper> mappers = MapperUtils.findMappers(psiMethod.getProject());
         for (Mapper mapper : mappers) {

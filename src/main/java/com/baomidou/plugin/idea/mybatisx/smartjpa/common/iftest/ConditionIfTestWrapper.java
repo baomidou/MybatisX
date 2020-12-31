@@ -40,7 +40,8 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
 
     /**
      * Instantiates a new Condition if test wrapper.
-     *  @param project
+     *
+     * @param project
      * @param selectedWrapFields the wrapper fields
      * @param allFields
      * @param defaultDateWord
@@ -77,41 +78,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return allFieldsStr;
     }
 
-    @Override
-    public String getResultMap() {
-        return resultType ? null : resultMap;
-    }
-
-    @Override
-    public String getResultType() {
-        return resultTypeClass;
-    }
-
-    @Override
-    public Boolean isResultType() {
-        return resultType;
-    }
-    @Override
-    public Generator getGenerator(MapperClassGenerateFactory mapperClassGenerateFactory) {
-        if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_ANNOTATION) {
-            return new MybatisAnnotationGenerator(mapperClassGenerateFactory, mapper, project);
-        } else if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_XML
-            && mapper != null) {
-            return new MybatisXmlGenerator(mapperClassGenerateFactory, mapper, project);
-        }
-        return new EmptyGenerator();
-    }
-
-
-    private String getConditionField(String fieldName) {
-        TxField txField = txFieldMap.get(fieldName);
-        String appender = "";
-        if (Objects.equals(txField.getFieldType(), "java.lang.String")) {
-            appender = " and " + fieldName + " != ''";
-        }
-        return fieldName + " != null" + appender;
-    }
-
     /**
      * Sets all fields.
      *
@@ -119,6 +85,11 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
      */
     public void setAllFields(String allFieldsStr) {
         this.allFieldsStr = allFieldsStr;
+    }
+
+    @Override
+    public String getResultMap() {
+        return resultType ? null : resultMap;
     }
 
     /**
@@ -130,6 +101,11 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         this.resultMap = resultMap;
     }
 
+    @Override
+    public String getResultType() {
+        return resultTypeClass;
+    }
+
     /**
      * Sets result type.
      *
@@ -137,6 +113,31 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
      */
     public void setResultType(boolean resultType) {
         this.resultType = resultType;
+    }
+
+    @Override
+    public Boolean isResultType() {
+        return resultType;
+    }
+
+    @Override
+    public Generator getGenerator(MapperClassGenerateFactory mapperClassGenerateFactory) {
+        if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_ANNOTATION) {
+            return new MybatisAnnotationGenerator(mapperClassGenerateFactory, mapper, project);
+        } else if (this.generatorType == SmartJpaAdvanceUI.GeneratorEnum.MYBATIS_XML
+            && mapper != null) {
+            return new MybatisXmlGenerator(mapperClassGenerateFactory, mapper, project);
+        }
+        return new EmptyGenerator();
+    }
+
+    private String getConditionField(String fieldName) {
+        TxField txField = txFieldMap.get(fieldName);
+        String appender = "";
+        if (Objects.equals(txField.getFieldType(), "java.lang.String")) {
+            appender = " and " + fieldName + " != ''";
+        }
+        return fieldName + " != null" + appender;
     }
 
     /**
@@ -161,6 +162,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
      * 对于默认值 create_time,update_time, 在 更新和插入的时候替换为数据库默认值的关键字
      * MYSQL默认时间: NOW()
      * ORACLE默认时间: SYSDATE
+     *
      * @param columnName 字段名
      * @param fieldValue
      * @return

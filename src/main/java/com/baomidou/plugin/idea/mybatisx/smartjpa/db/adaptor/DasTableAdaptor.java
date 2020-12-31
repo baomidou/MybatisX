@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * The type Das table adaptor.
  */
-public class DasTableAdaptor implements MxDasTable{
+public class DasTableAdaptor implements MxDasTable {
     private DasTable dasTable;
 
     /**

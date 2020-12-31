@@ -49,9 +49,8 @@ public abstract class PackageAliasResolver extends AliasResolver {
     }
 
     /**
-     *
      * @param result
-     * @param pkgNameCandidate  可能具有通配符的包名
+     * @param pkgNameCandidate 可能具有通配符的包名
      */
     private void addPackages(Set<AliasDesc> result, String pkgNameCandidate) {
         // mybatis 通配符支持
@@ -86,6 +85,7 @@ public abstract class PackageAliasResolver extends AliasResolver {
 
     /**
      * 匹配子包
+     *
      * @param pkgName
      * @param basePackage
      * @param result

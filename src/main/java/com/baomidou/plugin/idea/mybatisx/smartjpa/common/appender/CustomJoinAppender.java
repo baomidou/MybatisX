@@ -29,6 +29,7 @@ public class CustomJoinAppender implements SyntaxAppender {
      * The constant SPACE.
      */
     public static final String SPACE = " ";
+    private static final Logger logger = LoggerFactory.getLogger(CustomJoinAppender.class);
     private final String tipText;
     private String sqlText;
     private AreaSequence areaSequence;
@@ -99,9 +100,6 @@ public class CustomJoinAppender implements SyntaxAppender {
     public void toTree(LinkedList<SyntaxAppender> jpaStringList, SyntaxAppenderWrapper syntaxAppenderWrapper) {
         syntaxAppenderWrapper.addWrapper(new SyntaxAppenderWrapper(this));
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomJoinAppender.class);
-
 
     @Override
     public String toString() {

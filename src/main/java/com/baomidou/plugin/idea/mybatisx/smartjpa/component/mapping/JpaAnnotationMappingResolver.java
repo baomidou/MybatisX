@@ -32,6 +32,4 @@ public class JpaAnnotationMappingResolver extends JpaMappingResolver implements 
     }
 
 
-
-
 }

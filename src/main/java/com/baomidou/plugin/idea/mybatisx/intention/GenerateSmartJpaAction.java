@@ -31,15 +31,13 @@ public class GenerateSmartJpaAction extends GenerateSmartJpaAdvanceAction {
     }
 
 
-
-
     @Override
     protected Optional<ConditionFieldWrapper> getConditionFieldWrapper(@NotNull Project project,
                                                                        String defaultDateWord,
                                                                        List<TxField> allFields,
                                                                        List<String> resultFields,
                                                                        List<String> conditionFields,
-                                                                       PsiClass entityClass, boolean isSelect)  {
+                                                                       PsiClass entityClass, boolean isSelect) {
         return Optional.of(new NeverContainsFieldWrapper(project));
     }
 

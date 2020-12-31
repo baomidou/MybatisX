@@ -96,7 +96,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
         if (introspectedTable.getPrimaryKeyColumns().size() > 1) {
             primaryKeyTypeJavaType = new FullyQualifiedJavaType(targetPackage + "." + domainObjectName + "Key");
         } else if (introspectedTable.hasPrimaryKeyColumns()) {
-            primaryKeyTypeJavaType = ((IntrospectedColumn)introspectedTable.getPrimaryKeyColumns().get(0)).getFullyQualifiedJavaType();
+            primaryKeyTypeJavaType = ((IntrospectedColumn) introspectedTable.getPrimaryKeyColumns().get(0)).getFullyQualifiedJavaType();
         } else {
             primaryKeyTypeJavaType = baseModelJavaType;
         }
@@ -112,6 +112,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
         interfaze.addSuperInterface(daoSuperType);
         return true;
     }
+
     @Override
     public boolean validate(List<String> list) {
         return true;
@@ -151,59 +152,70 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
         }
 
     }
+
     @Override
     public boolean clientCountByExampleMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptExampleParam(method);
         return false;
     }
+
     @Override
     public boolean clientDeleteByExampleMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptExampleParam(method);
         return false;
     }
+
     @Override
     public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptPrimaryKeyParam(method);
         return false;
     }
+
     @Override
     public boolean clientInsertMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptModelParam(method);
         return false;
     }
+
     @Override
     public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptExampleParam(method);
         method.setReturnType(new FullyQualifiedJavaType("List<Model>"));
         return false;
     }
+
     @Override
     public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptExampleParam(method);
         method.setReturnType(new FullyQualifiedJavaType("List<Model>"));
         return false;
     }
+
     @Override
     public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptPrimaryKeyParam(method);
         method.setReturnType(new FullyQualifiedJavaType("Model"));
         return false;
     }
+
     @Override
     public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptModelAndExampleParam(method);
         return false;
     }
+
     @Override
     public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptModelAndExampleParam(method);
         return false;
     }
+
     @Override
     public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptModelAndExampleParam(method);
         return false;
     }
+
     @Override
     public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptModelParam(method);
@@ -215,6 +227,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
         this.interceptModelParam(method);
         return false;
     }
+
     @Override
     public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         this.interceptModelParam(method);

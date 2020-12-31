@@ -78,10 +78,28 @@ public class DeleteOperator extends BaseOperatorManager {
             statementBlock.setTagName(areaName);
             statementBlock.setResultAppenderFactory(resultAppenderFactory);
             statementBlock.setConditionAppenderFactory(conditionAppenderFactory);
-            statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null,"int"));
+            statementBlock.setReturnWrapper(TxReturnDescriptor.createByOrigin(null, "int"));
             this.registerStatementBlock(statementBlock);
         }
 
+    }
+
+    @Override
+    public String getTagName() {
+        return "delete";
+    }
+
+    @Override
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod,
+                                  String tableName,
+                                  Generator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
+        mybatisXmlGenerator.generateDelete(id, mapperXml);
     }
 
     private class DeleteResultAppenderFactory extends ResultAppenderFactory {
@@ -103,24 +121,5 @@ public class DeleteOperator extends BaseOperatorManager {
 
             return "delete from " + tableName;
         }
-    }
-
-
-    @Override
-    public String getTagName() {
-        return "delete";
-    }
-
-    @Override
-    public void generateMapperXml(String id,
-                                  LinkedList<SyntaxAppender> jpaList,
-                                  PsiClass entityClass,
-                                  PsiMethod psiMethod,
-                                  String tableName,
-                                  Generator mybatisXmlGenerator,
-                                  ConditionFieldWrapper conditionFieldWrapper,
-                                  List<TxField> resultFields) {
-        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
-        mybatisXmlGenerator.generateDelete(id, mapperXml);
     }
 }

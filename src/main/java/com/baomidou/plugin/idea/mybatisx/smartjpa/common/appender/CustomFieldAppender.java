@@ -13,7 +13,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiParameter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
@@ -29,35 +28,20 @@ import java.util.Map;
  */
 public class CustomFieldAppender implements SyntaxAppender {
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomFieldAppender.class);
     /**
      * The Tip name.
      */
     protected String tipName;
-
     /**
      * The Field name.
      */
     protected String fieldName;
-
     /**
      * The Column name.
      */
     protected String columnName;
     private AreaSequence areaSequence;
-
-    @Override
-    public AreaSequence getAreaSequence() {
-        return areaSequence;
-    }
-
-    /**
-     * Sets area sequence.
-     *
-     * @param areaSequence the area sequence
-     */
-    public void setAreaSequence(AreaSequence areaSequence) {
-        this.areaSequence = areaSequence;
-    }
 
     /**
      * Instantiates a new Custom field appender.
@@ -72,6 +56,19 @@ public class CustomFieldAppender implements SyntaxAppender {
         this.areaSequence = areaSequence;
     }
 
+    @Override
+    public AreaSequence getAreaSequence() {
+        return areaSequence;
+    }
+
+    /**
+     * Sets area sequence.
+     *
+     * @param areaSequence the area sequence
+     */
+    public void setAreaSequence(AreaSequence areaSequence) {
+        this.areaSequence = areaSequence;
+    }
 
     /**
      * Gets field name.
@@ -112,8 +109,6 @@ public class CustomFieldAppender implements SyntaxAppender {
         return false;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomFieldAppender.class);
-
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
@@ -122,12 +117,12 @@ public class CustomFieldAppender implements SyntaxAppender {
                                   ConditionFieldWrapper conditionFieldWrapper) {
         String defaultDateValue = wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, null);
         TxParameter parameter = null;
-        if(StringUtils.isEmpty(defaultDateValue)){
+        if (StringUtils.isEmpty(defaultDateValue)) {
             parameter = parameters.poll();
         }
         String fieldValue = defaultDateValue;
         if (parameter != null) {
-            fieldValue  = JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
+            fieldValue = JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
         }
         return columnName + " = " + wrapFieldValueInTemplateText(columnName, conditionFieldWrapper, fieldValue);
     }
@@ -147,7 +142,7 @@ public class CustomFieldAppender implements SyntaxAppender {
             logger.info("查找映射字段失败, text: {}", text);
             return Collections.emptyList();
         }
-        return Collections.singletonList(TxParameter.createByPsiField(psiField,areaSequence));
+        return Collections.singletonList(TxParameter.createByPsiField(psiField, areaSequence));
     }
 
 

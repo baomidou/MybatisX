@@ -32,6 +32,9 @@ import java.util.Optional;
  */
 public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
+    private static String clazzName = "org.apache.ibatis.type.JdbcType";
+    JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
+
     @NotNull
     @Override
     public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
@@ -53,9 +56,23 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
         return null;
     }
 
-    private static String clazzName = "org.apache.ibatis.type.JdbcType";
     private Optional<PsiClass> findJdbcTypeClass(Project project) {
         return JavaUtils.findClazz(project, clazzName);
+    }
+
+    /**
+     * cache the variants
+     */
+    static class JdbcTypeVariantHolder {
+        Object[] variants;
+
+        public Object[] getVariants() {
+            return variants;
+        }
+
+        public synchronized void setVariants(Object[] variants) {
+            this.variants = variants;
+        }
     }
 
     private class JdbcReference extends ReferenceSetBase<PsiReference> {
@@ -74,24 +91,6 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     }
 
-    JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
-
-    /**
-     * cache the variants
-     */
-    static class JdbcTypeVariantHolder{
-        Object[] variants;
-
-        public synchronized void setVariants(Object[] variants) {
-            this.variants = variants;
-        }
-
-        public Object[] getVariants() {
-            return variants;
-        }
-    }
-
-
     private class JdbcTypePsiReferenceBase extends PsiReferenceBase {
 
         private final ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
@@ -104,7 +103,8 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
         }
 
         @Override
-        public @Nullable PsiElement resolve() {
+        public @Nullable
+        PsiElement resolve() {
             Optional<PsiField> resolve = resolver.resolve(index);
             return resolve.orElse(null);
         }
@@ -150,7 +150,8 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
         }
 
         @Override
-        public @NotNull Optional<PsiField> getStartElement(@Nullable String firstText) {
+        public @NotNull
+        Optional<PsiField> getStartElement(@Nullable String firstText) {
             if (firstText == null) {
                 return Optional.empty();
             }
@@ -178,7 +179,8 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
 
         @Override
-        public @NotNull String getText() {
+        public @NotNull
+        String getText() {
             return getElement().getValue();
         }
 

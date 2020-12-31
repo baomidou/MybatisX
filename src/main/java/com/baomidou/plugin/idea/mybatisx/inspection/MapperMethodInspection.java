@@ -33,6 +33,23 @@ import java.util.Set;
  */
 public class MapperMethodInspection extends MapperInspection {
 
+    private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<String>() {
+        {
+            add("org.apache.ibatis.annotations.SelectProvider");
+            add("org.apache.ibatis.annotations.UpdateProvider");
+            add("org.apache.ibatis.annotations.InsertProvider");
+            add("org.apache.ibatis.annotations.DeleteProvider");
+        }
+    };
+    private static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<String>() {
+        {
+            // mp3
+            add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
+            // mp2
+            add("com.baomidou.mybatisplus.mapper.BaseMapper");
+        }
+    };
+
     @Nullable
     @Override
     public ProblemDescriptor[] checkMethod(@NotNull PsiMethod method, @NotNull InspectionManager manager, boolean isOnTheFly) {
@@ -91,16 +108,6 @@ public class MapperMethodInspection extends MapperInspection {
         return child.equals(parent) || child.isInheritor(parent, true);
     }
 
-
-    private static final Set<String> statementProviderNames = new HashSet<String>() {
-        {
-            add("org.apache.ibatis.annotations.SelectProvider");
-            add("org.apache.ibatis.annotations.UpdateProvider");
-            add("org.apache.ibatis.annotations.InsertProvider");
-            add("org.apache.ibatis.annotations.DeleteProvider");
-        }
-    };
-
     private Optional<ProblemDescriptor> checkStatementExists(PsiMethod method, InspectionManager manager, boolean isOnTheFly) {
         PsiIdentifier ide = method.getNameIdentifier();
         // SelectProvider爆红 issue: https://gitee.com/baomidou/MybatisX/issues/I17JQ4
@@ -108,7 +115,7 @@ public class MapperMethodInspection extends MapperInspection {
         if (annotation != null && annotation.length > 0) {
             // 如果存在提供者注解, 就返回验证成功
             for (PsiAnnotation psiAnnotation : annotation) {
-                if (statementProviderNames.contains(psiAnnotation.getQualifiedName())) {
+                if (STATEMENT_PROVIDER_NAMES.contains(psiAnnotation.getQualifiedName())) {
                     return Optional.empty();
                 }
             }
@@ -136,7 +143,7 @@ public class MapperMethodInspection extends MapperInspection {
                 if (mapperClass == null) {
                     continue;
                 }
-                if (mybatisPlusBaseMapperNames.contains(mapperClass.getQualifiedName())) {
+                if (MYBATIS_PLUS_BASE_MAPPER_NAMES.contains(mapperClass.getQualifiedName())) {
                     return true;
                 }
             }
@@ -144,14 +151,5 @@ public class MapperMethodInspection extends MapperInspection {
         }
         return false;
     }
-
-    private static Set<String> mybatisPlusBaseMapperNames = new HashSet<String>() {
-        {
-            // mp3
-            add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
-            // mp2
-            add("com.baomidou.mybatisplus.mapper.BaseMapper");
-        }
-    };
 
 }

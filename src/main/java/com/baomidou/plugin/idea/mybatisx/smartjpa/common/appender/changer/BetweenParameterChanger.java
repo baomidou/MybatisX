@@ -1,14 +1,11 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 
-
-
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.intellij.psi.PsiParameter;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -27,14 +24,14 @@ public class BetweenParameterChanger implements MxParameterChanger {
     @Override
     public List<TxParameter> getParameter(TxParameter txParameter) {
         TxParameter beginParameter = TxParameter.createByOrigin(
-                "begin" + StringUtils.upperCaseFirstChar(txParameter.getName()),
-                txParameter.getTypeText(),
-                txParameter.getCanonicalTypeText());
+            "begin" + StringUtils.upperCaseFirstChar(txParameter.getName()),
+            txParameter.getTypeText(),
+            txParameter.getCanonicalTypeText());
 
         TxParameter endParameter = TxParameter.createByOrigin(
-                "end" + StringUtils.upperCaseFirstChar(txParameter.getName()),
-                txParameter.getTypeText(),
-                txParameter.getCanonicalTypeText());
+            "end" + StringUtils.upperCaseFirstChar(txParameter.getName()),
+            txParameter.getTypeText(),
+            txParameter.getCanonicalTypeText());
 
         return Arrays.asList(beginParameter, endParameter);
     }
@@ -47,6 +44,6 @@ public class BetweenParameterChanger implements MxParameterChanger {
         assert end != null;
         final String beginStr = JdbcTypeUtils.wrapperField(begin.getName(), begin.getCanonicalTypeText());
         final String endStr = JdbcTypeUtils.wrapperField(end.getName(), end.getCanonicalTypeText());
-        return fieldName + SPACE + "between" + SPACE + beginStr  + " and " + endStr;
+        return fieldName + SPACE + "between" + SPACE + beginStr + " and " + endStr;
     }
 }

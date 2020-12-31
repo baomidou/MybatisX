@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * The type Mybatis generator setting ui.
  */
-public class MybatisGeneratorSettingUI  {
+public class MybatisGeneratorSettingUI {
     /**
      * The Content panel.
      */
@@ -83,7 +83,7 @@ public class MybatisGeneratorSettingUI  {
         projectFolderBtn.setTextFieldPreferredWidth(45);
         projectFolderBtn.setText(projectFolder);
         projectFolderBtn.addBrowseFolderListener(new TextBrowseFolderListener(
-                FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor()) {
+            FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor()) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 super.actionPerformed(e);

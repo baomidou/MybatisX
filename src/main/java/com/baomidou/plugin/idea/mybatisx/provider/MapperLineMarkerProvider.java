@@ -43,12 +43,12 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
         PsiElement foundElement = null;
         // 类可以跳转
-        if(element instanceof PsiClass){
+        if (element instanceof PsiClass) {
             foundElement = element;
         }
         // 接口内的方法可以跳转
-        if(element instanceof PsiMethod){
-            if(JavaUtils.isElementWithinInterface(element)){
+        if (element instanceof PsiMethod) {
+            if (JavaUtils.isElementWithinInterface(element)) {
                 foundElement = element;
             }
         }

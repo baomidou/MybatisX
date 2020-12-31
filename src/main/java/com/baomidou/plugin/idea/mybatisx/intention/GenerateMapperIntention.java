@@ -82,7 +82,7 @@ public class GenerateMapperIntention extends GenericIntention {
         ListSelectionListener popupListener = new ListSelectionListener() {
             @Override
             public void selected(int index) {
-                processGenerate(project,editor, clazz, pathMap.get(keys.get(index)));
+                processGenerate(project, editor, clazz, pathMap.get(keys.get(index)));
             }
 
             @Override

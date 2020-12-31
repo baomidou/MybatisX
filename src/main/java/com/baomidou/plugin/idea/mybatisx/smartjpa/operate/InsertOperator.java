@@ -34,6 +34,9 @@ import java.util.stream.Collectors;
 public class InsertOperator extends BaseOperatorManager {
 
 
+    private static final Logger logger = LoggerFactory.getLogger(InsertOperator.class);
+
+
     /**
      * Instantiates a new Insert operator.
      *
@@ -43,7 +46,6 @@ public class InsertOperator extends BaseOperatorManager {
         Set<String> patterns = AbstractStatementGenerator.INSERT_GENERATOR.getPatterns();
         this.init(mappingField, patterns);
     }
-
 
     /**
      * Init.
@@ -63,50 +65,6 @@ public class InsertOperator extends BaseOperatorManager {
             this.initCustomArea(areaName, mappingField);
         }
     }
-
-
-
-
-    private class InsertResultAppenderFactory extends ResultAppenderFactory {
-
-        /**
-         * Instantiates a new Insert result appender factory.
-         *
-         * @param areaPrefix the area prefix
-         */
-        public InsertResultAppenderFactory(String areaPrefix) {
-            super(areaPrefix);
-        }
-
-        @Override
-        public String getTemplateText(String tableName,
-                                      PsiClass entityClass,
-                                      LinkedList<TxParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
-            StringBuilder mapperXml = new StringBuilder();
-            mapperXml.append("insert into " + tableName).append("\n");
-            for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
-                String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-                mapperXml.append(templateText);
-            }
-            return mapperXml.toString();
-        }
-
-        @Override
-        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
-            String defineName = entityClass.getName();
-            String variableName = StringUtils.lowerCaseFirstChar(defineName);
-            List<String> importClass = Collections.singletonList(entityClass.getQualifiedName());
-            TxParameter parameter = TxParameter.createByOrigin(variableName,
-                defineName,
-                entityClass.getQualifiedName(),
-                false,
-                importClass);
-            return Collections.singletonList(parameter);
-        }
-
-    }
-
 
     private void initInsertSelectiveAppender(String areaName, List<TxField> mappingField) {
         String newAreaName = areaName + "Selective";
@@ -179,6 +137,23 @@ public class InsertOperator extends BaseOperatorManager {
         this.addOperatorName(newAreaName);
     }
 
+    @Override
+    public String getTagName() {
+        return "insert";
+    }
+
+    @Override
+    public void generateMapperXml(String id,
+                                  LinkedList<SyntaxAppender> jpaList,
+                                  PsiClass entityClass,
+                                  PsiMethod psiMethod,
+                                  String tableName,
+                                  Generator mybatisXmlGenerator,
+                                  ConditionFieldWrapper conditionFieldWrapper,
+                                  List<TxField> resultFields) {
+        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
+        mybatisXmlGenerator.generateInsert(id, mapperXml);
+    }
 
     /**
      * The type Insert custom suffix appender.
@@ -215,25 +190,45 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
+    private class InsertResultAppenderFactory extends ResultAppenderFactory {
 
-    @Override
-    public String getTagName() {
-        return "insert";
+        /**
+         * Instantiates a new Insert result appender factory.
+         *
+         * @param areaPrefix the area prefix
+         */
+        public InsertResultAppenderFactory(String areaPrefix) {
+            super(areaPrefix);
+        }
+
+        @Override
+        public String getTemplateText(String tableName,
+                                      PsiClass entityClass,
+                                      LinkedList<TxParameter> parameters,
+                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+            StringBuilder mapperXml = new StringBuilder();
+            mapperXml.append("insert into " + tableName).append("\n");
+            for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
+                String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
+                mapperXml.append(templateText);
+            }
+            return mapperXml.toString();
+        }
+
+        @Override
+        public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {
+            String defineName = entityClass.getName();
+            String variableName = StringUtils.lowerCaseFirstChar(defineName);
+            List<String> importClass = Collections.singletonList(entityClass.getQualifiedName());
+            TxParameter parameter = TxParameter.createByOrigin(variableName,
+                defineName,
+                entityClass.getQualifiedName(),
+                false,
+                importClass);
+            return Collections.singletonList(parameter);
+        }
+
     }
-
-    @Override
-    public void generateMapperXml(String id,
-                                  LinkedList<SyntaxAppender> jpaList,
-                                  PsiClass entityClass,
-                                  PsiMethod psiMethod,
-                                  String tableName,
-                                  Generator mybatisXmlGenerator,
-                                  ConditionFieldWrapper conditionFieldWrapper,
-                                  List<TxField> resultFields) {
-        String mapperXml = super.generateXml(jpaList, entityClass, psiMethod, tableName, conditionFieldWrapper);
-        mybatisXmlGenerator.generateInsert(id, mapperXml);
-    }
-
 
     private class InsertAllSuffixOperator implements SuffixOperator {
 
@@ -331,6 +326,4 @@ public class InsertOperator extends BaseOperatorManager {
 
 
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(InsertOperator.class);
 }

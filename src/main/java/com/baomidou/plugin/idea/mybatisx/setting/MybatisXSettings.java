@@ -37,6 +37,7 @@ public class MybatisXSettings implements PersistentStateComponent<Element> {
 
     private Type gsonTypeToken = new TypeToken<Set<String>>() {
     }.getType();
+    private String mapperIcon;
 
     /**
      * Instantiates a new Mybatis setting.
@@ -63,7 +64,7 @@ public class MybatisXSettings implements PersistentStateComponent<Element> {
         element.setAttribute(UPDATE_GENERATOR.getId(), gson.toJson(UPDATE_GENERATOR.getPatterns()));
         element.setAttribute(SELECT_GENERATOR.getId(), gson.toJson(SELECT_GENERATOR.getPatterns()));
         element.setAttribute("statementGenerateModel", String.valueOf(statementGenerateModel.getIdentifier()));
-        element.setAttribute("mapperIcon",getMapperIcon());
+        element.setAttribute("mapperIcon", getMapperIcon());
         return element;
     }
 
@@ -75,7 +76,7 @@ public class MybatisXSettings implements PersistentStateComponent<Element> {
         loadState(state, SELECT_GENERATOR);
         statementGenerateModel = GenerateModel.getInstance(state.getAttributeValue("statementGenerateModel"));
         String mapperIcon = state.getAttributeValue(MAPPER_ICON);
-        if(StringUtils.isEmpty(mapperIcon)){
+        if (StringUtils.isEmpty(mapperIcon)) {
             mapperIcon = MapperIcon.BIRD.name();
         }
         this.mapperIcon = mapperIcon;
@@ -106,20 +107,18 @@ public class MybatisXSettings implements PersistentStateComponent<Element> {
         this.statementGenerateModel = statementGenerateModel;
     }
 
-    private String mapperIcon;
-
-    public void setMapperIcon(String mapperIcon) {
-        this.mapperIcon = mapperIcon;
-    }
-
     public String getMapperIcon() {
-        if(mapperIcon == null){
+        if (mapperIcon == null) {
             mapperIcon = MapperIcon.BIRD.name();
         }
         return mapperIcon;
     }
 
-    public enum MapperIcon{
+    public void setMapperIcon(String mapperIcon) {
+        this.mapperIcon = mapperIcon;
+    }
+
+    public enum MapperIcon {
         DEFAULT,
         BIRD;
     }

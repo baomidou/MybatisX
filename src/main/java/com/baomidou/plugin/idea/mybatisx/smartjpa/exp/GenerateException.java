@@ -3,7 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.exp;
 /**
  * 生成代码异常
  */
-public class GenerateException extends RuntimeException{
+public class GenerateException extends RuntimeException {
     /**
      * Instantiates a new Generate exception.
      */

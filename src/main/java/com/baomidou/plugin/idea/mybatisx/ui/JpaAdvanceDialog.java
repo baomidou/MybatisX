@@ -23,7 +23,9 @@ import java.util.Set;
  */
 public class JpaAdvanceDialog extends DialogWrapper {
 
+    private static final Logger logger = LoggerFactory.getLogger(JpaAdvanceDialog.class);
     private SmartJpaAdvanceUI smartJpaAdvanceUI = new SmartJpaAdvanceUI();
+
 
     /**
      * Instantiates a new Jpa advance dialog.
@@ -37,9 +39,9 @@ public class JpaAdvanceDialog extends DialogWrapper {
         setSize(600, 400);
     }
 
-
     @Override
-    protected @Nullable JComponent createCenterPanel() {
+    protected @Nullable
+    JComponent createCenterPanel() {
         return smartJpaAdvanceUI.getRootPanel();
     }
 
@@ -71,11 +73,10 @@ public class JpaAdvanceDialog extends DialogWrapper {
         return smartJpaAdvanceUI.getAllFieldsText();
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(JpaAdvanceDialog.class);
-
     /**
      * Init fields.
-     *  @param conditionFields the condition fields
+     *
+     * @param conditionFields the condition fields
      * @param resultFields
      * @param allFields       the all fields
      * @param entityClass     the entity class
@@ -102,7 +103,7 @@ public class JpaAdvanceDialog extends DialogWrapper {
                 conditionPanel.add(checkBox, constraints);
             }
         }
-        smartJpaAdvanceUI.init(allFields,entityClass,resultFields);
+        smartJpaAdvanceUI.init(allFields, entityClass, resultFields);
 
     }
 

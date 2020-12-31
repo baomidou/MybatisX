@@ -13,10 +13,24 @@ import java.util.List;
  */
 public class TxReturnDescriptor implements TypeDescriptor {
 
+    private boolean wrapperList = false;
+    /**
+     * 返回类型的导入全称
+     * 例如方法:
+     * public Collection<User> selectByTitle(String title);
+     * simpleName 指的是:  java.util.Collection
+     */
+    private List<String> qualifiedName;
+    /**
+     * 返回类型的简单名称;
+     * 例如方法:
+     * public Collection<User> selectByTitle(String title);
+     * simpleName 指的是:   Collection<User>
+     */
+    private String simpleName;
+
     private TxReturnDescriptor() {
     }
-
-    private boolean wrapperList = false;
 
     /**
      * Create collection by psi class tx return descriptor.
@@ -61,21 +75,6 @@ public class TxReturnDescriptor implements TypeDescriptor {
         return txReturnDescriptor;
     }
 
-    /**
-     * 返回类型的导入全称
-     * 例如方法:
-     * public Collection<User> selectByTitle(String title);
-     * simpleName 指的是:  java.util.Collection
-     */
-    private List<String> qualifiedName;
-    /**
-     * 返回类型的简单名称;
-     * 例如方法:
-     * public Collection<User> selectByTitle(String title);
-     * simpleName 指的是:   Collection<User>
-     */
-    private String simpleName;
-
     @Override
     public List<String> getImportList() {
         if (qualifiedName == null) {
@@ -97,7 +96,7 @@ public class TxReturnDescriptor implements TypeDescriptor {
         this.qualifiedName = strings;
         String simpleNameStr = simpleName;
         if (wrapperList) {
-            simpleNameStr =  "List<" + simpleName + ">";
+            simpleNameStr = "List<" + simpleName + ">";
         }
         this.simpleName = simpleNameStr;
     }

@@ -41,6 +41,24 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
      * The constant MAPPER.
      */
     public static final Key<PsiClass> MAPPER = Key.create("mapper.mapper");
+    private static final Logger logger = LoggerFactory.getLogger(MapperMethodCompletionContributor.class);
+
+    private static boolean inCommentOrLiteral(CompletionParameters parameters) {
+        HighlighterIterator iterator = ((EditorEx) parameters.getEditor()).getHighlighter().createIterator(parameters.getOffset());
+        if (iterator.atEnd()) {
+            return false;
+        }
+
+        IElementType elementType = iterator.getTokenType();
+        if (elementType == CustomHighlighterTokenType.WHITESPACE) {
+            iterator.retreat();
+            elementType = iterator.getTokenType();
+        }
+        return elementType == CustomHighlighterTokenType.LINE_COMMENT ||
+            elementType == CustomHighlighterTokenType.MULTI_LINE_COMMENT ||
+            elementType == CustomHighlighterTokenType.STRING ||
+            elementType == CustomHighlighterTokenType.SINGLE_QUOTED_STRING;
+    }
 
     /**
      * 填充变量
@@ -79,9 +97,9 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (ProcessCanceledException e) {
             logger.info("未知的取消原因", e);
-        } catch(PsiInvalidElementAccessException e){
+        } catch (PsiInvalidElementAccessException e) {
             logger.info("无法访问节点", e);
-        }catch (Throwable e) {
+        } catch (Throwable e) {
             logger.error("自动提示异常", e);
         }
 
@@ -131,25 +149,6 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         }
         return Optional.of(mapperClass);
     }
-
-    private static boolean inCommentOrLiteral(CompletionParameters parameters) {
-        HighlighterIterator iterator = ((EditorEx) parameters.getEditor()).getHighlighter().createIterator(parameters.getOffset());
-        if (iterator.atEnd()) {
-            return false;
-        }
-
-        IElementType elementType = iterator.getTokenType();
-        if (elementType == CustomHighlighterTokenType.WHITESPACE) {
-            iterator.retreat();
-            elementType = iterator.getTokenType();
-        }
-        return elementType == CustomHighlighterTokenType.LINE_COMMENT ||
-            elementType == CustomHighlighterTokenType.MULTI_LINE_COMMENT ||
-            elementType == CustomHighlighterTokenType.STRING ||
-            elementType == CustomHighlighterTokenType.SINGLE_QUOTED_STRING;
-    }
-
-    private static final Logger logger = LoggerFactory.getLogger(MapperMethodCompletionContributor.class);
 
 
 }

@@ -61,7 +61,7 @@ public final class JavaUtils {
      * @return the optional
      */
     public static Optional<PsiField> findSettablePsiField(@NotNull PsiClass clazz, @Nullable String propertyName) {
-        return Optional.ofNullable(PropertyUtil.findPropertyField(clazz,propertyName,false));
+        return Optional.ofNullable(PropertyUtil.findPropertyField(clazz, propertyName, false));
     }
 
     /**

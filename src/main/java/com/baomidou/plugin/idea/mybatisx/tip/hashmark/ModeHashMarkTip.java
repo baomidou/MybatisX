@@ -9,15 +9,11 @@ import java.util.List;
 
 /**
  * see mybatis : org.apache.ibatis.mapping.ParameterMode
+ *
  * @author ls9527
  */
-public class ModeHashMarkTip  implements HashMarkTip{
-    @Override
-    public String getName() {
-        return "mode";
-    }
-
-    private static final List<String> modeList = new ArrayList<String>(){
+public class ModeHashMarkTip implements HashMarkTip {
+    private static final List<String> MODE_LIST = new ArrayList<String>() {
         {
             add("IN");
             add("OUT");
@@ -25,14 +21,20 @@ public class ModeHashMarkTip  implements HashMarkTip{
         }
     };
 
+    @Override
+    public String getName() {
+        return "mode";
+    }
+
     /**
      * 最简单的枚举值提示
+     *
      * @param completionResultSet
      * @param mapper
      */
     @Override
     public void tipValue(CompletionResultSet completionResultSet, Mapper mapper) {
-        for (String mode : modeList) {
+        for (String mode : MODE_LIST) {
             completionResultSet.addElement(LookupElementBuilder.create(mode));
         }
     }

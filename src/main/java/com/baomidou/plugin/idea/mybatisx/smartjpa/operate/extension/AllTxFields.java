@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
- /**
+/**
  * 扩展 AllTxField
  */
- public class  AllTxFields extends TxField {
+public class AllTxFields extends TxField {
 
     private List<TxField> mappingField;
     private PsiClass entityClass;
@@ -36,7 +36,8 @@ import java.util.stream.Collectors;
     }
 
     @Override
-    public @NotNull String getColumnName() {
+    public @NotNull
+    String getColumnName() {
         return mappingField.stream().map(TxField::getColumnName).collect(Collectors.joining(","));
     }
 

@@ -21,17 +21,6 @@ public class AliasDesc {
     }
 
     /**
-     * Create alias desc.
-     *
-     * @param psiClass the psi class
-     * @param alias    the alias
-     * @return the alias desc
-     */
-    public static AliasDesc create(@NotNull PsiClass psiClass, @NotNull String alias) {
-        return new AliasDesc(psiClass, alias);
-    }
-
-    /**
      * Instantiates a new Alias desc.
      *
      * @param clazz the clazz
@@ -40,6 +29,17 @@ public class AliasDesc {
     public AliasDesc(PsiClass clazz, String alias) {
         this.clazz = clazz;
         this.alias = alias;
+    }
+
+    /**
+     * Create alias desc.
+     *
+     * @param psiClass the psi class
+     * @param alias    the alias
+     * @return the alias desc
+     */
+    public static AliasDesc create(@NotNull PsiClass psiClass, @NotNull String alias) {
+        return new AliasDesc(psiClass, alias);
     }
 
     /**

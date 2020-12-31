@@ -67,7 +67,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         Mapper contextMapper = MapperUtils.getMapper(context.getInvocationElement());
         for (IdDomElement idDomElement : idDomElements) {
             if (MapperUtils.getIdSignature(idDomElement).equals(value) ||
-                    MapperUtils.getIdSignature(idDomElement, contextMapper).equals(value)) {
+                MapperUtils.getIdSignature(idDomElement, contextMapper).equals(value)) {
                 return Optional.of(idDomElement.getId().getXmlAttributeValue());
             }
         }
@@ -98,6 +98,12 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
      */
     @NotNull
     public abstract Collection<? extends IdDomElement> getComparisons(@Nullable Mapper mapper, ConvertContext context);
+
+    @NotNull
+    @Override
+    public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
+        return PsiClassConverter.createJavaClassReferenceProvider(value, null, new ValueReferenceProvider(context)).getReferencesByElement(element);
+    }
 
     private abstract class TraverseStrategy {
         /**
@@ -160,12 +166,6 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
             return result;
         }
 
-    }
-
-    @NotNull
-    @Override
-    public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
-        return PsiClassConverter.createJavaClassReferenceProvider(value, null, new ValueReferenceProvider(context)).getReferencesByElement(element);
     }
 
     private class ValueReferenceProvider extends JavaClassReferenceProvider {

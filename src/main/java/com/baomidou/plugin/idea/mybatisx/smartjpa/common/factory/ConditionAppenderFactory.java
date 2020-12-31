@@ -35,11 +35,11 @@ import java.util.Stack;
  * https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation
  */
 public class ConditionAppenderFactory extends BaseAppenderFactory {
+    private static final Logger logger = LoggerFactory.getLogger(ConditionAppenderFactory.class);
     /**
      * The Syntax appender array list.
      */
     List<SyntaxAppender> syntaxAppenderArrayList;
-
 
     /**
      * Instantiates a new Condition appender factory.
@@ -134,7 +134,6 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
         return syntaxAppenderArrayList;
     }
 
-
     @Override
     public List<SyntaxAppender> getSyntaxAppenderList() {
         return syntaxAppenderArrayList;
@@ -144,8 +143,6 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
     public String getTipText() {
         return "By";
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(ConditionAppenderFactory.class);
 
     @Override
     public List<TxParameter> getMxParameter(PsiClass entityClass, LinkedList<SyntaxAppenderWrapper> jpaStringList) {

@@ -33,9 +33,8 @@ public class BooleanParameterChanger implements MxParameterChanger {
 
     @Override
     public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-        return fieldName + " = " +booleanValue.toString();
+        return fieldName + " = " + booleanValue.toString();
     }
-
 
 
 }

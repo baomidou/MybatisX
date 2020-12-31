@@ -31,7 +31,8 @@ public class HashMarkConverter extends ConverterAdaptor<PsiMember> implements Cu
      * @return
      */
     @Override
-    public @Nullable PsiMember fromString(@Nullable String s, ConvertContext context) {
+    public @Nullable
+    PsiMember fromString(@Nullable String s, ConvertContext context) {
         DomElement domElement = context.getInvocationElement();
         GroupTwo parentOfType = DomUtil.getParentOfType(domElement, GroupTwo.class, true);
         if (parentOfType == null) {
@@ -71,7 +72,8 @@ public class HashMarkConverter extends ConverterAdaptor<PsiMember> implements Cu
     }
 
     @Override
-    public @NotNull PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
+    public @NotNull
+    PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         GroupTwo parentOfType = DomUtil.getParentOfType(value, GroupTwo.class, true);
         PsiMethod psiMethod = getPsiMethod(value.getRawText(), context, parentOfType);
         if (psiMethod != null) {

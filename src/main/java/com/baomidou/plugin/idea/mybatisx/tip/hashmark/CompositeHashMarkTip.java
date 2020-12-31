@@ -36,12 +36,7 @@ import java.util.Optional;
  */
 public class CompositeHashMarkTip {
 
-    private Project project;
-
-    public CompositeHashMarkTip(Project project ) {
-        this.project = project;
-    }
-
+    private static final Logger logger = LoggerFactory.getLogger(CompositeHashMarkTip.class);
     private static List<HashMarkTip> hashMarkTips = new ArrayList<HashMarkTip>() {
         {
             add(new JdbcTypeHashMarkTip());
@@ -53,8 +48,11 @@ public class CompositeHashMarkTip {
             add(new JdbcTypeNameHashMarkTip());
         }
     };
+    private Project project;
 
-    private static final Logger logger = LoggerFactory.getLogger(CompositeHashMarkTip.class);
+    public CompositeHashMarkTip(Project project) {
+        this.project = project;
+    }
 
     /**
      * Add element for psi parameter.
@@ -173,7 +171,7 @@ public class CompositeHashMarkTip {
                 return null;
             }
             PsiParameterList parameterList = psiMethod.getParameterList();
-            if (parameterList ==null || parameterList.isEmpty()) {
+            if (parameterList == null || parameterList.isEmpty()) {
                 return null;
             }
             String fieldName = findFieldName(myElement);
@@ -187,9 +185,9 @@ public class CompositeHashMarkTip {
                     if (o instanceof String && o.equals(fieldName)) {
                         return psiMethod;
                     }
-                }else{
+                } else {
                     // 兼容java8开启 -parameters 参数的方式，这种方式不需要@Param参数
-                    if(psiParameter.getName().equals(fieldName)){
+                    if (psiParameter.getName().equals(fieldName)) {
                         return psiMethod;
                     }
                 }

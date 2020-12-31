@@ -33,7 +33,7 @@ public class ResultMapConverter extends IdBasedTagConverter {
 
     private boolean isContextElementOfResultMap(Mapper mapper, DomElement invocationElement) {
         return MapperUtils.isMapperWithSameNamespace(MapperUtils.getMapper(invocationElement), mapper)
-                && invocationElement.getParent() instanceof ResultMap;
+            && invocationElement.getParent() instanceof ResultMap;
     }
 
     private Collection<? extends IdDomElement> doFilterResultMapItself(Mapper mapper, final ResultMap resultMap) {

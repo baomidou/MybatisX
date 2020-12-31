@@ -45,36 +45,18 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         for (final TxField field : this.mappingField) {
             // order by: field
             final SyntaxAppender appender = new CompositeAppender(
-                    new SortCustomAreaAppender(this.getTipText(), getTipText(),
-                        AreaSequence.AREA,
-                        AreaSequence.SORT,
-                        this),
-                    new SortCustomFieldAppender(field, AreaSequence.SORT));
+                new SortCustomAreaAppender(this.getTipText(), getTipText(),
+                    AreaSequence.AREA,
+                    AreaSequence.SORT,
+                    this),
+                new SortCustomFieldAppender(field, AreaSequence.SORT));
             syntaxAppenderArrayList.add(appender);
             // order by: and field
             final CompositeAppender andAppender = new CompositeAppender(new CustomJoinAppender("And", ",", AreaSequence.SORT),
-                    new SortCustomFieldAppender(field, AreaSequence.SORT));
+                new SortCustomFieldAppender(field, AreaSequence.SORT));
             syntaxAppenderArrayList.add(andAppender);
         }
         return syntaxAppenderArrayList;
-    }
-
-    private class SortCustomAreaAppender extends CustomAreaAppender{
-
-        public SortCustomAreaAppender(String area, String areaType, AreaSequence areaSequence, AreaSequence childAreaSequence, SyntaxAppenderFactory syntaxAppenderFactory) {
-            super(area, areaType, areaSequence, childAreaSequence, syntaxAppenderFactory);
-        }
-
-        /**
-         * OrderBy 标签的字段一定不会生成参数
-         * @param syntaxAppenderWrappers the jpa string list
-         * @param entityClass   the entity class
-         * @return
-         */
-        @Override
-        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers, PsiClass entityClass) {
-            return Collections.emptyList();
-        }
     }
 
     @Override
@@ -87,8 +69,48 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         return Collections.emptyList();
     }
 
+    @Override
+    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (SyntaxAppenderWrapper syntaxAppender : collector) {
+            String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), conditionFieldWrapper);
+            stringBuilder.append(templateText).append(" ");
+        }
+        return "order by " + stringBuilder.toString();
+    }
 
-    private class SortCustomFieldAppender extends CustomFieldAppender{
+    @Override
+    public void appendDefault(SyntaxAppender syntaxAppender, LinkedList<SyntaxAppender> current) {
+        if (syntaxAppender.getType() == AppendTypeEnum.FIELD) {
+            current.addLast(CustomSuffixAppender.createByFixed("Asc", "asc", AreaSequence.SORT, mappingField));
+        }
+    }
+
+    @Override
+    protected AreaSequence getAreaSequence() {
+        return AreaSequence.SORT;
+    }
+
+    private class SortCustomAreaAppender extends CustomAreaAppender {
+
+        public SortCustomAreaAppender(String area, String areaType, AreaSequence areaSequence, AreaSequence childAreaSequence, SyntaxAppenderFactory syntaxAppenderFactory) {
+            super(area, areaType, areaSequence, childAreaSequence, syntaxAppenderFactory);
+        }
+
+        /**
+         * OrderBy 标签的字段一定不会生成参数
+         *
+         * @param syntaxAppenderWrappers the jpa string list
+         * @param entityClass            the entity class
+         * @return
+         */
+        @Override
+        public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers, PsiClass entityClass) {
+            return Collections.emptyList();
+        }
+    }
+
+    private class SortCustomFieldAppender extends CustomFieldAppender {
 
         /**
          * Instantiates a new Sort custom field appender.
@@ -107,29 +129,5 @@ public class SortAppenderFactory extends BaseAppenderFactory {
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             return getFieldName();
         }
-    }
-
-    @Override
-    public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (SyntaxAppenderWrapper syntaxAppender : collector) {
-            String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), conditionFieldWrapper);
-            stringBuilder.append(templateText).append(" ");
-        }
-        return "order by " + stringBuilder.toString();
-    }
-
-
-    @Override
-    public void appendDefault(SyntaxAppender syntaxAppender, LinkedList<SyntaxAppender> current) {
-        if (syntaxAppender.getType() == AppendTypeEnum.FIELD) {
-            current.addLast(CustomSuffixAppender.createByFixed("Asc", "asc", AreaSequence.SORT, mappingField));
-        }
-    }
-
-
-    @Override
-    protected AreaSequence getAreaSequence() {
-        return AreaSequence.SORT;
     }
 }

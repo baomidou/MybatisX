@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * 用于支持 mybatis-config.xml 下的 configuration -> typeAliases -> typeAlias
- *
+ * <p>
  * The type Single alias resolver.
  *
  * @author yanglin

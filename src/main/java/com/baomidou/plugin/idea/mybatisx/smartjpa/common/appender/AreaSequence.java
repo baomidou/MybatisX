@@ -29,6 +29,11 @@ public enum AreaSequence {
      */
     private int sequence;
 
+    AreaSequence(int sequence) {
+
+        this.sequence = sequence;
+    }
+
     /**
      * Gets sequence.
      *
@@ -36,10 +41,5 @@ public enum AreaSequence {
      */
     public int getSequence() {
         return this.sequence;
-    }
-
-    AreaSequence(int sequence) {
-
-        this.sequence = sequence;
     }
 }

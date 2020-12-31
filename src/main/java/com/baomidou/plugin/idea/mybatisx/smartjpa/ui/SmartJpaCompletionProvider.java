@@ -37,7 +37,14 @@ import java.util.stream.Collectors;
 public class SmartJpaCompletionProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionProvider.class);
-
+    /**
+     * 是否找到区域管理器
+     */
+    private Key<Boolean> FOUND_OPERATOR_MANAGER = Key.create("FOUND_OPERATOR_MANAGER");
+    /**
+     * 实际上缓存的区域管理器
+     */
+    private Key<AreaOperateManager> OPERATOR_MANAGER = Key.create("OPERATOR_MANAGER");
 
     /**
      * Add completion.
@@ -97,15 +104,6 @@ public class SmartJpaCompletionProvider {
     }
 
     /**
-     * 是否找到区域管理器
-     */
-    private Key<Boolean> FOUND_OPERATOR_MANAGER = Key.create("FOUND_OPERATOR_MANAGER");
-    /**
-     * 实际上缓存的区域管理器
-     */
-    private Key<AreaOperateManager> OPERATOR_MANAGER = Key.create("OPERATOR_MANAGER");
-
-    /**
      * 在editor级别做初始化字段的缓存
      *
      * @param mapperClass
@@ -131,11 +129,11 @@ public class SmartJpaCompletionProvider {
         List<TxField> mappingField = entityMappingHolder.getFields();
         // 旗舰版根据配置生成, 社区版固定为mysql的形式
         DbmsAdaptor dbms = DbmsAdaptor.MYSQL;
-        try{
+        try {
             SqlPsiFacade instance = SqlPsiFacade.getInstance(Objects.requireNonNull(editor.getProject()));
             SqlLanguageDialect dialectMapping = instance.getDialectMapping(mapperClass.getContainingFile().getVirtualFile());
             dbms = DbmsAdaptor.castOf(dialectMapping.getDbms());
-        }catch (NoClassDefFoundError ignore){
+        } catch (NoClassDefFoundError ignore) {
         }
 
         AreaOperateManager areaOperateManager = AreaOperateManagerFactory.getAreaOperateManagerByDbms(dbms,

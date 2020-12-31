@@ -22,7 +22,7 @@ import java.util.PriorityQueue;
 /**
  * The type Platform db generator.
  */
-public class PlatformDbGenerator extends  PlatformSimpleGenerator {
+public class PlatformDbGenerator extends PlatformSimpleGenerator {
 
     @Override
     protected DbmsAdaptor getDbmsAdaptor(@NotNull Project project, @NotNull PsiElement element) {
@@ -40,7 +40,7 @@ public class PlatformDbGenerator extends  PlatformSimpleGenerator {
     }
 
     @Override
-    protected String getTableName(PsiClass entityClass, Project project, String foundTableName,  DasTableAdaptor dasTableAdaptor) {
+    protected String getTableName(PsiClass entityClass, Project project, String foundTableName, DasTableAdaptor dasTableAdaptor) {
         if (StringUtils.isNotBlank(foundTableName)) {
             return foundTableName;
         }

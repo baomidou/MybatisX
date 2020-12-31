@@ -9,6 +9,7 @@ import java.util.List;
 
 public class EmptyGenerator implements Generator {
     private Logger logger = LoggerFactory.getLogger(EmptyGenerator.class);
+
     @Override
     public void generateSelect(String id, String value, Boolean resultType, String resultMap, String resultSet, List<TxField> resultFields, PsiClass entityClass) {
         logger.warn("generateSelect fail");

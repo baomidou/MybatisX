@@ -25,10 +25,15 @@ import java.util.stream.Collectors;
  */
 public class CompositeAppender implements SyntaxAppender {
 
+    private static final Logger logger = LoggerFactory.getLogger(CompositeAppender.class);
     /**
      * The Appender list.
      */
     protected final LinkedList<SyntaxAppender> appenderList;
+    /**
+     * The Template resolver.
+     */
+    TemplateResolver templateResolver = new TemplateResolver();
 
     /**
      * Instantiates a new Composite appender.
@@ -73,7 +78,6 @@ public class CompositeAppender implements SyntaxAppender {
         return appendTypeCommands;
     }
 
-
     @Override
     public boolean checkDuplicate(Set<String> syntaxAppenders) {
         for (SyntaxAppender appender : appenderList) {
@@ -102,12 +106,6 @@ public class CompositeAppender implements SyntaxAppender {
         return flag;
     }
 
-
-    /**
-     * The Template resolver.
-     */
-    TemplateResolver templateResolver = new TemplateResolver();
-
     @Override
     public String getTemplateText(String tableName,
                                   PsiClass entityClass,
@@ -121,7 +119,7 @@ public class CompositeAppender implements SyntaxAppender {
             SyntaxAppender lastAppender = appenderList.poll();
             // 先执行 连接符的获取模板文本, 然后把后续的内容拼接起来
             String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector,conditionFieldWrapper);
+            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector, conditionFieldWrapper);
         }
         // 最后一个是后缀
         if (appenderList.peekLast().getType() == AppendTypeEnum.SUFFIX) {
@@ -142,7 +140,7 @@ public class CompositeAppender implements SyntaxAppender {
 
     @Override
     public List<TxParameter> getMxParameter(LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrapperLinkedList, PsiClass entityClass) {
-        return appenderList.stream().flatMap(appender->appender.getMxParameter(syntaxAppenderWrapperLinkedList,entityClass).stream()).collect(Collectors.toList());
+        return appenderList.stream().flatMap(appender -> appender.getMxParameter(syntaxAppenderWrapperLinkedList, entityClass).stream()).collect(Collectors.toList());
     }
 
     @Override
@@ -154,9 +152,6 @@ public class CompositeAppender implements SyntaxAppender {
             syntaxAppenderWrapper.addWrapper(syntaxAppenderWrapperItem);
         }
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(CompositeAppender.class);
-
 
     @Override
     public String toString() {

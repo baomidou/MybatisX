@@ -10,13 +10,11 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 /**
  * 例如: updateFieldAByAllFields
@@ -56,7 +54,7 @@ public class ConditionAllFieldAppender extends CustomFieldAppender {
             stringJoiner.add(templateText);
         }
         String text = stringJoiner.toString();
-        if(text.startsWith("AND")){
+        if (text.startsWith("AND")) {
             text = text.substring(3);
         }
         return text;
@@ -65,6 +63,7 @@ public class ConditionAllFieldAppender extends CustomFieldAppender {
 
     /**
      * 前面必须是区域， 后续必须是区域或者空
+     *
      * @param secondAppender
      * @param areaSequence
      * @return
