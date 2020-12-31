@@ -2,11 +2,9 @@ package com.baomidou.plugin.idea.mybatisx.action;
 
 
 import com.baomidou.plugin.idea.mybatisx.ui.MybatisGeneratorMainUI;
-import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,25 +22,7 @@ public class MybatisGeneratorMainAction extends AnAction {
      * @param e
      */
     @Override
-    public void actionPerformed(AnActionEvent e) {
-        PsiElement[] psiElements = e.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
-        if (psiElements == null || psiElements.length == 0) {
-            Messages.showMessageDialog("Please select one or more tables", "Notice", Messages.getInformationIcon());
-            return;
-        }
-        Class<?> dbTableClass = null;
-        try {
-            dbTableClass = Class.forName("com.intellij.database.psi.DbTable");
-        } catch (ClassNotFoundException ex) {
-            return;
-        }
-        for (PsiElement psiElement : psiElements) {
-            if (dbTableClass.isAssignableFrom(psiElement.getClass())) {
-                continue;
-            }
-            Messages.showMessageDialog("Please select one or more tables", "Notice", Messages.getInformationIcon());
-            return;
-        }
+    public void actionPerformed(@NotNull AnActionEvent e) {
         new MybatisGeneratorMainUI(e);
     }
 
@@ -53,7 +33,16 @@ public class MybatisGeneratorMainAction extends AnAction {
             e.getPresentation().setEnabledAndVisible(false);
             return;
         }
-        if (Stream.of(psiElements).noneMatch(item -> item instanceof DbTable)) {
+        Class<?> dbTableClass;
+        try {
+            dbTableClass = Class.forName("com.intellij.database.psi.DbTable");
+        } catch (ClassNotFoundException ex) {
+            // 未安装Database Tools插件时，不展示菜单
+            e.getPresentation().setEnabledAndVisible(false);
+            return;
+        }
+        if (!Stream.of(psiElements).allMatch(item -> dbTableClass.isAssignableFrom(item.getClass()))) {
+            // 选中元素中存在非表元素时，不展示菜单
             e.getPresentation().setEnabledAndVisible(false);
         }
     }
