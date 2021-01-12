@@ -11,17 +11,44 @@ import java.util.List;
 
 @TableName("t_blog")
 public class Blog {
+    /**
+     * 单个id
+     */
     @TableId("id")
    private Long id;
+    /**
+     * 标题
+     */
    private String title;
+    /**
+     * 内容
+     */
    private String content;
+    /**
+     * 金额
+     */
    private BigDecimal money;
+    /**
+     * 年龄
+     */
    private Integer age;
+    /**
+     * 创建时间
+     */
    @TableField("create_time")
    private Date createTime;
+    /**
+     * 大文本
+     */
     @TableField("blob_text")
    private byte[] blobText;
+    /**
+     * 对象数组
+     */
     private JpaBlog[] objects;
+    /**
+     * List的Id
+     */
     private List<Integer> ids;
 
     public JpaBlog[] getObjects() {

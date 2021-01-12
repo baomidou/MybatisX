@@ -38,5 +38,6 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     IPage<Blog> selectByTitle(Page<Blog> page, @Param("title") String title);
 
+    List<Blog> selectCreateTimeByAge(@Param("blog") Blog xxxx,@Param("age")int age);
 
 }

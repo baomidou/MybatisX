@@ -22,7 +22,7 @@ public interface IdDomElement extends DomElement {
     @Required
     @NameValue
     @Attribute("id")
-    GenericAttributeValue<PsiMethod> getId();
+    GenericAttributeValue<Object> getId();
 
     /**
      * Sets value.

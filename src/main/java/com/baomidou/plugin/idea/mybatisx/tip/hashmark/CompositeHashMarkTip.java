@@ -4,21 +4,24 @@ import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.JavaLookupElementBuilder;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiConstantEvaluationHelper;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
+import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * #{}提示的内容, 不仅仅只是字段， 还包括mybatis支持的7大属性配置
@@ -36,9 +42,10 @@ import java.util.Optional;
  */
 public class CompositeHashMarkTip {
 
+    public static final String DOT = ".";
     private Project project;
 
-    public CompositeHashMarkTip(Project project ) {
+    public CompositeHashMarkTip(Project project) {
         this.project = project;
     }
 
@@ -76,22 +83,19 @@ public class CompositeHashMarkTip {
         }
         PsiMethod psiMethod = methodOptional.get();
         logger.info("CompletionContributor xml start");
-        // tip fields
-        Optional<PsiParameter> parameter = findParameter(psiMethod, wrappedText);
-        boolean foundProperty = false;
-        if (parameter.isPresent()) {
-            PsiParameter psiParameter = parameter.get();
+        // 焦点前面的字段名称
+        String fieldFrontOfCaret = wrappedText.substring(0, editorCaret);
 
-            String fieldName = psiParameter.getName();
-            if (fieldName == null) {
-                logger.info("字段名称为空");
-                return;
+        boolean hasHashMark = fieldFrontOfCaret.contains(",");
+        if (!hasHashMark) {
+            PsiParameterList parameterList = psiMethod.getParameterList();
+            boolean canUseFields = parameterList.getParametersCount() == 1;
+            for (PsiParameter psiParameter : parameterList.getParameters()) {
+                String fieldName = findFieldNameByParam(psiParameter);
+
+                promptFields(result, psiParameter, fieldFrontOfCaret, fieldName, canUseFields);
             }
-            LookupElementBuilder fieldValueElement =
-                LookupElementBuilder.create(fieldName).withIcon(Icons.PARAM_COMPLETION_ICON);
-            result.addElement(fieldValueElement);
 
-            foundProperty = wrappedText.startsWith(fieldName);
         }
 
         CompletionResultSet completionResultSet = result;
@@ -114,8 +118,8 @@ public class CompositeHashMarkTip {
 
             }
         }
-        // 提示了字段，并且已经是`=`符号
-        if (foundProperty && !tipOfSecondLevel) {
+        // 存在逗号`,`标记，并且已经是`=`符号
+        if (hasHashMark && !tipOfSecondLevel) {
             HashMarkTipInsertHandler hashMarkTipInsertHandler = new HashMarkTipInsertHandler();
             if (!StringUtils.isEmpty(latestText)) {
                 completionResultSet = result.withPrefixMatcher(latestText);
@@ -134,27 +138,91 @@ public class CompositeHashMarkTip {
 
     }
 
-    private String findFieldNameByWrappedText(String wrappedText) {
-        int firstSymbol = wrappedText.indexOf(",");
-        if (firstSymbol > -1) {
-            return wrappedText.substring(0, firstSymbol);
+    /**
+     * 参考
+     * com.intellij.codeInsight.completion.JavaLookupElementBuilder
+     * com.intellij.codeInsight.completion.JavaCompletionUtil
+     * <p>
+     * 提示类的全称: com.intellij.codeInsight.completion.JavaPsiClassReferenceElement (com.baomidou.mybatis3.domain.Blog)
+     * 提示类的简称: com.intellij.codeInsight.lookup.PsiTypeLookupItem  (Blog)
+     * 提示指定的单个属性: com.intellij.codeInsight.lookup.VariableLookupItem
+     *
+     * @param result
+     * @param psiParameter
+     * @param fieldFrontOfCaret
+     * @param fieldName
+     * @param canUseFields      是否能使用参数的类型的属性名称
+     */
+    private void promptFields(CompletionResultSet result, PsiParameter psiParameter, String fieldFrontOfCaret, String fieldName, boolean canUseFields) {
+        Optional<PsiClass> clazz = JavaUtils.findClazz(psiParameter.getProject(), psiParameter.getType().getCanonicalText());
+        boolean isPrimitive = true;
+        // 是一个类型:
+        if (clazz.isPresent()) {
+            PsiClass psiClass = clazz.get();
+            // Integer, String 等
+            if (psiClass.getQualifiedName().startsWith("java.lang")
+                || psiClass.getQualifiedName().startsWith("java.math")) {
+                // do nothing
+            } else {
+                // 如果只有一个字段， 并且字段没有配置 @Param
+                if (canUseFields && fieldName == null) {
+                    for (PsiField allField : psiClass.getAllFields()) {
+                        LookupElementBuilder lookupElementBuilder = JavaLookupElementBuilder.forField(allField);
+                        result.addElement(lookupElementBuilder);
+                    }
+                    // 引用类型已经提示了, 基本类型不应该再次提示
+                    isPrimitive = false;
+                }
+
+                // 如果有@Param注解, 支持二级连续提示
+                if (fieldName != null) {
+                    // 提示当前类型的所有字段
+                    if (fieldFrontOfCaret.startsWith(fieldName + DOT)) {
+                        result = result.withPrefixMatcher(fieldFrontOfCaret.substring(fieldName.length() + 1));
+
+                        for (PsiField allField : psiClass.getAllFields()) {
+                            LookupElementBuilder lookupElementBuilder = JavaLookupElementBuilder.forField(allField);
+                            // 如果字段上面有注释, 把注释加到末尾
+                            PsiDocComment docComment = allField.getDocComment();
+                            if (docComment != null) {
+                                String text = Arrays.stream(docComment.getDescriptionElements())
+                                    .map(PsiElement::getText)
+                                    .collect(Collectors.joining());
+
+                                lookupElementBuilder = lookupElementBuilder.withTailText(text);
+                            }
+                            result.addElement(lookupElementBuilder);
+                        }
+                        // 引用类型已经提示了, 基本类型不应该再次提示
+                        isPrimitive = false;
+                    }
+                }
+
+            }
+
         }
-        return wrappedText;
+        // 基本类型不用关心连续提示的问题
+        if (isPrimitive && fieldName != null) {
+            result.addElement(LookupElementBuilder.create(fieldName));
+        }
+
+
     }
 
-    private Optional<PsiParameter> findParameter(PsiMethod psiMethod, String wrappedText) {
-        @NotNull PsiParameter[] psiParameters = psiMethod.getParameterList().getParameters();
-        String latestText = findFieldNameByWrappedText(wrappedText);
-        for (PsiParameter parameter : psiParameters) {
-            Optional<String> valueText = JavaUtils.getAnnotationValueText(parameter, Annotation.PARAM);
-            if (valueText.isPresent()
-                && !StringUtils.isEmpty(latestText)
-                && valueText.get().startsWith(latestText)) {
-                return Optional.of(parameter);
-            }
+
+    private String findFieldNameByParam(PsiParameter psiParameter) {
+        String fieldName = null;
+        PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
+        PsiAnnotation annotation = psiParameter.getAnnotation(Annotation.PARAM.getQualifiedName());
+        // 有注解, 优先使用注解名称
+        if (annotation != null) {
+            PsiAnnotationMemberValue valueAttr = annotation.findAttributeValue("value");
+            fieldName = Objects.requireNonNull(constantEvaluationHelper.computeConstantExpression(valueAttr)).toString();
         }
-        return Optional.empty();
+
+        return fieldName;
     }
+
 
     private String findLatestText(String wrappedText, int editorCaret) {
         for (int caret = editorCaret - 1; caret >= 0; caret--) {
@@ -162,18 +230,18 @@ public class CompositeHashMarkTip {
                 return wrappedText.substring(caret, editorCaret);
             }
         }
-        return wrappedText.substring(editorCaret);
+        return wrappedText.substring(0, editorCaret);
     }
 
     public PsiElement findReference(PsiElement myElement) {
         GroupTwo domElement = DomUtil.findDomElement(myElement, GroupTwo.class);
         if (domElement != null) {
-            PsiMethod psiMethod = domElement.getId().getValue();
+            PsiMethod psiMethod = (PsiMethod) domElement.getId().getValue();
             if (psiMethod == null) {
                 return null;
             }
             PsiParameterList parameterList = psiMethod.getParameterList();
-            if (parameterList ==null || parameterList.isEmpty()) {
+            if (parameterList.isEmpty()) {
                 return null;
             }
             String fieldName = findFieldName(myElement);
@@ -187,9 +255,9 @@ public class CompositeHashMarkTip {
                     if (o instanceof String && o.equals(fieldName)) {
                         return psiMethod;
                     }
-                }else{
+                } else {
                     // 兼容java8开启 -parameters 参数的方式，这种方式不需要@Param参数
-                    if(psiParameter.getName().equals(fieldName)){
+                    if (psiParameter.getName().equals(fieldName)) {
                         return psiMethod;
                     }
                 }
