@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.model;
 
 import com.baomidou.plugin.idea.mybatisx.dom.converter.AliasConverter;
-import com.baomidou.plugin.idea.mybatisx.dom.converter.DaoMethodConverter;
 import com.baomidou.plugin.idea.mybatisx.dom.converter.ParameterMapConverter;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
@@ -19,7 +18,7 @@ import java.util.List;
  *
  * @author yanglin
  */
-public interface GroupTwo extends GroupOne, IdDomElement {
+public interface GroupTwo extends GroupOne {
 
     /**
      * Gets binds.
@@ -38,11 +37,6 @@ public interface GroupTwo extends GroupOne, IdDomElement {
     @Attribute("parameterMap")
     @Convert(ParameterMapConverter.class)
     GenericAttributeValue<XmlTag> getParameterMap();
-
-    @Override
-    @Attribute("id")
-    @Convert(DaoMethodConverter.class)
-    GenericAttributeValue<Object> getId();
 
     /**
      * Gets parameter type.
