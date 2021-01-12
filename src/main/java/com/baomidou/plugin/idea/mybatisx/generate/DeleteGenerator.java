@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate;
 
-import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
+import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class DeleteGenerator extends AbstractStatementGenerator {
 
     @NotNull
     @Override
-    protected GroupTwo getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method) {
+    protected IdDomElement getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method) {
         return mapper.addDelete();
     }
 
