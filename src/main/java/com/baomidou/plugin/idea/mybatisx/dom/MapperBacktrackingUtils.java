@@ -144,7 +144,7 @@ public final class MapperBacktrackingUtils {
                 currentClass = type.getValue();
             }
 
-            if (currentClass == null) {
+            if (currentElement == null) {
                 break;
             }
             currentElement = currentElement.getParent();

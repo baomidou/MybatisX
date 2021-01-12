@@ -161,6 +161,7 @@
 
         <projectService id="baomidou.PersistentConfig" serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>
 
+        <!-- mapper.xml文件 #{} 区域的提示 -->
         <psi.referenceContributor id="hashMarkerReferenceContributor"
                                   implementation="com.baomidou.plugin.idea.mybatisx.reference.ContextHashMarkReferenceContributor"/>
     </extensions>

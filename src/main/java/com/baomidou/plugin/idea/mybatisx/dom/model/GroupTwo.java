@@ -42,7 +42,7 @@ public interface GroupTwo extends GroupOne, IdDomElement {
     @Override
     @Attribute("id")
     @Convert(DaoMethodConverter.class)
-    GenericAttributeValue<PsiMethod> getId();
+    GenericAttributeValue<Object> getId();
 
     /**
      * Gets parameter type.

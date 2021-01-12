@@ -46,8 +46,11 @@ public class HashMarkConverter extends ConverterAdaptor<PsiMember> implements Cu
 
     @Nullable
     private PsiMethod getPsiMethod(@Nullable String inputText, ConvertContext context, GroupTwo parentOfType) {
-        GenericAttributeValue<PsiMethod> id = parentOfType.getId();
-        PsiMethod method = id.getValue();
+        GenericAttributeValue<Object> id = parentOfType.getId();
+        PsiMethod method = (PsiMethod) id.getValue();
+        if (method == null) {
+            return null;
+        }
         PsiParameterList parameterList = method.getParameterList();
 
         JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(context.getProject());
@@ -59,9 +62,11 @@ public class HashMarkConverter extends ConverterAdaptor<PsiMember> implements Cu
                     Object valueObject = psiFacade.getConstantEvaluationHelper().computeConstantExpression(value);
                     if (valueObject != null) {
                         String text = valueObject.toString();
-                        String[] split = inputText.split(",");
-                        if (text.equals(split[0])) {
-                            return method;
+                        if (inputText != null) {
+                            String[] split = inputText.split(",");
+                            if (text.equals(split[0])) {
+                                return method;
+                            }
                         }
                     }
                 }
@@ -73,6 +78,9 @@ public class HashMarkConverter extends ConverterAdaptor<PsiMember> implements Cu
     @Override
     public @NotNull PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         GroupTwo parentOfType = DomUtil.getParentOfType(value, GroupTwo.class, true);
+        if (parentOfType == null) {
+            return new PsiReference[0];
+        }
         PsiMethod psiMethod = getPsiMethod(value.getRawText(), context, parentOfType);
         if (psiMethod != null) {
             assert psiMethod.getReference() != null;

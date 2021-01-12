@@ -4,7 +4,6 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.intellij.openapi.project.Project;
@@ -29,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -59,10 +59,9 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
     @Nullable
     @Override
     public XmlAttributeValue fromString(@Nullable @NonNls String value, ConvertContext context) {
-        return matchIdDomElement(selectStrategy(context).getValue(), value, context).orNull();
+        return matchIdDomElement(selectStrategy(context).getValue(), value, context).orElse(null);
     }
 
-    @NotNull
     private Optional<XmlAttributeValue> matchIdDomElement(Collection<? extends IdDomElement> idDomElements, String value, ConvertContext context) {
         Mapper contextMapper = MapperUtils.getMapper(context.getInvocationElement());
         for (IdDomElement idDomElement : idDomElements) {
@@ -71,7 +70,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
                 return Optional.of(idDomElement.getId().getXmlAttributeValue());
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Nullable
