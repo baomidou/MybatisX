@@ -36,6 +36,12 @@ public interface BlogUpdateMapper extends BaseMapper<Blog> {
 
     int updateAgeByAgeAfter(@Param("age")Integer age,@Param("oldAge")Integer oldAge);
 
+    /**
+     * 当年龄为1时更新年龄和内容
+     * @param content 内容
+     * @param age 年龄
+     * @return 更新的记录数
+     */
     int updateAgeAndContentByAgeTrue(@Param("age")Integer age,@Param("content")String content);
 
     int updateAgeAndContentByAgeFalse(@Param("age")Integer age,@Param("content")String content);
