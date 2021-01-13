@@ -21,6 +21,9 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.javadoc.PsiDocComment;
+import com.intellij.psi.javadoc.PsiDocTag;
+import com.intellij.psi.javadoc.PsiDocTagValue;
+import com.intellij.psi.javadoc.PsiDocToken;
 import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +45,11 @@ import java.util.stream.Collectors;
 public class CompositeHashMarkTip {
 
     public static final String DOT = ".";
+    /**
+     * 方法上面的注释名称, 例如
+     * @param userName 用户名
+     */
+    public static final String PARAM = "param";
     private Project project;
 
     public CompositeHashMarkTip(Project project) {
@@ -89,10 +97,17 @@ public class CompositeHashMarkTip {
         if (!hasHashMark) {
             PsiParameterList parameterList = psiMethod.getParameterList();
             boolean canUseFields = parameterList.getParametersCount() == 1;
+            // 方法参数有注释的情况， 需要提升注释的内容
+            PsiDocComment docComment = psiMethod.getDocComment();
+            PsiDocTag[] params = null;
+            if (docComment != null) {
+                params = docComment.findTagsByName(PARAM);
+            }
+
             for (PsiParameter psiParameter : parameterList.getParameters()) {
                 String fieldName = findFieldNameByParam(psiParameter);
 
-                promptFields(result, psiParameter, fieldFrontOfCaret, fieldName, canUseFields);
+                promptFields(result, psiParameter, params, fieldFrontOfCaret, fieldName, canUseFields);
             }
 
         }
@@ -148,19 +163,22 @@ public class CompositeHashMarkTip {
      *
      * @param result
      * @param psiParameter
+     * @param params
      * @param fieldFrontOfCaret
      * @param fieldName
      * @param canUseFields      是否能使用参数的类型的属性名称
      */
-    private void promptFields(CompletionResultSet result, PsiParameter psiParameter, String fieldFrontOfCaret, String fieldName, boolean canUseFields) {
+    private void promptFields(CompletionResultSet result, PsiParameter psiParameter, PsiDocTag[] params, String fieldFrontOfCaret, String fieldName, boolean canUseFields) {
         Optional<PsiClass> clazz = JavaUtils.findClazz(psiParameter.getProject(), psiParameter.getType().getCanonicalText());
         boolean isPrimitive = true;
         // 是一个类型:
         if (clazz.isPresent()) {
             PsiClass psiClass = clazz.get();
             // Integer, String 等
-            if (psiClass.getQualifiedName().startsWith("java.lang")
-                || psiClass.getQualifiedName().startsWith("java.math")) {
+            String qualifiedName = psiClass.getQualifiedName();
+            if (qualifiedName == null
+                || qualifiedName.startsWith("java.lang")
+                || qualifiedName.startsWith("java.math")) {
                 // do nothing
             } else {
                 // 如果只有一个字段， 并且字段没有配置 @Param
@@ -191,7 +209,33 @@ public class CompositeHashMarkTip {
         }
         // 基本类型不用关心连续提示的问题
         if (isPrimitive && fieldName != null) {
-            result.addElement(LookupElementBuilder.create(fieldName));
+            LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(fieldName);
+            // 方法有注释的情况, 如果当前参数有注释, 加入参数注释
+            if (params != null) {
+                // 方法的参数名称和注释名称一致的情况下
+                Optional<PsiDocTag> foundDocTagOfParam = Arrays.stream(params)
+                    .filter(p -> {
+                        PsiDocTagValue valueElement = p.getValueElement();
+                        if (valueElement != null) {
+                            return valueElement.getText().equals(psiParameter.getName());
+                        }
+                        return false;
+                    })
+                    .findAny();
+                if (foundDocTagOfParam.isPresent()) {
+                    PsiDocTag psiDocTag = foundDocTagOfParam.get();
+                    String tailText = Arrays.stream(psiDocTag.getDataElements())
+                        .filter(p -> p instanceof PsiDocToken)
+                        .map(PsiElement::getText)
+                        .collect(Collectors.joining());
+                    String trimmedText = tailText.trim();
+                    if (!StringUtils.isEmpty(trimmedText)) {
+                        trimmedText = "(" + trimmedText + ")";
+                        lookupElementBuilder = lookupElementBuilder.withTailText(trimmedText);
+                    }
+                }
+            }
+            result.addElement(lookupElementBuilder);
         }
 
 
@@ -203,10 +247,14 @@ public class CompositeHashMarkTip {
         PsiDocComment docComment = allField.getDocComment();
         if (docComment != null) {
             String text = Arrays.stream(docComment.getDescriptionElements())
+                .filter(p -> p instanceof PsiDocToken)
                 .map(PsiElement::getText)
                 .collect(Collectors.joining());
-
-            lookupElementBuilder = lookupElementBuilder.withTailText(text);
+            String trimmedText = text.trim();
+            if (!StringUtils.isEmpty(trimmedText)) {
+                trimmedText = "(" + trimmedText + ")";
+                lookupElementBuilder = lookupElementBuilder.withTailText(trimmedText);
+            }
         }
         result.addElement(lookupElementBuilder);
     }
@@ -238,19 +286,17 @@ public class CompositeHashMarkTip {
     public PsiElement findReference(PsiElement myElement) {
         IdDomElement domElement = DomUtil.findDomElement(myElement, IdDomElement.class);
         if (domElement != null) {
-            PsiMethod psiMethod = (PsiMethod) domElement.getId().getValue();
-            if (psiMethod == null) {
+            Object value = domElement.getId().getValue();
+            if (!(value instanceof PsiMethod)) {
                 return null;
             }
+            PsiMethod psiMethod = (PsiMethod) value;
             PsiParameterList parameterList = psiMethod.getParameterList();
             if (parameterList.isEmpty()) {
                 return null;
             }
             String fieldName = findFieldName(myElement);
             // 没有字段名称, 不需要查找引用
-            if (fieldName == null) {
-                return null;
-            }
             PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
             int parametersCount = parameterList.getParametersCount();
             @NotNull PsiParameter[] parameters = parameterList.getParameters();
@@ -260,7 +306,7 @@ public class CompositeHashMarkTip {
                     PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
                     String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
                     // 设置了 @Param 但是内容是空, 这种情况不予处理
-                    if(paramValue == null){
+                    if (paramValue == null) {
                         continue;
                     }
                     if (paramValue.equals(fieldName)) {
@@ -310,18 +356,20 @@ public class CompositeHashMarkTip {
         return null;
     }
 
-    @Nullable
+    @NotNull
     private String findFieldName(PsiElement myElement) {
         String text = myElement.getText();
-        String latestText = null;
-        int firstSplit = text.indexOf(",");
-        int endIndex = text.indexOf("}");
-        if (firstSplit != -1) {
-            latestText = text.substring(2, firstSplit);
+        int commaIndex = text.indexOf(",");
+        int braceIndex = text.indexOf("}");
+        int endIndex = -1;
+        // 逗号在大括号前面, 字段名字就是逗号前面的内容
+        if (commaIndex != -1 && commaIndex < braceIndex) {
+            endIndex = commaIndex;
         }
-        if (latestText == null && endIndex > -1) {
-            latestText = text.substring(2, endIndex);
+        // 结尾是大括号
+        if (endIndex == -1) {
+            endIndex = braceIndex;
         }
-        return latestText;
+        return text.substring(2, endIndex);
     }
 }

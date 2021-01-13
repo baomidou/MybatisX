@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * 参考 com.intellij.spring.el.contextProviders.extensions.SpringElCommentReferenceContributor
+ *
  * @author ls9527
  */
 public class ContextHashMarkReferenceContributor extends PsiReferenceContributor {
@@ -40,8 +41,12 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
                 String value = literalExpression.getText();
 
                 if ((value != null && value.startsWith(SIMPLE_PREFIX_STR))) {
-                    TextRange  property = new TextRange(SIMPLE_PREFIX_STR.length(),value.length()-SIMPLE_PREFIX_STR.length());
-                    return new PsiReference[]{new HashMarkReference(element, property)};
+                    int valueLength = value.length();
+                    int prefixLength = SIMPLE_PREFIX_STR.length();
+                    if (valueLength > prefixLength) {
+                        TextRange property = new TextRange(prefixLength, valueLength);
+                        return new PsiReference[]{new HashMarkReference(element, property)};
+                    }
                 }
                 return PsiReference.EMPTY_ARRAY;
             }

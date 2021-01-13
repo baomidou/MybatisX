@@ -60,14 +60,24 @@
          blob_text,
          objects,
          ids)
-        values (#{id,jdbcType=NUMERIC},
+        values ( #{id,jdbcType=NUMERIC},
                 #{title,jdbcType=VARCHAR},
                 #{content,jdbcType=VARCHAR},
                 #{money,jdbcType=DECIMAL},
                 #{age,jdbcType=NUMERIC},
                 NOW(),
+
+
+
+
+
                 #{blobText},
                 #{objects},
+
+
+
+
+
                 #{ids})
 
     </insert>
