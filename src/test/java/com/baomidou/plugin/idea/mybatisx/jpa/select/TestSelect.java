@@ -57,6 +57,22 @@ public class TestSelect extends BaseJpaTest {
 
     }
 
+    /**
+     * 为了测试驼峰的in
+     * @throws IOException
+     */
+    public void testSelectByCreateTimeIn() throws IOException {
+        launchAction("selectByCreateTimeIn");
+
+        myFixture.checkResultByFile("template/TipMapper.java",
+            "after/select/SelectByCreateTimeIn.java",
+            true);
+
+        myFixture.checkResultByFile("template/TipMapper.xml",
+            "after/select/SelectByCreateTimeIn.xml",
+            true);
+
+    }
 
     public void testSelectByIdNotIn() throws IOException {
         launchAction("selectByIdNotIn");
