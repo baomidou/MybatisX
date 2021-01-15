@@ -401,7 +401,6 @@ public class MybatisGenerator {
         } else {
             daoConfig.setTargetProject(projectFolder + "/" + daoMvnPath + "/");
         }
-
         return daoConfig;
     }
 
@@ -420,7 +419,7 @@ public class MybatisGenerator {
         if (config.isAnnotation()) {
             commentConfig.addProperty("annotations", "true");
         }
-
+        commentConfig.addProperty("dateFormat","yyyy-MM-dd HH:mm:ss");
         return commentConfig;
     }
 
@@ -439,7 +438,6 @@ public class MybatisGenerator {
         context.addPluginConfiguration(serializablePlugin);
 
         PluginConfiguration daoEntityAnnotationPlugin = new PluginConfiguration();
-        daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
         daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
         String domainObjectName = context.getTableConfigurations().get(0).getDomainObjectName();
         String targetPackage = context.getJavaModelGeneratorConfiguration().getTargetPackage();
