@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
+import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.fileTypes.FileType;
@@ -17,9 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.parser.ParserException;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +41,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     private static final String YML = "yml";
     private static final String YAML = "yaml";
     private static final String PROPERTIES = "properties";
+    public static final String REGEX = ",; ";
 
     /**
      * Instantiates a new Bean alias resolver.
@@ -71,12 +76,38 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         // yml ,yaml 后缀读取支持
         if (fileType.getDefaultExtension().equals(YML) ||
             fileType.getDefaultExtension().equals(YAML)) {
-            readClassesFromYaml(pkgSet, configurationFile);
+            // 读取 yml 文件内容
+            String content = readContentFromFile(configurationFile);
+            try {
+                // 首次读取, 可能存在 @变量@ 的场景, 在捕获异常后, 替换掉这种异常字符串, 然后再次读取别名
+                readClassesFromYaml(pkgSet, configurationFile.getName(), content);
+            } catch (ScannerException e) {
+                try {
+                    // 通过正则替换掉不符合 yml 格式的字符串, 再次尝试读取别名
+                    final String contentReplaced = content.replaceAll("@.*@", "MYBATISX_REPLACE");
+                    readClassesFromYaml(pkgSet, configurationFile.getName(), contentReplaced);
+                } catch (ScannerException e2) {
+                    // 存在 @变量@ 的情况, 暂时忽略这种情况
+                    logger.debug("yml parse fail, fileName: {}", configurationFile.getName(), e2);
+                }
+            }
         }
         // properties 读取支持
         if (fileType.getDefaultExtension().equals(PROPERTIES)) {
             readClassesFromProperties(pkgSet, configurationFile);
         }
+    }
+
+    private String readContentFromFile(VirtualFile configurationFile) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        try (InputStream inputStream = configurationFile.getInputStream()) {
+            final int length = inputStream.read(buffer);
+            byteArrayOutputStream.write(buffer, 0, length);
+        } catch (IOException e) {
+            logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
+        }
+        return byteArrayOutputStream.toString();
     }
 
     private void readClassesFromProperties(Set<String> pkgSet, VirtualFile configurationFile) {
@@ -108,24 +139,24 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         return typeAliasesPackage;
     }
 
-    private void readClassesFromYaml(Set<String> classSet, VirtualFile configurationFile) {
+    private void readClassesFromYaml(Set<String> classSet, String fileName, String content) {
         Yaml yaml = new Yaml();
-
-        try (InputStream inputStream = configurationFile.getInputStream()) {
-            Iterable<Object> objects = yaml.loadAll(inputStream);
+        try {
+            Iterable<Object> objects = yaml.loadAll(content);
             for (Object object : objects) {
                 Object config = findConfig(object);
                 Object typeAliasesPackage = findAliasPackage(config);
                 if (typeAliasesPackage != null) {
-                    if (!StringUtils.isEmpty(typeAliasesPackage.toString())) {
-                        classSet.add(typeAliasesPackage.toString());
+                    final String packageName = typeAliasesPackage.toString();
+                    if (!StringUtils.isEmpty(packageName)) {
+                        final String[] split = SpringStringUtils.tokenizeToStringArray(packageName, REGEX);
+                        classSet.addAll(Arrays.asList(split));
                     }
                 }
             }
         } catch (ParserException | ComposerException e) {
-            logger.info("yml parse fail, fileName: {}", configurationFile.getName(), e);
-        } catch (IOException e) {
-            logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
+            // 错误的 yml 文件, 不予支持
+            logger.info("yml parse fail, fileName: {}", fileName, e);
         }
     }
 
@@ -148,14 +179,12 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         Object config = null;
         if (object instanceof Map) {
             Map jsonObject = (Map) object;
-            Object mybatis = jsonObject.get("mybatis");
-            if (mybatis != null) {
-                if (jsonObject.containsKey("mybatis-plus")) {
-                    config = jsonObject.get("mybatis-plus");
-                }
-                if (jsonObject.containsKey("mybatisPlus")) {
-                    config = jsonObject.get("mybatisPlus");
-                }
+            config = jsonObject.get("mybatis");
+            if (config == null) {
+                config = jsonObject.get("mybatis-plus");
+            }
+            if (config == null) {
+                config = jsonObject.get("mybatisPlus");
             }
         }
         return config;

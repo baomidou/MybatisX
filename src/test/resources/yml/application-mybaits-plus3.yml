@@ -1,0 +1,19 @@
+spring:
+    datasource:
+        username: sa
+        password: ""
+        url: jdbc:h2:mem:test
+        schema: db/schema.sql
+        driver-class-name: @profile.name@
+logging:
+    level:
+        com.baomidou: debug
+        dao: debug
+mybatis-plus:
+    mapper-locations: mapper/*.xml
+    type-aliases-package: com.baomidou.mybatis3.alias
+    configuration:
+        log-prefix: dao.
+        log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+
