@@ -9,7 +9,10 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.util.ClassUtil;
 import com.intellij.spring.boot.model.SpringBootModelConfigFileContributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +46,10 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     private static final String YAML = "yaml";
     private static final String PROPERTIES = "properties";
     public static final String REGEX = ",; ";
+    /**
+     * spring boot 扩展点
+     */
+    public static final String SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR = "com.intellij.spring.boot.modelConfigFileContributor";
 
     /**
      * Instantiates a new Bean alias resolver.
@@ -55,8 +63,13 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
+        final PsiClass springbootExtensionPoint = ClassUtil.findPsiClass(PsiManager.getInstance(project), SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR);
+        if (springbootExtensionPoint == null) {
+            // 针对手动禁用springboot插件的场景, 忽略后续的别名识别
+            return Collections.emptyList();
+        }
         Set<String> pkgSet = new HashSet<>();
-        ExtensionPointName<SpringBootModelConfigFileContributor> objectExtensionPointName = ExtensionPointName.create("com.intellij.spring.boot.modelConfigFileContributor");
+        ExtensionPointName<SpringBootModelConfigFileContributor> objectExtensionPointName = ExtensionPointName.create(SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR);
         List<SpringBootModelConfigFileContributor> extensionList = objectExtensionPointName.getExtensionList();
         for (SpringBootModelConfigFileContributor extension : extensionList) {
             Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
