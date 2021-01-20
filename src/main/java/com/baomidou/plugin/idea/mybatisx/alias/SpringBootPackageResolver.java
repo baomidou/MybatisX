@@ -60,17 +60,28 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         super(project);
     }
 
+    /**
+     * 静态存储, 就算启用了内置的 springboot 插件，还是要重启idea的。 所以可以静态存储
+     */
+    private static volatile Boolean springBootExtensionExists = null;
+
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
-        final PsiClass springbootExtensionPoint = ClassUtil.findPsiClass(PsiManager.getInstance(project), SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR);
-        if (springbootExtensionPoint == null) {
-            // 针对手动禁用springboot插件的场景, 忽略后续的别名识别
+        if (springBootExtensionExists != null && !springBootExtensionExists) {
             return Collections.emptyList();
         }
         Set<String> pkgSet = new HashSet<>();
         ExtensionPointName<SpringBootModelConfigFileContributor> objectExtensionPointName = ExtensionPointName.create(SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR);
-        List<SpringBootModelConfigFileContributor> extensionList = objectExtensionPointName.getExtensionList();
+        List<SpringBootModelConfigFileContributor> extensionList = null;
+        try {
+            extensionList = objectExtensionPointName.getExtensionList();
+        } catch (IllegalArgumentException e) {
+            if (springBootExtensionExists == null) {
+                springBootExtensionExists = false;
+            }
+            return Collections.emptyList();
+        }
         for (SpringBootModelConfigFileContributor extension : extensionList) {
             Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
             for (Module module : modulesOfType) {
@@ -80,6 +91,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                 }
             }
         }
+
 
         return pkgSet;
     }
