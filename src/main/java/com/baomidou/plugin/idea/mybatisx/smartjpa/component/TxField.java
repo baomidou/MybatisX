@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The type Tx field.
@@ -87,7 +86,6 @@ public class TxField {
      *
      * @return the column name
      */
-    @NotNull
     public String getColumnName() {
         return this.columnName;
     }

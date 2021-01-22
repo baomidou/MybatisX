@@ -8,5 +8,5 @@ public interface CustomInterface {
     default void sayHello(){
 
     }
-sele
 }
+

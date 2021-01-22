@@ -23,7 +23,6 @@ import java.util.Properties;
  */
 
 public class DbRemarksCommentGenerator extends DefaultCommentGenerator implements CommentGenerator {
-    private Properties properties = new Properties();
     private boolean isAnnotations;
 
     public DbRemarksCommentGenerator() {
@@ -36,7 +35,7 @@ public class DbRemarksCommentGenerator extends DefaultCommentGenerator implement
 
     @Override
     public void addConfigurationProperties(Properties properties) {
-        this.properties.putAll(properties);
+        super.addConfigurationProperties(properties);
         this.isAnnotations = StringUtility.isTrue(properties.getProperty("annotations"));
     }
 
@@ -47,6 +46,7 @@ public class DbRemarksCommentGenerator extends DefaultCommentGenerator implement
     @Override
     public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         topLevelClass.addJavaDocLine("/**");
+        topLevelClass.addJavaDocLine(" * " + introspectedTable.getRemarks());
         topLevelClass.addJavaDocLine(" * @TableName " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
         topLevelClass.addJavaDocLine(" */");
         if (this.isAnnotations) {
@@ -78,7 +78,7 @@ public class DbRemarksCommentGenerator extends DefaultCommentGenerator implement
     @Override
     public void addGeneralMethodComment(Method method, IntrospectedTable introspectedTable) {
         method.addJavaDocLine("/**");
-        method.addJavaDocLine(" * " + MergeConstants.NEW_ELEMENT_TAG);
+        this.addJavadocTag(method,false);
         method.addJavaDocLine(" */");
     }
 

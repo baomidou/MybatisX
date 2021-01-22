@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate;
 
-import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
+import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
 import com.intellij.psi.PsiClass;
@@ -30,7 +30,7 @@ public class SelectGenerator extends AbstractStatementGenerator {
 
     @NotNull
     @Override
-    protected GroupTwo getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method) {
+    protected IdDomElement getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method) {
         Select select = mapper.addSelect();
         setupResultType(method, select);
         return select;

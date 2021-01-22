@@ -195,6 +195,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
 
         StringBuilder stringBuilder = new StringBuilder();
         String fieldName = null;
+        String columnName = null;
         int i = 0;
         for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
 
@@ -203,6 +204,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
             if (appender instanceof CustomFieldAppender) {
                 CustomFieldAppender field = (CustomFieldAppender) appender;
                 fieldName = field.getFieldName();
+                columnName = field.getColumnName();
                 break;
             }
             if (appender instanceof CustomJoinAppender) {
@@ -221,7 +223,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
             }
         }
         String suffixTemplateText = suffixOperator.
-            getTemplateText(fieldName, parameters, conditionFieldWrapper);
+            getTemplateText(columnName, parameters, conditionFieldWrapper);
         stringBuilder.append(suffixTemplateText);
 
         return conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());

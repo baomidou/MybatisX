@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
+import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.service.EditorService;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
@@ -214,7 +215,7 @@ public abstract class AbstractStatementGenerator {
     }
 
     private void setupTag(PsiMethod method, Mapper mapper) {
-        GroupTwo target = getTarget(mapper, method);
+        IdDomElement target = getTarget(mapper, method);
         target.getId().setStringValue(method.getName());
         target.setValue(" ");
         XmlTag tag = target.getXmlTag();
@@ -238,7 +239,7 @@ public abstract class AbstractStatementGenerator {
      * @return the target
      */
     @NotNull
-    protected abstract GroupTwo getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method);
+    protected abstract IdDomElement getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method);
 
     /**
      * Gets id.

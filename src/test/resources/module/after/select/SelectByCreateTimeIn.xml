@@ -13,12 +13,15 @@
     <sql id="Base_Column_List">
         id,age,content,title,money
     </sql>
-    <select id="selectByIdLike" resultMap="BaseResultMap">
+    <select id="selectByCreateTimeIn" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_blog
         where
-        id like #{id,jdbcType=NUMERIC}
+        create_time in
+        <foreach collection="createTimeList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
     </select>
 
 </mapper>

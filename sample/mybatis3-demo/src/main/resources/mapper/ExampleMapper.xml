@@ -60,14 +60,24 @@
          blob_text,
          objects,
          ids)
-        values (#{id,jdbcType=NUMERIC},
+        values ( #{id,jdbcType=NUMERIC},
                 #{title,jdbcType=VARCHAR},
                 #{content,jdbcType=VARCHAR},
                 #{money,jdbcType=DECIMAL},
                 #{age,jdbcType=NUMERIC},
                 NOW(),
+
+
+
+
+
                 #{blobText},
                 #{objects},
+
+
+
+
+
                 #{ids})
 
     </insert>
@@ -108,7 +118,7 @@ select * from blog where id = #{id}
         <include refid="Base_Column_List"/>
         from t_blog
         where
-        id = #{id,jdbcType=va}
+        id = #{id,jdbcType=VARCHAR}
     </select>
     <select id="selectByTitle" resultMap="BaseResultMap">
         select
@@ -116,6 +126,12 @@ select * from blog where id = #{id}
         from t_blog
         where
         title = #{title,jdbcType=BLOB}
+    </select>
+    <select id="selectCreateTimeByAge" resultMap="BaseResultMap">
+    select create_time
+    from t_blog
+    where
+    age = #{blog.age,jdbcType=VARCHAR}
     </select>
 
 
