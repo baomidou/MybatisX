@@ -32,7 +32,6 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
     @Override
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(EL_VAR_COMMENT, new PsiReferenceProvider() {
-
             @Override
             public @NotNull
             PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
@@ -43,8 +42,12 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
                 String value = literalExpression.getText();
 
                 if ((value != null && value.startsWith(SIMPLE_PREFIX_STR))) {
-                    TextRange property = new TextRange(SIMPLE_PREFIX_STR.length(), value.length() - SIMPLE_PREFIX_STR.length());
-                    return new PsiReference[]{new HashMarkReference(element, property)};
+                    int valueLength = value.length();
+                    int prefixLength = SIMPLE_PREFIX_STR.length();
+                    if (valueLength > prefixLength) {
+                        TextRange property = new TextRange(prefixLength, valueLength);
+                        return new PsiReference[]{new HashMarkReference(element, property)};
+                    }
                 }
                 return PsiReference.EMPTY_ARRAY;
             }
@@ -61,8 +64,7 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
         }
 
         @Override
-        public @Nullable
-        PsiElement resolve() {
+        public @Nullable PsiElement resolve() {
             return compositeHashMarkTip.findReference(this.myElement);
         }
     }

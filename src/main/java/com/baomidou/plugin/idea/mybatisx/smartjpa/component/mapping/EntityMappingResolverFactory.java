@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
  * 默认按照 mybatis-plus3 > mybatis-plus2 > xml(resultMap 最短的标签)
  */
 public class EntityMappingResolverFactory {
+    private final ResultMapMappingResolver defaultMappingResolver;
     /**
      * The Project.
      */
@@ -32,8 +35,7 @@ public class EntityMappingResolverFactory {
     /**
      * Instantiates a new Entity mapping resolver factory.
      *
-     * @param project     the project
-     * @param mapperClass the mapper class
+     * @param project the project
      */
     public EntityMappingResolverFactory(Project project) {
         this.project = project;
@@ -41,7 +43,8 @@ public class EntityMappingResolverFactory {
         entityMappingResolverList.add(new JpaAnnotationMappingResolver());
         entityMappingResolverList.add(new MybatisPlus3MappingResolver());
         entityMappingResolverList.add(new MybatisPlus2MappingResolver());
-        entityMappingResolverList.add(new ResultMapMappingResolver(project));
+        this.defaultMappingResolver = new ResultMapMappingResolver(project);
+        entityMappingResolverList.add(defaultMappingResolver);
         // 自定义mapper的泛型加入了实体类, 实体类必须有@Table注解
         // mapper 类的注释, 可能有点卡顿?
         entityMappingResolverList.add(new CommentAnnotationMappingResolver());
@@ -83,6 +86,27 @@ public class EntityMappingResolverFactory {
             }
             entityMappingHolder.setTableName(tableName);
 
+            // 字段以 resultMap 标签的配置为准
+            Map<String, TxField> resultMapMapping = defaultMappingResolver.findFields(mapperClass, entityClass).stream()
+                .collect(Collectors.toMap(TxField::getFieldName, v -> v, (l, r) -> l));
+            // 处理字段上面没有注解的情况,
+            for (TxField field : entityMappingHolder.getFields()) {
+                // 已经有列名了, 不再处理
+                if (!StringUtils.isEmpty(field.getColumnName())) {
+                    continue;
+                }
+                String columnName = null;
+
+                TxField txField = resultMapMapping.get(field.getFieldName());
+                if (txField != null) {
+                    columnName = txField.getColumnName();
+                }
+                // 如果没有映射, 默认按照下划线映射
+                if (columnName == null) {
+                    columnName = StringUtils.camelToSlash(field.getFieldName());
+                }
+                field.setColumnName(columnName);
+            }
         }
         return entityMappingHolder;
     }

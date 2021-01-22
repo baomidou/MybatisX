@@ -8,6 +8,7 @@
         <result column="content" property="content"/>
         <result column="title" property="title"/>
         <result column="money" property="money"/>
+        <result column="create_time" property="createTime"/>
     </resultMap>
     <sql id="Base_Column_List">
         id,age,content,title,money
@@ -20,7 +21,7 @@
             <if test="content != null">content,</if>
             <if test="money != null">money,</if>
             <if test="age != null">age,</if>
-            <if test="createTime != null">createTime,</if>
+            <if test="createTime != null">create_time,</if>
         </trim>
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">

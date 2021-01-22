@@ -1,7 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.dom.model;
 
-import com.intellij.psi.PsiMethod;
+import com.baomidou.plugin.idea.mybatisx.dom.converter.DaoMethodConverter;
 import com.intellij.util.xml.Attribute;
+import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.NameValue;
@@ -22,7 +23,8 @@ public interface IdDomElement extends DomElement {
     @Required
     @NameValue
     @Attribute("id")
-    GenericAttributeValue<PsiMethod> getId();
+    @Convert(DaoMethodConverter.class)
+    GenericAttributeValue<Object> getId();
 
     /**
      * Sets value.

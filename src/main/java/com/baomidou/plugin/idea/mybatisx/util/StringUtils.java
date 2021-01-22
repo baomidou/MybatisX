@@ -1,5 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * The type String utils.
  */
@@ -69,5 +76,48 @@ public class StringUtils {
      */
     public static boolean isEmpty(Object str) {
         return str == null || "".equals(str);
+    }
+
+    /**
+     * 驼峰转下划线
+     * @param camelStr
+     * @return
+     */
+    public static String camelToSlash(String camelStr){
+        String[] strings = splitByCharacterType(camelStr, true);
+        return Arrays.stream(strings).map(StringUtils::lowerCaseFirstChar).collect(Collectors.joining("_"));
+    }
+
+    private static String[] splitByCharacterType(String str, boolean camelCase) {
+        if (str == null) {
+            return null;
+        } else if (str.isEmpty()) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        } else {
+            char[] c = str.toCharArray();
+            List<String> list = new ArrayList();
+            int tokenStart = 0;
+            int currentType = Character.getType(c[tokenStart]);
+
+            for(int pos = tokenStart + 1; pos < c.length; ++pos) {
+                int type = Character.getType(c[pos]);
+                if (type != currentType) {
+                    if (camelCase && type == 2 && currentType == 1) {
+                        int newTokenStart = pos - 1;
+                        if (newTokenStart != tokenStart) {
+                            list.add(new String(c, tokenStart, newTokenStart - tokenStart));
+                            tokenStart = newTokenStart;
+                        }
+                    } else {
+                        list.add(new String(c, tokenStart, pos - tokenStart));
+                        tokenStart = pos;
+                    }
+
+                    currentType = type; }
+            }
+
+            list.add(new String(c, tokenStart, c.length - tokenStart));
+            return (String[])list.toArray(new String[list.size()]);
+        }
     }
 }

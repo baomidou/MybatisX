@@ -5,6 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.plugin.CommonDAOInterfacePlugi
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.DaoEntityAnnotationInterfacePlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.DbRemarksCommentGenerator;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.IntellijMyBatisGenerator;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.JavaTypeResolverJsr310Impl;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLForUpdatePlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.MySQLLimitPlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.RepositoryPlugin;
@@ -76,7 +77,7 @@ public class MybatisGenerator {
     /**
      * 自动生成的主逻辑
      *
-     * @param anActionEvent the an action event
+     * @param psiElement the psiElement
      * @param saveConfig    the save config
      * @return the list
      * @throws Exception the exception
@@ -401,7 +402,6 @@ public class MybatisGenerator {
         } else {
             daoConfig.setTargetProject(projectFolder + "/" + daoMvnPath + "/");
         }
-
         return daoConfig;
     }
 
@@ -420,7 +420,7 @@ public class MybatisGenerator {
         if (config.isAnnotation()) {
             commentConfig.addProperty("annotations", "true");
         }
-
+        commentConfig.addProperty("dateFormat", "yyyy-MM-dd HH:mm:ss");
         return commentConfig;
     }
 
@@ -439,7 +439,6 @@ public class MybatisGenerator {
         context.addPluginConfiguration(serializablePlugin);
 
         PluginConfiguration daoEntityAnnotationPlugin = new PluginConfiguration();
-        daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
         daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
         String domainObjectName = context.getTableConfigurations().get(0).getDomainObjectName();
         String targetPackage = context.getJavaModelGeneratorConfiguration().getTargetPackage();
@@ -480,6 +479,8 @@ public class MybatisGenerator {
         //for JSR310
         if (config.isJsr310Support()) {
             JavaTypeResolverConfiguration javaTypeResolverPlugin = new JavaTypeResolverConfiguration();
+            javaTypeResolverPlugin.addProperty("type", JavaTypeResolverJsr310Impl.class.getName());
+            javaTypeResolverPlugin.setConfigurationType(JavaTypeResolverJsr310Impl.class.getName());
             context.setJavaTypeResolverConfiguration(javaTypeResolverPlugin);
         }
 

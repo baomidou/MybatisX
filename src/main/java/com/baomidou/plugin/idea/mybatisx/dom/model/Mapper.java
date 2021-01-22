@@ -1,6 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.dom.model;
 
+import com.baomidou.plugin.idea.mybatisx.dom.converter.NamespaceConverter;
+import com.intellij.psi.PsiClass;
 import com.intellij.util.xml.Attribute;
+import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.NameValue;
@@ -37,9 +40,10 @@ public interface Mapper extends DomElement {
      */
     @Required
     @NameValue
+    @Convert(NamespaceConverter.class)
     @NotNull
     @Attribute("namespace")
-    GenericAttributeValue<String> getNamespace();
+    GenericAttributeValue<PsiClass> getNamespace();
 
     /**
      * Gets result maps.

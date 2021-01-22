@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author yanglin
  */
-public interface Select extends GroupTwo, ResultMapGroup {
+public interface Select extends GroupTwo, ResultMapGroup, IdDomElement  {
 
     /**
      * Gets result type.
@@ -23,4 +23,5 @@ public interface Select extends GroupTwo, ResultMapGroup {
     @Attribute("resultType")
     @Convert(AliasConverter.class)
     GenericAttributeValue<PsiClass> getResultType();
+
 }

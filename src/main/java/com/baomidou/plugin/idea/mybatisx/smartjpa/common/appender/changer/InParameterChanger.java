@@ -40,7 +40,9 @@ public class InParameterChanger implements MxParameterChanger {
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(fieldName).append(" ").append(getIn()).append("\n");
-        stringBuilder.append("<foreach collection=\"").append(collectionName).append("\" item=\"item\" open=\"(\" close=\")\" separator=\",\">").append("\n");
+        stringBuilder.append("<foreach collection=\"")
+            .append(collectionName)
+            .append("\" item=\"item\" open=\"(\" close=\")\" separator=\",\">").append("\n");
         stringBuilder.append(itemContent).append("\n");
         stringBuilder.append("</foreach>");
         return stringBuilder.toString();

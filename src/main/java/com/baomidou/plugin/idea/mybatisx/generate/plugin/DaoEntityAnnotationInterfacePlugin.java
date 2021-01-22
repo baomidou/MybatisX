@@ -17,11 +17,13 @@ public class DaoEntityAnnotationInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
+
         interfaze.addJavaDocLine("/**");
         interfaze.addJavaDocLine(" * @Entity " + getProperties().getProperty("domainName"));
         interfaze.addJavaDocLine(" */");
         return true;
     }
+
 
     @Override
     public boolean validate(List<String> list) {

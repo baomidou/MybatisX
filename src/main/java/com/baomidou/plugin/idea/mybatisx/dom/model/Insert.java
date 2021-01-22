@@ -5,6 +5,6 @@ package com.baomidou.plugin.idea.mybatisx.dom.model;
  *
  * @author yanglin
  */
-public interface Insert extends GroupThree {
+public interface Insert extends GroupThree, IdDomElement  {
 
 }
