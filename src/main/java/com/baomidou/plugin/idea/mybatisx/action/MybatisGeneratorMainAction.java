@@ -1,13 +1,26 @@
 package com.baomidou.plugin.idea.mybatisx.action;
 
 
-import com.baomidou.plugin.idea.mybatisx.ui.MybatisGeneratorMainUI;
+import com.baomidou.plugin.idea.mybatisx.model.Config;
+import com.baomidou.plugin.idea.mybatisx.model.TableInfo;
+import com.baomidou.plugin.idea.mybatisx.ui.CodeGenerateUI;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import com.google.common.base.Joiner;
+import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -23,7 +36,17 @@ public class MybatisGeneratorMainAction extends AnAction {
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        new MybatisGeneratorMainUI(e);
+        /**
+         * 代码生成
+         */
+        Project project = e.getProject();
+        ClassGenerateDialogWrapper classGenerateDialogWrapper = new ClassGenerateDialogWrapper(project);
+        classGenerateDialogWrapper.show();
+        // 模态窗口选择 OK, 生成相关代码
+        if (classGenerateDialogWrapper.getExitCode() == Messages.YES) {
+            PsiElement[] tableElements = e.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
+            classGenerateDialogWrapper.generateCode(tableElements);
+        }
     }
 
     @Override

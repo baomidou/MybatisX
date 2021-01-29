@@ -73,15 +73,12 @@ public abstract class AbstractStatementGenerator {
      */
     public static final Set<AbstractStatementGenerator> ALL = ImmutableSet.of(UPDATE_GENERATOR, SELECT_GENERATOR, DELETE_GENERATOR, INSERT_GENERATOR);
 
-    private static final Function<Mapper, String> FUN = new Function<Mapper, String>() {
-        @Override
-        public String apply(Mapper mapper) {
-            VirtualFile vf = mapper.getXmlTag().getContainingFile().getVirtualFile();
-            if (null == vf) {
-                return "";
-            }
-            return vf.getCanonicalPath();
+    private static final Function<Mapper, String> FUN = mapper -> {
+        VirtualFile vf = mapper.getXmlTag().getContainingFile().getVirtualFile();
+        if (null == vf) {
+            return "";
         }
+        return vf.getCanonicalPath();
     };
     private Set<String> patterns;
 
@@ -144,12 +141,7 @@ public abstract class AbstractStatementGenerator {
             BaseListPopupStep<AbstractStatementGenerator> step = new BaseListPopupStep<AbstractStatementGenerator>("[ Statement type for method: " + method.getName() + "]", generators) {
                 @Override
                 public PopupStep onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
-                    return this.doFinalStep(new Runnable() {
-                        @Override
-                        public void run() {
-                            WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method));
-                        }
-                    });
+                    return this.doFinalStep(() -> WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method)));
                 }
             };
             JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
@@ -164,12 +156,14 @@ public abstract class AbstractStatementGenerator {
      */
     @NotNull
     public static AbstractStatementGenerator[] getGenerators(@NotNull PsiMethod method) {
-        GenerateModel model = MybatisXSettings.getInstance().getStatementGenerateModel();
         String target = method.getName();
         List<AbstractStatementGenerator> result = Lists.newArrayList();
         for (AbstractStatementGenerator generator : ALL) {
-            if (model.matchesAny(generator.getPatterns(), target)) {
-                result.add(generator);
+            for (String pattern : generator.getPatterns()) {
+                // 一定是以关键字开头
+                if(target.startsWith(pattern)){
+                    result.add(generator);
+                }
             }
         }
         return CollectionUtils.isNotEmpty(result) ? result.toArray(new AbstractStatementGenerator[result.size()]) : ALL.toArray(new AbstractStatementGenerator[ALL.size()]);

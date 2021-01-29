@@ -23,7 +23,6 @@ import java.util.Set;
  */
 public class JpaAdvanceDialog extends DialogWrapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(JpaAdvanceDialog.class);
     private SmartJpaAdvanceUI smartJpaAdvanceUI = new SmartJpaAdvanceUI();
 
 

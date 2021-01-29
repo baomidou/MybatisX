@@ -2,18 +2,28 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <!-- 项目配置 -->
-        <projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting"
+        <!--<projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting"
                              id="baomidou.MybatisGeneratorConfigurable"
-                             dynamic="true"
                              instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
+        -->
+        <!--<projectService id="baomidou.PersistentConfig"
+                        serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>-->
+
+        <!-- 应用服务 -->
+        <applicationService id="baomidou.MybatisSetting"
+                            serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
+        <!-- 通过模板生成代码的项目配置 -->
+        <projectConfigurable groupId="mybatisx.settings" displayName="Templates"
+                             id="baomidou.MybatisTemplateGeneratorConfigurable"
+                             instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisTemplateGeneratorConfigurable"/>
     </extensions>
 
     <actions>
 
         <action id="bmd-mybatis-generate-action"
                 class="com.baomidou.plugin.idea.mybatisx.action.MybatisGeneratorMainAction"
-                text="Mybatis-Generator"
-                description="Mybatis generator idea plugin">
+                text="MybatisX-Generator"
+                description="MybatisX generator idea plugin">
             <add-to-group group-id="DatabaseViewPopupMenu" anchor="first"/>
         </action>
     </actions>

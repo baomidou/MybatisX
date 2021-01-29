@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
-import com.baomidou.plugin.idea.mybatisx.generate.GenerateModel;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
@@ -27,12 +26,6 @@ public class MybatisConfigurable implements SearchableConfigurable {
 
     private MybatisSettingForm mybatisSettingForm;
 
-    private String separator = ";";
-
-    private Splitter splitter = Splitter.on(separator).omitEmptyStrings().trimResults();
-
-    private Joiner joiner = Joiner.on(separator);
-
     /**
      * Instantiates a new Mybatis configurable.
      */
@@ -42,7 +35,7 @@ public class MybatisConfigurable implements SearchableConfigurable {
 
     @Override
     public String getId() {
-        return "Mybatis";
+        return "MybatisX";
     }
 
     @Override
@@ -73,23 +66,22 @@ public class MybatisConfigurable implements SearchableConfigurable {
 
     @Override
     public boolean isModified() {
-        return mybatisXSettings.getStatementGenerateModel().getIdentifier() != mybatisSettingForm.modelComboBox.getSelectedIndex()
-            || !joiner.join(INSERT_GENERATOR.getPatterns()).equals(mybatisSettingForm.insertPatternTextField.getText())
-            || !joiner.join(DELETE_GENERATOR.getPatterns()).equals(mybatisSettingForm.deletePatternTextField.getText())
-            || !joiner.join(UPDATE_GENERATOR.getPatterns()).equals(mybatisSettingForm.updatePatternTextField.getText())
-            || !joiner.join(SELECT_GENERATOR.getPatterns()).equals(mybatisSettingForm.selectPatternTextField.getText())
+        return  !mybatisXSettings.getInsertGenerator().equals(mybatisSettingForm.insertPatternTextField.getText())
+            || !mybatisXSettings.getDeleteGenerator().equals(mybatisSettingForm.deletePatternTextField.getText())
+            || !mybatisXSettings.getUpdateGenerator().equals(mybatisSettingForm.updatePatternTextField.getText())
+            || !mybatisXSettings.getSelectGenerator().equals(mybatisSettingForm.selectPatternTextField.getText())
             || (mybatisSettingForm.defaultRadioButton.isSelected() ?
             MybatisXSettings.MapperIcon.BIRD.name().equals(mybatisXSettings.getMapperIcon())
             : MybatisXSettings.MapperIcon.DEFAULT.name().equals(mybatisXSettings.getMapperIcon()));
     }
 
     @Override
-    public void apply() throws ConfigurationException {
-        mybatisXSettings.setStatementGenerateModel(GenerateModel.getInstance(mybatisSettingForm.modelComboBox.getSelectedIndex()));
-        INSERT_GENERATOR.setPatterns(Sets.newHashSet(splitter.split(mybatisSettingForm.insertPatternTextField.getText())));
-        DELETE_GENERATOR.setPatterns(Sets.newHashSet(splitter.split(mybatisSettingForm.deletePatternTextField.getText())));
-        UPDATE_GENERATOR.setPatterns(Sets.newHashSet(splitter.split(mybatisSettingForm.updatePatternTextField.getText())));
-        SELECT_GENERATOR.setPatterns(Sets.newHashSet(splitter.split(mybatisSettingForm.selectPatternTextField.getText())));
+    public void apply() {
+        mybatisXSettings.setInsertGenerator(mybatisSettingForm.insertPatternTextField.getText());
+        mybatisXSettings.setDeleteGenerator(mybatisSettingForm.deletePatternTextField.getText());
+        mybatisXSettings.setUpdateGenerator(mybatisSettingForm.updatePatternTextField.getText());
+        mybatisXSettings.setSelectGenerator(mybatisSettingForm.selectPatternTextField.getText());
+
         String mapperIcon = mybatisSettingForm.defaultRadioButton.isSelected() ?
             MybatisXSettings.MapperIcon.DEFAULT.name() :
             MybatisXSettings.MapperIcon.BIRD.name();
@@ -98,21 +90,16 @@ public class MybatisConfigurable implements SearchableConfigurable {
 
     @Override
     public void reset() {
-        mybatisSettingForm.modelComboBox.setSelectedIndex(mybatisXSettings.getStatementGenerateModel().getIdentifier());
-        mybatisSettingForm.insertPatternTextField.setText(joiner.join(INSERT_GENERATOR.getPatterns()));
-        mybatisSettingForm.deletePatternTextField.setText(joiner.join(DELETE_GENERATOR.getPatterns()));
-        mybatisSettingForm.updatePatternTextField.setText(joiner.join(UPDATE_GENERATOR.getPatterns()));
-        mybatisSettingForm.selectPatternTextField.setText(joiner.join(SELECT_GENERATOR.getPatterns()));
+        mybatisSettingForm.insertPatternTextField.setText(mybatisXSettings.getInsertGenerator());
+        mybatisSettingForm.deletePatternTextField.setText(mybatisXSettings.getDeleteGenerator());
+        mybatisSettingForm.updatePatternTextField.setText(mybatisXSettings.getUpdateGenerator());
+        mybatisSettingForm.selectPatternTextField.setText(mybatisXSettings.getSelectGenerator());
 
-        String mapperIcon = mybatisXSettings.getMapperIcon();
-        if (mapperIcon == null) {
-            mapperIcon = MybatisXSettings.MapperIcon.BIRD.name();
+        JRadioButton jRadioButton =  mybatisSettingForm.birdRadioButton;
+        if (MybatisXSettings.MapperIcon.DEFAULT.name().equals(mybatisXSettings.getMapperIcon())) {
+            jRadioButton = mybatisSettingForm.defaultRadioButton;
         }
-        if (MybatisXSettings.MapperIcon.BIRD.name().equals(mapperIcon)) {
-            mybatisSettingForm.birdRadioButton.setSelected(true);
-        } else {
-            mybatisSettingForm.defaultRadioButton.setSelected(true);
-        }
+        jRadioButton.setSelected(true);
     }
 
     @Override

@@ -1,19 +1,13 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
-import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
-import com.baomidou.plugin.idea.mybatisx.generate.GenerateModel;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.common.base.Joiner;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import org.jdom.Element;
+import com.intellij.util.xmlb.XmlSerializerUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Type;
-import java.util.Set;
 
 import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.DELETE_GENERATOR;
 import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.INSERT_GENERATOR;
@@ -22,96 +16,94 @@ import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenera
 
 /**
  * The type Mybatis setting.
+ * 这里是全局配置, 所以配置文件在目录($APP_CONFIG$)下
  *
  * @author yanglin
  */
 @State(
     name = "MybatisXSettings",
-    storages = @Storage(value = "$APP_CONFIG$/mybatis.xml"))
-public class MybatisXSettings implements PersistentStateComponent<Element> {
+    storages = @Storage(value = "$APP_CONFIG$/mybatisx.xml"))
+public class MybatisXSettings implements PersistentStateComponent<MybatisXSettings> {
 
-    private static final String MAPPER_ICON = "mapperIcon";
-    private GenerateModel statementGenerateModel;
-
-    private Gson gson = new Gson();
-
-    private Type gsonTypeToken = new TypeToken<Set<String>>() {
-    }.getType();
+    // 配置的默认值
     private String mapperIcon;
+    private String insertGenerator;
+    private String updateGenerator;
+    private String deleteGenerator;
+    private String selectGenerator;
 
-    /**
-     * Instantiates a new Mybatis setting.
-     */
-    public MybatisXSettings() {
-        statementGenerateModel = GenerateModel.START_WITH_MODEL;
-    }
-
+    private static transient Joiner joiner = Joiner.on(";");
     /**
      * Gets instance.
      *
      * @return the instance
      */
     public static MybatisXSettings getInstance() {
-        return ServiceManager.getService(MybatisXSettings.class);
+        MybatisXSettings service = ServiceManager.getService(MybatisXSettings.class);
+        // 配置的默认值
+        if (service.insertGenerator == null) {
+            service.insertGenerator = joiner.join(INSERT_GENERATOR.getPatterns());
+        }
+        if (service.updateGenerator == null) {
+            service.updateGenerator = joiner.join(UPDATE_GENERATOR.getPatterns());
+        }
+        if (service.deleteGenerator == null) {
+            service.deleteGenerator = joiner.join(DELETE_GENERATOR.getPatterns());
+        }
+        if (service.selectGenerator == null) {
+            service.selectGenerator = joiner.join(SELECT_GENERATOR.getPatterns());
+        }
+        if (service.mapperIcon == null) {
+            service.mapperIcon = MapperIcon.BIRD.name();
+        }
+        return service;
     }
 
     @Nullable
     @Override
-    public Element getState() {
-        Element element = new Element("MybatisSettings");
-        element.setAttribute(INSERT_GENERATOR.getId(), gson.toJson(INSERT_GENERATOR.getPatterns()));
-        element.setAttribute(DELETE_GENERATOR.getId(), gson.toJson(DELETE_GENERATOR.getPatterns()));
-        element.setAttribute(UPDATE_GENERATOR.getId(), gson.toJson(UPDATE_GENERATOR.getPatterns()));
-        element.setAttribute(SELECT_GENERATOR.getId(), gson.toJson(SELECT_GENERATOR.getPatterns()));
-        element.setAttribute("statementGenerateModel", String.valueOf(statementGenerateModel.getIdentifier()));
-        element.setAttribute("mapperIcon", getMapperIcon());
-        return element;
+    public MybatisXSettings getState() {
+        return this;
     }
 
     @Override
-    public void loadState(Element state) {
-        loadState(state, INSERT_GENERATOR);
-        loadState(state, DELETE_GENERATOR);
-        loadState(state, UPDATE_GENERATOR);
-        loadState(state, SELECT_GENERATOR);
-        statementGenerateModel = GenerateModel.getInstance(state.getAttributeValue("statementGenerateModel"));
-        String mapperIcon = state.getAttributeValue(MAPPER_ICON);
-        if (StringUtils.isEmpty(mapperIcon)) {
-            mapperIcon = MapperIcon.BIRD.name();
-        }
-        this.mapperIcon = mapperIcon;
+    public void loadState(@NotNull MybatisXSettings state) {
+        XmlSerializerUtil.copyBean(state, this);
     }
 
-    private void loadState(Element state, AbstractStatementGenerator generator) {
-        String attribute = state.getAttributeValue(generator.getId());
-        if (null != attribute) {
-            generator.setPatterns(gson.fromJson(attribute, gsonTypeToken));
-        }
+    public String getInsertGenerator() {
+        return insertGenerator;
     }
 
-    /**
-     * Gets statement generate model.
-     *
-     * @return the statement generate model
-     */
-    public GenerateModel getStatementGenerateModel() {
-        return statementGenerateModel;
+    public String getUpdateGenerator() {
+        return updateGenerator;
     }
 
-    /**
-     * Sets statement generate model.
-     *
-     * @param statementGenerateModel the statement generate model
-     */
-    public void setStatementGenerateModel(GenerateModel statementGenerateModel) {
-        this.statementGenerateModel = statementGenerateModel;
+    public String getDeleteGenerator() {
+        return deleteGenerator;
+    }
+
+    public String getSelectGenerator() {
+        return selectGenerator;
     }
 
     public String getMapperIcon() {
-        if (mapperIcon == null) {
-            mapperIcon = MapperIcon.BIRD.name();
-        }
         return mapperIcon;
+    }
+
+    public void setInsertGenerator(String insertGenerator) {
+        this.insertGenerator = insertGenerator;
+    }
+
+    public void setUpdateGenerator(String updateGenerator) {
+        this.updateGenerator = updateGenerator;
+    }
+
+    public void setDeleteGenerator(String deleteGenerator) {
+        this.deleteGenerator = deleteGenerator;
+    }
+
+    public void setSelectGenerator(String selectGenerator) {
+        this.selectGenerator = selectGenerator;
     }
 
     public void setMapperIcon(String mapperIcon) {
