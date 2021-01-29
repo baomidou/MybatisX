@@ -35,10 +35,6 @@ public class MybatisSettingForm {
     public JPanel mainPanel;
 
     /**
-     * The Model combo box.
-     */
-    public JComboBox modelComboBox;
-    /**
      * default icon
      */
     public JRadioButton defaultRadioButton;

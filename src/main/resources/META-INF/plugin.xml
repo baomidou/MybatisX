@@ -55,7 +55,8 @@
     <depends optional="true" config-file="spring-boot.xml">com.intellij.spring.boot</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-
+        <projectService id="baomidou.TemplatesSettings"
+                        serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.TemplatesSettings"/>
         <!--文件描述-->
         <!-- mapper.xml文件属性提示 -->
         <dom.fileDescription id="baomidou.MapperDescription"
@@ -89,12 +90,9 @@
         <codeInsight.lineMarkerProvider id="baomidou.InjectionLineMarkerProvider" language="JAVA"
                                         implementationClass="com.baomidou.plugin.idea.mybatisx.provider.InjectionLineMarkerProvider"/>
 
-        <!-- 设置中的配置 -->
+<!--         设置中的配置 -->
         <applicationConfigurable id="mybatisx.settings" instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
 
-        <!-- 应用服务 -->
-        <applicationService id="baomidou.MybatisSetting"
-            serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
 
 
         <!-- xml 标签提示 -->
@@ -159,7 +157,7 @@
         <!-- mybatis的xml和mapper类 文件图标都改成一只鸟-->
         <iconProvider id="baomidou.XmlAndMapperIconProvider"  implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
 
-        <projectService id="baomidou.PersistentConfig" serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>
+
 
         <!-- mapper.xml文件 #{} 区域的引用跳转 -->
         <psi.referenceContributor id="hashMarkerReferenceContributor"
