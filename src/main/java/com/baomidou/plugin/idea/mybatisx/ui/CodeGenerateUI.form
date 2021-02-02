@@ -3,12 +3,12 @@
   <grid id="27dc6" binding="rootPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="587" height="442"/>
+      <xy x="20" y="20" width="691" height="455"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="1620" binding="containingPanelS" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="1620" binding="containingPanel" layout-manager="GridLayoutManager" row-count="7" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -24,9 +24,9 @@
               <text value="table name"/>
             </properties>
           </component>
-          <component id="608eb" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+          <component id="608eb" class="javax.swing.JTextField" binding="tableNameTextField">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+              <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
@@ -34,7 +34,7 @@
           </component>
           <component id="aa6a2" class="javax.swing.JLabel">
             <constraints>
-              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="options"/>
@@ -42,24 +42,24 @@
           </component>
           <component id="cbc79" class="javax.swing.JLabel">
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="project folder"/>
             </properties>
           </component>
-          <component id="43ccb" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+          <component id="43ccb" class="javax.swing.JTextField" binding="projectFolderTextField">
             <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+              <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
             <properties/>
           </component>
-          <grid id="13997" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="13997" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -69,135 +69,99 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <selected value="false"/>
                   <text value="Comment"/>
+                </properties>
+              </component>
+              <component id="c5241" class="javax.swing.JCheckBox" binding="toStringHashCodeEqualsCheckBox" default-binding="true">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <enabled value="true"/>
+                  <selected value="false"/>
+                  <text value="toString/hashCode/equals"/>
                 </properties>
               </component>
               <component id="b062a" class="javax.swing.JCheckBox" binding="lombokCheckBox" default-binding="true">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Lombok"/>
                 </properties>
               </component>
-              <component id="2bc41" class="javax.swing.JCheckBox" binding="simpleModeCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Simple Mode"/>
-                </properties>
-              </component>
               <component id="5ff74" class="javax.swing.JCheckBox" binding="actualColumnCheckBox" default-binding="true">
                 <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Actual Column"/>
                 </properties>
               </component>
-              <component id="16cab" class="javax.swing.JCheckBox" binding="aliasCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Alias"/>
-                </properties>
-              </component>
-              <component id="5f28a" class="javax.swing.JCheckBox" binding="repositoryAnnotationCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Repository Annotation"/>
-                </properties>
-              </component>
-              <component id="98db4" class="javax.swing.JCheckBox" binding="JPAAnnotationCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="JPA Annotation"/>
-                </properties>
-              </component>
-              <component id="9d244" class="javax.swing.JCheckBox" binding="mapperAnnotationCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Mapper Annotation"/>
-                </properties>
-              </component>
-              <component id="2e7c0" class="javax.swing.JCheckBox" binding="schemaPrefixCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Schema prefix"/>
-                </properties>
-              </component>
-              <component id="96fc9" class="javax.swing.JCheckBox" binding="parentInterfaceCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Parent Interface"/>
-                </properties>
-              </component>
               <component id="56eec" class="javax.swing.JCheckBox" binding="JSR310DateAPICheckBox" default-binding="true">
                 <constraints>
-                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="JSR310: Date API"/>
                 </properties>
               </component>
-              <component id="b0c17" class="javax.swing.JCheckBox" binding="pageCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Page"/>
-                </properties>
-              </component>
-              <component id="c5241" class="javax.swing.JCheckBox" binding="toStringHashCodeEqualsCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="toString/hashCode/equals"/>
-                </properties>
-              </component>
             </children>
           </grid>
-          <component id="d0b55" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="primary key"/>
-            </properties>
-          </component>
-          <component id="647e4" class="javax.swing.JTextField" binding="textField4" default-binding="true">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
-              </grid>
-            </constraints>
-            <properties/>
-          </component>
-          <component id="2063d" class="javax.swing.JLabel">
+          <component id="dcf3f" class="javax.swing.JLabel">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="templates"/>
+              <text value="annotation"/>
             </properties>
           </component>
-          <grid id="710dc" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <component id="255c4" class="javax.swing.JRadioButton" binding="noneRadioButton">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <selected value="true"/>
+              <text value="None"/>
+            </properties>
+          </component>
+          <component id="d76be" class="javax.swing.JRadioButton" binding="mybatisPlus3RadioButton" default-binding="true">
+            <constraints>
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Mybatis-Plus 3"/>
+            </properties>
+          </component>
+          <component id="535a4" class="javax.swing.JRadioButton" binding="mybatisPlus2RadioButton" default-binding="true">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Mybatis-Plus 2"/>
+            </properties>
+          </component>
+          <component id="d47e6" class="javax.swing.JRadioButton" binding="JPARadioButton" default-binding="true">
+            <constraints>
+              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="JPA"/>
+            </properties>
+          </component>
+          <component id="cfb3f" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="template extra"/>
+            </properties>
+          </component>
+          <grid id="710dc" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -205,7 +169,7 @@
               <grid id="1f93b" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
@@ -218,7 +182,7 @@
                       <text value="file"/>
                     </properties>
                   </component>
-                  <component id="439ca" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+                  <component id="439ca" class="javax.swing.JTextField" binding="fileTextField">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -234,15 +198,7 @@
                       <text value="module"/>
                     </properties>
                   </component>
-                  <component id="b2b8" class="javax.swing.JTextField" binding="textField5" default-binding="true">
-                    <constraints>
-                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                        <preferred-size width="150" height="-1"/>
-                      </grid>
-                    </constraints>
-                    <properties/>
-                  </component>
-                  <component id="b2f54" class="javax.swing.JTextField" binding="textField6" default-binding="true">
+                  <component id="b2f54" class="javax.swing.JTextField" binding="basePathTextField">
                     <constraints>
                       <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -266,7 +222,7 @@
                       <text value="package"/>
                     </properties>
                   </component>
-                  <component id="5bed4" class="javax.swing.JTextField" binding="textField7" default-binding="true">
+                  <component id="5bed4" class="javax.swing.JTextField" binding="packageTextField">
                     <constraints>
                       <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -274,22 +230,34 @@
                     </constraints>
                     <properties/>
                   </component>
+                  <component id="ae4f5" class="javax.swing.JComboBox" binding="moduleComboBox">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <component id="a20dc" class="javax.swing.JCheckBox" binding="modelCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="100" height="-1"/>
-                    <preferred-size width="100" height="-1"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <enabled value="false"/>
-                  <selected value="true"/>
-                  <text value="Model"/>
-                </properties>
-              </component>
             </children>
+          </grid>
+          <component id="2063d" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="model"/>
+            </properties>
+          </component>
+          <grid id="dc9c" binding="templateExtraPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="6" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children/>
           </grid>
         </children>
       </grid>
@@ -300,4 +268,12 @@
       </vspacer>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="annotationGroup">
+      <member id="255c4"/>
+      <member id="d47e6"/>
+      <member id="d76be"/>
+      <member id="535a4"/>
+    </group>
+  </buttonGroups>
 </form>

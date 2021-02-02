@@ -1,4 +1,4 @@
-package ${javaMapper.packageName};
+package ${mapperInterface.packageName};
 
 import ${tableClass.fullClassName};
 <#if tableClass.pkFields??>
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Entity ${tableClass.fullClassName}
  */
-public interface ${javaMapper.fileName} extends BaseMapper<${tableClass.shortClassName}> {
+public interface ${mapperInterface.fileName} extends BaseMapper<${tableClass.shortClassName}> {
 
 }
 

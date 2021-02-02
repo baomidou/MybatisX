@@ -1,5 +1,7 @@
 buildscript {
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        mavenLocal()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
@@ -55,6 +57,7 @@ dependencies {
     compile group: 'com.softwareloop', name: 'mybatis-generator-lombok-plugin', version: '1.0'
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.2'
     compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: '1.4.0'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.29'
     testCompile "junit:junit:4.12"
     testCompile group: 'commons-io', name: 'commons-io', version: '2.8.0'
     compileOnly "org.projectlombok:lombok:1.18.0"

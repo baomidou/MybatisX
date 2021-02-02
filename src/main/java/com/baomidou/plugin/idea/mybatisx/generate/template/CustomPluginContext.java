@@ -1,34 +1,13 @@
-package com.baomidou.plugin.idea.mybatisx.setting.template;
+package com.baomidou.plugin.idea.mybatisx.generate.template;
 
-public class TemplateSettingDTO {
-    /**
-     * 配置名称
-     */
-    private String configName;
-    /**
-     * 文件名
-     */
+public class CustomPluginContext {
+    private String templateName;
     private String fileName;
-    /**
-     * 后缀
-     */
     private String suffix;
-    /**
-     * 包名
-     */
     private String packageName;
-    /**
-     * 编码
-     */
     private String encoding;
-    /**
-     * 模板内容
-     */
-    private String templateText;
-    /**
-     * 相对模块的资源文件路径
-     */
     private String basePath;
+    private String modulePath;
 
     public String getBasePath() {
         return basePath;
@@ -38,12 +17,12 @@ public class TemplateSettingDTO {
         this.basePath = basePath;
     }
 
-    public String getConfigName() {
-        return configName;
+    public String getTemplateName() {
+        return templateName;
     }
 
-    public void setConfigName(String configName) {
-        this.configName = configName;
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 
     public String getFileName() {
@@ -78,11 +57,11 @@ public class TemplateSettingDTO {
         this.encoding = encoding;
     }
 
-    public String getTemplateText() {
-        return templateText;
+    public String getModulePath() {
+        return modulePath;
     }
 
-    public void setTemplateText(String templateText) {
-        this.templateText = templateText;
+    public void setModulePath(String modulePath) {
+        this.modulePath = modulePath;
     }
 }

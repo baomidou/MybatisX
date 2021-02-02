@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
+import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateSettingDTO;
 
 import javax.swing.*;
@@ -26,16 +27,17 @@ public class MybatisXTemplateSettings {
         return rootPanel;
     }
 
-    public void loadSettings(Map<String, List<TemplateSettingDTO>> templateSettingDTOMap) {
-        // 第一个版本只有一个不可更改的配置, 这里直接取第一个就可以了
-        List<TemplateSettingDTO> templateSettingDTOS = templateSettingDTOMap.values().iterator().next();
+    public void loadSettings(TemplateContext templateContext) {
+        // 第一个版本只有一个不可更改的配置, 这里直接取默认就可以了
+        Map<String, List<TemplateSettingDTO>> templateSettingMap = templateContext.getTemplateSettingMap();
+        List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
         configTree.addTreeSelectionListener(new MyTreeSelectionListener(templateSettingDTOS));
 
         DefaultTreeModel model = (DefaultTreeModel) configTree.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) configTree.getModel().getRoot();
         root.removeAllChildren();
 
-        for (Map.Entry<String, List<TemplateSettingDTO>> stringListEntry : templateSettingDTOMap.entrySet()) {
+        for (Map.Entry<String, List<TemplateSettingDTO>> stringListEntry : templateSettingMap.entrySet()) {
             DefaultMutableTreeNode theme = new DefaultMutableTreeNode(stringListEntry.getKey());
             model.insertNodeInto(theme, root, root.getChildCount());
 
