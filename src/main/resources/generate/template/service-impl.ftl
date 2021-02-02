@@ -1,5 +1,6 @@
 package ${baseInfo.packageName};
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ${tableClass.fullClassName};
 <#if baseService??&&baseService!="">
 import ${baseService};
@@ -12,9 +13,11 @@ import ${baseService};
 import org.springframework.stereotype.Service;
 
 /**
-*/
+ *
+ */
 @Service
-public class ${baseInfo.fileName} {
+public class ${baseInfo.fileName} extends ServiceImpl<${mapperInterface.fileName}, ${tableClass.shortClassName}>
+implements ${service.fileName}{
 
 }
 

@@ -46,7 +46,7 @@ public class MergeJavaCallBack extends DefaultShellCallback {
     @Override
     public String mergeJavaFile(String newFileSource, File existingFile, String[] javadocTags, String fileEncoding) throws ShellException {
         String result = newFileSource;
-        System.out.println(result);
+
         String existingFileFullPath = existingFile.getAbsolutePath();
         if (isClassInterface(existingFileFullPath)) {
             result = readFile(existingFileFullPath);

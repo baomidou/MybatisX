@@ -1,0 +1,232 @@
+package com.baomidou.plugin.idea.mybatisx.generate.template;
+
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.DaoEntityAnnotationInterfacePlugin;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.IntellijMyBatisGenerator;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.JavaTypeResolverJsr310Impl;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBack;
+import com.baomidou.plugin.idea.mybatisx.setting.TemplatesSettings;
+import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateContext;
+import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
+import com.intellij.database.psi.DbTable;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
+import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
+import org.mybatis.generator.config.CommentGeneratorConfiguration;
+import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.config.JavaTypeResolverConfiguration;
+import org.mybatis.generator.config.ModelType;
+import org.mybatis.generator.config.PluginConfiguration;
+import org.mybatis.generator.config.TableConfiguration;
+import org.mybatis.generator.internal.NullProgressCallback;
+import org.mybatis.generator.plugins.EqualsHashCodePlugin;
+import org.mybatis.generator.plugins.SerializablePlugin;
+import org.mybatis.generator.plugins.ToStringPlugin;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+/**
+ * 代码生成入口
+ */
+public class GenerateCode {
+    /**
+     * 实体名称占位符号
+     */
+    public static final String DOMAIN_STUB = "\\$\\{domain\\}";
+
+    public static void generate(Project project,
+                                GenerateConfig generateConfig,
+                                PsiElement psiElement) throws Exception {
+
+        List<String> warnings = new ArrayList<>();
+        Configuration config = new Configuration();
+
+
+        Context context = new Context(ModelType.CONDITIONAL) {
+            @Override
+            public void validate(List<String> errors) {
+            }
+        };
+        context.setId("MybatisXContext");
+
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
+        String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();
+        javaModelGeneratorConfiguration.setTargetProject(targetProject);
+        javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getPackageName());
+        context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
+
+        buildTableConfiguration(generateConfig, context);
+
+        CommentGeneratorConfiguration commentGeneratorConfiguration = new CommentGeneratorConfiguration();
+        commentGeneratorConfiguration.setConfigurationType(CustomDefaultCommentGenerator.class.getName());
+        commentGeneratorConfiguration.addProperty("suppressDate", "true");
+        commentGeneratorConfiguration.addProperty("annotationType",generateConfig.getAnnotationType());
+
+        context.setCommentGeneratorConfiguration(commentGeneratorConfiguration);
+
+        JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
+        javaTypeResolverConfiguration.addProperty("forceBigDecimals", "false");
+        context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
+        // 序列化，给实体类添加注释
+
+        configExtraPlugin(project, generateConfig, context);
+
+        addPluginConfiguration(context, generateConfig);
+        config.addContext(context);
+
+        IntellijTableInfo intellijTableInfo = DbToolsUtils.buildIntellijTableInfo((DbTable) psiElement);
+        Set<String> contexts = new HashSet<>();
+        Set<String> fullyqualifiedTables = new HashSet<>();
+        IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(config, new MergeJavaCallBack(true), warnings);
+        intellijMyBatisGenerator.generate(new NullProgressCallback(), contexts, fullyqualifiedTables, intellijTableInfo);
+
+        VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
+        if (virtualFile != null) {
+            virtualFile.refresh(true, true);
+        }
+    }
+
+    private static void buildTableConfiguration(GenerateConfig generateConfig, Context context) {
+        TableConfiguration tc = new TableConfiguration(context);
+        tc.setTableName(generateConfig.getTableName());
+        tc.setDomainObjectName(generateConfig.getDomainObjectName());
+
+
+        if (generateConfig.isUseActualColumns()) {
+            tc.addProperty("useActualColumnNames", "true");
+        }
+
+        context.addTableConfiguration(tc);
+    }
+
+    private static void configExtraPlugin(Project project, GenerateConfig generateConfig, Context context) {
+        TemplatesSettings instance = TemplatesSettings.getInstance(project);
+        TemplateContext templateConfigs = instance.getTemplateConfigs();
+        List<TemplateSettingDTO> list = templateConfigs.getTemplateSettingMap().get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
+        HashMap<String, Object> stringStringMap = buildRootConfig(generateConfig.getTargetProject(), generateConfig.getDomainObjectName(), list);
+
+        for (String extraTemplateName : generateConfig.getExtraTemplateNames()) {
+            Optional<TemplateSettingDTO> first = list.stream().filter(x -> x.getConfigName().equalsIgnoreCase(extraTemplateName)).findFirst();
+            if (first.isPresent()) {
+                TemplateSettingDTO templateSettingDTO = first.get();
+                addPlugin(context, stringStringMap, extraTemplateName, templateSettingDTO.getTemplateText());
+            }
+
+        }
+    }
+
+    private static void addPlugin(Context context, Serializable stringStringMap, String javaService, String templateText) {
+        PluginConfiguration serviceJavaPluginConfiguration = new PluginConfiguration();
+        serviceJavaPluginConfiguration.setConfigurationType(CustomTemplatePlugin.class.getName());
+        serviceJavaPluginConfiguration.addProperty("currentName", javaService);
+        // 模板的内容
+        serviceJavaPluginConfiguration.addProperty("templateText", templateText);
+        addRootMapToConfig(stringStringMap, serviceJavaPluginConfiguration);
+        context.addPluginConfiguration(serviceJavaPluginConfiguration);
+    }
+
+    private static void addRootMapToConfig(Serializable stringStringMap, PluginConfiguration customPluginConfiguration) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(out)) {
+            objectOutputStream.writeObject(stringStringMap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] encode = Base64.getEncoder().encode(out.toByteArray());
+        customPluginConfiguration.addProperty("root", new String(encode));
+    }
+
+    private static HashMap<String, Object> buildRootConfig(String targetProject, String domainObjectName, List<TemplateSettingDTO> templateConfigs) {
+        // 生成的模板参照 https://gitee.com/baomidou/SpringWind/tree/spring-mvc/SpringWind/src/main/java/com/baomidou/springwind/mapper
+        HashMap<String, Object> rootConfig = new HashMap<>();
+        for (TemplateSettingDTO stringListEntry : templateConfigs) {
+            Map<String, String> mapperXmlConfig = new HashMap<>();
+            mapperXmlConfig.put("templateName", stringListEntry.getConfigName());
+            String fileName = stringListEntry.getFileName();
+            String replacedFileName = fileName.replaceAll(DOMAIN_STUB, domainObjectName);
+            mapperXmlConfig.put("fileName", replacedFileName);
+            mapperXmlConfig.put("suffix", stringListEntry.getSuffix());
+            mapperXmlConfig.put("packageName", stringListEntry.getPackageName());
+            mapperXmlConfig.put("encoding", stringListEntry.getEncoding());
+            mapperXmlConfig.put("basePath", stringListEntry.getBasePath());
+            mapperXmlConfig.put("targetProject", targetProject);
+
+            rootConfig.put(stringListEntry.getConfigName(), mapperXmlConfig);
+        }
+        return rootConfig;
+    }
+
+    /**
+     * 添加相关插件（注意插件文件需要通过jar引入）
+     *
+     * @param context
+     */
+    private static void addPluginConfiguration(Context context,GenerateConfig generateConfig) {
+
+
+
+        //实体添加序列化
+        PluginConfiguration serializablePlugin = new PluginConfiguration();
+        serializablePlugin.addProperty("type", SerializablePlugin.class.getName());
+        serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
+        context.addPluginConfiguration(serializablePlugin);
+        /**
+         * jpa 支持插件, 内置必选
+         */
+        PluginConfiguration daoEntityAnnotationPlugin = new PluginConfiguration();
+        daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
+        String domainObjectName = context.getTableConfigurations().get(0).getDomainObjectName();
+        String targetPackage = context.getJavaModelGeneratorConfiguration().getTargetPackage();
+        daoEntityAnnotationPlugin.addProperty("domainName", targetPackage + "." + domainObjectName);
+        context.addPluginConfiguration(daoEntityAnnotationPlugin);
+
+        // toString,hashCode,equals
+        if (generateConfig.isNeedToStringHashcodeEquals()) {
+            PluginConfiguration equalsHashCodePlugin = new PluginConfiguration();
+            equalsHashCodePlugin.addProperty("type", EqualsHashCodePlugin.class.getName());
+            equalsHashCodePlugin.setConfigurationType(EqualsHashCodePlugin.class.getName());
+            context.addPluginConfiguration(equalsHashCodePlugin);
+            PluginConfiguration toStringPluginPlugin = new PluginConfiguration();
+            toStringPluginPlugin.addProperty("type", ToStringPlugin.class.getName());
+            toStringPluginPlugin.setConfigurationType(ToStringPlugin.class.getName());
+            context.addPluginConfiguration(toStringPluginPlugin);
+        }
+
+        //for JSR310
+        if (generateConfig.isJsr310Support()) {
+            JavaTypeResolverConfiguration javaTypeResolverPlugin = new JavaTypeResolverConfiguration();
+            javaTypeResolverPlugin.addProperty("type", JavaTypeResolverJsr310Impl.class.getName());
+            javaTypeResolverPlugin.setConfigurationType(JavaTypeResolverJsr310Impl.class.getName());
+            context.setJavaTypeResolverConfiguration(javaTypeResolverPlugin);
+        }
+
+        // Lombok 插件
+        if (generateConfig.isUseLombokPlugin()) {
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.addProperty("type", LombokPlugin.class.getName());
+            pluginConfiguration.setConfigurationType(LombokPlugin.class.getName());
+            context.addPluginConfiguration(pluginConfiguration);
+        }
+
+
+    }
+
+}
+
+

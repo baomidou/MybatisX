@@ -25,6 +25,18 @@ public class TemplateSettingDTO {
      * 模板内容
      */
     private String templateText;
+    /**
+     * 相对模块的资源文件路径
+     */
+    private String basePath;
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
 
     public String getConfigName() {
         return configName;
