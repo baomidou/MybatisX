@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.generate.template;
+package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 import java.util.List;
 
@@ -16,8 +16,10 @@ public class GenerateConfig {
     private String targetProject;
     private String tableName;
 
-    private String packageName;
+    private String basePackage;
+    private String relativePackage;
     private String domainObjectName;
+    private String encoding;
     /**
      * 模块的源码相对路径
      */
@@ -59,6 +61,13 @@ public class GenerateConfig {
     private boolean jsr310Support;
     private List<String> extraTemplateNames;
 
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
 
     public boolean isNeedsComment() {
         return needsComment;
@@ -100,12 +109,20 @@ public class GenerateConfig {
         this.tableName = tableName;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getBasePackage() {
+        return basePackage;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+    public void setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
+    }
+
+    public String getRelativePackage() {
+        return relativePackage;
+    }
+
+    public void setRelativePackage(String relativePackage) {
+        this.relativePackage = relativePackage;
     }
 
     public String getDomainObjectName() {

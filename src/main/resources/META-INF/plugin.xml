@@ -56,7 +56,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <projectService id="baomidou.TemplatesSettings"
-                        serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.TemplatesSettings"/>
+                        serviceImplementation="com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings"/>
         <!--文件描述-->
         <!-- mapper.xml文件属性提示 -->
         <dom.fileDescription id="baomidou.MapperDescription"

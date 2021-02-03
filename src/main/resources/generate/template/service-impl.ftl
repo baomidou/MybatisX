@@ -2,6 +2,8 @@ package ${baseInfo.packageName};
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ${tableClass.fullClassName};
+import ${service.packageName}.${service.fileName};
+import ${mapperInterface.packageName}.${mapperInterface.fileName};
 <#if baseService??&&baseService!="">
 import ${baseService};
     <#list baseService?split(".") as simpleName>

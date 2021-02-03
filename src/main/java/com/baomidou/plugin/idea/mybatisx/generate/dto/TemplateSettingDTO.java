@@ -1,6 +1,9 @@
-package com.baomidou.plugin.idea.mybatisx.setting.template;
+package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
-public class TemplateSettingDTO {
+import java.io.Serializable;
+
+public class TemplateSettingDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 配置名称
      */
@@ -85,4 +88,6 @@ public class TemplateSettingDTO {
     public void setTemplateText(String templateText) {
         this.templateText = templateText;
     }
+
+
 }

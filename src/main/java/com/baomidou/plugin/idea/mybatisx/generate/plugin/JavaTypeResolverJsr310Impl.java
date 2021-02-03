@@ -9,12 +9,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static java.sql.Types.BIT;
-import static java.sql.Types.NUMERIC;
-import static java.sql.Types.DECIMAL;
 import static java.sql.Types.DATE;
+import static java.sql.Types.DECIMAL;
+import static java.sql.Types.NUMERIC;
 import static java.sql.Types.TIME;
 import static java.sql.Types.TIMESTAMP;
 
+/**
+ * JSR 类型
+ */
 public class JavaTypeResolverJsr310Impl extends JavaTypeResolverDefaultImpl {
 
     protected FullyQualifiedJavaType overrideDefaultType(IntrospectedColumn column, FullyQualifiedJavaType defaultType) {

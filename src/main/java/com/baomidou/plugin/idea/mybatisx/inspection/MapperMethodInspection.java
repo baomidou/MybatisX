@@ -2,7 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.inspection;
 
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
-import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.locator.MapperLocator;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;

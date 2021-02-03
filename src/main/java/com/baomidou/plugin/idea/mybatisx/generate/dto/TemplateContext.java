@@ -1,6 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.setting.template;
-
-import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateConfig;
+package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 import java.util.HashMap;
 import java.util.List;

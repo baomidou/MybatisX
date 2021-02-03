@@ -1,6 +1,6 @@
-package com.baomidou.plugin.idea.mybatisx.setting;
+package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateContext;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.intellij.openapi.options.ConfigurableBase;
 import com.intellij.openapi.options.ConfigurableUi;
 import com.intellij.openapi.options.ConfigurationException;
@@ -38,8 +38,8 @@ public class MybatisTemplateGeneratorConfigurable extends ConfigurableBase<Mybat
     protected MyConfigurableUi createUi() {
         // 如果是社区版本, 就不需要配置代码生成器
         TemplatesSettings instance = TemplatesSettings.getInstance(project);
-        TemplateContext templateConfigs = instance.getTemplateConfigs();
-        mybatisXTemplateSettings.loadSettings(templateConfigs);
+
+        mybatisXTemplateSettings.loadBySettings(instance);
         return new MyConfigurableUi(instance);
     }
 
@@ -58,11 +58,13 @@ public class MybatisTemplateGeneratorConfigurable extends ConfigurableBase<Mybat
 
         @Override
         public boolean isModified(@NotNull MybatisXTemplateSettings settings) {
-            return false;
+            return settings.isModified();
         }
 
         @Override
         public void apply(@NotNull MybatisXTemplateSettings settings) throws ConfigurationException {
+            // 只替换当前选中的内容?
+            settings.apply(templatesSettings);
         }
 
         @Override

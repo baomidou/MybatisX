@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.type;
 
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateAnnotationType;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
 
 
 public class AnnotationTypeOperatorFactory {

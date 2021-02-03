@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
+import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
 import com.google.common.base.Joiner;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -8,11 +9,6 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.DELETE_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.INSERT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.SELECT_GENERATOR;
-import static com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator.UPDATE_GENERATOR;
 
 /**
  * The type Mybatis setting.
@@ -42,16 +38,16 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
         MybatisXSettings service = ServiceManager.getService(MybatisXSettings.class);
         // 配置的默认值
         if (service.insertGenerator == null) {
-            service.insertGenerator = joiner.join(INSERT_GENERATOR.getPatterns());
+            service.insertGenerator = joiner.join(AbstractStatementGenerator.INSERT_GENERATOR.getPatterns());
         }
         if (service.updateGenerator == null) {
-            service.updateGenerator = joiner.join(UPDATE_GENERATOR.getPatterns());
+            service.updateGenerator = joiner.join(AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns());
         }
         if (service.deleteGenerator == null) {
-            service.deleteGenerator = joiner.join(DELETE_GENERATOR.getPatterns());
+            service.deleteGenerator = joiner.join(AbstractStatementGenerator.DELETE_GENERATOR.getPatterns());
         }
         if (service.selectGenerator == null) {
-            service.selectGenerator = joiner.join(SELECT_GENERATOR.getPatterns());
+            service.selectGenerator = joiner.join(AbstractStatementGenerator.SELECT_GENERATOR.getPatterns());
         }
         if (service.mapperIcon == null) {
             service.mapperIcon = MapperIcon.BIRD.name();

@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.generate.template;
+package com.baomidou.plugin.idea.mybatisx.generate;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -9,13 +9,14 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 public class FieldInfo {
     private String fieldName;
     private String columnName;
-private String shortTypeName;
+    private String shortTypeName;
 
     public String getJdbcType() {
         return jdbcType;
     }
 
     private String jdbcType;
+
     public String getFieldName() {
         return fieldName;
     }

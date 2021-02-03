@@ -15,7 +15,7 @@
         <!-- 通过模板生成代码的项目配置 -->
         <projectConfigurable groupId="mybatisx.settings" displayName="Templates"
                              id="baomidou.MybatisTemplateGeneratorConfigurable"
-                             instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisTemplateGeneratorConfigurable"/>
+                             instance="com.baomidou.plugin.idea.mybatisx.generate.setting.MybatisTemplateGeneratorConfigurable"/>
     </extensions>
 
     <actions>
