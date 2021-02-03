@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
 import com.baomidou.plugin.idea.mybatisx.reference.ResultColumnReferenceSet;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.PluginExistsUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiClass;
@@ -35,6 +36,10 @@ public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> impleme
     public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         String stringValue = value.getStringValue();
         if (stringValue == null) {
+            return PsiReference.EMPTY_ARRAY;
+        }
+        // 社区版就不需要跳转到数据库的列了
+        if (!PluginExistsUtils.existsDbTools()) {
             return PsiReference.EMPTY_ARRAY;
         }
         int offsetInElement = ElementManipulators.getOffsetInElement(element);
