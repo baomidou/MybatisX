@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.generate;
+package com.baomidou.plugin.idea.mybatisx.setting.config;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;

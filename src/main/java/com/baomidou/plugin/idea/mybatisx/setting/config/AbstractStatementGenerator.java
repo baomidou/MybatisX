@@ -1,11 +1,9 @@
-package com.baomidou.plugin.idea.mybatisx.generate;
+package com.baomidou.plugin.idea.mybatisx.setting.config;
 
-import com.baomidou.plugin.idea.mybatisx.dom.model.GroupTwo;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.service.EditorService;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
-import com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings;
 import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
 import com.baomidou.plugin.idea.mybatisx.ui.UiComponentFacade;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;

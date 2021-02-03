@@ -1,7 +1,7 @@
-package com.baomidou.plugin.idea.mybatisx.setting;
+package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateContext;
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.util.IOUtils;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -66,12 +66,12 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
         try {
             TemplateSettingDTO service = new TemplateSettingDTO();
             service.setConfigName("service");
-            service.setFileName("${domain}Service");
+            service.setFileName("${domain.fileName}Service");
             service.setSuffix(".java");
-            service.setPackageName("generator");
-            service.setEncoding("UTF-8");
-            service.setBasePath("src/main/java");
-            try (InputStream resourceAsStream = ReflectionUtil.getGrandCallerClass().getClassLoader().getResourceAsStream("generate/template/service.ftl")) {
+            service.setPackageName("${domain.basePackage}.service");
+            service.setEncoding("${domain.encoding}");
+            service.setBasePath("${domain.basePath}");
+            try (InputStream resourceAsStream = getResourceAsStream("generate/template/service.ftl")) {
                 String templateText = IOUtils.toString(resourceAsStream, "UTF-8");
                 service.setTemplateText(templateText);
                 list.add(service);
@@ -79,12 +79,12 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
 
             TemplateSettingDTO serviceImpl = new TemplateSettingDTO();
             serviceImpl.setConfigName("serviceImpl");
-            serviceImpl.setFileName("${domain}ServiceImpl");
+            serviceImpl.setFileName("${domain.fileName}ServiceImpl");
             serviceImpl.setSuffix(".java");
-            serviceImpl.setPackageName("generator");
-            serviceImpl.setEncoding("UTF-8");
-            serviceImpl.setBasePath("src/main/java");
-            try (InputStream resourceAsStream = ReflectionUtil.getGrandCallerClass().getClassLoader().getResourceAsStream("generate/template/service-impl.ftl")) {
+            serviceImpl.setPackageName("${domain.basePackage}.service.impl");
+            serviceImpl.setEncoding("${domain.encoding}");
+            serviceImpl.setBasePath("${domain.basePath}");
+            try (InputStream resourceAsStream = getResourceAsStream("generate/template/service-impl.ftl")) {
                 String templateText = IOUtils.toString(resourceAsStream, "UTF-8");
                 serviceImpl.setTemplateText(templateText);
                 list.add(serviceImpl);
@@ -92,12 +92,12 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
 
             TemplateSettingDTO mapperInterface = new TemplateSettingDTO();
             mapperInterface.setConfigName("mapperInterface");
-            mapperInterface.setFileName("${domain}Mapper");
+            mapperInterface.setFileName("${domain.fileName}Mapper");
             mapperInterface.setSuffix(".java");
-            mapperInterface.setPackageName("generator");
-            mapperInterface.setEncoding("UTF-8");
-            mapperInterface.setBasePath("src/main/java");
-            try (InputStream resourceAsStream = ReflectionUtil.getGrandCallerClass().getClassLoader().getResourceAsStream("generate/template/mapper.ftl")) {
+            mapperInterface.setPackageName("${domain.basePackage}.mapper");
+            mapperInterface.setEncoding("${domain.encoding}");
+            mapperInterface.setBasePath("${domain.basePath}");
+            try (InputStream resourceAsStream = getResourceAsStream("generate/template/mapper.ftl")) {
                 String templateText = IOUtils.toString(resourceAsStream, "UTF-8");
                 mapperInterface.setTemplateText(templateText);
                 list.add(mapperInterface);
@@ -105,12 +105,12 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
 
             TemplateSettingDTO mapperXml = new TemplateSettingDTO();
             mapperXml.setConfigName("mapperXml");
-            mapperXml.setFileName("${domain}Mapper");
+            mapperXml.setFileName("${domain.fileName}Mapper");
             mapperXml.setSuffix(".xml");
-            mapperXml.setPackageName("generator");
-            mapperXml.setEncoding("UTF-8");
+            mapperXml.setPackageName("mapper");
+            mapperXml.setEncoding("${domain.encoding}");
             mapperXml.setBasePath("src/main/resources");
-            try (InputStream resourceAsStream = ReflectionUtil.getGrandCallerClass().getClassLoader().getResourceAsStream("generate/template/mapper-xml.ftl")) {
+            try (InputStream resourceAsStream = getResourceAsStream("generate/template/mapper-xml.ftl")) {
                 String templateText = IOUtils.toString(resourceAsStream, "UTF-8");
                 mapperXml.setTemplateText(templateText);
                 list.add(mapperXml);
@@ -119,5 +119,9 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
             e.printStackTrace();
         }
         return list;
+    }
+
+    private static InputStream getResourceAsStream(String s) {
+        return ReflectionUtil.getGrandCallerClass().getClassLoader().getResourceAsStream(s);
     }
 }

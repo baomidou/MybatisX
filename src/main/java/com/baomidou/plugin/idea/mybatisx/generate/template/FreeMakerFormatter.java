@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -9,7 +11,11 @@ import org.mybatis.generator.api.JavaFormatter;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.config.Context;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,14 +24,15 @@ import java.util.Map;
  */
 public class FreeMakerFormatter implements JavaFormatter {
 
-    private final CustomPluginContext customPluginContext;
-    private Map<String, Map<String, String>> rootObject;
+    public static final String TEMPLATE = "template";
+    private TemplateSettingDTO templateSettingDTO;
+    private CustomTemplateRoot rootObject;
     private final ClassInfo classInfo;
     private String templateText;
     private Context context;
 
-    public FreeMakerFormatter(CustomPluginContext customPluginContext, Map<String, Map<String, String>> rootObject, ClassInfo classInfo, String templateText) {
-        this.customPluginContext = customPluginContext;
+    public FreeMakerFormatter(TemplateSettingDTO templateSettingDTO, CustomTemplateRoot rootObject, ClassInfo classInfo, String templateText) {
+        this.templateSettingDTO = templateSettingDTO;
         this.rootObject = rootObject;
         this.classInfo = classInfo;
         this.templateText = templateText;
@@ -45,23 +52,23 @@ public class FreeMakerFormatter implements JavaFormatter {
     public String getFormattedContent(CompilationUnit compilationUnit) {
         try {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
-            String pathname = customPluginContext.getModulePath() + "/" + customPluginContext.getBasePath();
+            String pathname = rootObject.getTargetProject() + "/" + templateSettingDTO.getBasePath();
             cfg.setDirectoryForTemplateLoading(new File(pathname));
             // 设置模板加载器
             StringTemplateLoader templateLoader = new StringTemplateLoader();
-            templateLoader.putTemplate("template", templateText);
+            templateLoader.putTemplate(TEMPLATE, templateText);
             cfg.setTemplateLoader(templateLoader);
 
-            cfg.setDefaultEncoding(customPluginContext.getEncoding());
+            cfg.setDefaultEncoding(templateSettingDTO.getEncoding());
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
-            Template templateName = cfg.getTemplate("template");
+            Template templateName = cfg.getTemplate(TEMPLATE);
             Writer writer = new StringWriter();
             Map<String, Object> map = new HashMap<>();
 
-            map.put("baseInfo", customPluginContext);
+            map.put("baseInfo", templateSettingDTO);
             map.put("tableClass", classInfo);
-            map.putAll(rootObject);
+            map.putAll(rootObject.toMap());
             templateName.process(map, writer);
             return writer.toString();
         } catch (IOException | TemplateException e) {

@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.generate;
+package com.baomidou.plugin.idea.mybatisx.setting.config;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
@@ -7,38 +7,39 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
- * Insert 代码生成器
+ * Update 代码生成器
  * </p>
  *
  * @author yanglin jobob
  * @since 2018 -07-30
  */
-public class InsertGenerator extends AbstractStatementGenerator {
+public class UpdateGenerator extends AbstractStatementGenerator {
 
     /**
-     * Instantiates a new Insert generator.
+     * Instantiates a new Update generator.
      *
      * @param patterns the patterns
      */
-    public InsertGenerator(@NotNull String... patterns) {
+    public UpdateGenerator(@NotNull String... patterns) {
         super(patterns);
     }
 
     @NotNull
     @Override
     protected IdDomElement getTarget(@NotNull Mapper mapper, @NotNull PsiMethod method) {
-        return mapper.addInsert();
+        return mapper.addUpdate();
     }
 
     @NotNull
     @Override
     public String getId() {
-        return "InsertGenerator";
+        return "UpdateGenerator";
     }
 
     @NotNull
     @Override
     public String getDisplayText() {
-        return "Insert Statement";
+        return "Update Statement";
     }
+
 }

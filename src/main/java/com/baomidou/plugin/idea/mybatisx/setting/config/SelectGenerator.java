@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.generate;
+package com.baomidou.plugin.idea.mybatisx.setting.config;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
@@ -37,7 +37,7 @@ public class SelectGenerator extends AbstractStatementGenerator {
     }
 
     private void setupResultType(PsiMethod method, Select select) {
-        Optional<PsiClass> clazz = AbstractStatementGenerator.getSelectResultType(method);
+        Optional<PsiClass> clazz = getSelectResultType(method);
         clazz.ifPresent(psiClass -> select.getResultType().setValue(psiClass));
     }
 

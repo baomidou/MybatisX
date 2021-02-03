@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
-import com.baomidou.plugin.idea.mybatisx.generate.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;

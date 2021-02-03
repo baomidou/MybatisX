@@ -1,15 +1,17 @@
 package com.baomidou.plugin.idea.mybatisx.action;
 
 import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateCode;
-import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateConfig;
-import com.baomidou.plugin.idea.mybatisx.setting.TemplatesSettings;
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateContext;
-import com.baomidou.plugin.idea.mybatisx.ui.CodeGenerateUI;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
+import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
+import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
@@ -42,16 +44,19 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
                 templateConfigs.setGenerateConfig(generateConfig);
                 templatesSettings.setTemplateConfigs(templateConfigs);
                 // 生成代码
-                GenerateCode.generate(project,generateConfig,psiElements[0]);
+                GenerateCode.generate(project, generateConfig, psiElements[0]);
             }
         } catch (Exception e) {
             Messages.showMessageDialog(e.getMessage(), ERROR, Messages.getErrorIcon());
+            logger.error("生成代码出错", e);
         }
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(ClassGenerateDialogWrapper.class);
 
     public void fillData(Project project, PsiElement[] tableElements) {
         TemplatesSettings instance = TemplatesSettings.getInstance(project);
         TemplateContext templateContext = instance.getTemplateConfigs();
-        codeGenerateUI.fillData(project,tableElements,templateContext);
+        codeGenerateUI.fillData(project, tableElements, templateContext);
     }
 }

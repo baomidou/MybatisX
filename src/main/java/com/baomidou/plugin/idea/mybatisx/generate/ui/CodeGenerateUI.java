@@ -1,25 +1,21 @@
-package com.baomidou.plugin.idea.mybatisx.ui;
+package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
-import a.j.J;
-import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateConfig;
-import com.baomidou.plugin.idea.mybatisx.setting.TemplatesSettings;
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateAnnotationType;
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateContext;
-import com.baomidou.plugin.idea.mybatisx.setting.template.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.model.DasTable;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -34,13 +30,11 @@ public class CodeGenerateUI {
     private JCheckBox commentCheckBox;
     private JCheckBox lombokCheckBox;
     private JCheckBox actualColumnCheckBox;
-    private JCheckBox repositoryAnnotationCheckBox;
-    private JCheckBox mapperAnnotationCheckBox;
     private JCheckBox JSR310DateAPICheckBox;
     private JCheckBox toStringHashCodeEqualsCheckBox;
     private JTextField fileTextField;
     private JTextField basePathTextField;
-    private JTextField packageTextField;
+    private JTextField relativePackageTextField;
     private JPanel containingPanel;
     private JRadioButton JPARadioButton;
     private JRadioButton mybatisPlus3RadioButton;
@@ -48,6 +42,8 @@ public class CodeGenerateUI {
     private JRadioButton noneRadioButton;
     private JPanel templateExtraPanel;
     private JComboBox moduleComboBox;
+    private JTextField basePackageTextField;
+    private JTextField encodingTextField;
 
     public JPanel getRootPanel() {
         return rootPanel;
@@ -87,7 +83,9 @@ public class CodeGenerateUI {
         // 模块下的源码路径
         basePathTextField.setText(generateConfig.getBasePath());
         // 实体类的包名
-        packageTextField.setText(generateConfig.getPackageName());
+        relativePackageTextField.setText(generateConfig.getRelativePackage());
+        basePackageTextField.setText(generateConfig.getBasePackage());
+        encodingTextField.setText(generateConfig.getEncoding());
         GridLayout mgr = new GridLayout(0, 2, 0, 0);
         templateExtraPanel.setLayout(mgr);
         List<TemplateSettingDTO> list = templateSettingMap.get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
@@ -144,9 +142,10 @@ public class CodeGenerateUI {
     public GenerateConfig getGenerateConfig(Project project) {
         GenerateConfig generateConfig = new GenerateConfig();
         generateConfig.setDomainObjectName(fileTextField.getText());
-        generateConfig.setPackageName(packageTextField.getText());
+        generateConfig.setRelativePackage(relativePackageTextField.getText());
+        generateConfig.setBasePackage(basePackageTextField.getText());
         generateConfig.setBasePath(basePathTextField.getText());
-
+        generateConfig.setEncoding(encodingTextField.getText());
         String moduleName = null;
         Object selectedItem = moduleComboBox.getSelectedItem();
         if (selectedItem == null) {
@@ -257,8 +256,13 @@ public class CodeGenerateUI {
         }
 
         @Override
-        public String getPackageName() {
+        public String getBasePackage() {
             return "generator";
+        }
+
+        @Override
+        public String getRelativePackage() {
+            return "domain";
         }
 
         @Override
@@ -267,6 +271,10 @@ public class CodeGenerateUI {
         }
 
 
+        @Override
+        public String getEncoding() {
+            return "UTF-8";
+        }
     }
 
 }
