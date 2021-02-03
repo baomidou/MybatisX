@@ -129,7 +129,8 @@
           </grid>
         </constraints>
         <properties>
-          <editable value="true"/>
+          <editable value="false"/>
+          <enabled value="true"/>
           <rootVisible value="false"/>
           <showsRootHandles value="true"/>
         </properties>

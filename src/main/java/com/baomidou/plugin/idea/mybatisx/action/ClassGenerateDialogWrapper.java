@@ -5,6 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
@@ -35,16 +36,17 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
 
     public void generateCode(Project project, PsiElement[] psiElements) {
         try {
-            if (psiElements.length == 1) {
-                // 获取配置
-                GenerateConfig generateConfig = codeGenerateUI.getGenerateConfig(project);
-                // 保存配置, 更新最后一次存储的配置
-                TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
-                TemplateContext templateConfigs = templatesSettings.getTemplateConfigs();
-                templateConfigs.setGenerateConfig(generateConfig);
-                templatesSettings.setTemplateConfigs(templateConfigs);
+            // 获取配置
+            GenerateConfig generateConfig = codeGenerateUI.getGenerateConfig(project);
+            // 保存配置, 更新最后一次存储的配置
+            TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
+            TemplateContext templateConfigs = templatesSettings.getTemplateConfigs();
+            templateConfigs.setGenerateConfig(generateConfig);
+            templatesSettings.setTemplateConfigs(templateConfigs);
+
+            for (PsiElement psiElement : psiElements) {
                 // 生成代码
-                GenerateCode.generate(project, generateConfig, psiElements[0]);
+                GenerateCode.generate(project, generateConfig, psiElement);
             }
         } catch (Exception e) {
             Messages.showMessageDialog(e.getMessage(), ERROR, Messages.getErrorIcon());

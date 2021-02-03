@@ -12,6 +12,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInf
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBack;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
@@ -21,6 +22,7 @@ import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.Context;
@@ -57,6 +59,17 @@ public class GenerateCode {
     public static void generate(Project project,
                                 GenerateConfig generateConfig,
                                 PsiElement psiElement) throws Exception {
+        DbTable dbTable = null;
+        if (!(psiElement instanceof DbTable)) {
+            return;
+        }
+        dbTable = (DbTable) psiElement;
+        // 对于多选的情况下, 如果表名不一致时, 按照规则生成类名
+        String domainName = generateConfig.getDomainObjectName();
+            String tableName = dbTable.getName();
+        if (!generateConfig.getTableName().equalsIgnoreCase(tableName)) {
+            domainName = StringUtils.dbStringToCamelStyle(tableName);
+        }
 
         List<String> warnings = new ArrayList<>();
         Configuration config = new Configuration();
@@ -75,7 +88,7 @@ public class GenerateCode {
         javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + "." + generateConfig.getRelativePackage());
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
-        buildTableConfiguration(generateConfig, context);
+        buildTableConfiguration(generateConfig, context, tableName, domainName);
 
         CommentGeneratorConfiguration commentGeneratorConfiguration = new CommentGeneratorConfiguration();
         commentGeneratorConfiguration.setConfigurationType(CustomDefaultCommentGenerator.class.getName());
@@ -88,12 +101,13 @@ public class GenerateCode {
         javaTypeResolverConfiguration.addProperty("forceBigDecimals", "false");
         context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
         // 根据模板生成代码的插件
-        configExtraPlugin(project, generateConfig, context);
+        configExtraPlugin(project, generateConfig, context, domainName);
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
         config.addContext(context);
 
-        IntellijTableInfo intellijTableInfo = DbToolsUtils.buildIntellijTableInfo((DbTable) psiElement);
+
+        IntellijTableInfo intellijTableInfo = DbToolsUtils.buildIntellijTableInfo(dbTable);
         Set<String> contexts = new HashSet<>();
         Set<String> fullyqualifiedTables = new HashSet<>();
         IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(config, new MergeJavaCallBack(true), warnings);
@@ -105,10 +119,10 @@ public class GenerateCode {
         }
     }
 
-    private static void buildTableConfiguration(GenerateConfig generateConfig, Context context) {
+    private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String domainName) {
         TableConfiguration tc = new TableConfiguration(context);
-        tc.setTableName(generateConfig.getTableName());
-        tc.setDomainObjectName(generateConfig.getDomainObjectName());
+        tc.setTableName(tableName);
+        tc.setDomainObjectName(domainName);
 
 
         if (generateConfig.isUseActualColumns()) {
@@ -118,12 +132,12 @@ public class GenerateCode {
         context.addTableConfiguration(tc);
     }
 
-    private static void configExtraPlugin(Project project, GenerateConfig generateConfig, Context context) {
+    private static void configExtraPlugin(Project project, GenerateConfig generateConfig, Context context, String domainName) {
         TemplatesSettings instance = TemplatesSettings.getInstance(project);
         TemplateContext templateConfigs = instance.getTemplateConfigs();
         List<TemplateSettingDTO> list = templateConfigs.getTemplateSettingMap().get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
         CustomTemplateRoot templateRoot = buildRootConfig(generateConfig.getTargetProject(),
-            generateConfig.getDomainObjectName(),
+            domainName,
             generateConfig.getBasePackage(),
             generateConfig.getRelativePackage(),
             generateConfig.getEncoding(),
