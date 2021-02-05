@@ -1,8 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
-import com.intellij.ide.extensionResources.ExtensionsRootType;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.options.ConfigurableBase;
 import com.intellij.openapi.options.ConfigurableUi;
 import com.intellij.openapi.options.ConfigurationException;
@@ -10,7 +7,6 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.io.IOException;
 
 /**
  * Mybatisx 模板生成代码配置

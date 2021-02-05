@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class CustomTemplateRoot implements Serializable {
 
-    private String targetProject;
+    private String modulePath;
 
     private DomainInfo domainInfo;
 
@@ -37,11 +37,11 @@ public class CustomTemplateRoot implements Serializable {
         this.domainInfo = domainInfo;
     }
 
-    public String getTargetProject() {
-        return targetProject;
+    public String getModulePath() {
+        return modulePath;
     }
 
-    public void setTargetProject(String targetProject) {
-        this.targetProject = targetProject;
+    public void setModulePath(String modulePath) {
+        this.modulePath = modulePath;
     }
 }
