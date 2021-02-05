@@ -9,6 +9,10 @@ public class TemplateSettingDTO implements Serializable {
      */
     private String configName;
     /**
+     * 配置文件名称
+     */
+    private String configFile;
+    /**
      * 文件名
      */
     private String fileName;
@@ -32,6 +36,14 @@ public class TemplateSettingDTO implements Serializable {
      * 相对模块的资源文件路径
      */
     private String basePath;
+
+    public String getConfigFile() {
+        return configFile;
+    }
+
+    public void setConfigFile(String configFile) {
+        this.configFile = configFile;
+    }
 
     public String getBasePath() {
         return basePath;

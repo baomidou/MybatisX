@@ -2,9 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
-import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.model.DasTable;
 import com.intellij.openapi.module.JavaModuleType;
@@ -15,7 +13,10 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ListDataEvent;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +45,7 @@ public class CodeGenerateUI {
     private JComboBox moduleComboBox;
     private JTextField basePackageTextField;
     private JTextField encodingTextField;
+    private JComboBox templatesComboBox;
 
     public JPanel getRootPanel() {
         return rootPanel;
@@ -53,12 +55,12 @@ public class CodeGenerateUI {
         return containingPanel;
     }
 
-    public void fillData(Project project, PsiElement[] tableElements, TemplateContext templateContext) {
-        GenerateConfig generateConfig = templateContext.getGenerateConfig();
-        Map<String, List<TemplateSettingDTO>> templateSettingMap = templateContext.getTemplateSettingMap();
-        if (generateConfig == null) {
-            generateConfig = new DefaultGenerateConfig(templateContext);
-        }
+    public void fillData(Project project,
+                         PsiElement[] tableElements,
+                         GenerateConfig generateConfig,
+                         String defaultsTemplatesName,
+                         Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+
         PsiElement tableElement = tableElements[0];
         DasTable table = (DasTable) tableElement;
         String tableName = table.getName();
@@ -86,18 +88,6 @@ public class CodeGenerateUI {
         relativePackageTextField.setText(generateConfig.getRelativePackage());
         basePackageTextField.setText(generateConfig.getBasePackage());
         encodingTextField.setText(generateConfig.getEncoding());
-        GridLayout mgr = new GridLayout(0, 2, 0, 0);
-        templateExtraPanel.setLayout(mgr);
-        List<TemplateSettingDTO> list = templateSettingMap.get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
-        for (TemplateSettingDTO templateSettingDTO : list) {
-            // 添加的模板默认都是要选中的
-            JCheckBox jCheckBox = new JCheckBox(templateSettingDTO.getConfigName());
-            if (generateConfig.getExtraTemplateNames().contains(jCheckBox.getText())) {
-                jCheckBox.setSelected(true);
-            }
-            templateExtraPanel.add(jCheckBox);
-        }
-
 
         if (generateConfig.isNeedsComment()) {
             commentCheckBox.setSelected(true);
@@ -114,6 +104,55 @@ public class CodeGenerateUI {
         if (generateConfig.isJsr310Support()) {
             JSR310DateAPICheckBox.setSelected(true);
         }
+        // 添加动态模板组
+        templateSettingMap.keySet().forEach(templatesComboBox::addItem);
+
+        final ItemListener itemListener = e -> {
+
+            final Object templatesName = e.getItem();
+            // 只接受选择事件
+            if (e.getStateChange() != ItemEvent.SELECTED) {
+                return;
+            }
+            List<TemplateSettingDTO> list = null;
+            // 选择选定的模板
+            if (!StringUtils.isEmpty(templatesName)) {
+                list = templateSettingMap.get(templatesName.toString());
+            }
+            // 选择默认模板
+            if (!StringUtils.isEmpty(defaultsTemplatesName)) {
+                list = templateSettingMap.get(defaultsTemplatesName);
+            }
+            // 默认模板没有设置, 或者默认模板改了新的名字, 找到values的第一条记录
+            if (list == null) {
+                list = templateSettingMap.values().iterator().next();
+            }
+
+            templateExtraPanel.removeAll();
+            for (TemplateSettingDTO templateSettingDTO : list) {
+                // 添加的模板默认都是要选中的
+                JCheckBox jCheckBox = new JCheckBox(templateSettingDTO.getConfigName());
+                final List<String> extraTemplateNames = generateConfig.getExtraTemplateNames();
+                if (extraTemplateNames != null && extraTemplateNames.contains(jCheckBox.getText())) {
+                    jCheckBox.setSelected(true);
+                }
+                templateExtraPanel.add(jCheckBox);
+            }
+            templateExtraPanel.updateUI();
+        };
+        templatesComboBox.addItemListener(itemListener);
+
+        GridLayout mgr = new GridLayout(0, 2, 0, 0);
+        templateExtraPanel.setLayout(mgr);
+
+
+        final String templatesName = generateConfig.getTemplatesName();
+        if (templatesName != null) {
+            templatesComboBox.setSelectedItem(templatesName);
+        } else {
+            templatesComboBox.setSelectedItem(0);
+        }
+        itemListener.itemStateChanged(new ItemEvent(templatesComboBox, ItemEvent.ITEM_STATE_CHANGED, templatesName, ItemEvent.SELECTED));
 
     }
 
@@ -194,6 +233,11 @@ public class CodeGenerateUI {
 
         String annotationTypeName = findAnnotationType();
         generateConfig.setAnnotationType(annotationTypeName);
+
+        final Object selectedTemplatesName = templatesComboBox.getSelectedItem();
+        if (selectedTemplatesName != null) {
+            generateConfig.setTemplatesName(selectedTemplatesName.toString());
+        }
         return generateConfig;
     }
 
@@ -215,66 +259,5 @@ public class CodeGenerateUI {
         return annotationTypeName;
     }
 
-    private class DefaultGenerateConfig extends GenerateConfig {
-        private TemplateContext templateContext;
-
-        public DefaultGenerateConfig(TemplateContext templateContext) {
-
-            this.templateContext = templateContext;
-        }
-
-        @Override
-        public String getTargetProject() {
-            return templateContext.getProjectPath();
-        }
-
-        @Override
-        public String getModuleName() {
-            return templateContext.getModuleName();
-        }
-
-        @Override
-        public String getAnnotationType() {
-            return templateContext.getAnnotationType();
-        }
-
-        @Override
-        public List<String> getExtraTemplateNames() {
-            Map<String, List<TemplateSettingDTO>> templateSettingMap = templateContext.getTemplateSettingMap();
-            List<TemplateSettingDTO> list = templateSettingMap.get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
-            return list.stream().map(TemplateSettingDTO::getConfigName).collect(Collectors.toList());
-        }
-
-        @Override
-        public boolean isNeedsComment() {
-            return true;
-        }
-
-        @Override
-        public boolean isNeedToStringHashcodeEquals() {
-            return true;
-        }
-
-        @Override
-        public String getBasePackage() {
-            return "generator";
-        }
-
-        @Override
-        public String getRelativePackage() {
-            return "domain";
-        }
-
-        @Override
-        public String getBasePath() {
-            return "src/main/java";
-        }
-
-
-        @Override
-        public String getEncoding() {
-            return "UTF-8";
-        }
-    }
 
 }

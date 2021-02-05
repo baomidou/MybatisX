@@ -2,15 +2,30 @@ package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
-import com.intellij.ui.treeStructure.Tree;
+import com.intellij.debugger.DebuggerBundle;
+import com.intellij.debugger.ui.tree.render.NodeRenderer;
+import com.intellij.execution.actions.StopProcessAction;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.IdeActions;
+import com.intellij.ui.AnActionButton;
+import com.intellij.ui.AnActionButtonRunnable;
+import com.intellij.ui.ToolbarDecorator;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.util.PlatformIcons;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +41,7 @@ public class MybatisXTemplateSettings {
     private JTextArea templateText;
     private JTree configTree;
     private JTextField basePathTextField;
+    private JPanel treePanel;
     private JPanel treeConfigPanel;
 
 
@@ -36,12 +52,12 @@ public class MybatisXTemplateSettings {
     public void loadBySettings(TemplatesSettings templatesSettings) {
         TemplateContext templateContext = templatesSettings.getTemplateConfigs();
         // 第一个版本只有一个不可更改的配置, 这里直接取默认就可以了
-        configTree.addTreeSelectionListener(new MyTreeSelectionListener(templateContext));
+        Map<String, List<TemplateSettingDTO>> templateSettingMap = templatesSettings.getTemplateSettingMap();
+        configTree.addTreeSelectionListener(new MyTreeSelectionListener(templateSettingMap));
 
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) configTree.getModel().getRoot();
         root.removeAllChildren();
 
-        Map<String, List<TemplateSettingDTO>> templateSettingMap = templateContext.getTemplateSettingMap();
         for (Map.Entry<String, List<TemplateSettingDTO>> stringListEntry : templateSettingMap.entrySet()) {
             DefaultMutableTreeNode theme = new DefaultMutableTreeNode(stringListEntry.getKey());
             root.add(theme);
@@ -53,6 +69,40 @@ public class MybatisXTemplateSettings {
         }
         configTree.updateUI();
         expandTree(configTree);
+
+        // 参考: com.intellij.tools.BaseToolsPanel.BaseToolsPanel
+        GridConstraints gridConstraints = new GridConstraints();
+        gridConstraints.setFill(GridConstraints.FILL_VERTICAL | GridConstraints.ALIGN_LEFT);
+        gridConstraints.setHSizePolicy(GridConstraints.SIZEPOLICY_FIXED);
+        rootPanel.add(ToolbarDecorator.createDecorator(configTree).setAddAction(new AnActionButtonRunnable() {
+                @Override
+                public void run(AnActionButton anActionButton) {
+
+                }
+            }).setRemoveAction(new AnActionButtonRunnable() {
+                @Override
+                public void run(AnActionButton anActionButton) {
+
+                }
+            }).addExtraAction(new CopyAction())
+                .setPreferredSize(new Dimension(220, -1))
+                .createPanel(),
+            gridConstraints);
+
+    }
+
+    private class CopyAction extends AnActionButton {
+        CopyAction() {
+            super(DebuggerBundle.message("button.copy"), DebuggerBundle.message("user.renderers.configurable.button.description.copy"), PlatformIcons.COPY_ICON);
+        }
+
+        @Override
+        public void actionPerformed(@NotNull AnActionEvent e) {
+        }
+
+        @Override
+        public void updateButton(@NotNull AnActionEvent e) {
+        }
     }
 
     public static void expandTree(JTree tree) {
@@ -88,7 +138,8 @@ public class MybatisXTemplateSettings {
         }
         TemplateContext templateConfigs = templatesSettings.getTemplateConfigs();
         Map<String, List<TemplateSettingDTO>> templateSettingMap = templateConfigs.getTemplateSettingMap();
-        List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
+        String DEFAULT_TEMPLATE_NAME = "mybatis-plus3";
+        List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(DEFAULT_TEMPLATE_NAME);
 
         TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
         templateSettingDTO.setFileName(fieldNameTextField.getText());
@@ -108,7 +159,7 @@ public class MybatisXTemplateSettings {
         }).collect(Collectors.toList());
 
 
-        templateSettingMap.put(TemplatesSettings.DEFAULT_TEMPLATE_NAME, replacedSettings);
+        templateSettingMap.put(DEFAULT_TEMPLATE_NAME, replacedSettings);
 
         templatesSettings.setTemplateConfigs(templateConfigs);
     }
@@ -117,24 +168,35 @@ public class MybatisXTemplateSettings {
         return true;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(MybatisXTemplateSettings.class);
 
     private class MyTreeSelectionListener implements TreeSelectionListener {
-        private TemplateContext templateContext;
+        private Map<String, List<TemplateSettingDTO>> templateSettingMap;
 
-        public MyTreeSelectionListener(TemplateContext templateContext) {
-            this.templateContext = templateContext;
+        public MyTreeSelectionListener(Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+            this.templateSettingMap = templateSettingMap;
         }
 
         @Override
         public void valueChanged(TreeSelectionEvent e) {
-            TreePath path = e.getPath();
-            String text = path.getLastPathComponent().toString();
+            final TreePath oldLeadSelectionPath = e.getOldLeadSelectionPath();
+            if (oldLeadSelectionPath.getPathCount() != 3) {
+                logger.info("路径错误, 无法映射正确的配置");
+                return;
+            }
+            final String templatesName = oldLeadSelectionPath.getParentPath().getLastPathComponent().toString();
+            final String templateName = oldLeadSelectionPath.getLastPathComponent().toString();
             TemplateSettingDTO foundDto = new TemplateSettingDTO();
 
-            Map<String, List<TemplateSettingDTO>> templateSettingMap = templateContext.getTemplateSettingMap();
-            List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
+
+            List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(templatesName);
+            if (templateSettingDTOS == null) {
+                // 没有找到配置
+                logger.info("没有找到配置,templatesName: {}", templatesName);
+                return;
+            }
             for (TemplateSettingDTO templateSettingDTO : templateSettingDTOS) {
-                if (templateSettingDTO.getConfigName().equalsIgnoreCase(text)) {
+                if (templateSettingDTO.getConfigName().equals(templateName)) {
                     foundDto = templateSettingDTO;
                     break;
                 }

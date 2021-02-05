@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates>
+    <template>
+        <property name="configName" value="serviceInterface"/>
+        <property name="configFile" value="serviceInterface.ftl"/>
+        <property name="fileName" value="${domain.fileName}Service"/>
+        <property name="suffix" value=".java"/>
+        <property name="packageName" value="${domain.basePackage}.service"/>
+        <property name="encoding" value="${domain.encoding}"/>
+        <property name="basePath" value="${domain.basePath}"/>
+    </template>
+    <template>
+        <property name="configName" value="serviceImpl"/>
+        <property name="configFile" value="serviceImpl.ftl"/>
+        <property name="fileName" value="${domain.fileName}ServiceImpl"/>
+        <property name="suffix" value=".java"/>
+        <property name="packageName" value="${domain.basePackage}.service.impl"/>
+        <property name="encoding" value="${domain.encoding}"/>
+        <property name="basePath" value="${domain.basePath}"/>
+    </template>
+    <template>
+        <property name="configName" value="mapperInterface"/>
+        <property name="configFile" value="mapperInterface.ftl"/>
+        <property name="fileName" value="${domain.fileName}Mapper"/>
+        <property name="suffix" value=".java"/>
+        <property name="packageName" value="${domain.basePackage}.mapper"/>
+        <property name="encoding" value="${domain.encoding}"/>
+        <property name="basePath" value="${domain.basePath}"/>
+    </template>
+    <template>
+        <property name="configName" value="mapperXml"/>
+        <property name="configFile" value="mapperXml.ftl"/>
+        <property name="fileName" value="${domain.fileName}Mapper"/>
+        <property name="suffix" value=".xml"/>
+        <property name="packageName" value="mapper"/>
+        <property name="encoding" value="${domain.encoding}"/>
+        <property name="basePath" value="src/main/resources"/>
+    </template>
+</templates>

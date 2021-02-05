@@ -1,11 +1,11 @@
 package ${baseInfo.packageName};
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import ${tableClass.fullClassName};
-import ${service.packageName}.${service.fileName};
+import ${serviceInterface.packageName}.${serviceInterface.fileName};
 import ${mapperInterface.packageName}.${mapperInterface.fileName};
 <#if baseService??&&baseService!="">
-import ${baseService};
+    import ${baseService};
     <#list baseService?split(".") as simpleName>
         <#if !simpleName_has_next>
             <#assign serviceSimpleName>${simpleName}</#assign>
@@ -15,14 +15,10 @@ import ${baseService};
 import org.springframework.stereotype.Service;
 
 /**
- *
- */
+*
+*/
 @Service
 public class ${baseInfo.fileName} extends ServiceImpl<${mapperInterface.fileName}, ${tableClass.shortClassName}>
-implements ${service.fileName}{
+implements ${serviceInterface.fileName}{
 
 }
-
-
-
-

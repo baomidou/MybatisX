@@ -3,20 +3,17 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.DaoEntityAnnotationInterfacePlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.IntellijMyBatisGenerator;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.JavaTypeResolverJsr310Impl;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBack;
-import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectUtil;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
 import freemarker.cache.StringTemplateLoader;
@@ -31,12 +28,16 @@ import org.mybatis.generator.config.JavaTypeResolverConfiguration;
 import org.mybatis.generator.config.ModelType;
 import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
+import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.NullProgressCallback;
 import org.mybatis.generator.plugins.EqualsHashCodePlugin;
 import org.mybatis.generator.plugins.SerializablePlugin;
 import org.mybatis.generator.plugins.ToStringPlugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -55,9 +56,17 @@ import java.util.Set;
  * 代码生成入口
  */
 public class GenerateCode {
+    private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
+    public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true){
+        // 始终用最新的文件
+        @Override
+        public String mergeJavaFile(String newFileSource, File existingFile, String[] javadocTags, String fileEncoding) throws ShellException {
+            return newFileSource;
+        }
+    };
 
-    public static void generate(Project project,
-                                GenerateConfig generateConfig,
+    public static void generate(GenerateConfig generateConfig,
+                                Map<String, List<TemplateSettingDTO>> templateSettingMap,
                                 PsiElement psiElement) throws Exception {
         DbTable dbTable = null;
         if (!(psiElement instanceof DbTable)) {
@@ -66,7 +75,7 @@ public class GenerateCode {
         dbTable = (DbTable) psiElement;
         // 对于多选的情况下, 如果表名不一致时, 按照规则生成类名
         String domainName = generateConfig.getDomainObjectName();
-            String tableName = dbTable.getName();
+        String tableName = dbTable.getName();
         if (!generateConfig.getTableName().equalsIgnoreCase(tableName)) {
             domainName = StringUtils.dbStringToCamelStyle(tableName);
         }
@@ -100,8 +109,13 @@ public class GenerateCode {
         JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
         javaTypeResolverConfiguration.addProperty("forceBigDecimals", "false");
         context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
+        final List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(generateConfig.getTemplatesName());
+        if (templateSettingDTOS == null) {
+            logger.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
+            return;
+        }
         // 根据模板生成代码的插件
-        configExtraPlugin(project, generateConfig, context, domainName);
+        configExtraPlugin(generateConfig, context, domainName, templateSettingDTOS);
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
         config.addContext(context);
@@ -110,13 +124,10 @@ public class GenerateCode {
         IntellijTableInfo intellijTableInfo = DbToolsUtils.buildIntellijTableInfo(dbTable);
         Set<String> contexts = new HashSet<>();
         Set<String> fullyqualifiedTables = new HashSet<>();
-        IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(config, new MergeJavaCallBack(true), warnings);
+        IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(config, SHELL_CALLBACK, warnings);
         intellijMyBatisGenerator.generate(new NullProgressCallback(), contexts, fullyqualifiedTables, intellijTableInfo);
 
-        VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
-        if (virtualFile != null) {
-            virtualFile.refresh(true, true);
-        }
+        VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
     }
 
     private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String domainName) {
@@ -132,19 +143,20 @@ public class GenerateCode {
         context.addTableConfiguration(tc);
     }
 
-    private static void configExtraPlugin(Project project, GenerateConfig generateConfig, Context context, String domainName) {
-        TemplatesSettings instance = TemplatesSettings.getInstance(project);
-        TemplateContext templateConfigs = instance.getTemplateConfigs();
-        List<TemplateSettingDTO> list = templateConfigs.getTemplateSettingMap().get(TemplatesSettings.DEFAULT_TEMPLATE_NAME);
+    private static void configExtraPlugin(GenerateConfig generateConfig,
+                                          Context context,
+                                          String domainName,
+                                          List<TemplateSettingDTO> templateSettingDTOList) {
         CustomTemplateRoot templateRoot = buildRootConfig(generateConfig.getTargetProject(),
             domainName,
             generateConfig.getBasePackage(),
             generateConfig.getRelativePackage(),
             generateConfig.getEncoding(),
-            list);
+            generateConfig.getBasePath(),
+            templateSettingDTOList);
 
         for (String extraTemplateName : generateConfig.getExtraTemplateNames()) {
-            Optional<TemplateSettingDTO> first = list.stream().filter(x -> x.getConfigName().equalsIgnoreCase(extraTemplateName)).findFirst();
+            Optional<TemplateSettingDTO> first = templateSettingDTOList.stream().filter(x -> x.getConfigName().equalsIgnoreCase(extraTemplateName)).findFirst();
             if (first.isPresent()) {
                 TemplateSettingDTO templateSettingDTO = first.get();
                 addPlugin(context, templateRoot, extraTemplateName, templateSettingDTO.getTemplateText());
@@ -179,6 +191,7 @@ public class GenerateCode {
                                                       String basePackage,
                                                       String relativePackage,
                                                       String encoding,
+                                                      String basePath,
                                                       List<TemplateSettingDTO> templateConfigs) {
         // 生成的模板参照 https://gitee.com/baomidou/SpringWind/tree/spring-mvc/SpringWind/src/main/java/com/baomidou/springwind/mapper
         CustomTemplateRoot customTemplateRoot = new CustomTemplateRoot();
@@ -187,6 +200,7 @@ public class GenerateCode {
         domainInfo.setBasePackage(basePackage);
         domainInfo.setRelativePackage(relativePackage);
         domainInfo.setEncoding(encoding);
+        domainInfo.setBasePath(basePath);
         customTemplateRoot.setDomainInfo(domainInfo);
         customTemplateRoot.setTargetProject(targetProject);
 
@@ -230,6 +244,7 @@ public class GenerateCode {
             templateName.process(map, writer);
             return writer.toString();
         } catch (Exception e) {
+            logger.error("动态参数替换错误", e);
             return templateText;
         }
     }

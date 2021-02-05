@@ -7,6 +7,15 @@ public class DomainInfo implements Serializable {
     private String basePackage;
     private String relativePackage;
     private String fileName;
+    private String basePath;
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
 
     public String getEncoding() {
         return encoding;

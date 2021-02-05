@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${mapperInterface.packageName}.${baseInfo.fileName}">
-    <!--默认映射关系-->
+
     <resultMap id="BaseResultMap" type="${tableClass.fullClassName}">
         <#list tableClass.pkFields as field>
             <id property="${field.fieldName}" column="${field.columnName}" jdbcType="${field.jdbcType}"/>
