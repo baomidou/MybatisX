@@ -12,7 +12,6 @@ import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBac
 import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
@@ -57,7 +56,7 @@ import java.util.Set;
  */
 public class GenerateCode {
     private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
-    public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true){
+    public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true) {
         // 始终用最新的文件
         @Override
         public String mergeJavaFile(String newFileSource, File existingFile, String[] javadocTags, String fileEncoding) throws ShellException {
@@ -285,13 +284,13 @@ public class GenerateCode {
             context.addPluginConfiguration(toStringPluginPlugin);
         }
 
+
+        JavaTypeResolverConfiguration javaTypeResolverPlugin = new JavaTypeResolverConfiguration();
+        javaTypeResolverPlugin.setConfigurationType(JavaTypeResolverJsr310Impl.class.getName());
         //for JSR310
-        if (generateConfig.isJsr310Support()) {
-            JavaTypeResolverConfiguration javaTypeResolverPlugin = new JavaTypeResolverConfiguration();
-            javaTypeResolverPlugin.addProperty("type", JavaTypeResolverJsr310Impl.class.getName());
-            javaTypeResolverPlugin.setConfigurationType(JavaTypeResolverJsr310Impl.class.getName());
-            context.setJavaTypeResolverConfiguration(javaTypeResolverPlugin);
-        }
+        javaTypeResolverPlugin.addProperty("supportJsr", String.valueOf(generateConfig.isJsr310Support()));
+        javaTypeResolverPlugin.addProperty("supportAutoNumeric","true");
+        context.setJavaTypeResolverConfiguration(javaTypeResolverPlugin);
 
         // Lombok 插件
         if (generateConfig.isUseLombokPlugin()) {
