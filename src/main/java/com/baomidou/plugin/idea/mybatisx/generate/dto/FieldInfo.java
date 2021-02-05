@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.generate;
+package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;

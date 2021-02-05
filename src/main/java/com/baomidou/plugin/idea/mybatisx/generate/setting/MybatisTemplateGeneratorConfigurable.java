@@ -1,6 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
+import com.intellij.ide.extensionResources.ExtensionsRootType;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.options.ConfigurableBase;
 import com.intellij.openapi.options.ConfigurableUi;
 import com.intellij.openapi.options.ConfigurationException;
@@ -8,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.io.IOException;
 
 /**
  * Mybatisx 模板生成代码配置
@@ -38,7 +41,6 @@ public class MybatisTemplateGeneratorConfigurable extends ConfigurableBase<Mybat
     protected MyConfigurableUi createUi() {
         // 如果是社区版本, 就不需要配置代码生成器
         TemplatesSettings instance = TemplatesSettings.getInstance(project);
-
         mybatisXTemplateSettings.loadBySettings(instance);
         return new MyConfigurableUi(instance);
     }

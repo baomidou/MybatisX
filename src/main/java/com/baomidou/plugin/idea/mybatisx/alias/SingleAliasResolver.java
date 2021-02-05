@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 /**
- * 用于支持 mybatis-config.xml 下的 configuration -> typeAliases -> typeAlias
+ * 用于支持 mybatis-.meta.xml 下的 configuration -> typeAliases -> typeAlias
  * <p>
  * The type Single alias resolver.
  *

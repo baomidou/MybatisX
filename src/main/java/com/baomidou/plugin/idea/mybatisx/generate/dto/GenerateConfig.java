@@ -35,12 +35,13 @@ public class GenerateConfig {
      * 需要生成实体类注释
      */
     private boolean needsComment;
+
     /**
      * 需要生成mapper注解
+     *
      * @Mapper
      */
 //    private boolean needMapperAnnotation;
-
     public String getModuleName() {
         return moduleName;
     }
@@ -51,6 +52,7 @@ public class GenerateConfig {
 
     /**
      * 需要生成repository注解
+     *
      * @Repository
      */
 //    private boolean repositoryAnnotation;
@@ -59,7 +61,22 @@ public class GenerateConfig {
     private boolean useLombokPlugin;
     private boolean useActualColumns;
     private boolean jsr310Support;
+    /**
+     * 模板组名称
+     */
+    private String templatesName;
+    /**
+     * 已选择的模板名称
+     */
     private List<String> extraTemplateNames;
+
+    public String getTemplatesName() {
+        return templatesName;
+    }
+
+    public void setTemplatesName(String templatesName) {
+        this.templatesName = templatesName;
+    }
 
     public String getEncoding() {
         return encoding;
@@ -164,7 +181,6 @@ public class GenerateConfig {
     public void setNeedToStringHashcodeEquals(boolean needToStringHashcodeEquals) {
         this.needToStringHashcodeEquals = needToStringHashcodeEquals;
     }
-
 
 
     public boolean isUseLombokPlugin() {

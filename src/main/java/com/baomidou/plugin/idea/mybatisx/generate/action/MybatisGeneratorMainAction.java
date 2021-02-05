@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.action;
+package com.baomidou.plugin.idea.mybatisx.generate.action;
 
 
 import com.baomidou.plugin.idea.mybatisx.util.PluginExistsUtils;

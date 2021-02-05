@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
-import com.baomidou.plugin.idea.mybatisx.generate.FieldInfo;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.FieldInfo;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 

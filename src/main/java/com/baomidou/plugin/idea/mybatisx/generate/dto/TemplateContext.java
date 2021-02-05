@@ -21,7 +21,11 @@ public class TemplateContext {
      */
     private String annotationType;
     /**
-     * 扩展模板类型
+     * 模板名称
+     */
+    private String templateName;
+    /**
+     * 扩展的自定义模板
      */
     private Map<String, List<TemplateSettingDTO>> templateSettingMap = new HashMap<>();
 
@@ -65,5 +69,13 @@ public class TemplateContext {
 
     public void setModuleName(String moduleName) {
         this.moduleName = moduleName;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 }
