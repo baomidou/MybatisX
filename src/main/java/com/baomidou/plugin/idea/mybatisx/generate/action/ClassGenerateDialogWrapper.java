@@ -8,6 +8,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateCode;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 public class ClassGenerateDialogWrapper extends DialogWrapper {
 
+    private static final Logger logger = LoggerFactory.getLogger(ClassGenerateDialogWrapper.class);
 
     private CodeGenerateUI codeGenerateUI = new CodeGenerateUI();
 
@@ -39,6 +41,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
         try {
             // 获取配置
             GenerateConfig generateConfig = codeGenerateUI.getGenerateConfig(project);
+
             // 保存配置, 更新最后一次存储的配置
             TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
             TemplateContext templateConfigs = templatesSettings.getTemplateConfigs();
@@ -49,12 +52,13 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
                 // 生成代码
                 GenerateCode.generate(generateConfig, templatesSettings.getTemplateSettingMap(), psiElement);
             }
+            VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
+            logger.info("全部代码生成成功, 文件内容已更新. config: {}",generateConfig);
         } catch (Exception e) {
             logger.error("生成代码出错", e);
         }
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassGenerateDialogWrapper.class);
 
     public void fillData(Project project, PsiElement[] tableElements) {
         TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);

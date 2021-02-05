@@ -21,13 +21,9 @@ import java.util.Optional;
  */
 public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends RelatedItemLineMarkerProvider {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(SimpleLineMarkerProvider.class);
-
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
         if (!isTheElement(element)) {
-            logger.info("element: {}", element.getText());
             return;
         }
 
@@ -43,7 +39,6 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends 
             result.add(lineMarkerInfo);
         }
 
-        logger.info("getLineMarkerInfo end");
     }
 
 

@@ -28,7 +28,7 @@ public class GenerateConfig {
     private String modulePath;
 
     /**
-     * 需要生成 tostring,hashcode,equals
+     * 需要生成 toString,hashcode,equals
      */
     private boolean needToStringHashcodeEquals;
     /**
@@ -199,4 +199,26 @@ public class GenerateConfig {
         this.jsr310Support = jsr310Support;
     }
 
+    @Override
+    public String toString() {
+        return "GenerateConfig{" +
+            "moduleName='" + moduleName + '\'' +
+            ", annotationType='" + annotationType + '\'' +
+            ", targetProject='" + targetProject + '\'' +
+            ", tableName='" + tableName + '\'' +
+            ", basePackage='" + basePackage + '\'' +
+            ", relativePackage='" + relativePackage + '\'' +
+            ", domainObjectName='" + domainObjectName + '\'' +
+            ", encoding='" + encoding + '\'' +
+            ", basePath='" + basePath + '\'' +
+            ", modulePath='" + modulePath + '\'' +
+            ", needToStringHashcodeEquals=" + needToStringHashcodeEquals +
+            ", needsComment=" + needsComment +
+            ", useLombokPlugin=" + useLombokPlugin +
+            ", useActualColumns=" + useActualColumns +
+            ", jsr310Support=" + jsr310Support +
+            ", templatesName='" + templatesName + '\'' +
+            ", extraTemplateNames=" + extraTemplateNames +
+            '}';
+    }
 }

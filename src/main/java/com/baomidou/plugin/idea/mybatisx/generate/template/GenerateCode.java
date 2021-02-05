@@ -12,7 +12,6 @@ import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBac
 import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
 import freemarker.cache.StringTemplateLoader;
@@ -69,6 +68,7 @@ public class GenerateCode {
                                 PsiElement psiElement) throws Exception {
         DbTable dbTable = null;
         if (!(psiElement instanceof DbTable)) {
+            logger.info("生成代码出错,选择的元素不是表格类型, psiElement: {}",psiElement.getText());
             return;
         }
         dbTable = (DbTable) psiElement;
@@ -81,7 +81,6 @@ public class GenerateCode {
 
         List<String> warnings = new ArrayList<>();
         Configuration config = new Configuration();
-
 
         Context context = new Context(ModelType.CONDITIONAL) {
             @Override
@@ -126,7 +125,6 @@ public class GenerateCode {
         IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(config, SHELL_CALLBACK, warnings);
         intellijMyBatisGenerator.generate(new NullProgressCallback(), contexts, fullyqualifiedTables, intellijTableInfo);
 
-        VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
     }
 
     private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String domainName) {
@@ -146,7 +144,7 @@ public class GenerateCode {
                                           Context context,
                                           String domainName,
                                           List<TemplateSettingDTO> templateSettingDTOList) {
-        CustomTemplateRoot templateRoot = buildRootConfig(generateConfig.getTargetProject(),
+        CustomTemplateRoot templateRoot = buildRootConfig(generateConfig.getModulePath(),
             domainName,
             generateConfig.getBasePackage(),
             generateConfig.getRelativePackage(),
@@ -167,9 +165,9 @@ public class GenerateCode {
     private static void addPlugin(Context context, Serializable serializable, String javaService, String templateText) {
         PluginConfiguration serviceJavaPluginConfiguration = new PluginConfiguration();
         serviceJavaPluginConfiguration.setConfigurationType(CustomTemplatePlugin.class.getName());
-        serviceJavaPluginConfiguration.addProperty("currentName", javaService);
+        serviceJavaPluginConfiguration.addProperty(CustomTemplatePlugin.CURRENT_NAME, javaService);
         // 模板的内容
-        serviceJavaPluginConfiguration.addProperty("templateText", templateText);
+        serviceJavaPluginConfiguration.addProperty(CustomTemplatePlugin.TEMPLATE_TEXT, templateText);
         addRootMapToConfig(serializable, serviceJavaPluginConfiguration);
         context.addPluginConfiguration(serviceJavaPluginConfiguration);
     }
@@ -179,13 +177,14 @@ public class GenerateCode {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(out)) {
             objectOutputStream.writeObject(serializable);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("序列化数据失败",e);
+            throw new RuntimeException("序列化数据失败");
         }
         byte[] encode = Base64.getEncoder().encode(out.toByteArray());
-        customPluginConfiguration.addProperty("root", new String(encode));
+        customPluginConfiguration.addProperty(CustomTemplatePlugin.ROOT, new String(encode));
     }
 
-    private static CustomTemplateRoot buildRootConfig(String targetProject,
+    private static CustomTemplateRoot buildRootConfig(String modulePath,
                                                       String domainObjectName,
                                                       String basePackage,
                                                       String relativePackage,
@@ -201,7 +200,7 @@ public class GenerateCode {
         domainInfo.setEncoding(encoding);
         domainInfo.setBasePath(basePath);
         customTemplateRoot.setDomainInfo(domainInfo);
-        customTemplateRoot.setTargetProject(targetProject);
+        customTemplateRoot.setModulePath(modulePath);
 
         for (TemplateSettingDTO templateSettingDTO : templateConfigs) {
             TemplateSettingDTO settingDTO = replaceWithModel(templateSettingDTO, domainInfo);

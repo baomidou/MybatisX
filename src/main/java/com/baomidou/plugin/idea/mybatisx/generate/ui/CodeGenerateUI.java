@@ -13,7 +13,6 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.ListDataEvent;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -195,12 +194,13 @@ public class CodeGenerateUI {
         if (moduleName == null && selectedItem != null) {
             moduleName = selectedItem.toString();
         }
-
+        generateConfig.setModuleName(moduleName);
         final String findModule = moduleName;
         Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
         Optional<Module> any = modulesOfType.stream().filter(module -> module.getName().equalsIgnoreCase(findModule)).findAny();
-        any.ifPresent(module -> {
-            String moduleDirPath = ModuleUtil.getModuleDirPath(any.get());
+        any.ifPresent(moduleOptional -> {
+            final Module module1 = any.get();
+            String moduleDirPath = ModuleUtil.getModuleDirPath(module1);
             int ideaIndex = moduleDirPath.indexOf(".idea");
             if (ideaIndex > -1) {
                 moduleDirPath = moduleDirPath.substring(0, ideaIndex);
