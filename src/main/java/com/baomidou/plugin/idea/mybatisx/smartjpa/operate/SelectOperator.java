@@ -105,7 +105,7 @@ public class SelectOperator extends BaseOperatorManager {
                 super.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 // 无论如何都是返回这样的查询
                 String allFields = conditionFieldWrapper.getAllFields();
-                return "select " + allFields + " from " + tableName;
+                return "select " + allFields + "\nfrom " + tableName;
             }
         };
 
@@ -149,7 +149,7 @@ public class SelectOperator extends BaseOperatorManager {
                 super.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 // 无论如何都是返回这样的查询
                 String allFields = conditionFieldWrapper.getAllFields();
-                return "select " + allFields + " from " + tableName;
+                return "select " + allFields + "\nfrom " + tableName;
             }
         };
 
@@ -306,7 +306,7 @@ public class SelectOperator extends BaseOperatorManager {
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             if (collector.isEmpty()) {
                 String allFields = conditionFieldWrapper.getAllFields();
-                return "select " + allFields + " from " + tableName;
+                return "select " + allFields + "\nfrom " + tableName;
             }
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("select").append(" ");

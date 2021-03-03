@@ -174,6 +174,9 @@ public class MybatisXTemplateSettings {
         @Override
         public void valueChanged(TreeSelectionEvent e) {
             final TreePath oldLeadSelectionPath = e.getOldLeadSelectionPath();
+            if (oldLeadSelectionPath == null) {
+                return;
+            }
             if (oldLeadSelectionPath.getPathCount() != 3) {
                 logger.info("路径错误, 无法映射正确的配置");
                 return;
