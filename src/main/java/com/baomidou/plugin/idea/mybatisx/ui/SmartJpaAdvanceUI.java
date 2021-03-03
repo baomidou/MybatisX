@@ -11,12 +11,14 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
  * The type Smart jpa advance ui.
  */
 public class SmartJpaAdvanceUI {
+    public static final String BASE_RESULT_MAP = "BaseResultMap";
     /**
      * The Condition panel.
      */
@@ -33,12 +35,14 @@ public class SmartJpaAdvanceUI {
     private JScrollPane fieldsScrollPanel;
     private JRadioButton radioUseEntityClass;
     private JRadioButton radioCreateCustomClass;
+    private JSpinner splitFieldSpiner;
     private List<TxField> allFields;
 
     private boolean resultType = false;
     private List<String> resultFields;
     private PsiClass entityClass;
     private boolean useDefaultEntityClass = true;
+    public static final String BASE_COLUMN_LIST = "Base_Column_List";
 
     /**
      * Instantiates a new Smart jpa advance ui.
@@ -55,27 +59,57 @@ public class SmartJpaAdvanceUI {
                 }
             }
         });
-        String baseColumnList = "BaseColumnList";
         includeRadioButton.addItemListener(e -> {
-            includeAllResults(baseColumnList);
+            includeAllResults(BASE_COLUMN_LIST);
         });
 
         allColumnRadioButton.addItemListener(e -> {
-            String collect = allFields.stream().map(TxField::getColumnName).collect(Collectors.joining(",\n"));
-            columnsTextArea.setText(collect);
+            final Object value = splitFieldSpiner.getValue();
+            Integer splitNumber = Integer.valueOf(value.toString());
+            // splitNumber = 0 表示不换行
+            if (splitNumber <= 0) {
+                splitNumber = 0;
+            }
+            StringJoiner stringJoiner = new StringJoiner(",");
+            for (int i = 0; i < allFields.size(); i++) {
+                final TxField txField = allFields.get(i);
+                String columnName = txField.getColumnName();
+                if (splitNumber > 0 && i > 0 && i % splitNumber == 0) {
+                    columnName = "\n" + columnName;
+                }
+                stringJoiner.add(columnName);
+            }
+            columnsTextArea.setText(stringJoiner.toString());
             resultType = false;
         });
         asFieldRadioButton.addItemListener(e -> {
-            String collect = allFields.stream().map(x -> {
+
+            final Object value = splitFieldSpiner.getValue();
+            Integer splitNumber = Integer.valueOf(value.toString());
+            // splitNumber = 0 表示不换行
+            if (splitNumber <= 0) {
+                splitNumber = 0;
+            }
+
+            StringJoiner stringJoiner = new StringJoiner(",");
+            for (int i = 0; i < allFields.size(); i++) {
+                final TxField txField = allFields.get(i);
+                String columnName = null;
                 // 没有驼峰命名, 就不需要 as
-                if (x.getColumnName().equals(x.getFieldName())) {
-                    return x.getColumnName();
+                if (txField.getColumnName().equals(txField.getFieldName())) {
+                    columnName = txField.getColumnName();
                 } else {
                     // column as field
-                    return x.getColumnName() + " as " + x.getFieldName();
+                    columnName = txField.getColumnName() + " as " + txField.getFieldName();
                 }
-            }).collect(Collectors.joining(",\n"));
-            columnsTextArea.setText(collect);
+
+                if (splitNumber > 0 && i > 0 && i % splitNumber == 0) {
+                    columnName = "\n" + columnName;
+                }
+                stringJoiner.add(columnName);
+            }
+
+            columnsTextArea.setText(stringJoiner.toString());
             resultType = true;
         });
 
@@ -87,7 +121,9 @@ public class SmartJpaAdvanceUI {
         });
 
         // 假装执行了选中 includeAllRadio的事件
-        includeAllResults(baseColumnList);
+        includeAllResults(BASE_COLUMN_LIST);
+
+        splitFieldSpiner.setValue(3);
     }
 
     @Nullable
@@ -174,7 +210,7 @@ public class SmartJpaAdvanceUI {
     public String getResultMap() {
         String qualifiedName = null;
         if (useDefaultEntityClass) {
-            qualifiedName = "BaseResultMap";
+            qualifiedName = BASE_RESULT_MAP;
         }
         if (qualifiedName == null) {
             if (CollectionUtils.isNotEmpty(resultFields)) {
@@ -183,7 +219,7 @@ public class SmartJpaAdvanceUI {
             }
         }
         if (qualifiedName == null) {
-            qualifiedName = "BaseResultMap";
+            qualifiedName = BASE_RESULT_MAP;
         }
         return qualifiedName;
     }

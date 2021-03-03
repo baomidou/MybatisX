@@ -109,7 +109,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         }
         JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(mapperClass.getProject());
         for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
-            //TODO batchInsert 报错
+
             String qualifiedName = referenceElement.getQualifiedName();
 
             if (getBaseMapperClassName().equals(qualifiedName)) {
@@ -122,7 +122,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
                     continue;
                 }
 
-                return Optional.ofNullable(entityClass);
+                return Optional.of(entityClass);
             } else {
                 // 递归查找，  通过父类找到entity
                 PsiElement resolve = referenceElement.resolve();
