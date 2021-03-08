@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
+import com.baomidou.plugin.idea.mybatisx.util.IOUtils;
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.extensions.ExtensionPointName;
@@ -9,10 +10,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.util.ClassUtil;
 import com.intellij.spring.boot.model.SpringBootModelConfigFileContributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +21,6 @@ import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.parser.ParserException;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -51,6 +48,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
      */
     public static final String SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR = "com.intellij.spring.boot.modelConfigFileContributor";
     private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);
+    public static final String UTF_8 = "UTF-8";
 
     /**
      * Instantiates a new Bean alias resolver.
@@ -103,18 +101,23 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         if (fileType.getDefaultExtension().equals(YML) ||
             fileType.getDefaultExtension().equals(YAML)) {
             // 读取 yml 文件内容
-            String content = readContentFromFile(configurationFile);
-            try {
+            String content = null;
+            try (InputStream inputStream = configurationFile.getInputStream()) {
+                content = IOUtils.toString(inputStream);
                 // 首次读取, 可能存在 @变量@ 的场景, 在捕获异常后, 替换掉这种异常字符串, 然后再次读取别名
                 readClassesFromYaml(pkgSet, configurationFile.getName(), content);
+            } catch (IOException e) {
+                logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
             } catch (ScannerException e) {
-                try {
+                if (content != null) {
                     // 通过正则替换掉不符合 yml 格式的字符串, 再次尝试读取别名
                     final String contentReplaced = content.replaceAll("@.*@", "MYBATISX_REPLACE");
-                    readClassesFromYaml(pkgSet, configurationFile.getName(), contentReplaced);
-                } catch (ScannerException e2) {
-                    // 存在 @变量@ 的情况, 暂时忽略这种情况
-                    logger.debug("yml parse fail, fileName: {}", configurationFile.getName(), e2);
+                    try {
+                        readClassesFromYaml(pkgSet, configurationFile.getName(), contentReplaced);
+                    } catch (ScannerException e2) {
+                        // 存在 @变量@ 的情况, 暂时忽略这种情况
+                        logger.debug("yml parse fail, fileName: {}", configurationFile.getName(), e2);
+                    }
                 }
             }
         }
@@ -122,18 +125,6 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         if (fileType.getDefaultExtension().equals(PROPERTIES)) {
             readClassesFromProperties(pkgSet, configurationFile);
         }
-    }
-
-    private String readContentFromFile(VirtualFile configurationFile) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        try (InputStream inputStream = configurationFile.getInputStream()) {
-            final int length = inputStream.read(buffer);
-            byteArrayOutputStream.write(buffer, 0, length);
-        } catch (IOException e) {
-            logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
-        }
-        return byteArrayOutputStream.toString();
     }
 
     private void readClassesFromProperties(Set<String> pkgSet, VirtualFile configurationFile) {
