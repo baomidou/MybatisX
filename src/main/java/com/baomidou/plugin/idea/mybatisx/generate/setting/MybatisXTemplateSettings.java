@@ -124,6 +124,9 @@ public class MybatisXTemplateSettings {
     public void apply(TemplatesSettings templatesSettings) {
         // 第一个版本只有一个不可更改的配置, 这里直接取默认就可以了
         DefaultMutableTreeNode lastSelectedPathComponent = (DefaultMutableTreeNode) configTree.getLastSelectedPathComponent();
+        if (lastSelectedPathComponent == null) {
+            return;
+        }
         // 节点名称
         Object userObject = lastSelectedPathComponent.getUserObject();
         String key = userObject.toString();
