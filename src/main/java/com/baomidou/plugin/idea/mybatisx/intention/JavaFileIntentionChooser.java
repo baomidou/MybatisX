@@ -72,11 +72,11 @@ public abstract class JavaFileIntentionChooser implements IntentionChooser {
     /**
      * Is target present in xml boolean.
      *
-     * @param element the element
+     * @param psiClass the element
      * @return the boolean
      */
-    public boolean isTargetPresentInXml(@NotNull PsiElement element) {
-        return JavaService.getInstance(element.getProject()).findWithFindFirstProcessor(element).isPresent();
+    public boolean isTargetPresentInXml(@NotNull PsiClass psiClass) {
+        return JavaService.getInstance(psiClass.getProject()).findWithFindFirstProcessor(psiClass).isPresent();
     }
 
 }

@@ -1,11 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.provider;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
@@ -20,6 +18,9 @@ import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * The type Mapper line marker provider.
@@ -28,43 +29,69 @@ import java.util.Collection;
  */
 public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
-    /**
-     * 暂时不要改动这里.
-     */
-    @SuppressWarnings({"Convert2Lambda", "Anonymous2MethodRef", "Guava"})
-    private static final Function<DomElement, XmlTag> FUN = new Function<DomElement, XmlTag>() {
-        @Override
-        public XmlTag apply(DomElement domElement) {
-            return domElement.getXmlTag();
-        }
-    };
-
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
-        PsiElement foundElement = null;
-        // 类可以跳转
+
+        ElementInnerFilter filter = null;
         if (element instanceof PsiClass) {
-            foundElement = element;
+            filter = new PsiClassElementInnerFilter();
         }
-        // 接口内的方法可以跳转
-        if (element instanceof PsiMethod) {
-            if (JavaUtils.isElementWithinInterface(element)) {
-                foundElement = element;
-            }
+        if (filter == null && element instanceof PsiMethod) {
+            filter = new PsiMethodElementInnerFilter();
         }
-        // 可跳转的节点加入跳转标识
-        if (foundElement != null) {
-            CommonProcessors.CollectProcessor<IdDomElement> processor = new CommonProcessors.CollectProcessor<>();
-            JavaService.getInstance(element.getProject()).process(element, processor);
-            Collection<IdDomElement> results = processor.getResults();
+        if (filter != null) {
+            filter.collectNavigationMarkers(element, result);
+        }
+    }
+
+
+    /**
+     * 元素内部过滤器
+     */
+    private abstract class ElementInnerFilter {
+        protected abstract Collection<? extends DomElement> getResults(@NotNull PsiElement element);
+
+        private void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
+            final Collection<? extends DomElement> results = getResults(element);
             if (!results.isEmpty()) {
+                final List<XmlTag> xmlTags = results.stream().map(DomElement::getXmlTag).collect(Collectors.toList());
                 NavigationGutterIconBuilder<PsiElement> builder =
                     NavigationGutterIconBuilder.create(Icons.MAPPER_LINE_MARKER_ICON)
                         .setAlignment(GutterIconRenderer.Alignment.CENTER)
-                        .setTargets(Collections2.transform(results, FUN))
+                        .setTargets(xmlTags)
                         .setTooltipTitle("Navigation to target in mapper xml");
-                result.add(builder.createLineMarkerInfo(((PsiNameIdentifierOwner) foundElement).getNameIdentifier()));
+                final PsiElement targetMarkerInfo = Objects.requireNonNull(((PsiNameIdentifierOwner) element).getNameIdentifier());
+                result.add(builder.createLineMarkerInfo(targetMarkerInfo));
             }
         }
+    }
+
+    /**
+     * PsiClass过滤器
+     */
+    private class PsiClassElementInnerFilter extends ElementInnerFilter {
+
+        @Override
+        protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
+            // 可跳转的节点加入跳转标识
+            CommonProcessors.CollectProcessor<Mapper> processor = new CommonProcessors.CollectProcessor<>();
+            JavaService.getInstance(element.getProject()).processClass((PsiClass) element, processor);
+            return processor.getResults();
+        }
+
+    }
+
+    /**
+     * PsiMethod 过滤器
+     */
+    private class PsiMethodElementInnerFilter extends ElementInnerFilter {
+
+        @Override
+        protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
+            CommonProcessors.CollectProcessor<IdDomElement> processor = new CommonProcessors.CollectProcessor<>();
+            JavaService.getInstance(element.getProject()).processMethod(((PsiMethod) element), processor);
+            return processor.getResults();
+        }
+
     }
 }
