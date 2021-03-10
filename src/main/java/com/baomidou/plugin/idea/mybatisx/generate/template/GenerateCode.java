@@ -25,6 +25,7 @@ import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.config.JavaTypeResolverConfiguration;
 import org.mybatis.generator.config.ModelType;
 import org.mybatis.generator.config.PluginConfiguration;
+import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.NullProgressCallback;
@@ -88,6 +89,8 @@ public class GenerateCode {
             }
         };
         context.setId("MybatisXContext");
+        context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, generateConfig.getEncoding());
+        context.addProperty(PropertyRegistry.CONTEXT_JAVA_FORMATTER, CustomJavaFormatter.class.getName());
 
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
         String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();
