@@ -147,4 +147,8 @@ public class JpaAdvanceDialog extends DialogWrapper {
     public List<String> getDefaultDate() {
         return smartJpaAdvanceUI.getDefaultDate();
     }
+
+    public List<String> getResultFields() {
+        return smartJpaAdvanceUI.getResultFields();
+    }
 }

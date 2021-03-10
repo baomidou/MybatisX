@@ -113,7 +113,7 @@ public class CountOperator extends SelectOperator {
 
         mybatisXmlGenerator.generateSelect(id,
             mapperXml,
-            conditionFieldWrapper.isResultType(),
+            true,
             null,
             "int", resultFields, entityClass);
     }

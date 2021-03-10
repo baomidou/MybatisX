@@ -120,7 +120,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
             PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
             final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
 
-            List<TxField> resultTxFields = getResultTxFields(platformGenerator.getAllFields(), platformGenerator.getResultFields());
+            List<TxField> resultTxFields = conditionFieldWrapper.getResultTxFields();
             platformGenerator.generateMapperXml(mapperClassGenerateFactory,
                 psiMethod,
                 conditionFieldWrapper,
@@ -132,9 +132,6 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
         }
     }
 
-    private List<TxField> getResultTxFields(List<TxField> allFields, List<String> resultFields) {
-        return allFields.stream().filter(field -> resultFields.contains(field.getTipName())).collect(Collectors.toList());
-    }
 
     private boolean findDatabaseComponent() {
         try {
@@ -177,8 +174,15 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
             return Optional.empty();
         }
         Set<String> selectedFields = jpaAdvanceDialog.getSelectedFields();
-
-        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(project, selectedFields, allFields, defaultDateWord);
+        List<String> selectResultFields = null;
+        List<String> resultFieldsFromDialog = jpaAdvanceDialog.getResultFields();
+        if (resultFieldsFromDialog.size() > 0) {
+            selectResultFields = resultFieldsFromDialog;
+        }
+        if (selectResultFields == null) {
+            selectResultFields = resultFields;
+        }
+        ConditionIfTestWrapper conditionIfTestWrapper = new ConditionIfTestWrapper(project, selectedFields, selectResultFields, allFields, defaultDateWord);
 
         conditionIfTestWrapper.setAllFields(jpaAdvanceDialog.getAllFieldsStr());
 
@@ -187,7 +191,8 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
         if (isSelect) {
             conditionIfTestWrapper.setResultTypeClass(jpaAdvanceDialog.getResultTypeClass());
         } else {
-            conditionIfTestWrapper.setResultTypeClass("int");
+            // 对于update,insert,delete, count查询是没有返回类型的
+            conditionIfTestWrapper.setResultTypeClass(null);
         }
         conditionIfTestWrapper.setGeneratorType(jpaAdvanceDialog.getGeneratorType());
         conditionIfTestWrapper.setDefaultDateList(jpaAdvanceDialog.getDefaultDate());

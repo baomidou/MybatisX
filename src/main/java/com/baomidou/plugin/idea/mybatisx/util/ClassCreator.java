@@ -17,6 +17,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.util.IncorrectOperationException;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -35,8 +36,9 @@ public class ClassCreator {
         stringBuilder.append(";");
         stringBuilder.append("\n");
 
+        // 添加字段的 import
         for (PsiField field : entityClass.getAllFields()) {
-            if (allowFields.contains(field.getName())) {
+            if (allowFields.contains(field.getName()) ) {
                 String importType = field.getType().getCanonicalText();
                 stringBuilder.append("import").append(" ").append(importType).append(";").append("\n");
             }
@@ -44,19 +46,24 @@ public class ClassCreator {
 
         stringBuilder.append("public").append(" ").append("class")
             .append(" ").append(dtoName).append("{").append("\n");
+        // 添加字段
+        Set<String> addedFields = new HashSet<>();
         for (PsiField field : entityClass.getAllFields()) {
-            if (allowFields.contains(field.getName())) {
+            if (allowFields.contains(field.getName())
+                && addedFields.add(field.getName())) {
                 stringBuilder.append("private").append(" ");
                 stringBuilder.append(field.getType().getPresentableText()).append(" ");
                 stringBuilder.append(field.getName()).append(";").append("\n");
             }
         }
+        // 添加setter 方法
         for (PsiMethod psiMethod : entityClass.getAllMethods()) {
             if (psiMethod.getName().startsWith("set") &&
                 allowFields.contains(StringUtils.lowerCaseFirstChar(psiMethod.getName().substring(3)))) {
                 stringBuilder.append(psiMethod.getText()).append("\n");
             }
         }
+        // 添加getter方法
         for (PsiMethod psiMethod : entityClass.getAllMethods()) {
             if (psiMethod.getName().startsWith("get") &&
                 allowFields.contains(StringUtils.lowerCaseFirstChar(psiMethod.getName().substring(3)))) {
@@ -74,8 +81,6 @@ public class ClassCreator {
 
         WriteAction.run(() -> {
             try {
-
-
                 PsiFile file = directory.createFile(dtoName + ".java");
 
                 VirtualFile virtualFile = file.getVirtualFile();
@@ -92,7 +97,7 @@ public class ClassCreator {
                 currentRunOptions.setProcessingScope(TextRangeType.WHOLE_FILE);
                 new FileInEditorProcessor(file, null, currentRunOptions).processCode();
 
-            } catch (PsiInvalidElementAccessException | IOException | IncorrectOperationException e) {
+            } catch (PsiInvalidElementAccessException | IOException | IncorrectOperationException ignored) {
             }
 
         });

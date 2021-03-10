@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.EmptyGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
@@ -10,6 +11,7 @@ import com.intellij.psi.PsiClass;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The type Never contains field wrapper.
@@ -79,6 +81,11 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
 
     @Override
     public List<String> getDefaultDateList() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<TxField> getResultTxFields() {
         return Collections.emptyList();
     }
 }

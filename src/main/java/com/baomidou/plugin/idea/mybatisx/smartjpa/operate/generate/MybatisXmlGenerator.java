@@ -133,6 +133,10 @@ public class MybatisXmlGenerator implements Generator {
 
     private boolean isGenerateResultMap(XmlTag xmlTag, String resultMapId) {
         Boolean generate = null;
+        // 支持countByXX的形式, 这种形式没有resultMapId
+        if (resultMapId == null) {
+            generate = false;
+        }
         if ("BaseResultMap".equals(resultMapId) || "BlobResultMap".equals(resultMapId)) {
             generate = false;
         }

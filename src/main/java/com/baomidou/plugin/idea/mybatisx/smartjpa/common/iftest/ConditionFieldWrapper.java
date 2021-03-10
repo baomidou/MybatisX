@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 
 import java.util.List;
@@ -68,4 +69,7 @@ public interface ConditionFieldWrapper {
     String wrapDefaultDateIfNecessary(String columnName, String fieldValue);
 
     List<String> getDefaultDateList();
+
+    List<TxField> getResultTxFields();
+
 }
