@@ -11,6 +11,7 @@ import com.baomidou.plugin.idea.mybatisx.ui.SmartJpaAdvanceUI;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +30,9 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     private String resultMap;
     private boolean resultType;
     private String resultTypeClass;
+    private List<String> resultFields;
     private Map<String, TxField> txFieldMap;
+    private List<TxField> allFields;
     /**
      * 默认字段的关键字：  oracle: SYSDATE, mysql: NOW()
      */
@@ -40,19 +43,22 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
 
     /**
      * Instantiates a new Condition if test wrapper.
-     *
-     * @param project
+     *  @param project
      * @param selectedWrapFields the wrapper fields
+     * @param resultFields
      * @param allFields
      * @param defaultDateWord
      */
     public ConditionIfTestWrapper(@NotNull Project project,
                                   Set<String> selectedWrapFields,
+                                  List<String> resultFields,
                                   List<TxField> allFields,
                                   String defaultDateWord) {
         this.project = project;
         this.selectedWrapFields = selectedWrapFields;
-        txFieldMap = allFields.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x));
+        this.resultFields = resultFields;
+        txFieldMap = allFields.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x,(a,b)->a));
+        this.allFields = allFields;
         this.defaultDateWord = defaultDateWord;
     }
 
@@ -178,6 +184,12 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     @Override
     public List<String> getDefaultDateList() {
         return defaultDateList;
+    }
+
+    @Override
+    public List<TxField> getResultTxFields() {
+        Set<String> addedFields = new HashSet<>();
+        return allFields.stream().filter(field -> resultFields.contains(field.getFieldName()) && addedFields.add(field.getFieldName())).collect(Collectors.toList());
     }
 
     public void setDefaultDateList(List<String> defaultDateList) {

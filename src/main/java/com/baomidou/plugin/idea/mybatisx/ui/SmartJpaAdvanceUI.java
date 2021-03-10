@@ -41,7 +41,6 @@ public class SmartJpaAdvanceUI {
     private boolean resultType = false;
     private List<String> resultFields;
     private PsiClass entityClass;
-    private boolean useDefaultEntityClass = true;
     public static final String BASE_COLUMN_LIST = "Base_Column_List";
 
     /**
@@ -114,10 +113,10 @@ public class SmartJpaAdvanceUI {
         });
 
         radioCreateCustomClass.addItemListener(e -> {
-            this.useDefaultEntityClass = false;
+            resultExecutor = new CustomResultExecutor();
         });
         radioUseEntityClass.addItemListener(e -> {
-            this.useDefaultEntityClass = true;
+            resultExecutor = new CommonResultExecutor();
         });
 
         // 假装执行了选中 includeAllRadio的事件
@@ -128,20 +127,7 @@ public class SmartJpaAdvanceUI {
 
     @Nullable
     private String getEntityClassName(PsiClass entityClass) {
-        String qualifiedName = null;
-        if (useDefaultEntityClass) {
-            qualifiedName = entityClass.getQualifiedName();
-        }
-        if (qualifiedName == null) {
-            if (CollectionUtils.isNotEmpty(resultFields)) {
-                String collect = String.join("", resultFields);
-                qualifiedName = entityClass.getQualifiedName() + collect + "DTO";
-            }
-        }
-        if (qualifiedName == null) {
-            qualifiedName = entityClass.getQualifiedName();
-        }
-        return qualifiedName;
+        return resultExecutor.getEntityClassName(entityClass);
     }
 
     private void includeAllResults(String columnNames) {
@@ -201,6 +187,7 @@ public class SmartJpaAdvanceUI {
         return columnsTextArea.getText();
     }
 
+    private ResultExecutor resultExecutor = new CommonResultExecutor();
 
     /**
      * Gets result map.
@@ -208,20 +195,8 @@ public class SmartJpaAdvanceUI {
      * @return the result map
      */
     public String getResultMap() {
-        String qualifiedName = null;
-        if (useDefaultEntityClass) {
-            qualifiedName = BASE_RESULT_MAP;
-        }
-        if (qualifiedName == null) {
-            if (CollectionUtils.isNotEmpty(resultFields)) {
-                String collect = String.join("", resultFields);
-                qualifiedName = entityClass.getName() + collect + "Map";
-            }
-        }
-        if (qualifiedName == null) {
-            qualifiedName = BASE_RESULT_MAP;
-        }
-        return qualifiedName;
+        return resultExecutor.getResultMap();
+
     }
 
     /**
@@ -255,6 +230,75 @@ public class SmartJpaAdvanceUI {
         }
         return Arrays.stream(text.split(",")).map(String::trim).collect(Collectors.toList());
     }
+
+    public List<String> getResultFields() {
+        return resultExecutor.getResultFields();
+    }
+
+    private abstract class ResultExecutor {
+
+        protected abstract String getResultMap();
+
+        public abstract String getEntityClassName(PsiClass entityClass);
+
+        public abstract List<String> getResultFields();
+
+    }
+
+    private class CommonResultExecutor extends ResultExecutor {
+        @Override
+        public String getResultMap() {
+            return BASE_RESULT_MAP;
+        }
+
+        @Override
+        public String getEntityClassName(PsiClass entityClass) {
+            return  entityClass.getQualifiedName();
+        }
+
+        @Override
+        public List<String> getResultFields() {
+            return Collections.emptyList();
+        }
+    }
+
+    private class CustomResultExecutor extends ResultExecutor {
+
+        @Override
+        protected String getResultMap() {
+            String qualifiedName = null;
+            if (CollectionUtils.isNotEmpty(resultFields)) {
+                String fields = String.join("", resultFields);
+                qualifiedName = entityClass.getName() + fields + "Map";
+            }
+            if (qualifiedName == null) {
+                qualifiedName = entityClass.getName() + "ExtMap";
+            }
+            return qualifiedName;
+        }
+
+        @Override
+        public String getEntityClassName(PsiClass entityClass) {
+            String qualifiedName = null;
+            // 自定义一个新的类名称
+            // 根据指定的字段生成一个新的类
+            if (CollectionUtils.isNotEmpty(resultFields)) {
+                String collect = String.join("", resultFields);
+                qualifiedName = entityClass.getQualifiedName() + collect + "DTO";
+            }
+            // 根据原先的实体类复制出一个新的实体类的名称
+            if (qualifiedName == null) {
+                qualifiedName = entityClass.getQualifiedName() + "ExtDTO";
+            }
+            return qualifiedName;
+        }
+
+        @Override
+        public List<String> getResultFields() {
+            return allFields.stream().map(TxField::getFieldName).distinct().collect(Collectors.toList());
+        }
+    }
+
 
     /**
      * The enum Generator enum.
