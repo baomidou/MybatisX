@@ -178,7 +178,7 @@ public abstract class AbstractStatementGenerator {
             return;
         }
         CollectProcessor<Mapper> processor = new CollectProcessor<>();
-        JavaService.getInstance(method.getProject()).process(psiClass, processor);
+        JavaService.getInstance(method.getProject()).processClass(psiClass, processor);
         final List<Mapper> mappers = Lists.newArrayList(processor.getResults());
         if (1 == mappers.size()) {
             setupTag(method, (Mapper) Iterables.getOnlyElement(mappers, (Object) null));

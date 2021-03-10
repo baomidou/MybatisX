@@ -70,7 +70,7 @@
         <dom.fileDescription id="baomidou.ConfigurationDescription"
             implementation="com.baomidou.plugin.idea.mybatisx.dom.description.ConfigurationDescription"/>
 
-        <!-- 定义搜索，用来实现通过Mapper接口类搜索实现类时直接跳转至mapper.xml文件 -->
+        <!-- 定义搜索, 用来实现通过Mapper接口类搜索实现类时直接跳转至mapper.xml文件 -->
         <definitionsSearch id="baomidou.MapperDefinitionSearch"
                            implementation="com.baomidou.plugin.idea.mybatisx.definitionsearch.MapperDefinitionSearch"/>
 
