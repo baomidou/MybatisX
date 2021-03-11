@@ -14,6 +14,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.util.IncorrectOperationException;
 
 import java.io.IOException;
@@ -51,6 +52,10 @@ public class ClassCreator {
         for (PsiField field : entityClass.getAllFields()) {
             if (allowFields.contains(field.getName())
                 && addedFields.add(field.getName())) {
+                final PsiDocComment docComment = field.getDocComment();
+                if (docComment != null) {
+                    stringBuilder.append(docComment.getText()).append("\n");
+                }
                 stringBuilder.append("private").append(" ");
                 stringBuilder.append(field.getType().getPresentableText()).append(" ");
                 stringBuilder.append(field.getName()).append(";").append("\n");

@@ -2,13 +2,10 @@ package com.baomidou.plugin.idea.mybatisx.definitionsearch;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.service.JavaService;
-import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
-import com.baomidou.plugin.idea.mybatisx.ui.UiComponentFacade;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.util.Processor;
@@ -26,7 +23,7 @@ import java.util.stream.Collectors;
  * @author yanglin
  * @since 2018 -08-05
  */
-public class MapperDefinitionSearch extends QueryExecutorBase<XmlElement, PsiMethod> {
+public class MapperDefinitionSearch extends QueryExecutorBase<XmlElement, PsiElement> {
 
     /**
      * Instantiates a new Mapper definition search.
@@ -36,7 +33,11 @@ public class MapperDefinitionSearch extends QueryExecutorBase<XmlElement, PsiMet
     }
 
     @Override
-    public void processQuery(@NotNull PsiMethod psiMethod, @NotNull Processor<? super XmlElement> consumer) {
+    public void processQuery(@NotNull PsiElement queryParameters, @NotNull Processor<? super XmlElement> consumer) {
+        if (!(queryParameters instanceof PsiMethod)) {
+            return;
+        }
+        PsiMethod psiMethod = (PsiMethod) queryParameters;
         PsiClass psiClass = psiMethod.getContainingClass();
         if (null == psiClass) {
             return;

@@ -18,8 +18,14 @@ public class JpaBlog extends ParentDTO {
      * 用于测试忽略静态字段
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * id
+     */
     @Id
     private Long id;
+    /**
+     * 标题
+     */
     private String title;
     private String content;
     private BigDecimal money;

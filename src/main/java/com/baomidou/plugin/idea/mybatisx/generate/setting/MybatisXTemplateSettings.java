@@ -137,6 +137,9 @@ public class MybatisXTemplateSettings {
         Map<String, List<TemplateSettingDTO>> templateSettingMap = templateConfigs.getTemplateSettingMap();
         String DEFAULT_TEMPLATE_NAME = "mybatis-plus3";
         List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(DEFAULT_TEMPLATE_NAME);
+        if (templateSettingDTOS == null) {
+            return;
+        }
 
         TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
         templateSettingDTO.setFileName(fieldNameTextField.getText());
