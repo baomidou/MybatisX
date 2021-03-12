@@ -42,6 +42,10 @@ public class ClassInfo {
      * 除了主键的所有字段
      */
     private List<FieldInfo> baseFields;
+    /**
+     * 所有的blob字段
+     */
+    private List<FieldInfo> baseBlobFields;
 
 
     public static ClassInfo build(IntrospectedTable introspectedTable) {
@@ -66,6 +70,12 @@ public class ClassInfo {
         classInfo.baseFields = introspectedTable.getBaseColumns().stream()
                 .map(FieldInfo::build)
                 .collect(Collectors.toList());
+
+        classInfo.baseBlobFields = Stream.of(introspectedTable.getBaseColumns(),
+            introspectedTable.getBLOBColumns())
+            .flatMap(Collection::stream)
+            .map(FieldInfo::build)
+            .collect(Collectors.toList());
         return classInfo;
     }
 
@@ -87,5 +97,9 @@ public class ClassInfo {
 
     public List<FieldInfo> getBaseFields() {
         return baseFields;
+    }
+
+    public List<FieldInfo> getBaseBlobFields() {
+        return baseBlobFields;
     }
 }
