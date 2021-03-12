@@ -19,7 +19,7 @@ import java.util.Optional;
  * mapper.xml 和 mapperClass 的文件图标修改为骚气的小鸟
  */
 public class XmlAndMapperIconProvider extends IconProvider {
-    MybatisXSettings instance = MybatisXSettings.getInstance();
+    private MybatisXSettings instance = MybatisXSettings.getInstance();
 
     @Override
     public @Nullable

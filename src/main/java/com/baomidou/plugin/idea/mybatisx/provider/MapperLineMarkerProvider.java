@@ -58,6 +58,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 NavigationGutterIconBuilder<PsiElement> builder =
                     NavigationGutterIconBuilder.create(Icons.MAPPER_LINE_MARKER_ICON)
                         .setAlignment(GutterIconRenderer.Alignment.CENTER)
+                        .setCellRenderer(new GotoMapperXmlSchemaTypeRendererProvider.MyRenderer())
                         .setTargets(xmlTags)
                         .setTooltipTitle("Navigation to target in mapper xml");
                 final PsiElement targetMarkerInfo = Objects.requireNonNull(((PsiNameIdentifierOwner) element).getNameIdentifier());
