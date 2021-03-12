@@ -9,9 +9,7 @@
         <!--<projectService id="baomidou.PersistentConfig"
                         serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>-->
 
-        <!-- 应用服务 -->
-        <applicationService id="baomidou.MybatisSetting"
-                            serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
+
         <!-- 通过模板生成代码的项目配置 -->
       <!--  <projectConfigurable groupId="mybatisx.settings" displayName="Templates"
                              id="baomidou.MybatisTemplateGeneratorConfigurable"
