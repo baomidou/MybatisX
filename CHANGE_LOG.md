@@ -1,3 +1,13 @@
+# 1.4.10
+1. 取消模板的界面配置
+2. 增加countByFields的jpa提示
+3. 修复Jpa生成代码时生成了错误的include标签
+4. 生成代码兼容老版本的方式, 兼容deleteByPrimaryKey，insert,insertSelective,selectByPrimaryKey,updateByPrimaryKeySelective,updateByPrimaryKey
+5. 修复mapper类对应多个xml文件无法跳转的问题， 会弹出多选框自行选择xml文件
+
+# 1.4.9
+1. 修复生成的实体类编码格式为GBK的问题,按照界面选择的编码格式进行生成
+
 # 1.4.8
 1. 修复社区版本的错误提示,数组越界,持久化 等异常
 
