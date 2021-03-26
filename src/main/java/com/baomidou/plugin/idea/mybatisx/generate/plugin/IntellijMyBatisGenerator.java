@@ -69,18 +69,23 @@ public class IntellijMyBatisGenerator {
     }
 
     public void generate(ProgressCallback callback, IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
-        this.generate(callback, null, null, true, tableInfo);
+        this.generate(callback, null, null, true,null, tableInfo);
     }
 
     public void generate(ProgressCallback callback, Set<String> contextIds, IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
-        this.generate(callback, contextIds, null, true, tableInfo);
+        this.generate(callback, contextIds, null, true, null,tableInfo);
     }
 
     public void generate(ProgressCallback callback, Set<String> contextIds, Set<String> fullyQualifiedTableNames, IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
-        this.generate(callback, contextIds, fullyQualifiedTableNames, true, tableInfo);
+        this.generate(callback, contextIds, fullyQualifiedTableNames, true,null, tableInfo);
     }
 
-    public void generate(ProgressCallback callback, Set<String> contextIds, Set<String> fullyQualifiedTableNames, boolean writeFiles, IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
+    public void generate(ProgressCallback callback,
+                         Set<String> contextIds,
+                         Set<String> fullyQualifiedTableNames,
+                         boolean writeFiles,
+                         List<ClassLoader> classLoaders,
+                         IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
         if (callback == null) {
             callback = new NullProgressCallback();
         }
@@ -107,6 +112,11 @@ public class IntellijMyBatisGenerator {
             ObjectFactory.addExternalClassLoader(classLoader);
         }
 
+        if (classLoaders != null) {
+            for (ClassLoader classLoader : classLoaders) {
+                ObjectFactory.addExternalClassLoader(classLoader);
+            }
+        }
         int totalSteps = 0;
 
 

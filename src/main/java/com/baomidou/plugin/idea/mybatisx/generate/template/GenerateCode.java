@@ -10,8 +10,11 @@ import com.baomidou.plugin.idea.mybatisx.generate.plugin.JavaTypeResolverJsr310I
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBack;
 import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
 import freemarker.cache.StringTemplateLoader;
@@ -55,6 +58,7 @@ import java.util.Set;
  * 代码生成入口
  */
 public class GenerateCode {
+
     private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
     public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true) {
         // 始终用最新的文件
@@ -67,9 +71,10 @@ public class GenerateCode {
     public static void generate(GenerateConfig generateConfig,
                                 Map<String, List<TemplateSettingDTO>> templateSettingMap,
                                 PsiElement psiElement) throws Exception {
+
         DbTable dbTable = null;
         if (!(psiElement instanceof DbTable)) {
-            logger.info("生成代码出错,选择的元素不是表格类型, psiElement: {}",psiElement.getText());
+            logger.info("生成代码出错,选择的元素不是表格类型, psiElement: {}", psiElement.getText());
             return;
         }
         dbTable = (DbTable) psiElement;
@@ -97,6 +102,14 @@ public class GenerateCode {
         javaModelGeneratorConfiguration.setTargetProject(targetProject);
         javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + "." + generateConfig.getRelativePackage());
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
+
+        final List<ClassLoader> classLoaderList = new ArrayList<>();
+        if (SpringStringUtils.hasText(generateConfig.getRootClass())) {
+            javaModelGeneratorConfiguration.addProperty(PropertyRegistry.ANY_ROOT_CLASS, generateConfig.getRootClass());
+            final Optional<PsiClass> psiClassOptional = JavaUtils.findClazz(psiElement.getProject(), generateConfig.getRootClass());
+            psiClassOptional.ifPresent(psiClass -> classLoaderList.add(new MybatisXClassPathDynamicClassLoader(psiClass)));
+
+        }
 
         buildTableConfiguration(generateConfig, context, tableName, domainName);
 
@@ -126,8 +139,9 @@ public class GenerateCode {
         Set<String> contexts = new HashSet<>();
         Set<String> fullyqualifiedTables = new HashSet<>();
         IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(config, SHELL_CALLBACK, warnings);
-        intellijMyBatisGenerator.generate(new NullProgressCallback(), contexts, fullyqualifiedTables, intellijTableInfo);
 
+
+        intellijMyBatisGenerator.generate(new NullProgressCallback(), contexts, fullyqualifiedTables, true, classLoaderList, intellijTableInfo);
     }
 
     private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String domainName) {
