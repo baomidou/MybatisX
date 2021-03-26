@@ -16,6 +16,7 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -31,6 +32,34 @@ public class ClassCreator {
 
             return;
         }
+        String stringBuilder = defineClass(allowFields, entityClass, dtoName);
+
+        WriteAction.run(() -> {
+            try {
+                PsiFile file = directory.createFile(dtoName + ".java");
+
+                VirtualFile virtualFile = file.getVirtualFile();
+                virtualFile.setBinaryContent(stringBuilder.getBytes());
+
+                // 格式化代码
+                LastRunReformatCodeOptionsProvider provider = new LastRunReformatCodeOptionsProvider(PropertiesComponent.getInstance());
+                provider.saveCodeCleanupState(true);
+                provider.saveOptimizeImportsState(true);
+                provider.saveRearrangeCodeState(true);
+
+                ReformatCodeRunOptions currentRunOptions = provider.getLastRunOptions(file);
+
+                currentRunOptions.setProcessingScope(TextRangeType.WHOLE_FILE);
+                new FileInEditorProcessor(file, null, currentRunOptions).processCode();
+
+            } catch (PsiInvalidElementAccessException | IOException | IncorrectOperationException ignored) {
+            }
+
+        });
+    }
+
+    @NotNull
+    public String defineClass(Set<String> allowFields, PsiClass entityClass, String dtoName) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("package").append(" ");
         stringBuilder.append(((PsiJavaFile) entityClass.getParent()).getPackageName());
@@ -83,28 +112,6 @@ public class ClassCreator {
         }
 
         stringBuilder.append("}");
-
-        WriteAction.run(() -> {
-            try {
-                PsiFile file = directory.createFile(dtoName + ".java");
-
-                VirtualFile virtualFile = file.getVirtualFile();
-                virtualFile.setBinaryContent(stringBuilder.toString().getBytes());
-
-                // 格式化代码
-                LastRunReformatCodeOptionsProvider provider = new LastRunReformatCodeOptionsProvider(PropertiesComponent.getInstance());
-                provider.saveCodeCleanupState(true);
-                provider.saveOptimizeImportsState(true);
-                provider.saveRearrangeCodeState(true);
-
-                ReformatCodeRunOptions currentRunOptions = provider.getLastRunOptions(file);
-
-                currentRunOptions.setProcessingScope(TextRangeType.WHOLE_FILE);
-                new FileInEditorProcessor(file, null, currentRunOptions).processCode();
-
-            } catch (PsiInvalidElementAccessException | IOException | IncorrectOperationException ignored) {
-            }
-
-        });
+        return stringBuilder.toString();
     }
 }

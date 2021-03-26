@@ -11,20 +11,36 @@ public class GenerateConfig {
     private String annotationType;
 
     /***
-     *
+     * 目标项目
      */
     private String targetProject;
+    /**
+     * 表名称
+     */
     private String tableName;
-
+    /**
+     * 基础包名
+     */
     private String basePackage;
+    /**
+     * 相对包路径
+     */
     private String relativePackage;
+    /**
+     * 实体类名称
+     */
     private String domainObjectName;
+    /**
+     * 编码方式, 默认: UTF-8
+     */
     private String encoding;
     /**
      * 模块的源码相对路径
      */
     private String basePath;
-
+    /**
+     * 模块路径
+     */
     private String modulePath;
 
     /**
@@ -35,20 +51,11 @@ public class GenerateConfig {
      * 需要生成实体类注释
      */
     private boolean needsComment;
-
     /**
-     * 需要生成mapper注解
-     *
-     * @Mapper
+     * 实体类需要继承的父类
      */
-//    private boolean needMapperAnnotation;
-    public String getModuleName() {
-        return moduleName;
-    }
+    private String rootClass;
 
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
-    }
 
     /**
      * 需要生成repository注解
@@ -69,6 +76,21 @@ public class GenerateConfig {
      * 已选择的模板名称
      */
     private List<String> extraTemplateNames;
+
+    /**
+     * 需要生成mapper注解
+     *
+     * @Mapper
+     */
+//    private boolean needMapperAnnotation;
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
 
     public String getTemplatesName() {
         return templatesName;
@@ -214,11 +236,20 @@ public class GenerateConfig {
             ", modulePath='" + modulePath + '\'' +
             ", needToStringHashcodeEquals=" + needToStringHashcodeEquals +
             ", needsComment=" + needsComment +
+            ", rootClass='" + rootClass + '\'' +
             ", useLombokPlugin=" + useLombokPlugin +
             ", useActualColumns=" + useActualColumns +
             ", jsr310Support=" + jsr310Support +
             ", templatesName='" + templatesName + '\'' +
             ", extraTemplateNames=" + extraTemplateNames +
             '}';
+    }
+
+    public String getRootClass() {
+        return rootClass;
+    }
+
+    public void setRootClass(String rootClass) {
+        this.rootClass = rootClass;
     }
 }

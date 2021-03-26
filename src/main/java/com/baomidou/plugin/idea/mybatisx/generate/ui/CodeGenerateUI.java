@@ -45,6 +45,7 @@ public class CodeGenerateUI {
     private JTextField basePackageTextField;
     private JTextField encodingTextField;
     private JComboBox templatesComboBox;
+    private JTextField superClassTextField;
 
     public JPanel getRootPanel() {
         return rootPanel;
@@ -87,6 +88,7 @@ public class CodeGenerateUI {
         relativePackageTextField.setText(generateConfig.getRelativePackage());
         basePackageTextField.setText(generateConfig.getBasePackage());
         encodingTextField.setText(generateConfig.getEncoding());
+        superClassTextField.setText(generateConfig.getRootClass());
 
         if (generateConfig.isNeedsComment()) {
             commentCheckBox.setSelected(true);
@@ -184,6 +186,7 @@ public class CodeGenerateUI {
         generateConfig.setBasePackage(basePackageTextField.getText());
         generateConfig.setBasePath(basePathTextField.getText());
         generateConfig.setEncoding(encodingTextField.getText());
+        generateConfig.setRootClass(superClassTextField.getText());
         String moduleName = null;
         Object selectedItem = moduleComboBox.getSelectedItem();
         if (selectedItem == null) {
