@@ -10,6 +10,8 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 /**
  * The type Mybatis setting.
  * 这里是全局配置, 所以配置文件在目录($APP_CONFIG$)下
@@ -19,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 @State(
     name = "MybatisXSettings",
     storages = @Storage(value = "$APP_CONFIG$/mybatisx.xml"))
-public class MybatisXSettings implements PersistentStateComponent<MybatisXSettings> {
+public class MybatisXSettings implements PersistentStateComponent<MybatisXSettings>, Serializable {
 
     // 配置的默认值
     private String mapperIcon;

@@ -12,6 +12,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiLiteralExpression;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.PsiReferenceParameterList;
 import com.intellij.psi.PsiType;
@@ -169,7 +171,7 @@ public abstract class JpaMappingResolver {
      * @return
      */
     protected boolean filterField(PsiField field) {
-        return !field.hasModifier(JvmModifier.STATIC);
+        return !field.hasModifierProperty(PsiModifier.STATIC);
     }
 
 }
