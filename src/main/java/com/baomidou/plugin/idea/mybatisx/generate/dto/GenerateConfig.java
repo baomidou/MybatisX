@@ -56,7 +56,6 @@ public class GenerateConfig {
      */
     private String rootClass;
 
-
     /**
      * 需要生成repository注解
      *
@@ -64,10 +63,10 @@ public class GenerateConfig {
      */
 //    private boolean repositoryAnnotation;
 
-
     private boolean useLombokPlugin;
     private boolean useActualColumns;
     private boolean jsr310Support;
+    private boolean useActualColumnAnnotationInject;
     /**
      * 模板组名称
      */
@@ -221,6 +220,23 @@ public class GenerateConfig {
         this.jsr310Support = jsr310Support;
     }
 
+
+    public String getRootClass() {
+        return rootClass;
+    }
+
+    public void setRootClass(String rootClass) {
+        this.rootClass = rootClass;
+    }
+
+    public boolean isUseActualColumnAnnotationInject() {
+        return useActualColumnAnnotationInject;
+    }
+
+    public void setUseActualColumnAnnotationInject(boolean useActualColumnAnnotationInject) {
+        this.useActualColumnAnnotationInject = useActualColumnAnnotationInject;
+    }
+
     @Override
     public String toString() {
         return "GenerateConfig{" +
@@ -240,16 +256,9 @@ public class GenerateConfig {
             ", useLombokPlugin=" + useLombokPlugin +
             ", useActualColumns=" + useActualColumns +
             ", jsr310Support=" + jsr310Support +
+            ", useActualColumnAnnotationInject=" + useActualColumnAnnotationInject +
             ", templatesName='" + templatesName + '\'' +
             ", extraTemplateNames=" + extraTemplateNames +
             '}';
-    }
-
-    public String getRootClass() {
-        return rootClass;
-    }
-
-    public void setRootClass(String rootClass) {
-        this.rootClass = rootClass;
     }
 }

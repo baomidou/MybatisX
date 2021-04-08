@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -197,6 +198,11 @@ public class IntellijIntrospector {
                     calculatedColumnName = matcher.replaceAll(replaceString);
                 }
 
+                if (StringUtility.isTrue(tc.getProperty("useActualColumnAnnotationInject"))) {
+                    Properties properties = new Properties();
+                    properties.setProperty("useActualColumnAnnotationInject", "true");
+                    introspectedColumn.setProperties(properties);
+                }
                 if (StringUtility.isTrue(tc.getProperty("useActualColumnNames"))) {
                     introspectedColumn.setJavaProperty(JavaBeansUtil.getValidPropertyName(calculatedColumnName));
                 } else if (StringUtility.isTrue(tc.getProperty("useCompoundPropertyNames"))) {
