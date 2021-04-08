@@ -31,6 +31,8 @@ public class CodeGenerateUI {
     private JCheckBox lombokCheckBox;
     private JCheckBox actualColumnCheckBox;
     private JCheckBox JSR310DateAPICheckBox;
+    private JCheckBox useActualColumnAnnotationInjectCheckBox;
+
     private JCheckBox toStringHashCodeEqualsCheckBox;
     private JTextField fileTextField;
     private JTextField basePathTextField;
@@ -104,6 +106,9 @@ public class CodeGenerateUI {
         }
         if (generateConfig.isJsr310Support()) {
             JSR310DateAPICheckBox.setSelected(true);
+        }
+        if (generateConfig.isUseActualColumnAnnotationInject()) {
+            useActualColumnAnnotationInjectCheckBox.setSelected(true);
         }
         // 添加动态模板组
         templateSettingMap.keySet().forEach(templatesComboBox::addItem);
@@ -231,6 +236,7 @@ public class CodeGenerateUI {
         generateConfig.setNeedToStringHashcodeEquals(toStringHashCodeEqualsCheckBox.isSelected());
         generateConfig.setUseLombokPlugin(lombokCheckBox.isSelected());
         generateConfig.setUseActualColumns(actualColumnCheckBox.isSelected());
+        generateConfig.setUseActualColumnAnnotationInject(useActualColumnAnnotationInjectCheckBox.isSelected());
         generateConfig.setJsr310Support(JSR310DateAPICheckBox.isSelected());
 
 
@@ -263,4 +269,7 @@ public class CodeGenerateUI {
     }
 
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }

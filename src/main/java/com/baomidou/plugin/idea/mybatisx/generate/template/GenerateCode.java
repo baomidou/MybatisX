@@ -154,6 +154,10 @@ public class GenerateCode {
             tc.addProperty("useActualColumnNames", "true");
         }
 
+        if (generateConfig.isUseActualColumnAnnotationInject()) {
+            tc.addProperty("useActualColumnAnnotationInject", "true");
+        }
+
         context.addTableConfiguration(tc);
     }
 
