@@ -104,9 +104,6 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
 
     @Override
     public @Nullable("null means disabled")
-    @Nls(
-        capitalization = Nls.Capitalization.Sentence
-    )
     String getName() {
         return "statement line marker";
     }
