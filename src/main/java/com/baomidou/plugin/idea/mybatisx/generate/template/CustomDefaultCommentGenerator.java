@@ -46,7 +46,11 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
     @Override
     public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         topLevelClass.addJavaDocLine("/**");
-        topLevelClass.addJavaDocLine(" * " + introspectedTable.getRemarks());
+        String remarks = introspectedTable.getRemarks();
+        if (remarks == null) {
+            remarks = "";
+        }
+        topLevelClass.addJavaDocLine(" * " + remarks);
         topLevelClass.addJavaDocLine(" * @TableName " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
         topLevelClass.addJavaDocLine(" */");
         annotationTypeOperator.addModelClassComment(topLevelClass, introspectedTable);
@@ -57,9 +61,12 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
     @Override
     public void addGetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
         method.addJavaDocLine("/**");
-        if (!StringUtils.isEmpty(introspectedColumn.getRemarks())) {
-            method.addJavaDocLine(" * " + introspectedColumn.getRemarks());
+        String remarks = introspectedColumn.getRemarks();
+        if (StringUtils.isEmpty(remarks)) {
+            remarks = "";
         }
+        method.addJavaDocLine(" * " + remarks);
+
         method.addJavaDocLine(" */");
     }
 
@@ -75,22 +82,23 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
     @Override
     public void addSetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
         method.addJavaDocLine("/**");
-        if (!StringUtils.isEmpty(introspectedColumn.getRemarks())) {
-            method.addJavaDocLine(" * " + introspectedColumn.getRemarks());
+        String remarks = introspectedColumn.getRemarks();
+        if (StringUtils.isEmpty(remarks)) {
+            remarks = "";
         }
+        method.addJavaDocLine(" * " + remarks);
+
         method.addJavaDocLine(" */");
     }
 
     @Override
     public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
         field.addJavaDocLine("/**");
-        StringBuilder sb = new StringBuilder();
-        sb.append(" * ");
-        if (!StringUtils.isEmpty(introspectedColumn.getRemarks())) {
-            sb.append(introspectedColumn.getRemarks());
+        String remarks = introspectedColumn.getRemarks();
+        if (StringUtils.isEmpty(remarks)) {
+            remarks = "";
         }
-        field.addJavaDocLine(sb.toString());
-
+        field.addJavaDocLine(" * " + remarks);
         field.addJavaDocLine(" */");
 
         annotationTypeOperator.addFieldComment(field, introspectedTable, introspectedColumn);
@@ -107,8 +115,13 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
     @Override
     public void addFieldComment(Field field, IntrospectedTable introspectedTable) {
         field.addJavaDocLine("/**");
-        field.addJavaDocLine(" * " + field.getName());
+        String remarks = field.getName();
+        if (StringUtils.isEmpty(remarks)) {
+            remarks = "";
+        }
+        field.addJavaDocLine(" * " + remarks);
         field.addJavaDocLine(" */");
+
     }
 
     @Override

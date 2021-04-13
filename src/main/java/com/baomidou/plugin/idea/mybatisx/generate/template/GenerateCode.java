@@ -30,7 +30,6 @@ import org.mybatis.generator.config.ModelType;
 import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.config.TableConfiguration;
-import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.NullProgressCallback;
 import org.mybatis.generator.plugins.EqualsHashCodePlugin;
 import org.mybatis.generator.plugins.SerializablePlugin;
@@ -39,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -60,13 +58,7 @@ import java.util.Set;
 public class GenerateCode {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
-    public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true) {
-        // 始终用最新的文件
-        @Override
-        public String mergeJavaFile(String newFileSource, File existingFile, String[] javadocTags, String fileEncoding) throws ShellException {
-            return newFileSource;
-        }
-    };
+    public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true);
 
     public static void generate(GenerateConfig generateConfig,
                                 Map<String, List<TemplateSettingDTO>> templateSettingMap,

@@ -79,7 +79,10 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
                 final TxField txField = mappingField.get(i - 1);
                 String columnName = txField.getColumnName();
 
-                fieldBuffer.append(columnName).append(",");
+                fieldBuffer.append(columnName);
+                if (i != mappingField.size()) {
+                    fieldBuffer.append(",");
+                }
                 if (i % newline == 0) {
                     fieldBuffer.append("\n");
                 }
@@ -113,7 +116,10 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
                 }
                 fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
 
-                stringJoiner.append(fieldStr).append(",");
+                stringJoiner.append(fieldStr);
+                if (i != mappingField.size()) {
+                    fieldBuffer.append(",");
+                }
                 if (i % newline == 0) {
                     stringJoiner.append("\n");
                 }
