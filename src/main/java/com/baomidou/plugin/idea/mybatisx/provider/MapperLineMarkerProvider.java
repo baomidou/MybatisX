@@ -30,8 +30,7 @@ import java.util.stream.Collectors;
 public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
-    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
-
+    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         ElementInnerFilter filter = null;
         if (element instanceof PsiClass) {
             filter = new PsiClassElementInnerFilter();
@@ -51,7 +50,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
     private abstract class ElementInnerFilter {
         protected abstract Collection<? extends DomElement> getResults(@NotNull PsiElement element);
 
-        private void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
+        private void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
             final Collection<? extends DomElement> results = getResults(element);
             if (!results.isEmpty()) {
                 final List<XmlTag> xmlTags = results.stream().map(DomElement::getXmlTag).collect(Collectors.toList());

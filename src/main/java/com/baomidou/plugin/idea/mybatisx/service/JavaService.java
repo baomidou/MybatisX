@@ -2,11 +2,8 @@ package com.baomidou.plugin.idea.mybatisx.service;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
-import com.baomidou.plugin.idea.mybatisx.ui.UiComponentFacade;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
@@ -20,17 +17,18 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
-import com.intellij.psi.xml.XmlElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.kotlin.psi.KtClass;
+import org.jetbrains.kotlin.psi.KtNamedFunction;
+import org.jetbrains.kotlin.psi.KtPsiUtil;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * The type Java service.
@@ -38,7 +36,6 @@ import java.util.stream.Collectors;
  * @author yanglin
  */
 public class JavaService {
-
     private Project project;
 
     private JavaPsiFacade javaPsiFacade;
@@ -129,6 +126,42 @@ public class JavaService {
                 processor.process(mapper);
             }
         }
+    }
+
+    /**
+     * Process Kotlin Class
+     * @param clazz     the ktclass
+     * @param processor the processor
+     */
+    public void processKotlinClass(@NotNull KtClass clazz, @NotNull Processor<Mapper> processor) {
+        String ns = clazz.getName();
+        String packageName = KtPsiUtil.getPackageName(clazz);
+        ns = packageName + "." + ns;
+        for (Mapper mapper : MapperUtils.findMappers(clazz.getProject())) {
+            if (MapperUtils.getNamespace(mapper).equals(ns)) {
+                processor.process(mapper);
+            }
+        }
+    }
+
+    /**
+     * process KtNamedFunction
+     * @param ktMethod  the kotlin method
+     * @param processor the processor
+     */
+    public void processKotlinMethod(@NotNull KtNamedFunction ktMethod, @NotNull Processor<IdDomElement> processor) {
+        KtClass parentClass = PsiTreeUtil.getParentOfType(ktMethod, KtClass.class);
+        if (null == parentClass || !KtPsiUtil.isTrait(parentClass)) {
+            return;
+        }
+        String packageName = KtPsiUtil.getPackageName(parentClass);
+        String id = packageName + "." + parentClass.getName() + "." + ktMethod.getName();
+        Collection<Mapper> mappers = MapperUtils.findMappers(ktMethod.getProject());
+
+        mappers.stream()
+            .flatMap(mapper -> mapper.getDaoElements().stream())
+            .filter(idDom -> MapperUtils.getIdSignature(idDom).equals(id))
+            .forEach(processor::process);
     }
 
     /**
