@@ -23,7 +23,6 @@ public class GenerateSmartJpaAction extends GenerateSmartJpaAdvanceAction {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateSmartJpaAction.class);
 
-    @Nls(capitalization = Nls.Capitalization.Sentence)
     @NotNull
     @Override
     public String getText() {

@@ -229,14 +229,12 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
     }
 
 
-    @Nls(capitalization = Nls.Capitalization.Sentence)
     @NotNull
     @Override
     public String getText() {
         return "[MybatisX] Generate Mybatis Sql for Advance";
     }
 
-    @Nls(capitalization = Nls.Capitalization.Sentence)
     @NotNull
     @Override
     public String getFamilyName() {

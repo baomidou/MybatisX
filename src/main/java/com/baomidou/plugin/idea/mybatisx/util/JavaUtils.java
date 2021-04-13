@@ -154,7 +154,7 @@ public final class JavaUtils {
         Optional<PsiClass[]> classes = findClasses(project, clazzName);
         if (classes.isPresent()) {
 
-            List<@NotNull PsiMethod> collect = Arrays.stream(classes.get())
+            List<PsiMethod> collect = Arrays.stream(classes.get())
                 .map(psiClass -> psiClass.findMethodsByName(methodName, true))
                 .flatMap(Arrays::stream)
                 .collect(Collectors.toList());
