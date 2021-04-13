@@ -192,6 +192,11 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return allFields.stream().filter(field -> resultFields.contains(field.getFieldName()) && addedFields.add(field.getFieldName())).collect(Collectors.toList());
     }
 
+    @Override
+    public int getNewline() {
+        return 3;
+    }
+
     public void setDefaultDateList(List<String> defaultDateList) {
         this.defaultDateList = defaultDateList;
     }

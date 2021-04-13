@@ -88,4 +88,9 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
     public List<TxField> getResultTxFields() {
         return Collections.emptyList();
     }
+
+    @Override
+    public int getNewline() {
+        return 3;
+    }
 }
