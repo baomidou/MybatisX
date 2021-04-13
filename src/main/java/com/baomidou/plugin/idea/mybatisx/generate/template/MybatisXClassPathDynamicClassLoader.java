@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 import com.baomidou.plugin.idea.mybatisx.util.ClassCreator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiModifier;
 import com.itranswarp.compiler.JavaStringCompiler;
 
 import java.io.IOException;
@@ -23,12 +24,15 @@ public class MybatisXClassPathDynamicClassLoader extends ClassLoader {
         if (name.equals(psiClass.getQualifiedName())) {
 
             ClassCreator classCreator = new ClassCreator();
-            final Set<String> allowedFields = Arrays.stream(psiClass.getAllFields()).map(PsiField::getName).collect(Collectors.toSet());
-            final String JAVA_SOURCE_CODE = classCreator.defineClass(allowedFields, psiClass, psiClass.getName());
+            final Set<String> allowedFields = Arrays.stream(psiClass.getAllFields())
+                // 过滤静态字段, 主要是为了过滤序列化的字段
+                .filter(field -> !field.hasModifierProperty(PsiModifier.STATIC))
+                .map(PsiField::getName).collect(Collectors.toSet());
+            String javaSourceCode = classCreator.defineClass(allowedFields, psiClass, psiClass.getName());
 
             try {
                 JavaStringCompiler compiler = new JavaStringCompiler();
-                Map<String, byte[]> results = compiler.compile(psiClass.getName() + ".java", JAVA_SOURCE_CODE);
+                Map<String, byte[]> results = compiler.compile(psiClass.getName() + ".java", javaSourceCode);
                 return compiler.loadClass(psiClass.getQualifiedName(), results);
             } catch (IOException e) {
                 throw new ClassNotFoundException("无法创建类", e);

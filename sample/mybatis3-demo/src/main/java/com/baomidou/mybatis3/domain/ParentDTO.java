@@ -8,11 +8,12 @@ import java.util.Date;
 
 @Accessors(chain = true)
 @Data
-public class ParentDTO implements Serializable {
+public class ParentDTO  {
     /**
      * 用于测试忽略静态字段
      */
     private static final long serialVersionUID = 1L;
 
     private Date createTime;
+
 }
