@@ -28,7 +28,7 @@ java {
 // https://github.com/JetBrains/gradle-intellij-plugin/
 // http://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/prerequisites.html
 intellij {
-    version = "2021.1"
+    version = "2019.2"
 
 //    type="IC"  // 社区版
 //    setPlugins(arrayOf("java")) //Bundled plugin dependencies
@@ -37,8 +37,7 @@ intellij {
         "Kotlin",
         "Spring",
         "SpringBoot",
-        "DatabaseTools",
-        "org.jetbrains.kotlin:211-1.4.32-release-IJ6693.72") //Bundled plugin dependencies
+        "DatabaseTools") //Bundled plugin dependencies
 
     pluginName = "MybatisX"
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
@@ -56,7 +55,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group="com.baomidou.plugin.idea.mybatisx"
-version="1.4.11"
+version="1.4.12"
 
 repositories {
     mavenLocal()
@@ -65,8 +64,6 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-
     implementation("com.softwareloop:mybatis-generator-lombok-plugin:1.0")
     implementation("uk.com.robust-it:cloning:1.9.2")
     implementation("org.mybatis.generator:mybatis-generator-core:1.4.0")

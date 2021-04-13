@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.StringJoiner;
 
 /**
  * oracle的批量插入
@@ -72,10 +72,19 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
 
             StringBuilder stringBuilder = new StringBuilder();
             String itemName = "item";
+            final int newline = conditionFieldWrapper.getNewline();
             // 追加列名
-            final String columns = mappingField.stream()
-                .map(TxField::getColumnName)
-                .collect(Collectors.joining(",\n"));
+            StringBuilder fieldBuffer = new StringBuilder();
+            for (int i = 1; i <= mappingField.size(); i++) {
+                final TxField txField = mappingField.get(i - 1);
+                String columnName = txField.getColumnName();
+
+                fieldBuffer.append(columnName).append(",");
+                if (i % newline == 0) {
+                    fieldBuffer.append("\n");
+                }
+            }
+            final String columns = fieldBuffer.toString();
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("(").append("\n");
@@ -84,25 +93,32 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
                 throw new GenerateException("oracle insertBatch 生成失败, 无法获取集合名称");
             }
             final String collectionName = collection.getName();
-            final String fields = mappingField.stream()
-                .map(field -> {
-                    String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
-                    // 第一版写死字段变更, 后续重构
-                    // 变更主键生成规则为自定义函数
-                    if (sequenceName.isPresent() && dasTable != null) {
-                        DasTableKey primaryKey = dasTable.getPrimaryKey();
-                        // 当前字段是主键, 使用自定义函数替换主键
-                        if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
-                            String pkFieldName = primaryKey.getColumnsRef().iterate().next();
-                            if (pkFieldName.equals(field.getColumnName())) {
-                                fieldStr = "GET_SEQ_NO('" + sequenceName.get() + "')";
-                            }
+
+            StringBuilder stringJoiner = new StringBuilder();
+
+            for (int i = 1; i <= mappingField.size(); i++) {
+                final TxField field = mappingField.get(i - 1);
+                String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
+                // 第一版写死字段变更, 后续重构
+                // 变更主键生成规则为自定义函数
+                if (sequenceName.isPresent() && dasTable != null) {
+                    DasTableKey primaryKey = dasTable.getPrimaryKey();
+                    // 当前字段是主键, 使用自定义函数替换主键
+                    if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
+                        String pkFieldName = primaryKey.getColumnsRef().iterate().next();
+                        if (pkFieldName.equals(field.getColumnName())) {
+                            fieldStr = "GET_SEQ_NO('" + sequenceName.get() + "')";
                         }
                     }
-                    fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
-                    return fieldStr;
-                })
-                .collect(Collectors.joining(",\n"));
+                }
+                fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
+
+                stringJoiner.append(fieldStr).append(",");
+                if (i % newline == 0) {
+                    stringJoiner.append("\n");
+                }
+            }
+            final String fields = stringJoiner.toString();
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
             stringBuilder.append(" item=\"").append(itemName).append("\"");

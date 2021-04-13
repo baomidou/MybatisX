@@ -72,4 +72,10 @@ public interface ConditionFieldWrapper {
 
     List<TxField> getResultTxFields();
 
+    /**
+     * 默认换行数量
+     * @return
+     */
+    int getNewline();
+
 }
