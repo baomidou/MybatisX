@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.lineMarkerProvider language="kotlin" implementationClass="com.baomidou.plugin.idea.mybatisx.provider.MapperLineKotlinMarkerProvider"/>
+    </extensions>
+</idea-plugin>

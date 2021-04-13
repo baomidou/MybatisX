@@ -109,7 +109,7 @@ public class MybatisXTemplateSettings {
 
         // Go to leaf
         if (node.getChildCount() > 0) {
-            Enumeration<TreeNode> children = node.children();
+            Enumeration<TreeNode> children = (Enumeration<TreeNode>) node.children();
 
             while (children.hasMoreElements()) {
                 TreeNode n = children.nextElement();

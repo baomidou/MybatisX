@@ -58,6 +58,7 @@
     <depends optional="true" config-file="spring.xml">com.intellij.spring</depends>
     <!-- support aliases -->
     <depends optional="true" config-file="spring-boot.xml">com.intellij.spring.boot</depends>
+    <depends optional="true" config-file="withKotlin.xml">org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <projectService id="baomidou.TemplatesSettings"

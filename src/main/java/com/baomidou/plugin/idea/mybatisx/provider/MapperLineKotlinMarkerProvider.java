@@ -8,14 +8,14 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.kotlin.psi.KtClass;
+import org.jetbrains.kotlin.psi.KtNamedFunction;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,16 +27,16 @@ import java.util.stream.Collectors;
  *
  * @author yanglin
  */
-public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
+public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         ElementInnerFilter filter = null;
-        if (element instanceof PsiClass) {
-            filter = new PsiClassElementInnerFilter();
+        if (element instanceof KtClass) {
+            filter = new KtClassElementInnerFilter();
         }
-        if (filter == null && element instanceof PsiMethod) {
-            filter = new PsiMethodElementInnerFilter();
+        if (filter == null && element instanceof KtNamedFunction) {
+            filter = new KtFunctionElementInnerFilter();
         }
         if (filter != null) {
             filter.collectNavigationMarkers(element, result);
@@ -67,29 +67,29 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
     }
 
     /**
-     * PsiClass过滤器
+     * KtClass过滤器
      */
-    private class PsiClassElementInnerFilter extends ElementInnerFilter {
+    private class KtClassElementInnerFilter extends ElementInnerFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
             // 可跳转的节点加入跳转标识
             CommonProcessors.CollectProcessor<Mapper> processor = new CommonProcessors.CollectProcessor<>();
-            JavaService.getInstance(element.getProject()).processClass((PsiClass) element, processor);
+            JavaService.getInstance(element.getProject()).processKotlinClass((KtClass) element, processor);
             return processor.getResults();
         }
 
     }
 
     /**
-     * PsiMethod 过滤器
+     * KtNamedFunction 过滤器
      */
-    private class PsiMethodElementInnerFilter extends ElementInnerFilter {
+    private class KtFunctionElementInnerFilter extends ElementInnerFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
             CommonProcessors.CollectProcessor<IdDomElement> processor = new CommonProcessors.CollectProcessor<>();
-            JavaService.getInstance(element.getProject()).processMethod(((PsiMethod) element), processor);
+            JavaService.getInstance(element.getProject()).processKotlinMethod(((KtNamedFunction) element), processor);
             return processor.getResults();
         }
 
