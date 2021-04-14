@@ -16,6 +16,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxReturnDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.MybatisXCollectors;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
@@ -250,7 +251,7 @@ public class InsertOperator extends BaseOperatorManager {
             // 追加列名
             final String columns = mappingField.stream()
                 .map(TxField::getColumnName)
-                .collect(Collectors.joining(",\n"));
+                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("values").append("\n");
@@ -258,7 +259,7 @@ public class InsertOperator extends BaseOperatorManager {
                 .map(field -> {
                     String fieldValue = JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType());
                     return conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
-                }).collect(Collectors.joining(",\n"));
+                }).collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
             stringBuilder.append("(\n");
             stringBuilder.append(fields).append("\n");
             stringBuilder.append(")").append("\n");

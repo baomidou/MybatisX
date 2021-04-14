@@ -15,14 +15,12 @@
     </sql>
     <insert id="insertBatchWithUnion">
         insert into t_blog(id,title,content,
-        money,age,create_time
-        )
+        money,age,create_time)
         (
         <foreach collection="blogCollection" item="item" separator="union all">
             select
-            #{item.id,jdbcType=NUMERIC}#{item.title,jdbcType=VARCHAR}#{item.content,jdbcType=VARCHAR}
-            #{item.money,jdbcType=DECIMAL}#{item.age,jdbcType=NUMERIC}#{item.createTime,jdbcType=TIMESTAMP}
-
+            #{item.id,jdbcType=NUMERIC},#{item.title,jdbcType=VARCHAR},#{item.content,jdbcType=VARCHAR},
+            #{item.money,jdbcType=DECIMAL},#{item.age,jdbcType=NUMERIC},#{item.createTime,jdbcType=TIMESTAMP}
             from dual
         </foreach>
         )

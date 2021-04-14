@@ -17,20 +17,12 @@
         insert all
         <foreach collection="blogCollection" item="item">
             INTO t_blog
-            (id,
-            title,
-            content,
-            money,
-            age,
-            create_time)
+            (id,title,content,
+            money,age,create_time)
             VALUES
             (
-            #{item.id,jdbcType=NUMERIC},
-            #{item.title,jdbcType=VARCHAR},
-            #{item.content,jdbcType=VARCHAR},
-            #{item.money,jdbcType=DECIMAL},
-            #{item.age,jdbcType=NUMERIC},
-            #{item.createTime,jdbcType=TIMESTAMP}
+            #{item.id,jdbcType=NUMERIC},#{item.title,jdbcType=VARCHAR},#{item.content,jdbcType=VARCHAR},
+            #{item.money,jdbcType=DECIMAL},#{item.age,jdbcType=NUMERIC},#{item.createTime,jdbcType=TIMESTAMP}
             )
         </foreach>
         select 1 from dual

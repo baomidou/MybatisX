@@ -12,6 +12,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.MybatisXCollectors;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.model.DasTableKey;
 import com.intellij.psi.PsiClass;
@@ -152,7 +153,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
             // 追加列名
             final String columns = mappingField.stream()
                 .map(TxField::getColumnName)
-                .collect(Collectors.joining(",\n"));
+                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
 
             final TxParameter collection = parameters.poll();
             if (collection == null) {
@@ -178,7 +179,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                     fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
                     return fieldStr;
                 })
-                .collect(Collectors.joining(",\n"));
+                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
             stringBuilder.append(" item=\"").append(itemName).append("\"").append(">").append("\n");

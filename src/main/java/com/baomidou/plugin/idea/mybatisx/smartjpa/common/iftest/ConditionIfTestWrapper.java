@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  * @author ls9527
  */
 public class ConditionIfTestWrapper implements ConditionFieldWrapper {
+    public static final int DEFAULT_NEWLINE_VALUE = 3;
     private Project project;
     private Set<String> selectedWrapFields;
     private String allFieldsStr;
@@ -191,10 +192,11 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         Set<String> addedFields = new HashSet<>();
         return allFields.stream().filter(field -> resultFields.contains(field.getFieldName()) && addedFields.add(field.getFieldName())).collect(Collectors.toList());
     }
+    private int newLine;
 
     @Override
     public int getNewline() {
-        return 3;
+        return newLine;
     }
 
     public void setDefaultDateList(List<String> defaultDateList) {
@@ -202,4 +204,11 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     }
 
 
+    public void setNewLine(int newLine) {
+        // 如果设置错误的值, 给一个合适的默认值
+        if (newLine <= 0) {
+            newLine = DEFAULT_NEWLINE_VALUE;
+        }
+        this.newLine = newLine;
+    }
 }
