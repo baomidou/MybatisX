@@ -14,6 +14,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.CustomStatemen
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle.InsertCustomSuffixAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.StatementBlock;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
+import com.baomidou.plugin.idea.mybatisx.util.MybatisXCollectors;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
@@ -205,7 +206,7 @@ public class MysqlInsertBatch implements CustomStatement {
             // 追加列名
             final String columns = mappingField.stream()
                 .map(field -> field.getColumnName())
-                .collect(Collectors.joining(",\n"));
+                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("values").append("\n");
@@ -217,7 +218,7 @@ public class MysqlInsertBatch implements CustomStatement {
                     fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
                     return fieldValue;
                 })
-                .collect(Collectors.joining(",\n"));
+                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
             stringBuilder.append(" item=\"" + itemName + "\"");

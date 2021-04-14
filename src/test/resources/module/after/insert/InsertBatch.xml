@@ -14,20 +14,12 @@
         id,age,content,title,money
     </sql>
     <insert id="insertBatch">
-        insert into t_blog(id,
-        title,
-        content,
-        money,
-        age,
-        create_time)
+        insert into t_blog(id,title,content,
+        money,age,create_time)
         values
         <foreach collection="blogCollection" item="item" separator=",">
-            (#{item.id,jdbcType=NUMERIC},
-            #{item.title,jdbcType=VARCHAR},
-            #{item.content,jdbcType=VARCHAR},
-            #{item.money,jdbcType=DECIMAL},
-            #{item.age,jdbcType=NUMERIC},
-            #{item.createTime,jdbcType=TIMESTAMP})
+            (#{item.id,jdbcType=NUMERIC},#{item.title,jdbcType=VARCHAR},#{item.content,jdbcType=VARCHAR},
+            #{item.money,jdbcType=DECIMAL},#{item.age,jdbcType=NUMERIC},#{item.createTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
 

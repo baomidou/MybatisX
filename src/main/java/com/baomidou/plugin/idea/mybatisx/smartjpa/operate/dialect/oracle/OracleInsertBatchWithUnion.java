@@ -8,6 +8,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DasTableAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.GenerateException;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql.MysqlInsertBatch;
+import com.baomidou.plugin.idea.mybatisx.util.MybatisXCollectors;
 import com.intellij.database.model.DasTableKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * oracle的批量插入
@@ -72,22 +74,10 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
 
             StringBuilder stringBuilder = new StringBuilder();
             String itemName = "item";
-            final int newline = conditionFieldWrapper.getNewline();
             // 追加列名
-            StringBuilder fieldBuffer = new StringBuilder();
-            for (int i = 1; i <= mappingField.size(); i++) {
-                final TxField txField = mappingField.get(i - 1);
-                String columnName = txField.getColumnName();
-
-                fieldBuffer.append(columnName);
-                if (i != mappingField.size()) {
-                    fieldBuffer.append(",");
-                }
-                if (i % newline == 0) {
-                    fieldBuffer.append("\n");
-                }
-            }
-            final String columns = fieldBuffer.toString();
+            final String columns = mappingField.stream()
+                .map(TxField::getColumnName)
+                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("(").append("\n");
@@ -96,35 +86,25 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
                 throw new GenerateException("oracle insertBatch 生成失败, 无法获取集合名称");
             }
             final String collectionName = collection.getName();
-
-            StringBuilder stringJoiner = new StringBuilder();
-
-            for (int i = 1; i <= mappingField.size(); i++) {
-                final TxField field = mappingField.get(i - 1);
-                String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
-                // 第一版写死字段变更, 后续重构
-                // 变更主键生成规则为自定义函数
-                if (sequenceName.isPresent() && dasTable != null) {
-                    DasTableKey primaryKey = dasTable.getPrimaryKey();
-                    // 当前字段是主键, 使用自定义函数替换主键
-                    if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
-                        String pkFieldName = primaryKey.getColumnsRef().iterate().next();
-                        if (pkFieldName.equals(field.getColumnName())) {
-                            fieldStr = "GET_SEQ_NO('" + sequenceName.get() + "')";
+            final String fields = mappingField.stream()
+                .map(field -> {
+                    String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
+                    // 第一版写死字段变更, 后续重构
+                    // 变更主键生成规则为自定义函数
+                    if (sequenceName.isPresent() && dasTable != null) {
+                        DasTableKey primaryKey = dasTable.getPrimaryKey();
+                        // 当前字段是主键, 使用自定义函数替换主键
+                        if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
+                            String pkFieldName = primaryKey.getColumnsRef().iterate().next();
+                            if (pkFieldName.equals(field.getColumnName())) {
+                                fieldStr = "GET_SEQ_NO('" + sequenceName.get() + "')";
+                            }
                         }
                     }
-                }
-                fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
-
-                stringJoiner.append(fieldStr);
-                if (i != mappingField.size()) {
-                    fieldBuffer.append(",");
-                }
-                if (i % newline == 0) {
-                    stringJoiner.append("\n");
-                }
-            }
-            final String fields = stringJoiner.toString();
+                    fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
+                    return fieldStr;
+                })
+                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
             stringBuilder.append(" item=\"").append(itemName).append("\"");

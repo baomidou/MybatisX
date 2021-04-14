@@ -196,7 +196,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
         }
         conditionIfTestWrapper.setGeneratorType(jpaAdvanceDialog.getGeneratorType());
         conditionIfTestWrapper.setDefaultDateList(jpaAdvanceDialog.getDefaultDate());
-
+        conditionIfTestWrapper.setNewLine(jpaAdvanceDialog.getNewLine());
         return Optional.of(conditionIfTestWrapper);
     }
 

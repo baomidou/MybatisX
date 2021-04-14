@@ -299,6 +299,10 @@ public class SmartJpaAdvanceUI {
         }
     }
 
+    public int getNewLine() {
+        final Object value = splitFieldSpiner.getValue();
+        return Integer.parseInt(value.toString());
+    }
 
     /**
      * The enum Generator enum.
