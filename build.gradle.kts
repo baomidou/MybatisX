@@ -55,7 +55,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group="com.baomidou.plugin.idea.mybatisx"
-version="1.4.12"
+version="1.4.13"
 
 repositories {
     mavenLocal()

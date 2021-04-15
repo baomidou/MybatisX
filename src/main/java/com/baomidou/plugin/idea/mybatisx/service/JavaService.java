@@ -17,15 +17,11 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.kotlin.psi.KtClass;
-import org.jetbrains.kotlin.psi.KtNamedFunction;
-import org.jetbrains.kotlin.psi.KtPsiUtil;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -128,41 +124,6 @@ public class JavaService {
         }
     }
 
-    /**
-     * Process Kotlin Class
-     * @param clazz     the ktclass
-     * @param processor the processor
-     */
-    public void processKotlinClass(@NotNull KtClass clazz, @NotNull Processor<Mapper> processor) {
-        String ns = clazz.getName();
-        String packageName = KtPsiUtil.getPackageName(clazz);
-        ns = packageName + "." + ns;
-        for (Mapper mapper : MapperUtils.findMappers(clazz.getProject())) {
-            if (MapperUtils.getNamespace(mapper).equals(ns)) {
-                processor.process(mapper);
-            }
-        }
-    }
-
-    /**
-     * process KtNamedFunction
-     * @param ktMethod  the kotlin method
-     * @param processor the processor
-     */
-    public void processKotlinMethod(@NotNull KtNamedFunction ktMethod, @NotNull Processor<IdDomElement> processor) {
-        KtClass parentClass = PsiTreeUtil.getParentOfType(ktMethod, KtClass.class);
-        if (null == parentClass || !KtPsiUtil.isTrait(parentClass)) {
-            return;
-        }
-        String packageName = KtPsiUtil.getPackageName(parentClass);
-        String id = packageName + "." + parentClass.getName() + "." + ktMethod.getName();
-        Collection<Mapper> mappers = MapperUtils.findMappers(ktMethod.getProject());
-
-        mappers.stream()
-            .flatMap(mapper -> mapper.getDaoElements().stream())
-            .filter(idDom -> MapperUtils.getIdSignature(idDom).equals(id))
-            .forEach(processor::process);
-    }
 
     /**
      * Find with find first processor optional.

@@ -1,5 +1,7 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
+        <projectService id="baomidou.KotlinService" serviceImplementation="com.baomidou.plugin.idea.mybatisx.service.KotlinService"/>
+
         <codeInsight.lineMarkerProvider language="kotlin" implementationClass="com.baomidou.plugin.idea.mybatisx.provider.MapperLineKotlinMarkerProvider"/>
     </extensions>
 </idea-plugin>
