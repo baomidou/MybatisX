@@ -50,7 +50,6 @@ public class MybatisXCollectors {
         private StringBuilder stringBuilder = new StringBuilder();
         int currentIndex = 0;
 
-
         public MultiStringJoiner add(CharSequence str) {
             stringBuilder.append(str).append(delimiter);
             currentIndex++;
@@ -60,17 +59,24 @@ public class MybatisXCollectors {
             return this;
         }
 
-        public MultiStringJoiner merge(MultiStringJoiner str) {
-            return this;
-        }
-
         @Override
         public String toString() {
             if (currentIndex == 0) {
                 return "";
             }
             final int lastDelimiterIndex = stringBuilder.lastIndexOf(delimiter);
-            return stringBuilder.substring(0, lastDelimiterIndex);
+            return prefix + stringBuilder.substring(0, lastDelimiterIndex) + suffix;
+        }
+
+
+        /**
+         * 目前没有用合并的场景, 所以这里就不实现了
+         *
+         * @param str
+         * @return
+         */
+        public MultiStringJoiner merge(MultiStringJoiner str) {
+            return this;
         }
     }
 }

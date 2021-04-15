@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
+import com.baomidou.plugin.idea.mybatisx.service.KotlinService;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
@@ -75,7 +76,7 @@ public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvide
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
             // 可跳转的节点加入跳转标识
             CommonProcessors.CollectProcessor<Mapper> processor = new CommonProcessors.CollectProcessor<>();
-            JavaService.getInstance(element.getProject()).processKotlinClass((KtClass) element, processor);
+            KotlinService.getInstance(element.getProject()).processKotlinClass((KtClass) element, processor);
             return processor.getResults();
         }
 
@@ -89,7 +90,7 @@ public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvide
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
             CommonProcessors.CollectProcessor<IdDomElement> processor = new CommonProcessors.CollectProcessor<>();
-            JavaService.getInstance(element.getProject()).processKotlinMethod(((KtNamedFunction) element), processor);
+            KotlinService.getInstance(element.getProject()).processKotlinMethod(((KtNamedFunction) element), processor);
             return processor.getResults();
         }
 
