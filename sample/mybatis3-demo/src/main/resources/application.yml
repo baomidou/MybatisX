@@ -11,7 +11,7 @@ logging:
         dao: debug
 mybatis-plus:
     mapper-locations: mapper/*.xml
-    type-aliases-package: com.baomidou.mybatis3.alias
+#    type-aliases-package: com.baomidou.mybatis3.alias
     configuration:
         log-prefix: dao.
         log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl

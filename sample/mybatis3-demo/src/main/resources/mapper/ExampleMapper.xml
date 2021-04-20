@@ -66,32 +66,23 @@
                 #{money,jdbcType=DECIMAL},
                 #{age,jdbcType=NUMERIC},
                 NOW(),
-
-
-
-
-
-                #{blobText},
+                 #{blobText},
                 #{objects},
-
-
-
-
-
-                #{ids})
+                 #{ids})
 
     </insert>
 
-    <resultMap id="BlogTitleContentMap" type="com.baomidou.mybatis3.domain.BlogTitleContentDTO">
+    <resultMap id="BlogTitleContentMap" type="blogTitleContentDTO">
         <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR" />
         <association property="childOther">
             <result column="title" property="title" jdbcType="VARCHAR"/>
             <result column="content" property="content" jdbcType="VARCHAR"/>
         </association>
-        <collection property="childList" javaType="com.baomidou.mybatis3.domain.BlogTitleContentDTOChild">
+        <collection property="childList" ofType="blogTitleContentDTOChild">
             <result column="title" property="title" jdbcType="VARCHAR"/>
             <result column="content" property="content" jdbcType="VARCHAR" typeHandler="org.apache.ibatis.type.StringTypeHandler" />
+            <result column="createTime" property="createTime" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
     <select id="selectTitleAndContentByTitle" resultMap="BlogTitleContentMap">

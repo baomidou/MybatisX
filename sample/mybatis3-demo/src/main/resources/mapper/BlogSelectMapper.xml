@@ -22,7 +22,7 @@
         AND age > #{age,jdbcType=NUMERIC}
 
     </select>
-    <select id="selectByIdIn" resultMap="BaseResultMap">
+    <select id="selectByIdIn" parameterType="long" resultType="blog">
         select
         <include refid="Base_Column_List"/>
         from t_blog

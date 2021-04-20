@@ -6,8 +6,6 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.util.Date;
 
-@Accessors(chain = true)
-@Data
 public class ParentDTO  {
     /**
      * 用于测试忽略静态字段
@@ -16,4 +14,11 @@ public class ParentDTO  {
 
     private Date createTime;
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 }

@@ -102,7 +102,7 @@ public final class MapperBacktrackingUtils {
                         }
                     }
                 }
-                if (!foundClass) {
+                if (foundClass) {
                     break;
                 }
             } else if (currentElement instanceof Collection) {
@@ -126,16 +126,15 @@ public final class MapperBacktrackingUtils {
                                 if (genericClassOfListByField.isPresent()) {
                                     String fieldTypeClassName = genericClassOfListByField.get();
                                     Optional<PsiClass> fieldClassOptional = JavaUtils.findClazz(project, fieldTypeClassName);
-                                    if (fieldClassOptional.isPresent()) {
+                                    if (foundClass = fieldClassOptional.isPresent()) {
                                         currentClass = fieldClassOptional.get();
-                                        foundClass = true;
                                     }
                                 }
                             }
                         }
                     }
                 }
-                if (!foundClass) {
+                if (foundClass) {
                     break;
                 }
             } else if (currentElement instanceof ResultMap) {
