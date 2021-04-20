@@ -2,9 +2,9 @@ package com.baomidou.plugin.idea.mybatisx.inspection;
 
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.locator.MapperLocator;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
+import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.google.common.collect.Lists;
 import com.intellij.codeInspection.InspectionManager;
@@ -80,20 +80,21 @@ public class MapperMethodInspection extends MapperInspection {
                 PsiClass clazz = select.getResultType().getValue();
                 PsiIdentifier ide = method.getNameIdentifier();
                 if (null != ide && null == select.getResultMap().getValue()) {
-                    boolean match = target.isPresent();
-                    if (match) {
-                        if (!equalsOrInheritor(clazz, target.get())) {
-                            match = false;
+                    if (target.isPresent()) {
+                        final PsiClass targetClass = target.get();
+                        if (!equalsOrInheritor(clazz, targetClass)) {
+                            String srcType = clazz != null ? clazz.getQualifiedName() :"";
+                            String targetType = targetClass.getQualifiedName();
+                            String descriptionTemplate = "Result type not match for select id=\"#ref\""
+                                + "\n srcType: " + srcType
+                                + "\n targetType: " + targetType;
+                            ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(ide,
+                                descriptionTemplate,
+                                (LocalQuickFix) null,
+                                ProblemHighlightType.GENERIC_ERROR,
+                                isOnTheFly);
+                            return Optional.of(problemDescriptor);
                         }
-                    }
-                    if (!match) {
-                        String descriptionTemplate = "Result type not match for select id=\"#ref\"";
-                        ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(ide,
-                            descriptionTemplate,
-                            (LocalQuickFix) null,
-                            ProblemHighlightType.GENERIC_ERROR,
-                            isOnTheFly);
-                        return Optional.of(problemDescriptor);
                     }
                 }
             }
@@ -112,7 +113,7 @@ public class MapperMethodInspection extends MapperInspection {
         PsiIdentifier ide = method.getNameIdentifier();
         // SelectProvider爆红 issue: https://gitee.com/baomidou/MybatisX/issues/I17JQ4
         PsiAnnotation[] annotation = method.getAnnotations();
-        if (annotation != null && annotation.length > 0) {
+        if (annotation.length > 0) {
             // 如果存在提供者注解, 就返回验证成功
             for (PsiAnnotation psiAnnotation : annotation) {
                 if (STATEMENT_PROVIDER_NAMES.contains(psiAnnotation.getQualifiedName())) {

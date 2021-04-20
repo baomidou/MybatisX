@@ -1,6 +1,6 @@
 package com.baomidou.mybatis3.domain;
 
-public class BlogTitleContentDTOChild {
+public class BlogTitleContentDTOChild extends ParentDTO{
     private String title;
     private String content;
 

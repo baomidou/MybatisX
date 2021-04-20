@@ -37,12 +37,7 @@ public class ResultMapConverter extends IdBasedTagConverter {
     }
 
     private Collection<? extends IdDomElement> doFilterResultMapItself(Mapper mapper, final ResultMap resultMap) {
-        return Collections2.filter(mapper.getResultMaps(), new Predicate<ResultMap>() {
-            @Override
-            public boolean apply(ResultMap input) {
-                return !MapperUtils.getId(input).equals(MapperUtils.getId(resultMap));
-            }
-        });
+        return Collections2.filter(mapper.getResultMaps(), input -> !MapperUtils.getId(input).equals(MapperUtils.getId(resultMap)));
     }
 
 }
