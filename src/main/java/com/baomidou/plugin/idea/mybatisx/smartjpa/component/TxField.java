@@ -6,6 +6,10 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
  */
 public class TxField {
     /**
+     * 定义字段的类全路径名称
+     */
+    private String className;
+    /**
      * 提示名称
      */
     private String tipName;
@@ -105,5 +109,13 @@ public class TxField {
 
     public void setJdbcType(String jdbcType) {
         this.jdbcType = jdbcType;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 }
