@@ -7,9 +7,22 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
  * 字段信息
  */
 public class FieldInfo {
+    /**
+     * 字段名称
+     */
     private String fieldName;
+    /**
+     * 列名称
+     */
     private String columnName;
+    /**
+     * java类型短名称
+     */
     private String shortTypeName;
+    /**
+     * 字段注释
+     */
+    private String remark;
 
     public String getJdbcType() {
         return jdbcType;
@@ -29,6 +42,10 @@ public class FieldInfo {
         return columnName;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
     public static FieldInfo build(IntrospectedColumn introspectedColumn) {
         FieldInfo fieldInfo = new FieldInfo();
         fieldInfo.fieldName = introspectedColumn.getJavaProperty();
@@ -37,6 +54,7 @@ public class FieldInfo {
 
         FullyQualifiedJavaType fullyQualifiedJavaType = introspectedColumn.getFullyQualifiedJavaType();
         fieldInfo.shortTypeName = fullyQualifiedJavaType.getShortName();
+        fieldInfo.remark = introspectedColumn.getRemarks();
         return fieldInfo;
     }
 }

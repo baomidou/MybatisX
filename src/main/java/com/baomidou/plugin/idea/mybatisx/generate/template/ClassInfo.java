@@ -31,6 +31,10 @@ public class ClassInfo {
      */
     private String tableName;
     /**
+     * 表的注释
+     */
+    private String remark;
+    /**
      * 主键字段列表
      */
     private List<FieldInfo> pkFields;
@@ -54,6 +58,7 @@ public class ClassInfo {
         classInfo.fullClassName = introspectedTable.getBaseRecordType();
         classInfo.shortClassName = type.getShortName();
         classInfo.tableName = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
+        classInfo.remark = introspectedTable.getRemarks();
 
         classInfo.pkFields = introspectedTable.getPrimaryKeyColumns()
                 .stream()
@@ -101,5 +106,9 @@ public class ClassInfo {
 
     public List<FieldInfo> getBaseBlobFields() {
         return baseBlobFields;
+    }
+
+    public String getRemark() {
+        return remark;
     }
 }
