@@ -53,6 +53,8 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
                 txField.setFieldName(field.getName());
                 // 表的列名
                 txField.setColumnName(columnName);
+
+                txField.setClassName(field.getContainingClass().getQualifiedName());
                 Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());
                 jdbcTypeByJavaType.ifPresent(txField::setJdbcType);
                 return txField;

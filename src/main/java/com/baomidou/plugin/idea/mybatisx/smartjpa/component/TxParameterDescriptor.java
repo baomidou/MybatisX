@@ -1,8 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.JpaGenerateException;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +39,8 @@ public class TxParameterDescriptor implements TypeDescriptor {
         this.parameterList = parameterList;
         fieldColumnNameMapping = mappingField.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x, (a, b) -> {
             if (!a.getFieldType().equals(b.getFieldType())) {
-                throw new RuntimeException("字段类型不匹配, 无法生成SQL");
+                final String format = MessageFormat.format("冲突字段:  {0}#{1} <===> {2}#{3}", a.getClassName(), a.getFieldName(), b.getClassName(), b.getFieldName());
+                throw new JpaGenerateException("字段类型不匹配, 无法生成SQL. \n" + format);
             }
             return a;
         }));

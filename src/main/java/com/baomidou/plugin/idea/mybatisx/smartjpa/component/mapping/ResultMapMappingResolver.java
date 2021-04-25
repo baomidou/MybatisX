@@ -147,6 +147,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             txField.setFieldName(field.getName());
             txField.setFieldType(field.getType().getCanonicalText());
             txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
+            txField.setClassName(field.getContainingClass().getQualifiedName());
             Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());
             jdbcTypeByJavaType.ifPresent(txField::setJdbcType);
             return txField;

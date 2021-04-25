@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.baomidou.mybatis3.mapper.BlogCustomBaseMapper">
+<mapper namespace="com.baomidou.mybatis3.mapper.JpaBlogMapper">
     <resultMap id="BaseResultMap"
                type="com.baomidou.mybatis3.domain.JpaBlog">
         <id column="id" property="id"/>
