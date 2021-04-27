@@ -18,6 +18,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,8 +47,13 @@ public class CodeGenerateUI {
     private JComboBox moduleComboBox;
     private JTextField basePackageTextField;
     private JTextField encodingTextField;
-    private JComboBox templatesComboBox;
     private JTextField superClassTextField;
+    private JTextField fieldPrefixTextField;
+    private JTextField fieldSuffixTextField;
+    private JPanel templateExtraRadiosPanel;
+    private JLabel lblFieldSuffix;
+
+    private ButtonGroup templateButtonGroup = new ButtonGroup();
 
     public JPanel getRootPanel() {
         return rootPanel;
@@ -110,20 +116,30 @@ public class CodeGenerateUI {
         if (generateConfig.isUseActualColumnAnnotationInject()) {
             useActualColumnAnnotationInjectCheckBox.setSelected(true);
         }
+
+        GridLayout templateRadioLayout = new GridLayout(0, 3, 0, 0);
+        templateExtraRadiosPanel.setLayout(templateRadioLayout);
         // 添加动态模板组
-        templateSettingMap.keySet().forEach(templatesComboBox::addItem);
+//        templateSettingMap.keySet().forEach(templatesComboBox::addItem);
+        for (String templateName : templateSettingMap.keySet()) {
+            JRadioButton comp = new JRadioButton();
+            comp.setText(templateName);
+            templateButtonGroup.add(comp);
+            templateExtraRadiosPanel.add(comp);
+        }
 
         final ItemListener itemListener = e -> {
 
-            final Object templatesName = e.getItem();
+            final JRadioButton jRadioButton = (JRadioButton) e.getItem();
             // 只接受选择事件
             if (e.getStateChange() != ItemEvent.SELECTED) {
                 return;
             }
             List<TemplateSettingDTO> list = null;
+            final String templatesName = jRadioButton.getText();
             // 选择选定的模板
             if (!StringUtils.isEmpty(templatesName)) {
-                list = templateSettingMap.get(templatesName.toString());
+                list = templateSettingMap.get(templatesName);
             }
             // 选择默认模板
             if (!StringUtils.isEmpty(defaultsTemplatesName)) {
@@ -146,20 +162,37 @@ public class CodeGenerateUI {
             }
             templateExtraPanel.updateUI();
         };
-        templatesComboBox.addItemListener(itemListener);
 
-        GridLayout mgr = new GridLayout(0, 2, 0, 0);
-        templateExtraPanel.setLayout(mgr);
+        GridLayout extraLayout = new GridLayout(0, 2, 0, 0);
+        templateExtraPanel.setLayout(extraLayout);
 
+        final Enumeration<AbstractButton> radios = templateButtonGroup.getElements();
+        while (radios.hasMoreElements()) {
+            final JRadioButton radioButton = (JRadioButton) radios.nextElement();
+            radioButton.addItemListener(itemListener);
+        }
 
         final String templatesName = generateConfig.getTemplatesName();
-        if (templatesName != null) {
-            templatesComboBox.setSelectedItem(templatesName);
-        } else {
-            templatesComboBox.setSelectedItem(0);
+        if (StringUtils.isEmpty(templatesName)) {
+            final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
+            if (elements.hasMoreElements()) {
+                final AbstractButton abstractButton = elements.nextElement();
+                abstractButton.setSelected(true);
+            }
+        }else{
+            final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
+            while (elements.hasMoreElements()) {
+                final AbstractButton abstractButton = elements.nextElement();
+                final String text = abstractButton.getText();
+                if (templatesName.equals(text)) {
+                    abstractButton.setSelected(true);
+                    break;
+                }
+            }
         }
-        itemListener.itemStateChanged(new ItemEvent(templatesComboBox, ItemEvent.ITEM_STATE_CHANGED, templatesName, ItemEvent.SELECTED));
 
+        fieldPrefixTextField.setText(generateConfig.getRemovedPrefix());
+        fieldSuffixTextField.setText(generateConfig.getRemovedSuffix());
     }
 
     /**
@@ -243,10 +276,19 @@ public class CodeGenerateUI {
         String annotationTypeName = findAnnotationType();
         generateConfig.setAnnotationType(annotationTypeName);
 
-        final Object selectedTemplatesName = templatesComboBox.getSelectedItem();
-        if (selectedTemplatesName != null) {
-            generateConfig.setTemplatesName(selectedTemplatesName.toString());
+        String templatesName = null;
+        final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
+        while (elements.hasMoreElements()) {
+            final AbstractButton abstractButton = elements.nextElement();
+            if (abstractButton.isSelected()) {
+                templatesName = abstractButton.getText();
+                break;
+            }
         }
+        generateConfig.setTemplatesName(templatesName);
+
+        generateConfig.setRemovedPrefix(fieldPrefixTextField.getText());
+        generateConfig.setRemovedSuffix(fieldSuffixTextField.getText());
         return generateConfig;
     }
 
@@ -269,7 +311,4 @@ public class CodeGenerateUI {
     }
 
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }

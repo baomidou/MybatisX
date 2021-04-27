@@ -55,6 +55,14 @@ public class GenerateConfig {
      * 实体类需要继承的父类
      */
     private String rootClass;
+    /**
+     * 需要移除的字段前缀
+     */
+    private String removedPrefix;
+    /**
+     * 需要移除的字段后缀
+     */
+    private String removedSuffix;
 
     /**
      * 需要生成repository注解
@@ -253,6 +261,8 @@ public class GenerateConfig {
             ", needToStringHashcodeEquals=" + needToStringHashcodeEquals +
             ", needsComment=" + needsComment +
             ", rootClass='" + rootClass + '\'' +
+            ", removedPrefix='" + removedPrefix + '\'' +
+            ", removedSuffix='" + removedSuffix + '\'' +
             ", useLombokPlugin=" + useLombokPlugin +
             ", useActualColumns=" + useActualColumns +
             ", jsr310Support=" + jsr310Support +
@@ -260,5 +270,21 @@ public class GenerateConfig {
             ", templatesName='" + templatesName + '\'' +
             ", extraTemplateNames=" + extraTemplateNames +
             '}';
+    }
+
+    public String getRemovedPrefix() {
+        return removedPrefix;
+    }
+
+    public void setRemovedPrefix(String removedPrefix) {
+        this.removedPrefix = removedPrefix;
+    }
+
+    public String getRemovedSuffix() {
+        return removedSuffix;
+    }
+
+    public void setRemovedSuffix(String removedSuffix) {
+        this.removedSuffix = removedSuffix;
     }
 }
