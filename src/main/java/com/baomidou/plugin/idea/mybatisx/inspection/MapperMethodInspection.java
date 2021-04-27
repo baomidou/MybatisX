@@ -11,10 +11,12 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.debugger.engine.evaluation.expression.Modifier;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifier;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -124,6 +126,11 @@ public class MapperMethodInspection extends MapperInspection {
         JavaService instance = JavaService.getInstance(method.getProject());
         if (!instance.findStatement(method).isPresent() && null != ide) {
             if (isMybatisPlusMethod(method)) {
+                return Optional.empty();
+            }
+            // issue https://gitee.com/baomidou/MybatisX/issues/I3IT80
+            final boolean isDefaultMethod = method.getModifierList().hasExplicitModifier(PsiModifier.DEFAULT);
+            if (isDefaultMethod) {
                 return Optional.empty();
             }
             return Optional.of(manager.createProblemDescriptor(ide, "Statement with id=\"#ref\" not defined in mapper xml",

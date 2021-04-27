@@ -13,8 +13,8 @@ import org.apache.ibatis.annotations.Param;
 
 
 public interface ExampleMapper extends BaseMapper<Blog> {
-
-
+    // 测试默认检测不爆红
+    default void checkDefaultMethod(){}
 
     int updateIdAndContentByAllFields(@Param("id") Long id, @Param("content") String content);
 
