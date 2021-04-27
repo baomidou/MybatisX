@@ -21,9 +21,12 @@ import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.generator.config.ColumnOverride;
+import org.mybatis.generator.config.ColumnRenamingRule;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.DomainObjectRenamingRule;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.config.JavaTypeResolverConfiguration;
 import org.mybatis.generator.config.ModelType;
@@ -51,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 
 /**
  * 代码生成入口
@@ -149,7 +153,22 @@ public class GenerateCode {
         if (generateConfig.isUseActualColumnAnnotationInject()) {
             tc.addProperty("useActualColumnAnnotationInject", "true");
         }
-
+        boolean replaceNecessary = false;
+        StringJoiner stringJoiner = new StringJoiner("|");
+        if (!StringUtils.isEmpty(generateConfig.getRemovedPrefix())) {
+            stringJoiner.add("^" + generateConfig.getRemovedPrefix());
+            replaceNecessary = true;
+        }
+        if (!StringUtils.isEmpty(generateConfig.getRemovedSuffix())) {
+            stringJoiner.add(generateConfig.getRemovedSuffix()+"$");
+            replaceNecessary = true;
+        }
+        if (replaceNecessary) {
+            final ColumnRenamingRule columnRenamingRule = new ColumnRenamingRule();
+            columnRenamingRule.setSearchString(stringJoiner.toString());
+            columnRenamingRule.setReplaceString("");
+            tc.setColumnRenamingRule(columnRenamingRule);
+        }
         context.addTableConfiguration(tc);
     }
 

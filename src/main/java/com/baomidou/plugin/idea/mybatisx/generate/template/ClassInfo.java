@@ -58,7 +58,7 @@ public class ClassInfo {
         classInfo.fullClassName = introspectedTable.getBaseRecordType();
         classInfo.shortClassName = type.getShortName();
         classInfo.tableName = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
-        classInfo.remark = introspectedTable.getRemarks();
+        classInfo.remark = introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks();
 
         classInfo.pkFields = introspectedTable.getPrimaryKeyColumns()
                 .stream()
