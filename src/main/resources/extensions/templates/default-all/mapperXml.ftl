@@ -21,17 +21,17 @@
         select
         <include refid="Base_Column_List" />
         from ${tableClass.tableName}
-        where <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} </#list>
+        where <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} <#if field_has_next>AND</#if></#list>
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from ${tableClass.tableName}
-        where <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} </#list>
+        where <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} <#if field_has_next>AND</#if></#list>
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="${tableClass.fullClassName}" useGeneratedKeys="true">
         insert into ${tableClass.tableName}
         ( <#list tableClass.allFields as field>${field.columnName}<#if field_index%3==2>${"\n        "}</#if><#sep>,</#list>)
-        values (<#list tableClass.allFields as field>${'#'}{${field.fieldName},jdbcType=${field.jdbcType}}<#if field_index%3==2>${"\n        "}</#if><#sep>,</#list>))
+        values (<#list tableClass.allFields as field>${'#'}{${field.fieldName},jdbcType=${field.jdbcType}}<#if field_index%3==2>${"\n        "}</#if><#sep>,</#list>)
     </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="${tableClass.fullClassName}" useGeneratedKeys="true">
         insert into ${tableClass.tableName}
@@ -55,12 +55,12 @@
                 </if>
             </#list>
         </set>
-        where  <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} </#list>
+        where  <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} <#if field_has_next>AND</#if></#list>
     </update>
     <update id="updateByPrimaryKey" parameterType="${tableClass.fullClassName}">
         update ${tableClass.tableName}
         set <#list tableClass.baseBlobFields as field>
             ${field.columnName} =  ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}}<#sep>,</#list>
-        where  <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} </#list>
+        where  <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} <#if field_has_next>AND</#if></#list>
     </update>
 </mapper>
