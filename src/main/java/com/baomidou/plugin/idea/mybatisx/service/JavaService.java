@@ -17,14 +17,17 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
+import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
+import com.intellij.util.Query;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * The type Java service.
@@ -80,7 +83,7 @@ public class JavaService {
      * @param method the method
      * @return the optional
      */
-    public Optional<DomElement> findStatement(@Nullable PsiMethod method) {
+    public Optional<DomElement> findStatement(@NotNull PsiMethod method) {
         CommonProcessors.FindFirstProcessor<IdDomElement> processor = new CommonProcessors.FindFirstProcessor<>();
         processMethod(method, processor);
         return processor.isFound() ? Optional.ofNullable(processor.getFoundValue()) : Optional.empty();
@@ -97,12 +100,22 @@ public class JavaService {
         if (null == psiClass) {
             return;
         }
-        String id = psiClass.getQualifiedName() + "." + psiMethod.getName();
         Collection<Mapper> mappers = MapperUtils.findMappers(psiMethod.getProject());
+
+        Set<String> ids = new HashSet<>();
+        String id = psiClass.getQualifiedName() + "." + psiMethod.getName();
+        ids.add(id);
+        final Query<PsiClass> search = ClassInheritorsSearch.search(psiClass);
+        final Collection<PsiClass> allChilds = search.findAll();
+
+        for (PsiClass psiElement : allChilds) {
+            String childId = psiElement.getQualifiedName() + "." + psiMethod.getName();
+            ids.add(childId);
+        }
 
         mappers.stream()
             .flatMap(mapper -> mapper.getDaoElements().stream())
-            .filter(idDom -> MapperUtils.getIdSignature(idDom).equals(id))
+            .filter(idDom -> ids.contains(MapperUtils.getIdSignature(idDom)))
             .forEach(processor::process);
 
     }

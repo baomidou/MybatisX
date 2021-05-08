@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.baomidou.mybatis3.mapper.BlogChildMapper">
+<mapper namespace="com.baomidou.mybatis3.mapper.BlogChildCMapper">
     <resultMap id="BaseResultMap"
                type="com.baomidou.mybatis3.domain.Blog">
         <id column="id" property="id"  />
@@ -11,15 +11,18 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-		id,age,content,title,money,create_time
+        select id, age, content, title, money, create_time
+        from t_blog
 	</sql>
-    <select id="selectById" resultMap="BaseResultMap">
+
+    <select id="selectByAge" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_blog
         where
-        id = #{id,jdbcType=NUMERIC}
+        age = #{age,jdbcType=NUMERIC}
     </select>
+
 
 
 </mapper>

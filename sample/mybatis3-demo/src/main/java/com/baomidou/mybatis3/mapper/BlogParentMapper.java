@@ -7,6 +7,7 @@ import com.baomidou.mybatis3.domain.Blog;
  *
  */
 public interface BlogParentMapper   {
+
     List<Blog> selectByAge(@Param("age") Integer age);
 
 }
