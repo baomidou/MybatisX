@@ -3,10 +3,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatis3.domain.Blog;
 
-public interface BlogChildMapper extends BlogParentMapper {
+public interface BlogChildAMapper extends BlogParentMapper {
 
 
 
-    List<Blog> selectById(@Param("id") Long id);
 
 }
