@@ -49,6 +49,9 @@ public class MapperRefactoringProvider implements RefactoringElementListenerProv
     }
 
     private void renameMapperXml(@NotNull final PsiClass oldClazz, @NotNull final PsiClass newClazz) {
+        if (oldClazz.getQualifiedName() == null) {
+            return;
+        }
         Collection<Mapper> mappers = MapperUtils.findMappers(oldClazz.getProject(), oldClazz);
         try {
             for (Mapper mapper : mappers) {
