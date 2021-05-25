@@ -2,17 +2,17 @@ package com.baomidou.plugin.idea.mybatisx.alias;
 
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.google.common.collect.Sets;
+import com.baomidou.plugin.idea.mybatisx.util.spring.AntPathMatcher;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPackage;
-import com.intellij.spring.model.utils.AntPathMatcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -38,7 +38,7 @@ public abstract class PackageAliasResolver extends AliasResolver {
     @NotNull
     @Override
     public Set<AliasDesc> getClassAliasDescriptions(@Nullable PsiElement element) {
-        Set<AliasDesc> result = Sets.newHashSet();
+        Set<AliasDesc> result = new HashSet<>();
         for (String pkgName : getPackages(element)) {
             if (null == pkgName) {
                 continue;
@@ -60,7 +60,8 @@ public abstract class PackageAliasResolver extends AliasResolver {
             JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(project);
             PsiPackage basePackage = javaPsiFacade.findPackage(firstPackage);
             if (basePackage != null) {
-                if (AntPathMatcher.match(pkgNameCandidate, basePackage.getQualifiedName())) {
+                AntPathMatcher antPathMatcher = new AntPathMatcher();
+                if (antPathMatcher.match(pkgNameCandidate, basePackage.getQualifiedName())) {
                     addPackage(result, basePackage.getQualifiedName());
                 }
                 matchSubPackages(pkgNameCandidate, basePackage, result);
@@ -92,7 +93,8 @@ public abstract class PackageAliasResolver extends AliasResolver {
      */
     private void matchSubPackages(String pkgName, PsiPackage basePackage, Set<AliasDesc> result) {
         for (PsiPackage subPackage : basePackage.getSubPackages()) {
-            if (AntPathMatcher.match(pkgName, subPackage.getQualifiedName())) {
+            AntPathMatcher antPathMatcher = new AntPathMatcher();
+            if (antPathMatcher.match(pkgName, subPackage.getQualifiedName())) {
                 addPackage(result, subPackage.getQualifiedName());
             } else {
                 matchSubPackages(pkgName, subPackage, result);
