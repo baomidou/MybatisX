@@ -166,7 +166,6 @@
         <iconProvider id="baomidou.XmlAndMapperIconProvider"  implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
 
 
-
         <!-- mapper.xml文件 #{} 区域的引用跳转 -->
         <psi.referenceContributor id="hashMarkerReferenceContributor"
                                   implementation="com.baomidou.plugin.idea.mybatisx.reference.ContextHashMarkReferenceContributor"/>
@@ -176,6 +175,9 @@
                             serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
 
 
+        <!-- 兼容mapper.xml的sql标签检测 -->
+        <lang.inspectionSuppressor language="SQL" id="baomidou.MapperSqlInspectionsFilter"
+                                   implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperSqlInspectionsFilter"/>
     </extensions>
 
 </idea-plugin>

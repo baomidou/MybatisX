@@ -10,8 +10,8 @@
         <!-- test support typeAlias -->
             <typeAlias type="com.baomidou.mybatis3.domain.Blog" alias="blog"/>
         <!-- test support package wildcard-->
-        <!-- <package name="com.baomidou.**.domain"/> -->
+         <package name="com.baomidou.**.domain"/>
         <!-- test support package -->
-<!--        <package name="com.baomidou.mybatis3.domain"/>-->
+        <package name="com.baomidou.mybatis3.domain"/>
     </typeAliases>
 </configuration>

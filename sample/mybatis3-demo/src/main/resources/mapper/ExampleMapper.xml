@@ -118,7 +118,7 @@ select * from blog where id = #{id}
         where
         title = #{title,jdbcType=BLOB}
     </select>
-    <select id="selectCreateTimeByAge" resultMap="BaseResultMap">
+    <select id="selectCreateTimeByAge" resultType="com.baomidou.mybatis3.domain.Blog">
     select create_time
     from t_blog
     where

@@ -12,11 +12,14 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.debugger.engine.evaluation.expression.Modifier;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +28,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * The type Mapper method inspection.
@@ -51,6 +56,8 @@ public class MapperMethodInspection extends MapperInspection {
             add("com.baomidou.mybatisplus.mapper.BaseMapper");
         }
     };
+    public static final String MAP_KEY = "org.apache.ibatis.annotations.MapKey";
+    public static final String MAP = "java.util.Map";
 
     @Nullable
     @Override
@@ -74,34 +81,74 @@ public class MapperMethodInspection extends MapperInspection {
 
     private Optional<ProblemDescriptor> checkResultType(PsiMethod method, InspectionManager manager, boolean isOnTheFly) {
         Optional<DomElement> ele = JavaService.getInstance(method.getProject()).findStatement(method);
-        if (ele.isPresent()) {
+
+        boolean found = true;
+        ProblemDescriptor descriptor = null;
+        if (!ele.isPresent()) {
+            found = false;
+        }
+        Select select = null;
+        if (found) {
             DomElement domElement = ele.get();
             if (domElement instanceof Select) {
-                Select select = (Select) domElement;
-                Optional<PsiClass> target = AbstractStatementGenerator.getSelectResultType(method);
-                PsiClass clazz = select.getResultType().getValue();
-                PsiIdentifier ide = method.getNameIdentifier();
-                if (null != ide && null == select.getResultMap().getValue()) {
-                    if (target.isPresent()) {
-                        final PsiClass targetClass = target.get();
-                        if (!equalsOrInheritor(clazz, targetClass)) {
-                            String srcType = clazz != null ? clazz.getQualifiedName() :"";
-                            String targetType = targetClass.getQualifiedName();
-                            String descriptionTemplate = "Result type not match for select id=\"#ref\""
-                                + "\n srcType: " + srcType
-                                + "\n targetType: " + targetType;
-                            ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(ide,
-                                descriptionTemplate,
-                                (LocalQuickFix) null,
-                                ProblemHighlightType.GENERIC_ERROR,
-                                isOnTheFly);
-                            return Optional.of(problemDescriptor);
-                        }
-                    }
-                }
+                select = (Select) domElement;
+            } else {
+                found = false;
             }
         }
-        return Optional.empty();
+        if (found) {
+            PsiIdentifier ide = method.getNameIdentifier();
+            if (null == ide || null != select.getResultMap().getValue()) {
+                found = false;
+            }
+        }
+        Optional<PsiClass> target = AbstractStatementGenerator.getSelectResultType(method);
+        if (found) {
+            if (!target.isPresent()) {
+                found = false;
+            }
+        }
+        // 验证MapKey注解
+        if (found) {
+            final PsiClass targetClass = target.get();
+            // 如果返回的是Map, 并且有@MapKey的注解
+            if (targetClass.isInterface() && MAP.equals(targetClass.getQualifiedName())) {
+                Optional<PsiAnnotation> first = Stream.of(method.getAnnotations())
+                    .filter(psiAnnotation -> Objects.equals(psiAnnotation.getQualifiedName(), MAP_KEY))
+                    .findFirst();
+                // 如果找不到MapKey的注解,提示错误信息
+                if (!first.isPresent()) {
+                    PsiIdentifier ide = method.getNameIdentifier();
+                    String descriptionTemplate = "@MapKey is required";
+                    descriptor = manager.createProblemDescriptor(ide,
+                        descriptionTemplate,
+                        (LocalQuickFix) null,
+                        ProblemHighlightType.GENERIC_ERROR,
+                        isOnTheFly);
+                }
+                // 返回类型如果是map接口,那么就用这里的验证方式
+                found = false;
+            }
+        }
+        // 有可能出错的情况
+        if (found) {
+            final PsiClass targetClass = target.get();
+            PsiClass clazz = select.getResultType().getValue();
+            if (!equalsOrInheritor(clazz, targetClass)) {
+                String srcType = clazz != null ? clazz.getQualifiedName() : "";
+                String targetType = targetClass.getQualifiedName();
+                String descriptionTemplate = "Result type not match for select id=\"#ref\""
+                    + "\n srcType: " + srcType
+                    + "\n targetType: " + targetType;
+                PsiIdentifier ide = method.getNameIdentifier();
+                descriptor = manager.createProblemDescriptor(ide,
+                    descriptionTemplate,
+                    (LocalQuickFix) null,
+                    ProblemHighlightType.GENERIC_ERROR,
+                    isOnTheFly);
+            }
+        }
+        return Optional.ofNullable(descriptor);
     }
 
     private boolean equalsOrInheritor(PsiClass child, PsiClass parent) {

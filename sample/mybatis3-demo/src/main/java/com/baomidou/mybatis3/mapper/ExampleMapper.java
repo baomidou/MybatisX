@@ -4,11 +4,13 @@ import com.baomidou.mybatis3.domain.BlogAgeContentDTO;
 import com.baomidou.mybatis3.domain.BlogIdTitleDTO;
 
 import java.util.List;
+import java.util.Map;
 
 import com.baomidou.mybatis3.domain.Blog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 
@@ -38,6 +40,7 @@ public interface ExampleMapper extends BaseMapper<Blog> {
 
     IPage<Blog> selectByTitle(Page<Blog> page, @Param("title") String title);
 
-    List<Blog> selectCreateTimeByAge(@Param("blog") Blog xxxx,@Param("age")int age);
+    @MapKey("id")
+    Map<String,Blog> selectCreateTimeByAge(@Param("blog") Blog xxxx, @Param("age")int age);
 
 }
