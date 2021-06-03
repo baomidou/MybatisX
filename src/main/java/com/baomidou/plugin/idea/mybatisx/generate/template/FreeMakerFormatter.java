@@ -42,6 +42,7 @@ public class FreeMakerFormatter implements JavaFormatter {
         this.modulePath = modulePath;
     }
 
+    @Override
     public void setContext(Context context) {
         this.context = context;
     }
@@ -54,6 +55,7 @@ public class FreeMakerFormatter implements JavaFormatter {
      * @param compilationUnit
      * @return
      */
+    @Override
     public String getFormattedContent(CompilationUnit compilationUnit) {
         try {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
@@ -81,7 +83,7 @@ public class FreeMakerFormatter implements JavaFormatter {
             StringWriter out = new StringWriter();
             PrintWriter stringWriter = new PrintWriter(out);
             e.printStackTrace(stringWriter);
-            logger.error("模板内容生成失败, pathname: {}", e);
+            logger.error("模板内容生成失败", e);
             return "填充模板出错," + out.toString();
         }
     }
