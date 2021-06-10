@@ -37,12 +37,12 @@
         insert into ${tableClass.tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <#list tableClass.allFields as field>
-                <if test="${field.fieldName} != null">${field.fieldName},</if>
+                <if test="${field.fieldName} != null">${field.columnName},</if>
             </#list>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <#list tableClass.allFields as field>
-                <if test="${field.fieldName} != null">${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}},</if>
+                <if test="${field.fieldName} != null"> ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}},</if>
             </#list>
         </trim>
     </insert>
