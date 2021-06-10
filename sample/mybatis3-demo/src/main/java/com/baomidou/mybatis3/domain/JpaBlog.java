@@ -31,7 +31,7 @@ public class JpaBlog extends ParentDTO {
     private BigDecimal money;
     private Integer age;
     @Column(name = "create_time")
-    private String createTime;
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -73,11 +73,11 @@ public class JpaBlog extends ParentDTO {
         this.age = age;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 }

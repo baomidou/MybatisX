@@ -20,7 +20,3 @@ public interface ${mapperInterface.fileName} {
     int updateByPrimaryKey(${tableClass.shortClassName} record);
 
 }
-
-
-
-
