@@ -15,8 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Select extends GroupTwo, ResultMapGroup, IdDomElement  {
 
     /**
-     * Gets result type.
-     *
+     * select 标签对应的 resultType
      * @return the result type
      */
     @NotNull

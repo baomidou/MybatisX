@@ -12,7 +12,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -72,13 +75,18 @@ public class AliasFacade {
      * @return the optional
      */
     public Optional<PsiClass> findPsiClass(@Nullable PsiElement element, @NotNull String shortName) {
-        PsiClass clazz = javaPsiFacade.findClass(shortName, GlobalSearchScope.allScope(project));
+        // 查找mybatis内部支持的引用类型, 支持跳转到引用类
+        String fullName = InternalAlias.referenceFullName(shortName);
+        if (fullName == null) {
+            fullName = shortName;
+        }
+        PsiClass clazz = javaPsiFacade.findClass(fullName, GlobalSearchScope.allScope(project));
         if (null != clazz) {
             return Optional.of(clazz);
         }
         for (AliasResolver resolver : resolvers) {
             for (AliasDesc desc : resolver.getClassAliasDescriptions(element)) {
-                if (desc.getAlias().equalsIgnoreCase(shortName)) {
+                if (desc.getAlias().equalsIgnoreCase(fullName)) {
                     return Optional.of(desc.getClazz());
                 }
             }
@@ -130,4 +138,85 @@ public class AliasFacade {
         this.resolvers.add(resolver);
     }
 
+
+
+    private static class InternalAlias {
+
+        private static volatile Map<String, String> refMap = null;
+
+        private static Map<String, String> getRefMap() {
+            if (refMap == null) {
+                synchronized (InternalAlias.class) {
+                    if (refMap == null) {
+                        InternalAlias.refMap = buildRefMap();
+                    }
+                }
+            }
+            return refMap;
+        }
+
+        private static Map<String, String> buildRefMap() {
+            Map<String, String> refMap = new HashMap<>();
+            /* 数组不跳转 基本类型*/
+            refMap.put("_byte[]", "java.lang.Byte");
+            refMap.put("_long[]", "java.lang.Long");
+            refMap.put("_short[]", "java.lang.Short");
+            refMap.put("_int[]", "java.lang.Integer");
+            refMap.put("_integer[]", "java.lang.Integer");
+            refMap.put("_double[]", "java.lang.Double");
+            refMap.put("_float[]", "java.lang.Float");
+            refMap.put("_boolean[]", "java.lang.Boolean");
+            /* 数组不跳转 引用类型类型*/
+            refMap.put("byte[]", "java.lang.Byte");
+            refMap.put("long[]", "java.lang.Long");
+            refMap.put("short[]", "java.lang.Short");
+            refMap.put("int[]", "java.lang.Integer");
+            refMap.put("integer[]", "java.lang.Integer");
+            refMap.put("double[]", "java.lang.Double");
+            refMap.put("float[]", "java.lang.Float");
+            refMap.put("boolean[]", "java.lang.Boolean");
+            /* 数组不跳转 默认引用类型*/
+            refMap.put("date[]", "java.util.Date");
+            refMap.put("decimal[]", "java.math.BigDecimal");
+            refMap.put("bigdecimal[]", "java.math.BigDecimal");
+            refMap.put("biginteger[]", "java.math.BigInteger");
+            refMap.put("object[]", "java.lang.Object");
+            // 基本类型映射的引用类型
+            refMap.put("_byte", "java.lang.Byte");
+            refMap.put("_long", "java.lang.Long");
+            refMap.put("_short", "java.lang.Short");
+            refMap.put("_int", "java.lang.Integer");
+            refMap.put("_integer", "java.lang.Integer");
+            refMap.put("_double", "java.lang.Double");
+            refMap.put("_float", "java.lang.Float");
+            refMap.put("_boolean", "java.lang.Boolean");
+            // 普通引用类型
+            refMap.put("string", "java.lang.String");
+            refMap.put("byte", "java.lang.Byte");
+            refMap.put("long", "java.lang.Long");
+            refMap.put("short", "java.lang.Short");
+            refMap.put("int", "java.lang.Integer");
+            refMap.put("integer", "java.lang.Integer");
+            refMap.put("double", "java.lang.Double");
+            refMap.put("float", "java.lang.Float");
+            refMap.put("boolean", "java.lang.Boolean");
+            refMap.put("date", "java.util.Date");
+            refMap.put("decimal", "java.math.BigDecimal");
+            refMap.put("bigdecimal", "java.math.BigDecimal");
+            refMap.put("biginteger", "java.math.BigInteger");
+            refMap.put("object", "java.lang.Object");
+            refMap.put("map", "java.util.Map");
+            refMap.put("hashmap", "java.util.HashMap");
+            refMap.put("list", "java.util.List");
+            refMap.put("arraylist", "java.util.ArrayList");
+            refMap.put("collection", "java.util.Collection");
+            refMap.put("iterator", "java.util.Iterator");
+            refMap.put("resultset", "java.sql.ResultSet");
+            return refMap;
+        }
+
+        public static String referenceFullName(String key) {
+            return getRefMap().get(key.toLowerCase(Locale.ENGLISH));
+        }
+    }
 }
