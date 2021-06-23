@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis3.mapper.BlogResultTypeMapper">
+    <!-- 返回值是_int 类型时不报错 -->
+    <select id="countByAge"  resultType="_byte">
+        select count(*)
+    </select>
+    <select id="countByAgeA"  resultType="_short">
+    </select>
+    <select id="countByAgeB"  resultType="_boolean">
+    </select>
+    <select id="countByAgeC"  resultType="_int">
+    </select>
+    <select id="countByAgeD"  resultType="_long">
+    </select>
+    <select id="countByAgeE"  resultType="_float">
+    </select>
+    <select id="countByAgeF"  resultType="_double">
+    </select>
+    <!-- 返回数组类型 -->
+    <select id="selectBlobTextById" resultType="_byte[]">
+    </select>
+
+
+
+</mapper>

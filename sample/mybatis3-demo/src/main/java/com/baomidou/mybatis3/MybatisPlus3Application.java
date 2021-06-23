@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
-@MapperScan("com.baomidou.mybatis3.mapper")
+@MapperScan("com.baomidou.mybatis3.mapper,generator.mapper")
 @ImportResource({"classpath:applicationContext.xml"})
 public class MybatisPlus3Application {
 

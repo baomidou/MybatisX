@@ -33,11 +33,17 @@ public class AliasConverter extends ConverterAdaptor<PsiClass> implements Custom
         if (StringUtil.isEmptyOrSpaces(s)) {
             return null;
         }
+
+        // 识别别名
         if (!s.contains(MybatisConstants.DOT_SEPARATOR)) {
-            return AliasFacade.getInstance(context.getProject()).findPsiClass(context.getXmlElement(), s).orElse(null);
+            return AliasFacade.getInstance(context.getProject())
+                .findPsiClass(context.getXmlElement(), s)
+                .orElse(null);
         }
-        return DomJavaUtil.findClass(s.trim(), context.getFile(), context.getModule(), GlobalSearchScope.allScope(context.getProject()));
+        // 根据全程查找
+        return DomJavaUtil.findClass(s, context.getFile(), context.getModule(), GlobalSearchScope.allScope(context.getProject()));
     }
+
 
     @Nullable
     @Override
@@ -54,4 +60,6 @@ public class AliasConverter extends ConverterAdaptor<PsiClass> implements Custom
             return new PsiReference[]{new AliasClassReference((XmlAttributeValue) element)};
         }
     }
+
+
 }
