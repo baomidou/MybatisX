@@ -123,11 +123,11 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
     }
 
     private Collection<? extends TxField> determineResults(List<Result> results, PsiClass mapperClass) {
-        return results.stream().map(result -> determineField(mapperClass, result.getProperty(), result.getXmlTag())).filter(Objects::nonNull).collect(Collectors.toList());
+        return results.stream().map(result -> determineField(mapperClass, result.getProperty(), result.getXmlTag(),result.getJdbcType())).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Nullable
-    private TxField determineField(PsiClass entityClass, GenericAttributeValue<XmlAttributeValue> property, final XmlTag xmlTag) {
+    private TxField determineField(PsiClass entityClass, GenericAttributeValue<XmlAttributeValue> property, final XmlTag xmlTag, GenericAttributeValue<XmlAttributeValue> jdbcType) {
         String propertyValue = property.getStringValue();
         PsiField field = entityClass.findFieldByName(propertyValue, true);
 
@@ -148,8 +148,17 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             txField.setFieldType(field.getType().getCanonicalText());
             txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
             txField.setClassName(field.getContainingClass().getQualifiedName());
-            Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());
-            jdbcTypeByJavaType.ifPresent(txField::setJdbcType);
+            String fieldJdbcType = null;
+            if(jdbcType !=null){
+                fieldJdbcType = jdbcType.getStringValue();
+            }
+            if (fieldJdbcType == null) {
+                Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());
+                if (jdbcTypeByJavaType.isPresent()) {
+                    fieldJdbcType = jdbcTypeByJavaType.get();
+                }
+            }
+            txField.setJdbcType(fieldJdbcType);
             return txField;
         }
         return null;
@@ -175,7 +184,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
      */
     @Nullable
     private TxField getTxField(PsiClass mapperClass, Id id) {
-        return determineField(mapperClass, id.getProperty(), id.getXmlTag());
+        return determineField(mapperClass, id.getProperty(), id.getXmlTag(), id.getJdbcType());
     }
 
     /**
