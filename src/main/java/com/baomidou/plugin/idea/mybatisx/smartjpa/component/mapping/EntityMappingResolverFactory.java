@@ -91,21 +91,25 @@ public class EntityMappingResolverFactory {
                 .collect(Collectors.toMap(TxField::getFieldName, v -> v, (l, r) -> l));
             // 处理字段上面没有注解的情况,
             for (TxField field : entityMappingHolder.getFields()) {
-                // 已经有列名了, 不再处理
-                if (!StringUtils.isEmpty(field.getColumnName())) {
-                    continue;
+                TxField defaultField = resultMapMapping.get(field.getFieldName());
+                // 处理列名
+                if (StringUtils.isEmpty(field.getColumnName())) {
+                    String columnName = null;
+                    if (defaultField != null) {
+                        columnName = defaultField.getColumnName();
+                    }
+                    // 如果没有映射, 默认按照下划线映射
+                    if (columnName == null) {
+                        columnName = StringUtils.camelToSlash(field.getFieldName());
+                    }
+                    field.setColumnName(columnName);
                 }
-                String columnName = null;
+                // 处理jdbcType, 强制以 resultMap 为准
+                if (defaultField != null && defaultField.getJdbcType() != null) {
+                    field.setJdbcType(defaultField.getJdbcType());
+                }
 
-                TxField txField = resultMapMapping.get(field.getFieldName());
-                if (txField != null) {
-                    columnName = txField.getColumnName();
-                }
-                // 如果没有映射, 默认按照下划线映射
-                if (columnName == null) {
-                    columnName = StringUtils.camelToSlash(field.getFieldName());
-                }
-                field.setColumnName(columnName);
+
             }
         }
         return entityMappingHolder;

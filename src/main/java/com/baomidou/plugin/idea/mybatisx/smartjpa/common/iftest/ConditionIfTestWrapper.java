@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.EmptyGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
@@ -44,7 +45,8 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
 
     /**
      * Instantiates a new Condition if test wrapper.
-     *  @param project
+     *
+     * @param project
      * @param selectedWrapFields the wrapper fields
      * @param resultFields
      * @param allFields
@@ -58,7 +60,7 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         this.project = project;
         this.selectedWrapFields = selectedWrapFields;
         this.resultFields = resultFields;
-        txFieldMap = allFields.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x,(a,b)->a));
+        txFieldMap = allFields.stream().collect(Collectors.toMap(TxField::getFieldName, x -> x, (a, b) -> a));
         this.allFields = allFields;
         this.defaultDateWord = defaultDateWord;
     }
@@ -192,11 +194,28 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         Set<String> addedFields = new HashSet<>();
         return allFields.stream().filter(field -> resultFields.contains(field.getFieldName()) && addedFields.add(field.getFieldName())).collect(Collectors.toList());
     }
+
     private int newLine;
 
     @Override
     public int getNewline() {
         return newLine;
+    }
+
+    @Override
+    public String wrapperField(String originName, String name, String canonicalTypeText) {
+        TxField txField = txFieldMap.get(originName);
+        if (txField != null) {
+            String jdbcType = txField.getJdbcType();
+            if (jdbcType != null) {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("#{").append(name);
+                stringBuilder.append(",jdbcType=").append(jdbcType);
+                stringBuilder.append("}");
+                return stringBuilder.toString();
+            }
+        }
+        return JdbcTypeUtils.wrapperField(name, canonicalTypeText);
     }
 
     public void setDefaultDateList(List<String> defaultDateList) {

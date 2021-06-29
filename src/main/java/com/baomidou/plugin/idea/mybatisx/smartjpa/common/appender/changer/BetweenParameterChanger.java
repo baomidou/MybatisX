@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
@@ -42,8 +41,9 @@ public class BetweenParameterChanger implements MxParameterChanger {
         final TxParameter end = parameters.poll();
         assert begin != null;
         assert end != null;
-        final String beginStr = JdbcTypeUtils.wrapperField(begin.getName(), begin.getCanonicalTypeText());
-        final String endStr = JdbcTypeUtils.wrapperField(end.getName(), end.getCanonicalTypeText());
+        final String beginStr = conditionFieldWrapper.wrapperField(fieldName, begin.getName(), begin.getCanonicalTypeText());
+        final String endStr = conditionFieldWrapper.wrapperField(fieldName, end.getName(), end.getCanonicalTypeText());
+
         return fieldName + SPACE + "between" + SPACE + beginStr + " and " + endStr;
     }
 }

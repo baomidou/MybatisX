@@ -295,7 +295,7 @@ public class InsertOperator extends BaseOperatorManager {
             stringBuilder.append("values").append("\n");
             final String fields = mappingField.stream()
                 .map(field -> {
-                    String fieldValue = JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType());
+                    String fieldValue = conditionFieldWrapper.wrapperField(field.getFieldName(), field.getFieldName(), field.getFieldType());
                     fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
                     return selective(field.getFieldName(), fieldValue);
                 })
