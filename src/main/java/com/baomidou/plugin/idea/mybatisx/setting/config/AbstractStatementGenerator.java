@@ -126,20 +126,20 @@ public abstract class AbstractStatementGenerator {
      * Apply generate.
      *
      * @param method the method
+     * @param project
      */
-    public static void applyGenerate(@Nullable final PsiMethod method) {
+    public static void applyGenerate(@Nullable final PsiMethod method, Project project) {
         if (null == method) {
             return;
         }
-        final Project project = method.getProject();
         final AbstractStatementGenerator[] generators = getGenerators(method);
         if (1 == generators.length) {
-            generators[0].execute(method);
+            generators[0].execute(method, method.getProject());
         } else {
             BaseListPopupStep<AbstractStatementGenerator> step = new BaseListPopupStep<AbstractStatementGenerator>("[ Statement type for method: " + method.getName() + "]", generators) {
                 @Override
                 public PopupStep onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
-                    return this.doFinalStep(() -> WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method)));
+                    return this.doFinalStep(() -> WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method, project)));
                 }
             };
             JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
@@ -171,28 +171,29 @@ public abstract class AbstractStatementGenerator {
      * Execute.
      *
      * @param method the method
+     * @param project
      */
-    public void execute(@NotNull final PsiMethod method) {
+    public void execute(@NotNull final PsiMethod method, final Project project) {
         PsiClass psiClass = method.getContainingClass();
         if (null == psiClass) {
             return;
         }
         CollectProcessor<Mapper> processor = new CollectProcessor<>();
-        JavaService.getInstance(method.getProject()).processClass(psiClass, processor);
+        JavaService.getInstance(project).processClass(psiClass, processor);
         final List<Mapper> mappers = Lists.newArrayList(processor.getResults());
         if (1 == mappers.size()) {
-            setupTag(method, (Mapper) Iterables.getOnlyElement(mappers, (Object) null));
+            setupTag(method, (Mapper) Iterables.getOnlyElement(mappers, (Object) null), project);
         } else if (mappers.size() > 1) {
             Collection<String> paths = Collections2.transform(mappers, FUN);
-            UiComponentFacade.getInstance(method.getProject())
+            UiComponentFacade.getInstance(project)
                 .showListPopup("Choose target mapper xml to generate", new ListSelectionListener() {
                     @Override
                     public void selected(int index) {
                         // 修复多模块生成标签, 修改xml内容不允许在用户线程操作的BUG
-                        WriteCommandAction.runWriteCommandAction(method.getProject(), new Runnable() {
+                        WriteCommandAction.runWriteCommandAction(project, new Runnable() {
                             @Override
                             public void run() {
-                                setupTag(method, mappers.get(index));
+                                setupTag(method, mappers.get(index), method.getProject());
                             }
                         });
 
@@ -206,14 +207,14 @@ public abstract class AbstractStatementGenerator {
         }
     }
 
-    private void setupTag(PsiMethod method, Mapper mapper) {
+    private void setupTag(PsiMethod method, Mapper mapper, Project project) {
         IdDomElement target = getTarget(mapper, method);
         target.getId().setStringValue(method.getName());
         target.setValue(" ");
         XmlTag tag = target.getXmlTag();
         assert tag != null;
         int offset = tag.getTextOffset() + tag.getTextLength() - tag.getName().length() + 1;
-        EditorService editorService = EditorService.getInstance(method.getProject());
+        EditorService editorService = EditorService.getInstance(project);
         editorService.format(tag.getContainingFile(), tag);
         editorService.scrollTo(tag, offset);
     }
