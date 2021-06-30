@@ -33,7 +33,7 @@ public class GenerateStatementIntention extends GenericIntention {
     @Override
     public void invoke(@NotNull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        AbstractStatementGenerator.applyGenerate(PsiTreeUtil.getParentOfType(element, PsiMethod.class));
+        AbstractStatementGenerator.applyGenerate(PsiTreeUtil.getParentOfType(element, PsiMethod.class), project);
     }
 
 }
