@@ -25,12 +25,12 @@ public interface Icons {
      * The constant MAPPER_LINE_MARKER_ICON.
      * mapper.xml文件中的方法左边的提示图标
      */
-    Icon MAPPER_LINE_MARKER_ICON = IconLoader.getIcon("/images/mapper_method.png");
+    Icon MAPPER_LINE_MARKER_ICON = IconLoader.getIcon("/images/mapper_method.svg");
     /**
      * The constant STATEMENT_LINE_MARKER_ICON.
      * mapper类文件中的方法左边的提示图标
      */
-    Icon STATEMENT_LINE_MARKER_ICON = IconLoader.getIcon("/images/statement.png");
+    Icon STATEMENT_LINE_MARKER_ICON = IconLoader.getIcon("/images/statement.svg");
     /**
      * The constant MAPPER_XML_ICON.
      * mapper.xml 文件的icon
