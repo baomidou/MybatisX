@@ -1,33 +1,43 @@
 package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.intellij.database.model.DasTable;
-import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
+import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.table.TableView;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.util.ui.ColumnInfo;
+import com.intellij.util.ui.ListTableModel;
+import ognl.OgnlContext;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CodeGenerateUI {
     private JPanel rootPanel;
-    private JTextField tableNameTextField;
-    private JTextField projectFolderTextField;
     private JCheckBox commentCheckBox;
     private JCheckBox lombokCheckBox;
     private JCheckBox actualColumnCheckBox;
@@ -35,25 +45,25 @@ public class CodeGenerateUI {
     private JCheckBox useActualColumnAnnotationInjectCheckBox;
 
     private JCheckBox toStringHashCodeEqualsCheckBox;
-    private JTextField fileTextField;
-    private JTextField basePathTextField;
-    private JTextField relativePackageTextField;
     private JPanel containingPanel;
     private JRadioButton JPARadioButton;
     private JRadioButton mybatisPlus3RadioButton;
     private JRadioButton mybatisPlus2RadioButton;
     private JRadioButton noneRadioButton;
     private JPanel templateExtraPanel;
-    private JComboBox moduleComboBox;
-    private JTextField basePackageTextField;
-    private JTextField encodingTextField;
-    private JTextField superClassTextField;
-    private JTextField fieldPrefixTextField;
-    private JTextField fieldSuffixTextField;
     private JPanel templateExtraRadiosPanel;
-    private JLabel lblFieldSuffix;
 
     private ButtonGroup templateButtonGroup = new ButtonGroup();
+
+    ListTableModel<ModuleUIInfo> model = new ListTableModel<>(
+        new MybaitsxModuleInfo("configName", 105,false),
+        new MybaitsxModuleInfo("modulePath",360, true, true),
+        new MybaitsxModuleInfo("basePath", 120,true),
+        new MybaitsxModuleInfo("packageName", 100,true),
+        new MybaitsxModuleInfo("encoding", 70,true)
+    );
+    private Project project;
+    private TableView<ModuleUIInfo> tableView;
 
     public JPanel getRootPanel() {
         return rootPanel;
@@ -64,63 +74,79 @@ public class CodeGenerateUI {
     }
 
     public void fillData(Project project,
-                         PsiElement[] tableElements,
                          GenerateConfig generateConfig,
                          String defaultsTemplatesName,
                          Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+        this.project = project;
 
-        PsiElement tableElement = tableElements[0];
-        DasTable table = (DasTable) tableElement;
-        String tableName = table.getName();
-        tableNameTextField.setText(tableName);
-        // 项目路径
-        projectFolderTextField.setText(generateConfig.getTargetProject());
-        // model 的名字, 例如: UserRule(用户角色表的实体名称)
-        fileTextField.setText(StringUtils.dbStringToCamelStyle(tableName));
-        Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
-        // 实体类的模块名称
-        for (Module module : modulesOfType) {
-            moduleComboBox.addItem(module.getName());
-        }
-        String moduleName = generateConfig.getModuleName();
-        if (moduleName != null) {
-            moduleComboBox.setSelectedItem(moduleName);
-        } else if (moduleComboBox.getItemCount() > 0) {
-            moduleComboBox.setSelectedIndex(0);
-        }
-
+        // 选择注解还是XML
         selectAnnotation(generateConfig.getAnnotationType());
-        // 模块下的源码路径
-        basePathTextField.setText(generateConfig.getBasePath());
-        // 实体类的包名
-        relativePackageTextField.setText(generateConfig.getRelativePackage());
-        basePackageTextField.setText(generateConfig.getBasePackage());
-        encodingTextField.setText(generateConfig.getEncoding());
-        superClassTextField.setText(generateConfig.getRootClass());
-
+        // 是否需要字段注释
         if (generateConfig.isNeedsComment()) {
             commentCheckBox.setSelected(true);
         }
+        // 需要生成 toString/hashcode/equals
         if (generateConfig.isNeedToStringHashcodeEquals()) {
             toStringHashCodeEqualsCheckBox.setSelected(true);
         }
+        // 使用lombok 注解生成实体类
         if (generateConfig.isUseLombokPlugin()) {
             lombokCheckBox.setSelected(true);
         }
+        // 使用数据库的字段作为列名
         if (generateConfig.isUseActualColumns()) {
             actualColumnCheckBox.setSelected(true);
         }
+        // 使用LocalDate
         if (generateConfig.isJsr310Support()) {
             JSR310DateAPICheckBox.setSelected(true);
         }
+        // 使用实际的列名注解
         if (generateConfig.isUseActualColumnAnnotationInject()) {
             useActualColumnAnnotationInjectCheckBox.setSelected(true);
         }
 
+        // 初始化表格, 用于展示要生成的文件模块
+        this.tableView = new TableView<>(model);
+        tableView.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        GridConstraints gridConstraints = new GridConstraints();
+        gridConstraints.setFill(GridConstraints.FILL_HORIZONTAL);
+
+        templateExtraPanel.add(ToolbarDecorator.createDecorator(tableView)
+            .disableAddAction()
+            .disableUpDownActions()
+            .setPreferredSize(new Dimension(760, 150))
+            .createPanel(), gridConstraints);
+
+        initTemplates(generateConfig, defaultsTemplatesName, templateSettingMap);
+        // 选择默认的模板, 或者记忆的模板
+        final String templatesName = generateConfig.getTemplatesName();
+        if (StringUtils.isEmpty(templatesName)) {
+            final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
+            if (elements.hasMoreElements()) {
+                final AbstractButton abstractButton = elements.nextElement();
+                abstractButton.setSelected(true);
+            }
+        } else {
+            final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
+            while (elements.hasMoreElements()) {
+                final AbstractButton abstractButton = elements.nextElement();
+                final String text = abstractButton.getText();
+                if (templatesName.equals(text)) {
+                    abstractButton.setSelected(true);
+                    break;
+                }
+            }
+        }
+
+
+    }
+
+    private void initTemplates(GenerateConfig generateConfig, String defaultsTemplatesName, Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+        // N 行 3 列 的排版模式
         GridLayout templateRadioLayout = new GridLayout(0, 3, 0, 0);
         templateExtraRadiosPanel.setLayout(templateRadioLayout);
         // 添加动态模板组
-//        templateSettingMap.keySet().forEach(templatesComboBox::addItem);
         for (String templateName : templateSettingMap.keySet()) {
             JRadioButton comp = new JRadioButton();
             comp.setText(templateName);
@@ -150,49 +176,149 @@ public class CodeGenerateUI {
                 list = templateSettingMap.values().iterator().next();
             }
 
-            templateExtraPanel.removeAll();
-            for (TemplateSettingDTO templateSettingDTO : list) {
-                // 添加的模板默认都是要选中的
-                JCheckBox jCheckBox = new JCheckBox(templateSettingDTO.getConfigName());
-                final List<String> extraTemplateNames = generateConfig.getExtraTemplateNames();
-                if (extraTemplateNames != null && extraTemplateNames.contains(jCheckBox.getText())) {
-                    jCheckBox.setSelected(true);
-                }
-                templateExtraPanel.add(jCheckBox);
-            }
-            templateExtraPanel.updateUI();
+            initModuleTable(list, generateConfig.getModulePath(),generateConfig);
         };
-
-        GridLayout extraLayout = new GridLayout(0, 2, 0, 0);
-        templateExtraPanel.setLayout(extraLayout);
 
         final Enumeration<AbstractButton> radios = templateButtonGroup.getElements();
         while (radios.hasMoreElements()) {
             final JRadioButton radioButton = (JRadioButton) radios.nextElement();
             radioButton.addItemListener(itemListener);
         }
+    }
 
-        final String templatesName = generateConfig.getTemplatesName();
-        if (StringUtils.isEmpty(templatesName)) {
-            final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
-            if (elements.hasMoreElements()) {
-                final AbstractButton abstractButton = elements.nextElement();
-                abstractButton.setSelected(true);
-            }
-        }else{
-            final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
-            while (elements.hasMoreElements()) {
-                final AbstractButton abstractButton = elements.nextElement();
-                final String text = abstractButton.getText();
-                if (templatesName.equals(text)) {
-                    abstractButton.setSelected(true);
-                    break;
-                }
-            }
+    private void initModuleTable(List<TemplateSettingDTO> list, String modulePath, GenerateConfig generateConfig) {
+        // 扩展面板的列表内容
+        // 移除所有行, 重新刷新
+        for (int rowCount = model.getRowCount(); rowCount > 0; rowCount--) {
+            model.removeRow(rowCount - 1);
         }
 
-        fieldPrefixTextField.setText(generateConfig.getRemovedPrefix());
-        fieldSuffixTextField.setText(generateConfig.getRemovedSuffix());
+        // 添加列的内容
+        for (TemplateSettingDTO templateSettingDTO : list) {
+            ModuleUIInfo item = new ModuleUIInfo();
+            item.setConfigName(templateSettingDTO.getConfigName());
+            // 默认使用实体模块的模块路径
+            item.setModulePath(modulePath);
+            item.setBasePath(templateSettingDTO.getBasePath());
+            item.setFileName(templateSettingDTO.getFileName());
+            item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
+            item.setPackageName(templateSettingDTO.getPackageName());
+            item.setEncoding(templateSettingDTO.getEncoding());
+            model.addRow(item);
+        }
+
+    }
+
+    private class MybaitsxModuleInfo extends ColumnInfo<ModuleUIInfo, String> {
+
+        public MybaitsxModuleInfo(String name, int width, boolean editable) {
+            super(name);
+            this.width = width;
+            this.editable = editable;
+        }
+
+        public MybaitsxModuleInfo(String name,int width, boolean editable, boolean moduleEditor) {
+            super(name);
+            this.width = width;
+            this.editable = editable;
+            this.moduleEditor = moduleEditor;
+        }
+
+        private int width;
+        private boolean editable;
+        private boolean moduleEditor;
+
+        @Override
+        public boolean isCellEditable(ModuleUIInfo moduleUIInfo) {
+            return editable;
+        }
+
+        @Override
+        public int getWidth(JTable table) {
+            return width;
+        }
+
+        @Nullable
+        @Override
+        public TableCellRenderer getRenderer(ModuleUIInfo moduleUIInfo) {
+            return new DefaultTableCellRenderer();
+        }
+
+        @Nullable
+        @Override
+        public TableCellEditor getEditor(ModuleUIInfo moduleUIInfo) {
+            JTextField textField = new JTextField();
+            if (moduleEditor) {
+                // 模块选择
+                textField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        Module[] modules = ModuleManager.getInstance(project).getModules();
+                        ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
+                        dialog.setSingleSelectionMode();
+                        dialog.show();
+
+                        List<Module> chosenElements = dialog.getChosenElements();
+                        if (chosenElements.size() > 0) {
+                            Module module = chosenElements.get(0);
+                            String modulePath = findModulePath(module);
+                            textField.setText(modulePath);
+                            setValue(moduleUIInfo, modulePath);
+                        }
+                    }
+                });
+            }
+
+            DefaultCellEditor defaultCellEditor = new DefaultCellEditor(textField);
+            defaultCellEditor.addCellEditorListener(new CellEditorListener() {
+                @Override
+                public void editingStopped(ChangeEvent e) {
+                    String s = defaultCellEditor.getCellEditorValue().toString();
+                    if (getName().equals("modulePath")) {
+                        moduleUIInfo.setModulePath(s);
+                    } else if (getName().equals("basePath")) {
+                        moduleUIInfo.setBasePath(s);
+                    } else if (getName().equals("packageName")) {
+                        moduleUIInfo.setPackageName(s);
+                    } else if (getName().equals("encoding")) {
+                        moduleUIInfo.setEncoding(s);
+                    }
+                }
+
+                @Override
+                public void editingCanceled(ChangeEvent e) {
+
+                }
+            });
+            return defaultCellEditor;
+        }
+
+        private String findModulePath(Module module) {
+            String moduleDirPath = ModuleUtil.getModuleDirPath(module);
+            int ideaIndex = moduleDirPath.indexOf(".idea");
+            if (ideaIndex > -1) {
+                moduleDirPath = moduleDirPath.substring(0, ideaIndex);
+            }
+            return moduleDirPath;
+        }
+
+        @Nullable
+        @Override
+        public String valueOf(ModuleUIInfo item) {
+            String value = null;
+            if (getName().equals("configName")) {
+                value = item.getConfigName();
+            } else if (getName().equals("modulePath")) {
+                value = item.getModulePath();
+            } else if (getName().equals("basePath")) {
+                value = item.getBasePath();
+            } else if (getName().equals("packageName")) {
+                value = item.getPackageName();
+            } else if (getName().equals("encoding")) {
+                value = item.getEncoding();
+            }
+            return value;
+        }
     }
 
     /**
@@ -217,48 +343,12 @@ public class CodeGenerateUI {
         }
     }
 
-    public GenerateConfig getGenerateConfig(Project project) {
-        GenerateConfig generateConfig = new GenerateConfig();
-        generateConfig.setDomainObjectName(fileTextField.getText());
-        generateConfig.setRelativePackage(relativePackageTextField.getText());
-        generateConfig.setBasePackage(basePackageTextField.getText());
-        generateConfig.setBasePath(basePathTextField.getText());
-        generateConfig.setEncoding(encodingTextField.getText());
-        generateConfig.setRootClass(superClassTextField.getText());
-        String moduleName = null;
-        Object selectedItem = moduleComboBox.getSelectedItem();
-        if (selectedItem == null) {
-            if (moduleComboBox.getItemCount() > 0) {
-                moduleName = moduleComboBox.getItemAt(0).toString();
-            }
-        }
-        if (moduleName == null && selectedItem != null) {
-            moduleName = selectedItem.toString();
-        }
-        generateConfig.setModuleName(moduleName);
-        final String findModule = moduleName;
-        Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
-        Optional<Module> any = modulesOfType.stream().filter(module -> module.getName().equalsIgnoreCase(findModule)).findAny();
-        any.ifPresent(moduleOptional -> {
-            final Module module1 = any.get();
-            String moduleDirPath = ModuleUtil.getModuleDirPath(module1);
-            int ideaIndex = moduleDirPath.indexOf(".idea");
-            if (ideaIndex > -1) {
-                moduleDirPath = moduleDirPath.substring(0, ideaIndex);
-            }
-            generateConfig.setModulePath(moduleDirPath);
-        });
+    public void refreshGenerateConfig(GenerateConfig generateConfig) {
 
-        generateConfig.setTableName(tableNameTextField.getText());
-        generateConfig.setTargetProject(projectFolderTextField.getText());
-
-        List<String> templateNames = Arrays.stream(templateExtraPanel.getComponents())
-            .filter(x -> (x instanceof JCheckBox) && ((JCheckBox) x).isSelected())
-            .map(x -> ((JCheckBox) x).getText())
+        List<ModuleUIInfo> moduleUIInfoList = IntStream.range(0, model.getRowCount())
+            .mapToObj(index -> model.getRowValue(index))
             .collect(Collectors.toList());
-        generateConfig.setExtraTemplateNames(templateNames);
-
-
+        generateConfig.setModuleUIInfoList(moduleUIInfoList);
         // 从1.4.7起改为基于模板生成, 所以不再需要那么多针对mapper的插件了
 //        generateConfig.setOffsetLimit(pageCheckBox.isSelected());
 //        generateConfig.setNeedForUpdate(toStringHashCodeEqualsCheckBox.isSelected());
@@ -287,9 +377,6 @@ public class CodeGenerateUI {
         }
         generateConfig.setTemplatesName(templatesName);
 
-        generateConfig.setRemovedPrefix(fieldPrefixTextField.getText());
-        generateConfig.setRemovedSuffix(fieldSuffixTextField.getText());
-        return generateConfig;
     }
 
     @Nullable

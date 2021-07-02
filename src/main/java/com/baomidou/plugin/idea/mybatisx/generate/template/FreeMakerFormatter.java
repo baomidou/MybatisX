@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
@@ -27,19 +28,13 @@ import java.util.Map;
 public class FreeMakerFormatter implements JavaFormatter {
 
     public static final String TEMPLATE = "template";
-    private TemplateSettingDTO templateSettingDTO;
     private CustomTemplateRoot rootObject;
     private final ClassInfo classInfo;
-    private String templateText;
-    private String modulePath;
     private Context context;
 
-    public FreeMakerFormatter(TemplateSettingDTO templateSettingDTO, CustomTemplateRoot rootObject, ClassInfo classInfo, String templateText, String modulePath) {
-        this.templateSettingDTO = templateSettingDTO;
+    public FreeMakerFormatter(CustomTemplateRoot rootObject, ClassInfo classInfo) {
         this.rootObject = rootObject;
         this.classInfo = classInfo;
-        this.templateText = templateText;
-        this.modulePath = modulePath;
     }
 
     @Override
@@ -58,11 +53,13 @@ public class FreeMakerFormatter implements JavaFormatter {
     @Override
     public String getFormattedContent(CompilationUnit compilationUnit) {
         try {
+            ModuleUIInfo templateSettingDTO = rootObject.getModuleUIInfo();
+            String modulePath = rootObject.getModuleUIInfo().getModulePath() + "/" + templateSettingDTO.getBasePath();
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
             cfg.setDirectoryForTemplateLoading(new File(modulePath));
             // 设置模板加载器
             StringTemplateLoader templateLoader = new StringTemplateLoader();
-            templateLoader.putTemplate(TEMPLATE, templateText);
+            templateLoader.putTemplate(TEMPLATE, rootObject.getTemplateText());
             cfg.setTemplateLoader(templateLoader);
 
             cfg.setDefaultEncoding(templateSettingDTO.getEncoding());

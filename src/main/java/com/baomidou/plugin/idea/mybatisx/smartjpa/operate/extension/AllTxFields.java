@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.extension;
 
 /**
- * @author liushang@zsyjr.com
+ * @authorls9527
  */
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;

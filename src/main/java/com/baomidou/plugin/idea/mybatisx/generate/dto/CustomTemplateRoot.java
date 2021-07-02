@@ -11,9 +11,19 @@ import java.util.stream.Collectors;
 
 public class CustomTemplateRoot implements Serializable {
 
-    private String modulePath;
+    private ModuleUIInfo moduleUIInfo;
 
     private DomainInfo domainInfo;
+
+    private String templateText;
+
+    public String getTemplateText() {
+        return templateText;
+    }
+
+    public void setTemplateText(String templateText) {
+        this.templateText = templateText;
+    }
 
     private List<TemplateSettingDTO> list = new ArrayList<>();
 
@@ -21,7 +31,8 @@ public class CustomTemplateRoot implements Serializable {
         list.add(customTemplateConfigDTO);
     }
 
-    public @NotNull  Optional<TemplateSettingDTO> findByName(@NotNull String currentName) {
+    public @NotNull
+    Optional<TemplateSettingDTO> findByName(@NotNull String currentName) {
         return list.stream().filter(x -> currentName.equalsIgnoreCase(x.getConfigName())).findFirst();
     }
 
@@ -37,11 +48,12 @@ public class CustomTemplateRoot implements Serializable {
         this.domainInfo = domainInfo;
     }
 
-    public String getModulePath() {
-        return modulePath;
+    @NotNull
+    public ModuleUIInfo getModuleUIInfo() {
+        return moduleUIInfo;
     }
 
-    public void setModulePath(String modulePath) {
-        this.modulePath = modulePath;
+    public void setModuleUIInfo(ModuleUIInfo moduleUIInfo) {
+        this.moduleUIInfo = moduleUIInfo;
     }
 }

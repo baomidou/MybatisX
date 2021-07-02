@@ -5,18 +5,18 @@ import org.mybatis.generator.api.JavaFormatter;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
 
 public class FreemarkerFile extends GeneratedJavaFile {
-    private String suffix;
+    private String fileName;
     private String packageName;
 
-    public FreemarkerFile(CompilationUnit compilationUnit, JavaFormatter javaFormatter, String targetProject, String fileEncoding, String suffix, String packageName) {
+    public FreemarkerFile(CompilationUnit compilationUnit, JavaFormatter javaFormatter, String targetProject, String fileEncoding, String fileName, String packageName) {
         super(compilationUnit, targetProject, fileEncoding, javaFormatter);
-        this.suffix = suffix;
+        this.fileName = fileName;
         this.packageName = packageName;
     }
 
     @Override
     public String getFileName() {
-        return getCompilationUnit().getType().getShortNameWithoutTypeArguments() + suffix;
+        return fileName;
     }
 
     @Override

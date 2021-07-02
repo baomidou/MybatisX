@@ -1,21 +1,22 @@
 package com.baomidou.plugin.idea.mybatisx.generate.action;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.DefaultGenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
-import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateCode;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
+import com.baomidou.plugin.idea.mybatisx.generate.ui.TablePreviewUI;
+import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.util.Collections;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,42 +26,78 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
 
     private CodeGenerateUI codeGenerateUI = new CodeGenerateUI();
 
+    private TablePreviewUI tablePreviewUI = new TablePreviewUI();
+
+    private JPanel rootPanel = new JPanel();
+
+    private java.util.List<JPanel> containerPanelList;
+
+    private Action previousAction;
+
+    private int page = 0;
+    private int lastPage = 1;
+
     protected ClassGenerateDialogWrapper(@Nullable Project project) {
         super(project);
+        this.setTitle("Generate Options");
+        setOKButtonText("Next");
+        setCancelButtonText("Cancel");
+
+        previousAction = new DialogWrapperAction("Previous") {
+            @Override
+            protected void doAction(ActionEvent e) {
+                page = page - 1;
+                switchPage(page);
+                previousAction.setEnabled(false);
+                setOKButtonText("Next");
+            }
+        };
+        // 默认禁用 上一个设置
+        previousAction.setEnabled(false);
+        // 初始化容器列表
+        java.util.List<JPanel> list = new ArrayList<>();
+        list.add(tablePreviewUI.getRootPanel());
+        list.add(codeGenerateUI.getRootPanel());
+        containerPanelList = list;
+        // 默认切换到第一页
+        switchPage(0);
+
         super.init();
-        setTitle("Generate Options");
-        setSize(600, 400);
     }
 
     @Override
-    protected @Nullable JComponent createCenterPanel() {
-        return codeGenerateUI.getRootPanel();
-    }
-
-    public void generateCode(Project project, PsiElement[] psiElements) {
-        try {
-            // 获取配置
-            GenerateConfig generateConfig = codeGenerateUI.getGenerateConfig(project);
-
-            // 保存配置, 更新最后一次存储的配置
-            TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
-            TemplateContext templateConfigs = templatesSettings.getTemplateConfigs();
-            templateConfigs.setGenerateConfig(generateConfig);
-            templatesSettings.setTemplateConfigs(templateConfigs);
-
-            for (PsiElement psiElement : psiElements) {
-                // 生成代码
-                GenerateCode.generate(generateConfig, templatesSettings.getTemplateSettingMap(), psiElement);
-            }
-            VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
-            logger.info("全部代码生成成功, 文件内容已更新. config: {}",generateConfig);
-        } catch (Exception e) {
-            logger.error("生成代码出错", e);
+    protected void doOKAction() {
+        if (page == lastPage) {
+            super.doOKAction();
+            return;
         }
+        page = page + 1;
+        setOKButtonText("Finish");
+
+        previousAction.setEnabled(true);
+        switchPage(page);
+    }
+
+    private void switchPage(int newPage) {
+        rootPanel.removeAll();
+        rootPanel.add(containerPanelList.get(newPage));
+        rootPanel.repaint();//刷新页面，重绘面板
+        rootPanel.validate();//使重绘的面板确认生效
+    }
+
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
+        return rootPanel;
+    }
+
+    @Override
+    protected Action[] createActions() {
+        return new Action[]{previousAction, getOKAction(), getCancelAction()};
     }
 
 
-    public void fillData(Project project, PsiElement[] tableElements) {
+    public void fillData(Project project, List<DbTable> tableElements) {
         TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
         final TemplateContext templateContext = templatesSettings.getTemplateConfigs();
         GenerateConfig generateConfig = templateContext.getGenerateConfig();
@@ -72,73 +109,23 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
         if (settingMap.isEmpty()) {
             throw new RuntimeException("无法获取模板");
         }
+
+        tablePreviewUI.fillData(project,tableElements, generateConfig);
         codeGenerateUI.fillData(project,
-            tableElements,
             generateConfig,
             templateContext.getTemplateName(),
             settingMap);
+
+
     }
 
-    /**
-     * 默认生成器配置
-     */
-    private class DefaultGenerateConfig extends GenerateConfig {
-        private TemplateContext templateContext;
-
-        public DefaultGenerateConfig(TemplateContext templateContext) {
-            this.templateContext = templateContext;
-        }
-
-        @Override
-        public String getTargetProject() {
-            return templateContext.getProjectPath();
-        }
-
-        @Override
-        public String getModuleName() {
-            return templateContext.getModuleName();
-        }
-
-        @Override
-        public String getAnnotationType() {
-            return templateContext.getAnnotationType();
-        }
-
-        @Override
-        public List<String> getExtraTemplateNames() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public boolean isNeedsComment() {
-            return true;
-        }
-
-        @Override
-        public boolean isNeedToStringHashcodeEquals() {
-            return true;
-        }
-
-        @Override
-        public String getBasePackage() {
-            return "generator";
-        }
-
-        @Override
-        public String getRelativePackage() {
-            return "domain";
-        }
-
-        @Override
-        public String getBasePath() {
-            return "src/main/java";
-        }
-
-
-        @Override
-        public String getEncoding() {
-            return "UTF-8";
-        }
+    public GenerateConfig determineGenerateConfig() {
+        GenerateConfig generateConfig = new GenerateConfig();
+        codeGenerateUI.refreshGenerateConfig(generateConfig);
+        tablePreviewUI.refreshGenerateConfig(generateConfig);
+        return generateConfig;
     }
+
+
 
 }

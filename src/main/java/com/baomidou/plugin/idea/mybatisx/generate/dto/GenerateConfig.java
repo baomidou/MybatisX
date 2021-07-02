@@ -4,20 +4,21 @@ import java.util.List;
 
 public class GenerateConfig {
     /**
+     * 忽略表的前缀
+     */
+    private String ignoreTablePrefix;
+    /**
+     * 忽略表的后缀
+     */
+    private String ignoreTableSuffix;
+
+    /**
      * 界面恢复
      */
     private String moduleName;
 
     private String annotationType;
 
-    /***
-     * 目标项目
-     */
-    private String targetProject;
-    /**
-     * 表名称
-     */
-    private String tableName;
     /**
      * 基础包名
      */
@@ -26,10 +27,6 @@ public class GenerateConfig {
      * 相对包路径
      */
     private String relativePackage;
-    /**
-     * 实体类名称
-     */
-    private String domainObjectName;
     /**
      * 编码方式, 默认: UTF-8
      */
@@ -54,15 +51,15 @@ public class GenerateConfig {
     /**
      * 实体类需要继承的父类
      */
-    private String rootClass;
+    private String superClass;
     /**
      * 需要移除的字段前缀
      */
-    private String removedPrefix;
+    private String ignoreFieldPrefix;
     /**
      * 需要移除的字段后缀
      */
-    private String removedSuffix;
+    private String ignoreFieldSuffix;
 
     /**
      * 需要生成repository注解
@@ -82,7 +79,20 @@ public class GenerateConfig {
     /**
      * 已选择的模板名称
      */
-    private List<String> extraTemplateNames;
+    private List<ModuleUIInfo> moduleUIInfoList;
+    /**
+     * 要生成的表信息列表
+     */
+
+    private transient List<TableUIInfo> tableUIInfoList;
+
+    public List<TableUIInfo> getTableUIInfoList() {
+        return tableUIInfoList;
+    }
+
+    public void setTableUIInfoList(List<TableUIInfo> tableUIInfoList) {
+        this.tableUIInfoList = tableUIInfoList;
+    }
 
     /**
      * 需要生成mapper注解
@@ -90,6 +100,8 @@ public class GenerateConfig {
      * @Mapper
      */
 //    private boolean needMapperAnnotation;
+
+
     public String getModuleName() {
         return moduleName;
     }
@@ -139,22 +151,6 @@ public class GenerateConfig {
         this.useActualColumns = useActualColumns;
     }
 
-    public String getTargetProject() {
-        return targetProject;
-    }
-
-    public void setTargetProject(String targetProject) {
-        this.targetProject = targetProject;
-    }
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
     public String getBasePackage() {
         return basePackage;
     }
@@ -169,14 +165,6 @@ public class GenerateConfig {
 
     public void setRelativePackage(String relativePackage) {
         this.relativePackage = relativePackage;
-    }
-
-    public String getDomainObjectName() {
-        return domainObjectName;
-    }
-
-    public void setDomainObjectName(String domainObjectName) {
-        this.domainObjectName = domainObjectName;
     }
 
     public String getBasePath() {
@@ -195,12 +183,12 @@ public class GenerateConfig {
         this.modulePath = modulePath;
     }
 
-    public List<String> getExtraTemplateNames() {
-        return extraTemplateNames;
+    public List<ModuleUIInfo> getModuleUIInfoList() {
+        return moduleUIInfoList;
     }
 
-    public void setExtraTemplateNames(List<String> extraTemplateNames) {
-        this.extraTemplateNames = extraTemplateNames;
+    public void setModuleUIInfoList(List<ModuleUIInfo> moduleUIInfoList) {
+        this.moduleUIInfoList = moduleUIInfoList;
     }
 
     public boolean isNeedToStringHashcodeEquals() {
@@ -229,12 +217,12 @@ public class GenerateConfig {
     }
 
 
-    public String getRootClass() {
-        return rootClass;
+    public String getSuperClass() {
+        return superClass;
     }
 
-    public void setRootClass(String rootClass) {
-        this.rootClass = rootClass;
+    public void setSuperClass(String superClass) {
+        this.superClass = superClass;
     }
 
     public boolean isUseActualColumnAnnotationInject() {
@@ -245,46 +233,59 @@ public class GenerateConfig {
         this.useActualColumnAnnotationInject = useActualColumnAnnotationInject;
     }
 
+    public String getIgnoreTablePrefix() {
+        return ignoreTablePrefix;
+    }
+
+    public void setIgnoreTablePrefix(String ignoreTablePrefix) {
+        this.ignoreTablePrefix = ignoreTablePrefix;
+    }
+
+    public String getIgnoreTableSuffix() {
+        return ignoreTableSuffix;
+    }
+
+    public void setIgnoreTableSuffix(String ignoreTableSuffix) {
+        this.ignoreTableSuffix = ignoreTableSuffix;
+    }
+
     @Override
     public String toString() {
         return "GenerateConfig{" +
             "moduleName='" + moduleName + '\'' +
             ", annotationType='" + annotationType + '\'' +
-            ", targetProject='" + targetProject + '\'' +
-            ", tableName='" + tableName + '\'' +
             ", basePackage='" + basePackage + '\'' +
             ", relativePackage='" + relativePackage + '\'' +
-            ", domainObjectName='" + domainObjectName + '\'' +
             ", encoding='" + encoding + '\'' +
             ", basePath='" + basePath + '\'' +
             ", modulePath='" + modulePath + '\'' +
             ", needToStringHashcodeEquals=" + needToStringHashcodeEquals +
             ", needsComment=" + needsComment +
-            ", rootClass='" + rootClass + '\'' +
-            ", removedPrefix='" + removedPrefix + '\'' +
-            ", removedSuffix='" + removedSuffix + '\'' +
+            ", rootClass='" + superClass + '\'' +
+            ", removedPrefix='" + ignoreFieldPrefix + '\'' +
+            ", removedSuffix='" + ignoreFieldSuffix + '\'' +
             ", useLombokPlugin=" + useLombokPlugin +
             ", useActualColumns=" + useActualColumns +
             ", jsr310Support=" + jsr310Support +
             ", useActualColumnAnnotationInject=" + useActualColumnAnnotationInject +
             ", templatesName='" + templatesName + '\'' +
-            ", extraTemplateNames=" + extraTemplateNames +
+            ", extraTemplateNames=" + moduleUIInfoList +
             '}';
     }
 
-    public String getRemovedPrefix() {
-        return removedPrefix;
+    public String getIgnoreFieldPrefix() {
+        return ignoreFieldPrefix;
     }
 
-    public void setRemovedPrefix(String removedPrefix) {
-        this.removedPrefix = removedPrefix;
+    public void setIgnoreFieldPrefix(String ignoreFieldPrefix) {
+        this.ignoreFieldPrefix = ignoreFieldPrefix;
     }
 
-    public String getRemovedSuffix() {
-        return removedSuffix;
+    public String getIgnoreFieldSuffix() {
+        return ignoreFieldSuffix;
     }
 
-    public void setRemovedSuffix(String removedSuffix) {
-        this.removedSuffix = removedSuffix;
+    public void setIgnoreFieldSuffix(String ignoreFieldSuffix) {
+        this.ignoreFieldSuffix = ignoreFieldSuffix;
     }
 }
