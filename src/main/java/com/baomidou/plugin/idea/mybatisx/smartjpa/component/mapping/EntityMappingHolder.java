@@ -6,7 +6,7 @@ import com.intellij.psi.PsiClass;
 import java.util.List;
 
 /**
- * @author liushang@zsyjr.com
+ * @authorls9527
  */
 public class EntityMappingHolder {
     private PsiClass entityClass;

@@ -8,6 +8,15 @@ public class DomainInfo implements Serializable {
     private String relativePackage;
     private String fileName;
     private String basePath;
+    private String modulePath;
+
+    public String getModulePath() {
+        return modulePath;
+    }
+
+    public void setModulePath(String modulePath) {
+        this.modulePath = modulePath;
+    }
 
     public String getBasePath() {
         return basePath;

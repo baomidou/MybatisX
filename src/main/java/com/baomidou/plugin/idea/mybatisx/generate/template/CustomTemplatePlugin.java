@@ -1,7 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -25,53 +28,37 @@ import java.util.Optional;
  */
 public class CustomTemplatePlugin extends PluginAdapter {
 
-    public static final String CURRENT_NAME = "currentName";
-    public static final String TEMPLATE_TEXT = "templateText";
     public static final String ROOT = "root";
     private static final Logger logger = LoggerFactory.getLogger(CustomTemplatePlugin.class);
 
+    @Override
     public boolean validate(List<String> warnings) {
         return true;
     }
 
     @Override
     public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
-        String currentName = properties.getProperty(CURRENT_NAME);
-        String templateText = properties.getProperty(TEMPLATE_TEXT);
         String root = properties.getProperty(ROOT);
-
-        logger.info("准备生成模板文件, template: {}", currentName);
-
         CustomTemplateRoot rootObject = readRootObject(root);
-        Optional<TemplateSettingDTO> customTemplateConfigDTOOptional = rootObject.findByName(currentName);
 
-        if (!customTemplateConfigDTOOptional.isPresent()) {
-            throw new RuntimeException("无法找到模板, 模板名称: " + currentName);
-        }
-        TemplateSettingDTO templateSettingDTO = customTemplateConfigDTOOptional.get();
+        ModuleUIInfo moduleUIInfo = rootObject.getModuleUIInfo();
 
-        String modulePath = rootObject.getModulePath() + "/" + templateSettingDTO.getBasePath();
+        String modulePath = rootObject.getModuleUIInfo().getModulePath() + "/" + moduleUIInfo.getBasePath();
         final File file = new File(modulePath);
         if (!file.exists()) {
             final boolean created = file.mkdirs();
             logger.info("模块目录不存在,已创建目录. modulePath: {},created:{}", file.getAbsolutePath(), created);
         }
-
-        TopLevelClass topLevelClass = new TopLevelClass(templateSettingDTO.getFileName());
-        FreeMakerFormatter javaFormatter = new FreeMakerFormatter(templateSettingDTO,
-            rootObject,
-            ClassInfo.build(introspectedTable),
-            templateText,
-            modulePath);
+        TopLevelClass topLevelClass = new TopLevelClass(moduleUIInfo.getFileName());
+        FreeMakerFormatter javaFormatter = new FreeMakerFormatter(rootObject, ClassInfo.build(introspectedTable));
         javaFormatter.setContext(context);
-
 
         GeneratedJavaFile generatedJavaFile = new FreemarkerFile(topLevelClass,
             javaFormatter,
             modulePath,
-            templateSettingDTO.getEncoding(),
-            templateSettingDTO.getSuffix(),
-            templateSettingDTO.getPackageName());
+            moduleUIInfo.getEncoding(),
+            moduleUIInfo.getFileNameWithSuffix(),
+            moduleUIInfo.getPackageName());
         logger.info("模板文件构建完成, modulePath: {}", modulePath);
         return Collections.singletonList(generatedJavaFile);
     }

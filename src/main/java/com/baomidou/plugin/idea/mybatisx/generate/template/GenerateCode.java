@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.DaoEntityAnnotationInterfacePlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.IntellijMyBatisGenerator;
@@ -14,8 +15,8 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Template;
@@ -53,31 +54,25 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * 代码生成入口
+ *
+ * @author ls9527
  */
 public class GenerateCode {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
     public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true);
 
-    public static void generate(GenerateConfig generateConfig,
+    public static void generate(Project project,
+                                GenerateConfig generateConfig,
                                 Map<String, List<TemplateSettingDTO>> templateSettingMap,
-                                PsiElement psiElement) throws Exception {
+                                DbTable dbTable,
+                                String domainName,
+                                String tableName) throws Exception {
 
-        DbTable dbTable = null;
-        if (!(psiElement instanceof DbTable)) {
-            logger.info("生成代码出错,选择的元素不是表格类型, psiElement: {}", psiElement.getText());
-            return;
-        }
-        dbTable = (DbTable) psiElement;
-        // 对于多选的情况下, 如果表名不一致时, 按照规则生成类名
-        String domainName = generateConfig.getDomainObjectName();
-        String tableName = dbTable.getName();
-        if (!generateConfig.getTableName().equalsIgnoreCase(tableName)) {
-            domainName = StringUtils.dbStringToCamelStyle(tableName);
-        }
 
         List<String> warnings = new ArrayList<>();
         Configuration config = new Configuration();
@@ -88,7 +83,11 @@ public class GenerateCode {
             }
         };
         context.setId("MybatisXContext");
-        context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, generateConfig.getEncoding());
+        String encoding = generateConfig.getEncoding();
+        if (StringUtils.isEmpty(encoding)) {
+            encoding = "UTF-8";
+        }
+        context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, encoding);
         context.addProperty(PropertyRegistry.CONTEXT_JAVA_FORMATTER, CustomJavaFormatter.class.getName());
 
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
@@ -98,9 +97,9 @@ public class GenerateCode {
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         final List<ClassLoader> classLoaderList = new ArrayList<>();
-        if (SpringStringUtils.hasText(generateConfig.getRootClass())) {
-            javaModelGeneratorConfiguration.addProperty(PropertyRegistry.ANY_ROOT_CLASS, generateConfig.getRootClass());
-            final Optional<PsiClass> psiClassOptional = JavaUtils.findClazz(psiElement.getProject(), generateConfig.getRootClass());
+        if (SpringStringUtils.hasText(generateConfig.getSuperClass())) {
+            javaModelGeneratorConfiguration.addProperty(PropertyRegistry.ANY_ROOT_CLASS, generateConfig.getSuperClass());
+            final Optional<PsiClass> psiClassOptional = JavaUtils.findClazz(project, generateConfig.getSuperClass());
             psiClassOptional.ifPresent(psiClass -> classLoaderList.add(new MybatisXClassPathDynamicClassLoader(psiClass)));
 
         }
@@ -122,8 +121,9 @@ public class GenerateCode {
             logger.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
             return;
         }
+        DomainInfo domainInfo = buildDomainInfo(generateConfig,domainName);
         // 根据模板生成代码的插件
-        configExtraPlugin(generateConfig, context, domainName, templateSettingDTOS);
+        configExtraPlugin(context, domainInfo, templateSettingDTOS, generateConfig.getModuleUIInfoList());
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
         config.addContext(context);
@@ -136,6 +136,17 @@ public class GenerateCode {
 
 
         intellijMyBatisGenerator.generate(new NullProgressCallback(), contexts, fullyqualifiedTables, true, classLoaderList, intellijTableInfo);
+    }
+
+    private static DomainInfo buildDomainInfo(GenerateConfig generateConfig, String domainName) {
+        DomainInfo domainInfo = new DomainInfo();
+        domainInfo.setModulePath(generateConfig.getModulePath());
+        domainInfo.setBasePath(generateConfig.getBasePath());
+        domainInfo.setBasePackage(generateConfig.getBasePackage());
+        domainInfo.setRelativePackage(generateConfig.getRelativePackage());
+        domainInfo.setEncoding(generateConfig.getEncoding());
+        domainInfo.setFileName(domainName);
+        return domainInfo;
     }
 
     private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String domainName) {
@@ -153,12 +164,12 @@ public class GenerateCode {
         }
         boolean replaceNecessary = false;
         StringJoiner stringJoiner = new StringJoiner("|");
-        if (!StringUtils.isEmpty(generateConfig.getRemovedPrefix())) {
-            stringJoiner.add("^" + generateConfig.getRemovedPrefix());
+        if (!StringUtils.isEmpty(generateConfig.getIgnoreFieldPrefix())) {
+            stringJoiner.add("^" + generateConfig.getIgnoreFieldPrefix());
             replaceNecessary = true;
         }
-        if (!StringUtils.isEmpty(generateConfig.getRemovedSuffix())) {
-            stringJoiner.add(generateConfig.getRemovedSuffix()+"$");
+        if (!StringUtils.isEmpty(generateConfig.getIgnoreFieldSuffix())) {
+            stringJoiner.add(generateConfig.getIgnoreFieldSuffix() + "$");
             replaceNecessary = true;
         }
         if (replaceNecessary) {
@@ -170,34 +181,44 @@ public class GenerateCode {
         context.addTableConfiguration(tc);
     }
 
-    private static void configExtraPlugin(GenerateConfig generateConfig,
-                                          Context context,
-                                          String domainName,
-                                          List<TemplateSettingDTO> templateSettingDTOList) {
-        CustomTemplateRoot templateRoot = buildRootConfig(generateConfig.getModulePath(),
-            domainName,
-            generateConfig.getBasePackage(),
-            generateConfig.getRelativePackage(),
-            generateConfig.getEncoding(),
-            generateConfig.getBasePath(),
-            templateSettingDTOList);
+    private static void configExtraPlugin(Context context,
+                                          DomainInfo domainInfo,
+                                          List<TemplateSettingDTO> templateSettingDTOList,
+                                          List<ModuleUIInfo> extraTemplateNames) {
 
-        for (String extraTemplateName : generateConfig.getExtraTemplateNames()) {
-            Optional<TemplateSettingDTO> first = templateSettingDTOList.stream().filter(x -> x.getConfigName().equalsIgnoreCase(extraTemplateName)).findFirst();
-            if (first.isPresent()) {
-                TemplateSettingDTO templateSettingDTO = first.get();
-                addPlugin(context, templateRoot, extraTemplateName, templateSettingDTO.getTemplateText());
+
+        Map<String, TemplateSettingDTO> templateSettingDTOMap = templateSettingDTOList
+            .stream()
+            .collect(Collectors.toMap(TemplateSettingDTO::getConfigName, m -> m, (a, b) -> a));
+
+        // TODO 和页面的效果要求一致
+        for (ModuleUIInfo moduleInfo : extraTemplateNames) {
+            TemplateSettingDTO templateSettingDTO = templateSettingDTOMap.get(moduleInfo.getConfigName());
+            if (templateSettingDTO != null) {
+                ModuleUIInfo moduleUIInfoReplaced = replaceByDomainInfo(moduleInfo, domainInfo);
+                CustomTemplateRoot templateRoot = buildRootConfig(domainInfo, moduleUIInfoReplaced,templateSettingDTOList);
+                addPlugin(context, templateRoot);
             }
 
         }
     }
 
-    private static void addPlugin(Context context, Serializable serializable, String javaService, String templateText) {
+    private static ModuleUIInfo replaceByDomainInfo(ModuleUIInfo moduleInfo, DomainInfo domainInfo) {
+        ModuleUIInfo moduleUIInfo = new ModuleUIInfo();
+        moduleUIInfo.setConfigName(moduleInfo.getConfigName());
+        moduleUIInfo.setModulePath(replace(moduleInfo.getModulePath(),domainInfo));
+        moduleUIInfo.setBasePath(replace(moduleInfo.getBasePath(),domainInfo));
+        moduleUIInfo.setPackageName(replace(moduleInfo.getPackageName(),domainInfo));
+        moduleUIInfo.setFileName(replace(moduleInfo.getFileName(),domainInfo));
+        moduleUIInfo.setFileNameWithSuffix(replace(moduleInfo.getFileNameWithSuffix(),domainInfo));
+        moduleUIInfo.setEncoding(replace(moduleInfo.getEncoding(),domainInfo));
+        return moduleUIInfo;
+    }
+
+    private static void addPlugin(Context context, Serializable serializable) {
         PluginConfiguration serviceJavaPluginConfiguration = new PluginConfiguration();
         serviceJavaPluginConfiguration.setConfigurationType(CustomTemplatePlugin.class.getName());
-        serviceJavaPluginConfiguration.addProperty(CustomTemplatePlugin.CURRENT_NAME, javaService);
         // 模板的内容
-        serviceJavaPluginConfiguration.addProperty(CustomTemplatePlugin.TEMPLATE_TEXT, templateText);
         addRootMapToConfig(serializable, serviceJavaPluginConfiguration);
         context.addPluginConfiguration(serviceJavaPluginConfiguration);
     }
@@ -207,36 +228,32 @@ public class GenerateCode {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(out)) {
             objectOutputStream.writeObject(serializable);
         } catch (IOException e) {
-            logger.error("序列化数据失败",e);
+            logger.error("序列化数据失败", e);
             throw new RuntimeException("序列化数据失败");
         }
         byte[] encode = Base64.getEncoder().encode(out.toByteArray());
         customPluginConfiguration.addProperty(CustomTemplatePlugin.ROOT, new String(encode));
     }
 
-    private static CustomTemplateRoot buildRootConfig(String modulePath,
-                                                      String domainObjectName,
-                                                      String basePackage,
-                                                      String relativePackage,
-                                                      String encoding,
-                                                      String basePath,
+    private static CustomTemplateRoot buildRootConfig(DomainInfo domainInfo,
+                                                      ModuleUIInfo moduleUIInfo,
                                                       List<TemplateSettingDTO> templateConfigs) {
         // 生成的模板参照 https://gitee.com/baomidou/SpringWind/tree/spring-mvc/SpringWind/src/main/java/com/baomidou/springwind/mapper
         CustomTemplateRoot customTemplateRoot = new CustomTemplateRoot();
-        DomainInfo domainInfo = new DomainInfo();
-        domainInfo.setFileName(domainObjectName);
-        domainInfo.setBasePackage(basePackage);
-        domainInfo.setRelativePackage(relativePackage);
-        domainInfo.setEncoding(encoding);
-        domainInfo.setBasePath(basePath);
         customTemplateRoot.setDomainInfo(domainInfo);
-        customTemplateRoot.setModulePath(modulePath);
-
+        customTemplateRoot.setModuleUIInfo(moduleUIInfo);
+        // 替换模板内容
         for (TemplateSettingDTO templateSettingDTO : templateConfigs) {
             TemplateSettingDTO settingDTO = replaceWithModel(templateSettingDTO, domainInfo);
             customTemplateRoot.add(settingDTO);
         }
-
+        // 设置模板文本
+        for (TemplateSettingDTO templateConfig : templateConfigs) {
+            if (templateConfig.getConfigName().equals(moduleUIInfo.getConfigName())) {
+                customTemplateRoot.setTemplateText(templateConfig.getTemplateText());
+                break;
+            }
+        }
         return customTemplateRoot;
     }
 
@@ -318,7 +335,7 @@ public class GenerateCode {
         javaTypeResolverPlugin.setConfigurationType(JavaTypeResolverJsr310Impl.class.getName());
         //for JSR310
         javaTypeResolverPlugin.addProperty("supportJsr", String.valueOf(generateConfig.isJsr310Support()));
-        javaTypeResolverPlugin.addProperty("supportAutoNumeric","true");
+        javaTypeResolverPlugin.addProperty("supportAutoNumeric", "true");
         context.setJavaTypeResolverConfiguration(javaTypeResolverPlugin);
 
         // Lombok 插件
