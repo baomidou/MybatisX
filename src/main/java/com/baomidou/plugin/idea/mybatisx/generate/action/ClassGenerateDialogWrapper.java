@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.action;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DefaultGenerateConfig;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
@@ -75,12 +76,22 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
         setOKButtonText("Finish");
 
         previousAction.setEnabled(true);
+
+        // 替换第二个panel的占位符
+        DomainInfo domainInfo = tablePreviewUI.buildDomainInfo();
+        codeGenerateUI.fillDomainInfo(domainInfo);
+
         switchPage(page);
+
     }
+
+
+
 
     private void switchPage(int newPage) {
         rootPanel.removeAll();
-        rootPanel.add(containerPanelList.get(newPage));
+        JPanel comp = containerPanelList.get(newPage);
+        rootPanel.add(comp);
         rootPanel.repaint();//刷新页面，重绘面板
         rootPanel.validate();//使重绘的面板确认生效
     }
@@ -111,10 +122,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
         }
 
         tablePreviewUI.fillData(project,tableElements, generateConfig);
-        codeGenerateUI.fillData(project,
-            generateConfig,
-            templateContext.getTemplateName(),
-            settingMap);
+        codeGenerateUI.fillData(project,generateConfig,templateContext.getTemplateName(), settingMap);
 
 
     }

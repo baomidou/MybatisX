@@ -31,11 +31,6 @@ public class CustomTemplateRoot implements Serializable {
         list.add(customTemplateConfigDTO);
     }
 
-    public @NotNull
-    Optional<TemplateSettingDTO> findByName(@NotNull String currentName) {
-        return list.stream().filter(x -> currentName.equalsIgnoreCase(x.getConfigName())).findFirst();
-    }
-
     public Map<? extends String, ?> toMap() {
         return list.stream().collect(Collectors.toMap(TemplateSettingDTO::getConfigName, v -> v, (a, b) -> a));
     }

@@ -68,6 +68,8 @@ public class MybatisGeneratorMainAction extends AnAction {
             TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
             TemplateContext templateConfigs = templatesSettings.getTemplateConfigs();
             templateConfigs.setGenerateConfig(generateConfig);
+            templateConfigs.setTemplateName(generateConfig.getTemplatesName());
+            templateConfigs.setModuleName(generateConfig.getModuleName());
             templatesSettings.setTemplateConfigs(templateConfigs);
 
             Map<String, DbTable> tableMapping = psiElements.stream().collect(Collectors.toMap(DasObject::getName, a -> a, (a, b) -> a));

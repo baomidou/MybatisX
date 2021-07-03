@@ -10,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.plugin.IntellijMyBatisGenerato
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.JavaTypeResolverJsr310Impl;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBack;
+import com.baomidou.plugin.idea.mybatisx.generate.util.DomainPlaceHolder;
 import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
@@ -18,9 +19,6 @@ import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
-import freemarker.cache.StringTemplateLoader;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.generator.config.ColumnRenamingRule;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
@@ -43,11 +41,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -206,12 +201,12 @@ public class GenerateCode {
     private static ModuleUIInfo replaceByDomainInfo(ModuleUIInfo moduleInfo, DomainInfo domainInfo) {
         ModuleUIInfo moduleUIInfo = new ModuleUIInfo();
         moduleUIInfo.setConfigName(moduleInfo.getConfigName());
-        moduleUIInfo.setModulePath(replace(moduleInfo.getModulePath(),domainInfo));
-        moduleUIInfo.setBasePath(replace(moduleInfo.getBasePath(),domainInfo));
-        moduleUIInfo.setPackageName(replace(moduleInfo.getPackageName(),domainInfo));
-        moduleUIInfo.setFileName(replace(moduleInfo.getFileName(),domainInfo));
-        moduleUIInfo.setFileNameWithSuffix(replace(moduleInfo.getFileNameWithSuffix(),domainInfo));
-        moduleUIInfo.setEncoding(replace(moduleInfo.getEncoding(),domainInfo));
+        moduleUIInfo.setModulePath(DomainPlaceHolder.replace(moduleInfo.getModulePath(),domainInfo));
+        moduleUIInfo.setBasePath(DomainPlaceHolder.replace(moduleInfo.getBasePath(),domainInfo));
+        moduleUIInfo.setPackageName(DomainPlaceHolder.replace(moduleInfo.getPackageName(),domainInfo));
+        moduleUIInfo.setFileName(DomainPlaceHolder.replace(moduleInfo.getFileName(),domainInfo));
+        moduleUIInfo.setFileNameWithSuffix(DomainPlaceHolder.replace(moduleInfo.getFileNameWithSuffix(),domainInfo));
+        moduleUIInfo.setEncoding(DomainPlaceHolder.replace(moduleInfo.getEncoding(),domainInfo));
         return moduleUIInfo;
     }
 
@@ -261,37 +256,12 @@ public class GenerateCode {
         TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
         templateSettingDTO.setConfigName(paramSetting.getConfigName());
         templateSettingDTO.setTemplateText(paramSetting.getTemplateText());
-        templateSettingDTO.setPackageName(replace(paramSetting.getPackageName(), domainInfo));
-        templateSettingDTO.setEncoding(replace(paramSetting.getEncoding(), domainInfo));
-        templateSettingDTO.setSuffix(replace(paramSetting.getSuffix(), domainInfo));
-        templateSettingDTO.setFileName(replace(paramSetting.getFileName(), domainInfo));
-        templateSettingDTO.setBasePath(replace(paramSetting.getBasePath(), domainInfo));
+        templateSettingDTO.setPackageName(DomainPlaceHolder.replace(paramSetting.getPackageName(), domainInfo));
+        templateSettingDTO.setEncoding(DomainPlaceHolder.replace(paramSetting.getEncoding(), domainInfo));
+        templateSettingDTO.setSuffix(DomainPlaceHolder.replace(paramSetting.getSuffix(), domainInfo));
+        templateSettingDTO.setFileName(DomainPlaceHolder.replace(paramSetting.getFileName(), domainInfo));
+        templateSettingDTO.setBasePath(DomainPlaceHolder.replace(paramSetting.getBasePath(), domainInfo));
         return templateSettingDTO;
-    }
-
-    private static String replace(String templateText, DomainInfo domainInfo) {
-        try {
-            String defaultTemplateName = "default";
-            freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_22);
-            // 设置模板加载器
-            StringTemplateLoader templateLoader = new StringTemplateLoader();
-            templateLoader.putTemplate(defaultTemplateName, templateText);
-            cfg.setTemplateLoader(templateLoader);
-
-            cfg.setDefaultEncoding(domainInfo.getEncoding());
-            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-
-            Template templateName = cfg.getTemplate(defaultTemplateName);
-            Writer writer = new StringWriter();
-            Map<String, Object> map = new HashMap<>();
-
-            map.put("domain", domainInfo);
-            templateName.process(map, writer);
-            return writer.toString();
-        } catch (Exception e) {
-            logger.error("动态参数替换错误", e);
-            return templateText;
-        }
     }
 
 

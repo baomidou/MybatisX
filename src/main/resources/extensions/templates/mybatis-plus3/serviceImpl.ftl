@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ${baseInfo.fileName} extends ServiceImpl<${mapperInterface.fileName}, ${tableClass.shortClassName}>
-implements ${serviceInterface.fileName}{
+    implements ${serviceInterface.fileName}{
 
 }
 

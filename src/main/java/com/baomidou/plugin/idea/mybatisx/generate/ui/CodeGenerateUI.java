@@ -1,21 +1,27 @@
 package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.generate.util.DomainPlaceHolder;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import com.intellij.openapi.actionSystem.ActionToolbarPosition;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
+import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.TableView;
 import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.util.PlatformIcons;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
-import ognl.OgnlContext;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -29,6 +35,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
@@ -56,21 +63,18 @@ public class CodeGenerateUI {
     private ButtonGroup templateButtonGroup = new ButtonGroup();
 
     ListTableModel<ModuleUIInfo> model = new ListTableModel<>(
-        new MybaitsxModuleInfo("configName", 105,false),
-        new MybaitsxModuleInfo("modulePath",360, true, true),
-        new MybaitsxModuleInfo("basePath", 120,true),
-        new MybaitsxModuleInfo("packageName", 100,true),
-        new MybaitsxModuleInfo("encoding", 70,true)
+        new MybaitsxModuleInfo("config name", 120, false),
+        new MybaitsxModuleInfo("module path", 360, true, true),
+        new MybaitsxModuleInfo("base path", 140, true),
+        new MybaitsxModuleInfo("package name", 160, true),
+        new MybaitsxModuleInfo("encoding", 70, true)
     );
     private Project project;
-    private TableView<ModuleUIInfo> tableView;
+    private DomainInfo domainInfo;
+    private String selectedTemplateName;
 
     public JPanel getRootPanel() {
         return rootPanel;
-    }
-
-    public JPanel getContainingPanel() {
-        return containingPanel;
     }
 
     public void fillData(Project project,
@@ -107,20 +111,13 @@ public class CodeGenerateUI {
         }
 
         // 初始化表格, 用于展示要生成的文件模块
-        this.tableView = new TableView<>(model);
-        tableView.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        GridConstraints gridConstraints = new GridConstraints();
-        gridConstraints.setFill(GridConstraints.FILL_HORIZONTAL);
-
-        templateExtraPanel.add(ToolbarDecorator.createDecorator(tableView)
-            .disableAddAction()
-            .disableUpDownActions()
-            .setPreferredSize(new Dimension(760, 150))
-            .createPanel(), gridConstraints);
-
         initTemplates(generateConfig, defaultsTemplatesName, templateSettingMap);
+
+        selectedTemplateName = generateConfig.getTemplatesName();
+    }
+
+    private void selectDefaultTemplateRadio(String templatesName) {
         // 选择默认的模板, 或者记忆的模板
-        final String templatesName = generateConfig.getTemplatesName();
         if (StringUtils.isEmpty(templatesName)) {
             final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
             if (elements.hasMoreElements()) {
@@ -138,11 +135,40 @@ public class CodeGenerateUI {
                 }
             }
         }
-
-
     }
 
+    private boolean refresh = false;
+
     private void initTemplates(GenerateConfig generateConfig, String defaultsTemplatesName, Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+
+        TableView<ModuleUIInfo> tableView = new TableView<>(model);
+
+        GridConstraints gridConstraints = new GridConstraints();
+        gridConstraints.setFill(GridConstraints.FILL_HORIZONTAL);
+
+        templateExtraPanel.add(ToolbarDecorator.createDecorator(tableView)
+            .setToolbarPosition(ActionToolbarPosition.LEFT)
+            .addExtraAction(new AnActionButton("Refresh Template", PlatformIcons.SYNCHRONIZE_ICON) {
+                @Override
+                public void actionPerformed(@NotNull AnActionEvent e) {
+                    AbstractButton selectedTemplateName = findSelectedTemplateName();
+                    if (selectedTemplateName == null) {
+                        return;
+                    }
+                    List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(selectedTemplateName.getText());
+                    if (templateSettingDTOS == null) {
+                        return;
+                    }
+                    initSelectedModuleTable(templateSettingDTOS, domainInfo.getModulePath());
+                    refresh = true;
+                }
+
+            })
+            .disableAddAction()
+            .disableUpDownActions()
+            .setPreferredSize(new Dimension(840, 150))
+            .createPanel(), gridConstraints);
+
         // N 行 3 列 的排版模式
         GridLayout templateRadioLayout = new GridLayout(0, 3, 0, 0);
         templateExtraRadiosPanel.setLayout(templateRadioLayout);
@@ -154,29 +180,68 @@ public class CodeGenerateUI {
             templateExtraRadiosPanel.add(comp);
         }
 
-        final ItemListener itemListener = e -> {
+        final ItemListener itemListener = new ItemListener() {
 
-            final JRadioButton jRadioButton = (JRadioButton) e.getItem();
-            // 只接受选择事件
-            if (e.getStateChange() != ItemEvent.SELECTED) {
-                return;
-            }
-            List<TemplateSettingDTO> list = null;
-            final String templatesName = jRadioButton.getText();
-            // 选择选定的模板
-            if (!StringUtils.isEmpty(templatesName)) {
-                list = templateSettingMap.get(templatesName);
-            }
-            // 选择默认模板
-            if (!StringUtils.isEmpty(defaultsTemplatesName)) {
-                list = templateSettingMap.get(defaultsTemplatesName);
-            }
-            // 默认模板没有设置, 或者默认模板改了新的名字, 找到values的第一条记录
-            if (list == null) {
-                list = templateSettingMap.values().iterator().next();
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                final JRadioButton jRadioButton = (JRadioButton) e.getItem();
+                // 只接受选择事件
+                if (e.getStateChange() != ItemEvent.SELECTED) {
+                    return;
+                }
+                String templatesName = jRadioButton.getText();
+                List<TemplateSettingDTO> list = buildTemplatesSettings(templatesName);
+                List<ModuleUIInfo> moduleUIInfoList = buildModuleUIInfos(templatesName, list);
+                initMemoryModuleTable(moduleUIInfoList);
             }
 
-            initModuleTable(list, generateConfig.getModulePath(),generateConfig);
+            private List<ModuleUIInfo> buildModuleUIInfos(String templatesName, List<TemplateSettingDTO> list) {
+                List<ModuleUIInfo> moduleUIInfoList = null;
+                // 1. 优先选择默认的
+                if (!refresh && templatesName.equals(generateConfig.getTemplatesName()) ) {
+                    moduleUIInfoList = generateConfig.getModuleUIInfoList();
+                }
+                // 2. 其次根据选择的模板名称来决定使用哪个模板
+                if (moduleUIInfoList == null) {
+                    moduleUIInfoList = buildByTemplates(list, domainInfo.getModulePath());
+                }
+                return moduleUIInfoList;
+            }
+
+            private List<TemplateSettingDTO> buildTemplatesSettings(String templatesName) {
+                List<TemplateSettingDTO> list = null;
+                // 选择选定的模板
+                if (!StringUtils.isEmpty(templatesName)) {
+                    list = templateSettingMap.get(templatesName);
+                }
+                // 选择默认模板
+                if (list == null && !StringUtils.isEmpty(defaultsTemplatesName)) {
+                    list = templateSettingMap.get(defaultsTemplatesName);
+                }
+                // 默认模板没有设置, 或者默认模板改了新的名字, 找到values的第一条记录
+                if (list == null) {
+                    list = templateSettingMap.values().iterator().next();
+                }
+                return list;
+            }
+
+            private List<ModuleUIInfo> buildByTemplates(List<TemplateSettingDTO> list, String modulePath) {
+                List<ModuleUIInfo> moduleUIInfoList = new ArrayList<>(list.size());
+                // 添加列的内容
+                for (TemplateSettingDTO templateSettingDTO : list) {
+                    ModuleUIInfo item = new ModuleUIInfo();
+                    item.setConfigName(templateSettingDTO.getConfigName());
+                    // 默认使用实体模块的模块路径
+                    item.setModulePath(modulePath);
+                    item.setBasePath(templateSettingDTO.getBasePath());
+                    item.setFileName(templateSettingDTO.getFileName());
+                    item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
+                    item.setPackageName(templateSettingDTO.getPackageName());
+                    item.setEncoding(templateSettingDTO.getEncoding());
+                    moduleUIInfoList.add(item);
+                }
+                return moduleUIInfoList;
+            }
         };
 
         final Enumeration<AbstractButton> radios = templateButtonGroup.getElements();
@@ -186,7 +251,39 @@ public class CodeGenerateUI {
         }
     }
 
-    private void initModuleTable(List<TemplateSettingDTO> list, String modulePath, GenerateConfig generateConfig) {
+    private AbstractButton findSelectedTemplateName() {
+        AbstractButton selectedButton = null;
+        Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
+        while (elements.hasMoreElements()) {
+            AbstractButton abstractButton = elements.nextElement();
+            if (abstractButton.isSelected()) {
+                selectedButton = abstractButton;
+            }
+        }
+        return selectedButton;
+    }
+
+    private void initMemoryModuleTable(List<ModuleUIInfo> list) {
+        // 扩展面板的列表内容
+        // 移除所有行, 重新刷新
+        for (int rowCount = model.getRowCount(); rowCount > 0; rowCount--) {
+            model.removeRow(rowCount - 1);
+        }
+
+        // 添加列的内容
+        for (ModuleUIInfo item : list) {
+            model.addRow(item);
+        }
+
+    }
+
+    /**
+     * 初始化默认的模块选择表格
+     *
+     * @param list
+     * @param modulePath
+     */
+    private void initSelectedModuleTable(List<TemplateSettingDTO> list, String modulePath) {
         // 扩展面板的列表内容
         // 移除所有行, 重新刷新
         for (int rowCount = model.getRowCount(); rowCount > 0; rowCount--) {
@@ -209,6 +306,11 @@ public class CodeGenerateUI {
 
     }
 
+    public void fillDomainInfo(DomainInfo domainInfo) {
+        this.domainInfo = domainInfo;
+        selectDefaultTemplateRadio(selectedTemplateName);
+    }
+
     private class MybaitsxModuleInfo extends ColumnInfo<ModuleUIInfo, String> {
 
         public MybaitsxModuleInfo(String name, int width, boolean editable) {
@@ -217,7 +319,7 @@ public class CodeGenerateUI {
             this.editable = editable;
         }
 
-        public MybaitsxModuleInfo(String name,int width, boolean editable, boolean moduleEditor) {
+        public MybaitsxModuleInfo(String name, int width, boolean editable, boolean moduleEditor) {
             super(name);
             this.width = width;
             this.editable = editable;
@@ -244,6 +346,21 @@ public class CodeGenerateUI {
             return new DefaultTableCellRenderer();
         }
 
+        private void chooseModule(JTextField textField,ModuleUIInfo moduleUIInfo) {
+            Module[] modules = ModuleManager.getInstance(project).getModules();
+            ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
+            dialog.setSingleSelectionMode();
+            dialog.show();
+
+            List<Module> chosenElements = dialog.getChosenElements();
+            if (chosenElements.size() > 0) {
+                Module module = chosenElements.get(0);
+                String modulePath = findModulePath(module);
+                textField.setText(modulePath);
+                setValue(moduleUIInfo, modulePath);
+            }
+        }
+
         @Nullable
         @Override
         public TableCellEditor getEditor(ModuleUIInfo moduleUIInfo) {
@@ -253,18 +370,7 @@ public class CodeGenerateUI {
                 textField.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        Module[] modules = ModuleManager.getInstance(project).getModules();
-                        ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
-                        dialog.setSingleSelectionMode();
-                        dialog.show();
-
-                        List<Module> chosenElements = dialog.getChosenElements();
-                        if (chosenElements.size() > 0) {
-                            Module module = chosenElements.get(0);
-                            String modulePath = findModulePath(module);
-                            textField.setText(modulePath);
-                            setValue(moduleUIInfo, modulePath);
-                        }
+                        chooseModule(textField,moduleUIInfo);
                     }
                 });
             }
@@ -274,11 +380,11 @@ public class CodeGenerateUI {
                 @Override
                 public void editingStopped(ChangeEvent e) {
                     String s = defaultCellEditor.getCellEditorValue().toString();
-                    if (getName().equals("modulePath")) {
+                    if (getName().equals("module path")) {
                         moduleUIInfo.setModulePath(s);
-                    } else if (getName().equals("basePath")) {
+                    } else if (getName().equals("base path")) {
                         moduleUIInfo.setBasePath(s);
-                    } else if (getName().equals("packageName")) {
+                    } else if (getName().equals("package name")) {
                         moduleUIInfo.setPackageName(s);
                     } else if (getName().equals("encoding")) {
                         moduleUIInfo.setEncoding(s);
@@ -306,16 +412,16 @@ public class CodeGenerateUI {
         @Override
         public String valueOf(ModuleUIInfo item) {
             String value = null;
-            if (getName().equals("configName")) {
+            if (getName().equals("config name")) {
                 value = item.getConfigName();
-            } else if (getName().equals("modulePath")) {
-                value = item.getModulePath();
-            } else if (getName().equals("basePath")) {
-                value = item.getBasePath();
-            } else if (getName().equals("packageName")) {
-                value = item.getPackageName();
+            } else if (getName().equals("module path")) {
+                value = DomainPlaceHolder.replace(item.getModulePath(), domainInfo);
+            } else if (getName().equals("base path")) {
+                value = DomainPlaceHolder.replace(item.getBasePath(), domainInfo);
+            } else if (getName().equals("package name")) {
+                value = DomainPlaceHolder.replace(item.getPackageName(), domainInfo);
             } else if (getName().equals("encoding")) {
-                value = item.getEncoding();
+                value = DomainPlaceHolder.replace(item.getEncoding(), domainInfo);
             }
             return value;
         }
