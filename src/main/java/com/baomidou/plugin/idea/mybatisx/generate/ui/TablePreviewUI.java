@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TableUIInfo;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -20,12 +21,16 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TablePreviewUI {
     private JPanel rootPanel;
@@ -61,7 +66,7 @@ public class TablePreviewUI {
         gridConstraints.setFill(GridConstraints.FILL_HORIZONTAL);
 
         listPanel.add(ToolbarDecorator.createDecorator(tableView)
-                .setPreferredSize(new Dimension(760, 200))
+                .setPreferredSize(new Dimension(860, 200))
                 .disableAddAction()
                 .disableRemoveAction()
                 .disableUpDownActions()
@@ -71,16 +76,31 @@ public class TablePreviewUI {
 
     }
 
-    private String calculateClassName(String tableName, String ignorePrefix, String ignoreSuffix) {
+
+    public DomainInfo buildDomainInfo() {
+        DomainInfo domainInfo = new DomainInfo();
+        domainInfo.setModulePath(moduleChooseTextField.getText());
+        domainInfo.setBasePath(basePathTextField.getText());
+        domainInfo.setBasePackage(basePackageTextField.getText());
+        domainInfo.setRelativePackage(relativePackageTextField.getText());
+        domainInfo.setEncoding(encodingTextField.getText());
+        return domainInfo;
+
+    }
+
+    private String calculateClassName(String tableName, String ignorePrefixs, String ignoreSuffixs) {
         String fName = tableName;
-        if (!StringUtils.isEmpty(ignorePrefix)) {
-            if (fName.startsWith(ignorePrefix)) {
-                fName = fName.substring(ignorePrefix.length());
+        final String EMPTY = "";
+        if (!StringUtils.isEmpty(ignorePrefixs)) {
+            String[] splitPrefixs = ignorePrefixs.split(",");
+            for (String ignorePrefix : splitPrefixs) {
+                fName = fName.replaceAll("^" + ignorePrefix, EMPTY);
             }
         }
-        if (!StringUtils.isEmpty(ignoreSuffix)) {
-            if (fName.endsWith(ignoreSuffix)) {
-                fName = fName.substring(0, fName.length() - ignoreSuffix.length());
+        if (!StringUtils.isEmpty(ignoreSuffixs)) {
+            String[] splitSuffixs = ignoreSuffixs.split(",");
+            for (String ignoreSuffix : splitSuffixs) {
+                fName = fName.replaceFirst(ignoreSuffix+"$", EMPTY);
             }
         }
         return StringUtils.dbStringToCamelStyle(fName);
@@ -95,11 +115,7 @@ public class TablePreviewUI {
         String ignorePrefix = generateConfig.getIgnoreTablePrefix();
         String ignoreSuffix = generateConfig.getIgnoreTableSuffix();
 
-        for (DbTable dbTable : dbTables) {
-            String tableName = dbTable.getName();
-            String className = calculateClassName(tableName, ignorePrefix, ignoreSuffix);
-            model.addRow(new TableUIInfo(tableName, className));
-        }
+        refreshTableNames(dbTables, ignorePrefix, ignoreSuffix);
 
         ignoreTablePrefixTextField.setText(generateConfig.getIgnoreTablePrefix());
         ignoreTableSuffixTextField.setText(generateConfig.getIgnoreTableSuffix());
@@ -124,19 +140,54 @@ public class TablePreviewUI {
         moduleChooseTextField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Module[] modules = ModuleManager.getInstance(project).getModules();
-                ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
-                dialog.setSingleSelectionMode();
-                dialog.show();
-
-                List<Module> chosenElements = dialog.getChosenElements();
-                if (chosenElements.size() > 0) {
-                    Module module = chosenElements.get(0);
-                    chooseModulePath(module);
-                    moduleName = module.getName();
-                }
+                chooseModule(project);
             }
         });
+
+        DocumentListener listener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                refreshTableNames(dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                refreshTableNames(dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                refreshTableNames(dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
+            }
+        };
+        ignoreTablePrefixTextField.getDocument().addDocumentListener(listener);
+
+        ignoreTableSuffixTextField.getDocument().addDocumentListener(listener);
+    }
+
+    private void refreshTableNames(List<DbTable> dbTables, String ignorePrefix, String ignoreSuffix) {
+        for (int currentRowIndex = model.getRowCount() - 1; currentRowIndex >= 0; currentRowIndex--) {
+            model.removeRow(currentRowIndex);
+        }
+        for (DbTable dbTable : dbTables) {
+            String tableName = dbTable.getName();
+            String className = calculateClassName(tableName, ignorePrefix, ignoreSuffix);
+            model.addRow(new TableUIInfo(tableName, className));
+        }
+    }
+
+    private void chooseModule(Project project) {
+        Module[] modules = ModuleManager.getInstance(project).getModules();
+        ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
+        dialog.setSingleSelectionMode();
+        dialog.show();
+
+        List<Module> chosenElements = dialog.getChosenElements();
+        if (chosenElements.size() > 0) {
+            Module module = chosenElements.get(0);
+            chooseModulePath(module);
+            moduleName = module.getName();
+        }
     }
 
     private void chooseModulePath(Module module) {
