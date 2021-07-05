@@ -67,8 +67,6 @@ public class GenerateCode {
                                 DbTable dbTable,
                                 String domainName,
                                 String tableName) throws Exception {
-
-
         List<String> warnings = new ArrayList<>();
         Configuration config = new Configuration();
 
@@ -116,7 +114,7 @@ public class GenerateCode {
             logger.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
             return;
         }
-        DomainInfo domainInfo = buildDomainInfo(generateConfig,domainName);
+        DomainInfo domainInfo = buildDomainInfo(generateConfig, domainName);
         // 根据模板生成代码的插件
         configExtraPlugin(context, domainInfo, templateSettingDTOS, generateConfig.getModuleUIInfoList());
         // 界面配置的扩展插件
@@ -147,9 +145,13 @@ public class GenerateCode {
     private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String domainName) {
         TableConfiguration tc = new TableConfiguration(context);
         tc.setTableName(tableName);
-        tc.setDomainObjectName(domainName);
 
 
+        String extraDomainName = domainName;
+        if (!StringUtils.isEmpty(generateConfig.getExtraClassSuffix())) {
+            extraDomainName = extraDomainName + generateConfig.getExtraClassSuffix();
+        }
+        tc.setDomainObjectName(extraDomainName);
         if (generateConfig.isUseActualColumns()) {
             tc.addProperty("useActualColumnNames", "true");
         }
@@ -191,7 +193,7 @@ public class GenerateCode {
             TemplateSettingDTO templateSettingDTO = templateSettingDTOMap.get(moduleInfo.getConfigName());
             if (templateSettingDTO != null) {
                 ModuleUIInfo moduleUIInfoReplaced = replaceByDomainInfo(moduleInfo, domainInfo);
-                CustomTemplateRoot templateRoot = buildRootConfig(domainInfo, moduleUIInfoReplaced,templateSettingDTOList);
+                CustomTemplateRoot templateRoot = buildRootConfig(domainInfo, moduleUIInfoReplaced, templateSettingDTOList);
                 addPlugin(context, templateRoot);
             }
 
@@ -204,9 +206,9 @@ public class GenerateCode {
         moduleUIInfo.setModulePath(DomainPlaceHolder.replace(moduleInfo.getModulePath(),domainInfo));
         moduleUIInfo.setBasePath(DomainPlaceHolder.replace(moduleInfo.getBasePath(),domainInfo));
         moduleUIInfo.setPackageName(DomainPlaceHolder.replace(moduleInfo.getPackageName(),domainInfo));
-        moduleUIInfo.setFileName(DomainPlaceHolder.replace(moduleInfo.getFileName(),domainInfo));
+        moduleUIInfo.setFileName(DomainPlaceHolder.replace(moduleInfo.getFileName(), domainInfo));
         moduleUIInfo.setFileNameWithSuffix(DomainPlaceHolder.replace(moduleInfo.getFileNameWithSuffix(),domainInfo));
-        moduleUIInfo.setEncoding(DomainPlaceHolder.replace(moduleInfo.getEncoding(),domainInfo));
+        moduleUIInfo.setEncoding(DomainPlaceHolder.replace(moduleInfo.getEncoding(), domainInfo));
         return moduleUIInfo;
     }
 

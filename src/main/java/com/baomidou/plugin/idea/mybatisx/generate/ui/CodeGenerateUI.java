@@ -64,10 +64,9 @@ public class CodeGenerateUI {
 
     ListTableModel<ModuleUIInfo> model = new ListTableModel<>(
         new MybaitsxModuleInfo("config name", 120, false),
-        new MybaitsxModuleInfo("module path", 360, true, true),
+        new MybaitsxModuleInfo("module path", 420, true, true),
         new MybaitsxModuleInfo("base path", 140, true),
-        new MybaitsxModuleInfo("package name", 160, true),
-        new MybaitsxModuleInfo("encoding", 70, true)
+        new MybaitsxModuleInfo("package name", 160, true)
     );
     private Project project;
     private DomainInfo domainInfo;
@@ -386,8 +385,6 @@ public class CodeGenerateUI {
                         moduleUIInfo.setBasePath(s);
                     } else if (getName().equals("package name")) {
                         moduleUIInfo.setPackageName(s);
-                    } else if (getName().equals("encoding")) {
-                        moduleUIInfo.setEncoding(s);
                     }
                 }
 
@@ -420,8 +417,6 @@ public class CodeGenerateUI {
                 value = DomainPlaceHolder.replace(item.getBasePath(), domainInfo);
             } else if (getName().equals("package name")) {
                 value = DomainPlaceHolder.replace(item.getPackageName(), domainInfo);
-            } else if (getName().equals("encoding")) {
-                value = DomainPlaceHolder.replace(item.getEncoding(), domainInfo);
             }
             return value;
         }
