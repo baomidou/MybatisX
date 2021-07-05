@@ -39,12 +39,27 @@ public class FieldInfo {
      * 字段注释
      */
     private String remark;
+    /**
+     * jdbcType 的值
+     */
+    private String jdbcType;
 
-    public String getJdbcType() {
-        return jdbcType;
+    /**
+     * 是否允许为空
+     */
+    private boolean nullable;
+    /**
+     * 是否自增
+     */
+    private boolean autoIncrement;
+
+    public boolean isNullable() {
+        return nullable;
     }
 
-    private String jdbcType;
+    public boolean isAutoIncrement() {
+        return autoIncrement;
+    }
 
     public String getFieldName() {
         return fieldName;
@@ -78,6 +93,10 @@ public class FieldInfo {
         return columnIsArray;
     }
 
+    public String getJdbcType() {
+        return jdbcType;
+    }
+
     public static FieldInfo build(IntrospectedColumn introspectedColumn) {
         FieldInfo fieldInfo = new FieldInfo();
         fieldInfo.fieldName = introspectedColumn.getJavaProperty();
@@ -90,6 +109,8 @@ public class FieldInfo {
         fieldInfo.fullTypeName = fullyQualifiedJavaType.getFullyQualifiedName();
         fieldInfo.columnIsArray = fullyQualifiedJavaType.isArray();
         fieldInfo.remark = introspectedColumn.getRemarks();
+        fieldInfo.nullable = introspectedColumn.isNullable();
+        fieldInfo.autoIncrement = introspectedColumn.isAutoIncrement();
         return fieldInfo;
     }
 }
