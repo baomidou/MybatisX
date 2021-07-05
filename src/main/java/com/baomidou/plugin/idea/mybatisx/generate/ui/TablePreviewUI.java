@@ -29,8 +29,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TablePreviewUI {
     private JPanel rootPanel;
@@ -49,6 +47,7 @@ public class TablePreviewUI {
     private JPanel middlePanel;
     private JPanel leftPanel;
     private JPanel rightPanel;
+    private JTextField extraClassSuffixTextField;
     private PsiElement[] tableElements;
     private List<DbTable> dbTables;
 
@@ -126,6 +125,7 @@ public class TablePreviewUI {
         basePackageTextField.setText(generateConfig.getBasePackage());
         basePathTextField.setText(generateConfig.getBasePath());
         relativePackageTextField.setText(generateConfig.getRelativePackage());
+        extraClassSuffixTextField.setText(generateConfig.getExtraClassSuffix());
         moduleName = generateConfig.getModuleName();
 
         if (!StringUtils.isEmpty(moduleName)) {
@@ -211,6 +211,7 @@ public class TablePreviewUI {
         generateConfig.setRelativePackage(relativePackageTextField.getText());
         generateConfig.setModulePath(moduleChooseTextField.getText());
         generateConfig.setModuleName(moduleName);
+        generateConfig.setExtraClassSuffix(extraClassSuffixTextField.getText());
         // 保存对象, 用于传递和对象生成
         generateConfig.setTableUIInfoList(model.getItems());
     }

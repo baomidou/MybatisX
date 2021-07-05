@@ -77,6 +77,10 @@ public class GenerateConfig {
      */
     private String templatesName;
     /**
+     * 额外的类名后缀
+     */
+    private String extraClassSuffix;
+    /**
      * 已选择的模板名称
      */
     private List<ModuleUIInfo> moduleUIInfoList;
@@ -92,6 +96,14 @@ public class GenerateConfig {
 
     public void setTableUIInfoList(List<TableUIInfo> tableUIInfoList) {
         this.tableUIInfoList = tableUIInfoList;
+    }
+
+    public String getExtraClassSuffix() {
+        return extraClassSuffix;
+    }
+
+    public void setExtraClassSuffix(String extraClassSuffix) {
+        this.extraClassSuffix = extraClassSuffix;
     }
 
     /**
