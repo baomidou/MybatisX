@@ -17,7 +17,6 @@ public class PlatformSimpleGenerator {
     /**
      * Gets platform generator.
      *
-     * @param entityClass the entity class
      * @param project     the project
      * @param element     the element
      * @param text        the text
@@ -47,7 +46,6 @@ public class PlatformSimpleGenerator {
      *
      * @param project               the project
      * @param entityClass           the entity class
-     * @param entityMappingResolver the entity mapping resolver
      * @return the das table adaptor
      */
     protected DasTableAdaptor findAdaptor(@NotNull Project project, PsiClass entityClass, String tableName) {

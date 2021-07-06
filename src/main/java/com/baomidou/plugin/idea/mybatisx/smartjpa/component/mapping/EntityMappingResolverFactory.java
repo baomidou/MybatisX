@@ -93,17 +93,20 @@ public class EntityMappingResolverFactory {
             for (TxField field : entityMappingHolder.getFields()) {
                 TxField defaultField = resultMapMapping.get(field.getFieldName());
                 // 处理列名
-                if (StringUtils.isEmpty(field.getColumnName())) {
-                    String columnName = null;
-                    if (defaultField != null) {
-                        columnName = defaultField.getColumnName();
-                    }
-                    // 如果没有映射, 默认按照下划线映射
-                    if (columnName == null) {
-                        columnName = StringUtils.camelToSlash(field.getFieldName());
-                    }
-                    field.setColumnName(columnName);
+                String columnName = null;
+                // 处理列名, 强制以 resultMap 为准
+                if (defaultField != null) {
+                    columnName = defaultField.getColumnName();
                 }
+                // 原先映射的列名
+                if (columnName == null) {
+                    columnName = field.getColumnName();
+                }
+                // 如果没有映射, 默认按照下划线映射
+                if (columnName == null) {
+                    columnName = StringUtils.camelToSlash(field.getFieldName());
+                }
+                field.setColumnName(columnName);
                 // 处理jdbcType, 强制以 resultMap 为准
                 if (defaultField != null && defaultField.getJdbcType() != null) {
                     field.setJdbcType(defaultField.getJdbcType());
