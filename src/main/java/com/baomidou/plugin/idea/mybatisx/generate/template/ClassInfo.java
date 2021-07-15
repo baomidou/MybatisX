@@ -50,7 +50,10 @@ public class ClassInfo {
      * 所有的blob字段
      */
     private List<FieldInfo> baseBlobFields;
-
+    /**
+     * 需要导入的实体类的所有字段类型
+     */
+    private List<String> importList;
 
     public static ClassInfo build(IntrospectedTable introspectedTable) {
         ClassInfo classInfo = new ClassInfo();
@@ -81,6 +84,13 @@ public class ClassInfo {
             .flatMap(Collection::stream)
             .map(FieldInfo::build)
             .collect(Collectors.toList());
+        // 拿到所有需要import的类型, 不是java.lang包开头的,并且不是数组类型 去重的所有类型
+        classInfo.importList = classInfo.allFields.stream()
+            .filter(fieldInfo -> !fieldInfo.isColumnIsArray())
+            .map(FieldInfo::getFullTypeName)
+            .filter(typeName->!typeName.startsWith("java.lang"))
+            .distinct()
+            .collect(Collectors.toList());
         return classInfo;
     }
 
@@ -110,5 +120,9 @@ public class ClassInfo {
 
     public String getRemark() {
         return remark;
+    }
+
+    public List<String> getImportList() {
+        return importList;
     }
 }

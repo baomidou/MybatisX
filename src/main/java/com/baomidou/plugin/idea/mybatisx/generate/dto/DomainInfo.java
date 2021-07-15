@@ -57,5 +57,16 @@ public class DomainInfo implements Serializable {
     public void setRelativePackage(String relativePackage) {
         this.relativePackage = relativePackage;
     }
+
+    public DomainInfo copyFromFileName(String extraDomainName) {
+        DomainInfo domainInfo = new DomainInfo();
+        domainInfo.setModulePath(modulePath);
+        domainInfo.setBasePath(basePath);
+        domainInfo.setEncoding(encoding);
+        domainInfo.setBasePackage(basePackage);
+        domainInfo.setFileName(extraDomainName);
+        domainInfo.setRelativePackage(relativePackage);
+        return domainInfo;
+    }
 }
 
