@@ -97,7 +97,12 @@ public class GenerateCode {
 
         }
 
-        buildTableConfiguration(generateConfig, context, tableName, domainName);
+        String extraDomainName = domainName;
+        if (!StringUtils.isEmpty(generateConfig.getExtraClassSuffix())) {
+            extraDomainName = extraDomainName + generateConfig.getExtraClassSuffix();
+        }
+
+        buildTableConfiguration(generateConfig, context, tableName, extraDomainName);
 
         CommentGeneratorConfiguration commentGeneratorConfiguration = new CommentGeneratorConfiguration();
         commentGeneratorConfiguration.setConfigurationType(CustomDefaultCommentGenerator.class.getName());
@@ -116,7 +121,7 @@ public class GenerateCode {
         }
         DomainInfo domainInfo = buildDomainInfo(generateConfig, domainName);
         // 根据模板生成代码的插件
-        configExtraPlugin(context, domainInfo, templateSettingDTOS, generateConfig.getModuleUIInfoList());
+        configExtraPlugin(extraDomainName, context, domainInfo, templateSettingDTOS, generateConfig.getModuleUIInfoList());
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
         config.addContext(context);
@@ -142,15 +147,9 @@ public class GenerateCode {
         return domainInfo;
     }
 
-    private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String domainName) {
+    private static void buildTableConfiguration(GenerateConfig generateConfig, Context context, @NotNull String tableName, String extraDomainName) {
         TableConfiguration tc = new TableConfiguration(context);
         tc.setTableName(tableName);
-
-
-        String extraDomainName = domainName;
-        if (!StringUtils.isEmpty(generateConfig.getExtraClassSuffix())) {
-            extraDomainName = extraDomainName + generateConfig.getExtraClassSuffix();
-        }
         tc.setDomainObjectName(extraDomainName);
         if (generateConfig.isUseActualColumns()) {
             tc.addProperty("useActualColumnNames", "true");
@@ -178,7 +177,8 @@ public class GenerateCode {
         context.addTableConfiguration(tc);
     }
 
-    private static void configExtraPlugin(Context context,
+    private static void configExtraPlugin(String extraDomainName,
+                                          Context context,
                                           DomainInfo domainInfo,
                                           List<TemplateSettingDTO> templateSettingDTOList,
                                           List<ModuleUIInfo> extraTemplateNames) {
@@ -188,26 +188,38 @@ public class GenerateCode {
             .stream()
             .collect(Collectors.toMap(TemplateSettingDTO::getConfigName, m -> m, (a, b) -> a));
 
-        // TODO 和页面的效果要求一致
         for (ModuleUIInfo moduleInfo : extraTemplateNames) {
             TemplateSettingDTO templateSettingDTO = templateSettingDTOMap.get(moduleInfo.getConfigName());
             if (templateSettingDTO != null) {
-                ModuleUIInfo moduleUIInfoReplaced = replaceByDomainInfo(moduleInfo, domainInfo);
-                CustomTemplateRoot templateRoot = buildRootConfig(domainInfo, moduleUIInfoReplaced, templateSettingDTOList);
+                DomainInfo customDomainInfo = determineDomainInfo(extraDomainName, domainInfo, moduleInfo);
+                ModuleUIInfo moduleUIInfoReplaced = replaceByDomainInfo(moduleInfo, customDomainInfo);
+                CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleUIInfoReplaced, templateSettingDTOList);
                 addPlugin(context, templateRoot);
             }
 
         }
     }
 
+    private static DomainInfo determineDomainInfo(String extraDomainName, DomainInfo domainInfo, ModuleUIInfo moduleInfo) {
+        DomainInfo customDomainInfo = null;
+        // 重置实体模板的类名填充
+        if ("domain".equals(moduleInfo.getConfigName())) {
+            customDomainInfo = domainInfo.copyFromFileName(extraDomainName);
+        }
+        if (customDomainInfo == null) {
+            customDomainInfo = domainInfo;
+        }
+        return customDomainInfo;
+    }
+
     private static ModuleUIInfo replaceByDomainInfo(ModuleUIInfo moduleInfo, DomainInfo domainInfo) {
         ModuleUIInfo moduleUIInfo = new ModuleUIInfo();
         moduleUIInfo.setConfigName(moduleInfo.getConfigName());
-        moduleUIInfo.setModulePath(DomainPlaceHolder.replace(moduleInfo.getModulePath(),domainInfo));
-        moduleUIInfo.setBasePath(DomainPlaceHolder.replace(moduleInfo.getBasePath(),domainInfo));
-        moduleUIInfo.setPackageName(DomainPlaceHolder.replace(moduleInfo.getPackageName(),domainInfo));
+        moduleUIInfo.setModulePath(DomainPlaceHolder.replace(moduleInfo.getModulePath(), domainInfo));
+        moduleUIInfo.setBasePath(DomainPlaceHolder.replace(moduleInfo.getBasePath(), domainInfo));
+        moduleUIInfo.setPackageName(DomainPlaceHolder.replace(moduleInfo.getPackageName(), domainInfo));
         moduleUIInfo.setFileName(DomainPlaceHolder.replace(moduleInfo.getFileName(), domainInfo));
-        moduleUIInfo.setFileNameWithSuffix(DomainPlaceHolder.replace(moduleInfo.getFileNameWithSuffix(),domainInfo));
+        moduleUIInfo.setFileNameWithSuffix(DomainPlaceHolder.replace(moduleInfo.getFileNameWithSuffix(), domainInfo));
         moduleUIInfo.setEncoding(DomainPlaceHolder.replace(moduleInfo.getEncoding(), domainInfo));
         return moduleUIInfo;
     }
