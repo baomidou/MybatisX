@@ -3,7 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.DaoEntityAnnotationInterfacePlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.IntellijMyBatisGenerator;
@@ -181,26 +181,32 @@ public class GenerateCode {
                                           Context context,
                                           DomainInfo domainInfo,
                                           List<TemplateSettingDTO> templateSettingDTOList,
-                                          List<ModuleUIInfo> extraTemplateNames) {
+                                          List<ModuleInfoGo> extraTemplateNames) {
 
 
         Map<String, TemplateSettingDTO> templateSettingDTOMap = templateSettingDTOList
             .stream()
             .collect(Collectors.toMap(TemplateSettingDTO::getConfigName, m -> m, (a, b) -> a));
 
-        for (ModuleUIInfo moduleInfo : extraTemplateNames) {
+        List<CustomTemplateRoot> templateRootList = new ArrayList<>();
+        List<ModuleInfoGo> rootModuleInfo = new ArrayList<>();
+        for (ModuleInfoGo moduleInfo : extraTemplateNames) {
             TemplateSettingDTO templateSettingDTO = templateSettingDTOMap.get(moduleInfo.getConfigName());
             if (templateSettingDTO != null) {
                 DomainInfo customDomainInfo = determineDomainInfo(extraDomainName, domainInfo, moduleInfo);
-                ModuleUIInfo moduleUIInfoReplaced = replaceByDomainInfo(moduleInfo, customDomainInfo);
-                CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleUIInfoReplaced, templateSettingDTOList);
-                addPlugin(context, templateRoot);
-            }
+                ModuleInfoGo moduleInfoReplaced = replaceByDomainInfo(moduleInfo, customDomainInfo);
+                CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleInfoReplaced, templateSettingDTOList, rootModuleInfo);
+                templateRootList.add(templateRoot);
 
+            }
+        }
+
+        for (CustomTemplateRoot templateRoot : templateRootList) {
+            addPlugin(context, templateRoot);
         }
     }
 
-    private static DomainInfo determineDomainInfo(String extraDomainName, DomainInfo domainInfo, ModuleUIInfo moduleInfo) {
+    private static DomainInfo determineDomainInfo(String extraDomainName, DomainInfo domainInfo, ModuleInfoGo moduleInfo) {
         DomainInfo customDomainInfo = null;
         // 重置实体模板的类名填充
         if ("domain".equals(moduleInfo.getConfigName())) {
@@ -212,8 +218,8 @@ public class GenerateCode {
         return customDomainInfo;
     }
 
-    private static ModuleUIInfo replaceByDomainInfo(ModuleUIInfo moduleInfo, DomainInfo domainInfo) {
-        ModuleUIInfo moduleUIInfo = new ModuleUIInfo();
+    private static ModuleInfoGo replaceByDomainInfo(ModuleInfoGo moduleInfo, DomainInfo domainInfo) {
+        ModuleInfoGo moduleUIInfo = new ModuleInfoGo();
         moduleUIInfo.setConfigName(moduleInfo.getConfigName());
         moduleUIInfo.setModulePath(DomainPlaceHolder.replace(moduleInfo.getModulePath(), domainInfo));
         moduleUIInfo.setBasePath(DomainPlaceHolder.replace(moduleInfo.getBasePath(), domainInfo));
@@ -245,17 +251,16 @@ public class GenerateCode {
     }
 
     private static CustomTemplateRoot buildRootConfig(DomainInfo domainInfo,
-                                                      ModuleUIInfo moduleUIInfo,
-                                                      List<TemplateSettingDTO> templateConfigs) {
+                                                      ModuleInfoGo moduleUIInfo,
+                                                      List<TemplateSettingDTO> templateConfigs,
+                                                      List<ModuleInfoGo> rootModuleUIInfo) {
         // 生成的模板参照 https://gitee.com/baomidou/SpringWind/tree/spring-mvc/SpringWind/src/main/java/com/baomidou/springwind/mapper
         CustomTemplateRoot customTemplateRoot = new CustomTemplateRoot();
         customTemplateRoot.setDomainInfo(domainInfo);
         customTemplateRoot.setModuleUIInfo(moduleUIInfo);
         // 替换模板内容
-        for (TemplateSettingDTO templateSettingDTO : templateConfigs) {
-            TemplateSettingDTO settingDTO = replaceWithModel(templateSettingDTO, domainInfo);
-            customTemplateRoot.add(settingDTO);
-        }
+        customTemplateRoot.setModuleInfoList(rootModuleUIInfo);
+        rootModuleUIInfo.add(moduleUIInfo);
         // 设置模板文本
         for (TemplateSettingDTO templateConfig : templateConfigs) {
             if (templateConfig.getConfigName().equals(moduleUIInfo.getConfigName())) {

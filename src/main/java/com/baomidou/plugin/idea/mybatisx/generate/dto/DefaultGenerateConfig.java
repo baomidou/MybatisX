@@ -28,7 +28,7 @@ public class DefaultGenerateConfig extends GenerateConfig {
     }
 
     @Override
-    public List<ModuleUIInfo> getModuleUIInfoList() {
+    public List<ModuleInfoGo> getModuleUIInfoList() {
         return Collections.emptyList();
     }
 

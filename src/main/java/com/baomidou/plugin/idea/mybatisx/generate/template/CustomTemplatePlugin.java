@@ -1,10 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
-import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import org.jetbrains.annotations.Nullable;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -21,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 自定义模板填充插件
@@ -41,7 +37,7 @@ public class CustomTemplatePlugin extends PluginAdapter {
         String root = properties.getProperty(ROOT);
         CustomTemplateRoot rootObject = readRootObject(root);
 
-        ModuleUIInfo moduleUIInfo = rootObject.getModuleUIInfo();
+        ModuleInfoGo moduleUIInfo = rootObject.getModuleUIInfo();
 
         String modulePath = rootObject.getModuleUIInfo().getModulePath() + "/" + moduleUIInfo.getBasePath();
         final File file = new File(modulePath);

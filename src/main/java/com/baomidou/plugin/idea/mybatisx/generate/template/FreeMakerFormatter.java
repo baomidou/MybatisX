@@ -1,8 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -53,7 +52,7 @@ public class FreeMakerFormatter implements JavaFormatter {
     @Override
     public String getFormattedContent(CompilationUnit compilationUnit) {
         try {
-            ModuleUIInfo templateSettingDTO = rootObject.getModuleUIInfo();
+            ModuleInfoGo templateSettingDTO = rootObject.getModuleUIInfo();
             String modulePath = rootObject.getModuleUIInfo().getModulePath() + "/" + templateSettingDTO.getBasePath();
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
             cfg.setDirectoryForTemplateLoading(new File(modulePath));

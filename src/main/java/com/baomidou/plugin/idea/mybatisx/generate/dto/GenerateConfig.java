@@ -83,7 +83,7 @@ public class GenerateConfig {
     /**
      * 已选择的模板名称
      */
-    private List<ModuleUIInfo> moduleUIInfoList;
+    private List<ModuleInfoGo> moduleUIInfoList;
     /**
      * 要生成的表信息列表
      */
@@ -195,11 +195,11 @@ public class GenerateConfig {
         this.modulePath = modulePath;
     }
 
-    public List<ModuleUIInfo> getModuleUIInfoList() {
+    public List<ModuleInfoGo> getModuleUIInfoList() {
         return moduleUIInfoList;
     }
 
-    public void setModuleUIInfoList(List<ModuleUIInfo> moduleUIInfoList) {
+    public void setModuleUIInfoList(List<ModuleInfoGo> moduleUIInfoList) {
         this.moduleUIInfoList = moduleUIInfoList;
     }
 
