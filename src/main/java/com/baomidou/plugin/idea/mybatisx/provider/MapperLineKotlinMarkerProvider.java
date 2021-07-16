@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.service.JavaService;
 import com.baomidou.plugin.idea.mybatisx.service.KotlinService;
 import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
-    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
+    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         ElementInnerFilter filter = null;
         if (element instanceof KtClass) {
             filter = new KtClassElementInnerFilter();

@@ -28,7 +28,7 @@ java {
 // https://github.com/JetBrains/gradle-intellij-plugin/
 // http://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/prerequisites.html
 intellij {
-    version = "2019.2"
+    version = "2020.2"
 
 //    type="IC"  // 社区版
 //    setPlugins(arrayOf("java")) //Bundled plugin dependencies
@@ -55,7 +55,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group="com.baomidou.plugin.idea.mybatisx"
-version="1.4.18"
+version="1.5.0"
 
 repositories {
     mavenLocal()

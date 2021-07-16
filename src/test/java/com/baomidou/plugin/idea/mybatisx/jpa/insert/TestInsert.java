@@ -3,7 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.jpa.insert;
 import com.baomidou.plugin.idea.mybatisx.jpa.BaseJpaTest;
 import com.intellij.sql.dialects.SqlDialectMappings;
 import com.intellij.sql.dialects.SqlLanguageDialect;
-import com.intellij.sql.dialects.oracle.OracleDialect;
+import com.intellij.sql.dialects.oracle.OraDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public class TestInsert extends BaseJpaTest {
     //   oracle 的批量插入
     public void testInsertBatchWithUnion() throws IOException {
         SqlLanguageDialect defaultSqlDialect = SqlDialectMappings.getDefaultSqlDialect();
-        SqlDialectMappings.setDefaultSqlDialect(OracleDialect.INSTANCE);
+        SqlDialectMappings.setDefaultSqlDialect(OraDialect.INSTANCE);
 
         launchAction("insertBatchWithUnion");
 
@@ -84,7 +84,7 @@ public class TestInsert extends BaseJpaTest {
     // oracle 的批量插入
     public void testInsertBatchWithAll() throws IOException {
         SqlLanguageDialect defaultSqlDialect = SqlDialectMappings.getDefaultSqlDialect();
-        SqlDialectMappings.setDefaultSqlDialect(OracleDialect.INSTANCE);
+        SqlDialectMappings.setDefaultSqlDialect(OraDialect.INSTANCE);
 
         launchAction("insertBatchWithAll");
 
