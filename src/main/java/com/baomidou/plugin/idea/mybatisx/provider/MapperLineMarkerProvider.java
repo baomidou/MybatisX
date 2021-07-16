@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
-    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
+    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         ElementInnerFilter filter = null;
         if (element instanceof PsiClass) {
             filter = new PsiClassElementInnerFilter();
