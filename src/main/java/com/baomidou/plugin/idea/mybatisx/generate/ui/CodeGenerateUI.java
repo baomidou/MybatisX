@@ -2,7 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleUIInfo;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.util.DomainPlaceHolder;
@@ -62,7 +62,7 @@ public class CodeGenerateUI {
 
     private ButtonGroup templateButtonGroup = new ButtonGroup();
 
-    ListTableModel<ModuleUIInfo> model = new ListTableModel<>(
+    ListTableModel<ModuleInfoGo> model = new ListTableModel<>(
         new MybaitsxModuleInfo("config name", 120, false),
         new MybaitsxModuleInfo("module path", 420, true, true),
         new MybaitsxModuleInfo("base path", 140, true),
@@ -140,7 +140,7 @@ public class CodeGenerateUI {
 
     private void initTemplates(GenerateConfig generateConfig, String defaultsTemplatesName, Map<String, List<TemplateSettingDTO>> templateSettingMap) {
 
-        TableView<ModuleUIInfo> tableView = new TableView<>(model);
+        TableView<ModuleInfoGo> tableView = new TableView<>(model);
 
         GridConstraints gridConstraints = new GridConstraints();
         gridConstraints.setFill(GridConstraints.FILL_HORIZONTAL);
@@ -190,12 +190,12 @@ public class CodeGenerateUI {
                 }
                 String templatesName = jRadioButton.getText();
                 List<TemplateSettingDTO> list = buildTemplatesSettings(templatesName);
-                List<ModuleUIInfo> moduleUIInfoList = buildModuleUIInfos(templatesName, list);
+                List<ModuleInfoGo> moduleUIInfoList = buildModuleUIInfos(templatesName, list);
                 initMemoryModuleTable(moduleUIInfoList);
             }
 
-            private List<ModuleUIInfo> buildModuleUIInfos(String templatesName, List<TemplateSettingDTO> list) {
-                List<ModuleUIInfo> moduleUIInfoList = null;
+            private List<ModuleInfoGo> buildModuleUIInfos(String templatesName, List<TemplateSettingDTO> list) {
+                List<ModuleInfoGo> moduleUIInfoList = null;
                 // 1. 优先选择默认的
                 if (!refresh && templatesName.equals(generateConfig.getTemplatesName()) ) {
                     moduleUIInfoList = generateConfig.getModuleUIInfoList();
@@ -224,11 +224,11 @@ public class CodeGenerateUI {
                 return list;
             }
 
-            private List<ModuleUIInfo> buildByTemplates(List<TemplateSettingDTO> list, String modulePath) {
-                List<ModuleUIInfo> moduleUIInfoList = new ArrayList<>(list.size());
+            private List<ModuleInfoGo> buildByTemplates(List<TemplateSettingDTO> list, String modulePath) {
+                List<ModuleInfoGo> moduleUIInfoList = new ArrayList<>(list.size());
                 // 添加列的内容
                 for (TemplateSettingDTO templateSettingDTO : list) {
-                    ModuleUIInfo item = new ModuleUIInfo();
+                    ModuleInfoGo item = new ModuleInfoGo();
                     item.setConfigName(templateSettingDTO.getConfigName());
                     // 默认使用实体模块的模块路径
                     item.setModulePath(modulePath);
@@ -262,7 +262,7 @@ public class CodeGenerateUI {
         return selectedButton;
     }
 
-    private void initMemoryModuleTable(List<ModuleUIInfo> list) {
+    private void initMemoryModuleTable(List<ModuleInfoGo> list) {
         // 扩展面板的列表内容
         // 移除所有行, 重新刷新
         for (int rowCount = model.getRowCount(); rowCount > 0; rowCount--) {
@@ -270,7 +270,7 @@ public class CodeGenerateUI {
         }
 
         // 添加列的内容
-        for (ModuleUIInfo item : list) {
+        for (ModuleInfoGo item : list) {
             model.addRow(item);
         }
 
@@ -291,7 +291,7 @@ public class CodeGenerateUI {
 
         // 添加列的内容
         for (TemplateSettingDTO templateSettingDTO : list) {
-            ModuleUIInfo item = new ModuleUIInfo();
+            ModuleInfoGo item = new ModuleInfoGo();
             item.setConfigName(templateSettingDTO.getConfigName());
             // 默认使用实体模块的模块路径
             item.setModulePath(modulePath);
@@ -310,7 +310,7 @@ public class CodeGenerateUI {
         selectDefaultTemplateRadio(selectedTemplateName);
     }
 
-    private class MybaitsxModuleInfo extends ColumnInfo<ModuleUIInfo, String> {
+    private class MybaitsxModuleInfo extends ColumnInfo<ModuleInfoGo, String> {
 
         public MybaitsxModuleInfo(String name, int width, boolean editable) {
             super(name);
@@ -330,7 +330,7 @@ public class CodeGenerateUI {
         private boolean moduleEditor;
 
         @Override
-        public boolean isCellEditable(ModuleUIInfo moduleUIInfo) {
+        public boolean isCellEditable(ModuleInfoGo moduleUIInfo) {
             return editable;
         }
 
@@ -341,11 +341,11 @@ public class CodeGenerateUI {
 
         @Nullable
         @Override
-        public TableCellRenderer getRenderer(ModuleUIInfo moduleUIInfo) {
+        public TableCellRenderer getRenderer(ModuleInfoGo moduleUIInfo) {
             return new DefaultTableCellRenderer();
         }
 
-        private void chooseModule(JTextField textField,ModuleUIInfo moduleUIInfo) {
+        private void chooseModule(JTextField textField, ModuleInfoGo moduleUIInfo) {
             Module[] modules = ModuleManager.getInstance(project).getModules();
             ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
             dialog.setSingleSelectionMode();
@@ -362,7 +362,7 @@ public class CodeGenerateUI {
 
         @Nullable
         @Override
-        public TableCellEditor getEditor(ModuleUIInfo moduleUIInfo) {
+        public TableCellEditor getEditor(ModuleInfoGo moduleUIInfo) {
             JTextField textField = new JTextField();
             if (moduleEditor) {
                 // 模块选择
@@ -407,7 +407,7 @@ public class CodeGenerateUI {
 
         @Nullable
         @Override
-        public String valueOf(ModuleUIInfo item) {
+        public String valueOf(ModuleInfoGo item) {
             String value = null;
             if (getName().equals("config name")) {
                 value = item.getConfigName();
@@ -446,7 +446,7 @@ public class CodeGenerateUI {
 
     public void refreshGenerateConfig(GenerateConfig generateConfig) {
 
-        List<ModuleUIInfo> moduleUIInfoList = IntStream.range(0, model.getRowCount())
+        List<ModuleInfoGo> moduleUIInfoList = IntStream.range(0, model.getRowCount())
             .mapToObj(index -> model.getRowValue(index))
             .collect(Collectors.toList());
         generateConfig.setModuleUIInfoList(moduleUIInfoList);

@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @author :ls9527
  * @date : 2021/6/30
  */
-public class ModuleUIInfo implements Serializable {
+public class ModuleInfoGo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
