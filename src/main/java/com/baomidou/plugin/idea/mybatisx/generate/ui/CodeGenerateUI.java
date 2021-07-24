@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class CodeGenerateUI {
+    public static final String DOMAIN = "domain";
     private JPanel rootPanel;
     private JCheckBox commentCheckBox;
     private JCheckBox lombokCheckBox;
@@ -197,7 +198,7 @@ public class CodeGenerateUI {
             private List<ModuleInfoGo> buildModuleUIInfos(String templatesName, List<TemplateSettingDTO> list) {
                 List<ModuleInfoGo> moduleUIInfoList = null;
                 // 1. 优先选择默认的
-                if (!refresh && templatesName.equals(generateConfig.getTemplatesName()) ) {
+                if (!refresh && templatesName.equals(generateConfig.getTemplatesName())) {
                     moduleUIInfoList = generateConfig.getModuleUIInfoList();
                 }
                 // 2. 其次根据选择的模板名称来决定使用哪个模板
@@ -271,6 +272,18 @@ public class CodeGenerateUI {
 
         // 添加列的内容
         for (ModuleInfoGo item : list) {
+            // domain 域特殊处理, 不可更改
+            if (DOMAIN.equals(item.getConfigName())) {
+                ModuleInfoGo itemX = new ModuleInfoGo();
+                itemX.setModulePath(domainInfo.getModulePath());
+                itemX.setBasePath(domainInfo.getBasePath());
+                itemX.setEncoding(domainInfo.getEncoding());
+                itemX.setFileName(domainInfo.getFileName());
+                itemX.setPackageName(domainInfo.getBasePackage() + "." + domainInfo.getRelativePackage());
+                itemX.setFileNameWithSuffix(domainInfo.getFileName() + ".java");
+                itemX.setConfigName(DOMAIN);
+                item = itemX;
+            }
             model.addRow(item);
         }
 
@@ -289,6 +302,7 @@ public class CodeGenerateUI {
             model.removeRow(rowCount - 1);
         }
 
+        List<ModuleInfoGo> moduleInfoGoList = new ArrayList<>();
         // 添加列的内容
         for (TemplateSettingDTO templateSettingDTO : list) {
             ModuleInfoGo item = new ModuleInfoGo();
@@ -300,8 +314,10 @@ public class CodeGenerateUI {
             item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
             item.setPackageName(templateSettingDTO.getPackageName());
             item.setEncoding(templateSettingDTO.getEncoding());
-            model.addRow(item);
+            moduleInfoGoList.add(item);
         }
+        initMemoryModuleTable(moduleInfoGoList);
+
 
     }
 
@@ -369,7 +385,7 @@ public class CodeGenerateUI {
                 textField.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        chooseModule(textField,moduleUIInfo);
+                        chooseModule(textField, moduleUIInfo);
                     }
                 });
             }
@@ -378,6 +394,11 @@ public class CodeGenerateUI {
             defaultCellEditor.addCellEditorListener(new CellEditorListener() {
                 @Override
                 public void editingStopped(ChangeEvent e) {
+                    // domain模板不支持属性的更改
+                    if (DOMAIN.equals(moduleUIInfo.getConfigName())) {
+                        // do nothing
+                        return;
+                    }
                     String s = defaultCellEditor.getCellEditorValue().toString();
                     if (getName().equals("module path")) {
                         moduleUIInfo.setModulePath(s);
@@ -408,16 +429,32 @@ public class CodeGenerateUI {
         @Nullable
         @Override
         public String valueOf(ModuleInfoGo item) {
+            if (item == null) {
+                return "";
+            }
             String value = null;
             if (getName().equals("config name")) {
                 value = item.getConfigName();
             } else if (getName().equals("module path")) {
                 value = DomainPlaceHolder.replace(item.getModulePath(), domainInfo);
+                // domain 配置不可以更改模块
+//                if (item.getConfigName().equals("domain")) {
+//                    value = domainInfo.getModulePath();
+//                }
             } else if (getName().equals("base path")) {
                 value = DomainPlaceHolder.replace(item.getBasePath(), domainInfo);
+                // domain 配置不可以基础路径
+//                if (item.getConfigName().equals("domain")) {
+//                    value = domainInfo.getBasePath();
+//                }
             } else if (getName().equals("package name")) {
                 value = DomainPlaceHolder.replace(item.getPackageName(), domainInfo);
+                // domain 配置不可以更改相对路径
+//                if (item.getConfigName().equals("domain")) {
+//                    value = domainInfo.getBasePackage() + "." + domainInfo.getRelativePackage();
+//                }
             }
+
             return value;
         }
     }
