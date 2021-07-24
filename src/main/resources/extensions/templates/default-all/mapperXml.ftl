@@ -28,21 +28,21 @@
         delete from ${tableClass.tableName}
         where <#list tableClass.pkFields as field> ${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}} <#if field_has_next>AND</#if></#list>
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="${tableClass.fullClassName}" useGeneratedKeys="true">
+    <insert id="insert"<#if (tableClass.pkFields?size==1)> keyColumn="${tableClass.pkFields[0].columnName}" keyProperty="${tableClass.pkFields[0].fieldName}" parameterType="${tableClass.fullClassName}" useGeneratedKeys="true"</#if>>
         insert into ${tableClass.tableName}
         ( <#list tableClass.allFields as field>${field.columnName}<#if field_index%3==2>${"\n        "}</#if><#sep>,</#list>)
         values (<#list tableClass.allFields as field>${'#'}{${field.fieldName},jdbcType=${field.jdbcType}}<#if field_index%3==2>${"\n        "}</#if><#sep>,</#list>)
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="${tableClass.fullClassName}" useGeneratedKeys="true">
+    <insert id="insertSelective"<#if (tableClass.pkFields?size==1)> keyColumn="${tableClass.pkFields[0].columnName}" keyProperty="${tableClass.pkFields[0].fieldName}" parameterType="${tableClass.fullClassName}" useGeneratedKeys="true"</#if>>
         insert into ${tableClass.tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <#list tableClass.allFields as field>
-                <if test="${field.fieldName} != null">${field.columnName},</if>
+                <if test="${field.fieldName} != null">${field.fieldName},</if>
             </#list>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <#list tableClass.allFields as field>
-                <if test="${field.fieldName} != null"> ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}},</if>
+                <if test="${field.fieldName} != null">${field.columnName} = ${'#'}{${field.fieldName},jdbcType=${field.jdbcType}},</if>
             </#list>
         </trim>
     </insert>
