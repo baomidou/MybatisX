@@ -83,6 +83,8 @@ public class TablePreviewUI {
         domainInfo.setBasePackage(basePackageTextField.getText());
         domainInfo.setRelativePackage(relativePackageTextField.getText());
         domainInfo.setEncoding(encodingTextField.getText());
+        // 放一个自己名字的引用
+        domainInfo.setFileName("${domain.fileName}");
         return domainInfo;
 
     }
@@ -99,7 +101,7 @@ public class TablePreviewUI {
         if (!StringUtils.isEmpty(ignoreSuffixs)) {
             String[] splitSuffixs = ignoreSuffixs.split(",");
             for (String ignoreSuffix : splitSuffixs) {
-                fName = fName.replaceFirst(ignoreSuffix+"$", EMPTY);
+                fName = fName.replaceFirst(ignoreSuffix + "$", EMPTY);
             }
         }
         return StringUtils.dbStringToCamelStyle(fName);
