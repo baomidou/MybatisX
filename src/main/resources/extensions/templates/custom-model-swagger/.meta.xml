@@ -2,7 +2,8 @@
 <templates>
     <template>
         <!-- 注意: 实体类无论如何都会生成 -->
-        <!--domain 如果勾选则覆盖默认实体类生成规则-->
+        <!-- 1.5.x 开始 configName=domain的配置会被特殊处理, 其他配置跟随实体的配置-->
+        <!-- 主要用于生成 request,response 类型的对象 -->
         <property name="configName" value="domain"/>
         <property name="configFile" value="domain.ftl"/>
         <property name="fileName" value="${domain.fileName}"/>
@@ -10,23 +11,5 @@
         <property name="packageName" value="${domain.basePackage}.domain"/>
         <property name="encoding" value="${domain.encoding}"/>
         <property name="basePath" value="${domain.basePath}"/>
-    </template>
-    <template>
-        <property name="configName" value="mapperInterface"/>
-        <property name="configFile" value="mapperInterface.ftl"/>
-        <property name="fileName" value="${domain.fileName}Mapper"/>
-        <property name="suffix" value=".java"/>
-        <property name="packageName" value="${domain.basePackage}.mapper"/>
-        <property name="encoding" value="${domain.encoding}"/>
-        <property name="basePath" value="${domain.basePath}"/>
-    </template>
-    <template>
-        <property name="configName" value="mapperXml"/>
-        <property name="configFile" value="mapperXml.ftl"/>
-        <property name="fileName" value="${domain.fileName}Mapper"/>
-        <property name="suffix" value=".xml"/>
-        <property name="packageName" value="mapper"/>
-        <property name="encoding" value="${domain.encoding}"/>
-        <property name="basePath" value="src/main/resources"/>
     </template>
 </templates>
