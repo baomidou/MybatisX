@@ -106,9 +106,9 @@ public class JavaService {
         String id = psiClass.getQualifiedName() + "." + psiMethod.getName();
         ids.add(id);
         final Query<PsiClass> search = ClassInheritorsSearch.search(psiClass);
-        final Collection<PsiClass> allChilds = search.findAll();
+        final Collection<PsiClass> allChildren = search.findAll();
 
-        for (PsiClass psiElement : allChilds) {
+        for (PsiClass psiElement : allChildren) {
             String childId = psiElement.getQualifiedName() + "." + psiMethod.getName();
             ids.add(childId);
         }
