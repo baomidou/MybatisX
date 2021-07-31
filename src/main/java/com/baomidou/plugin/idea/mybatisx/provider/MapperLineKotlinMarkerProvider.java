@@ -2,15 +2,12 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.provider.filter.AbstractElementFilter;
+import com.baomidou.plugin.idea.mybatisx.provider.filter.EmptyAbstractElementFilter;
 import com.baomidou.plugin.idea.mybatisx.service.KotlinService;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
-import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -18,9 +15,6 @@ import org.jetbrains.kotlin.psi.KtClass;
 import org.jetbrains.kotlin.psi.KtNamedFunction;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * The type Mapper line marker provider.
@@ -31,45 +25,30 @@ public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvide
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-        ElementInnerFilter filter = null;
+        AbstractElementFilter filter = getElementInnerFilter(element);
+        filter.collectNavigationMarkers(element, result);
+    }
+
+    @NotNull
+    private AbstractElementFilter getElementInnerFilter(@NotNull PsiElement element) {
+        AbstractElementFilter filter = null;
         if (element instanceof KtClass) {
-            filter = new KtClassElementInnerFilter();
+            filter = new KtClassAbstractElementFilter();
         }
         if (filter == null && element instanceof KtNamedFunction) {
-            filter = new KtFunctionElementInnerFilter();
+            filter = new KtFunctionAbstractElementFilter();
         }
-        if (filter != null) {
-            filter.collectNavigationMarkers(element, result);
+        if (filter == null) {
+            filter = new EmptyAbstractElementFilter();
         }
+        return filter;
     }
 
-
-    /**
-     * 元素内部过滤器
-     */
-    private abstract class ElementInnerFilter {
-        protected abstract Collection<? extends DomElement> getResults(@NotNull PsiElement element);
-
-        private void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-            final Collection<? extends DomElement> results = getResults(element);
-            if (!results.isEmpty()) {
-                final List<XmlTag> xmlTags = results.stream().map(DomElement::getXmlTag).collect(Collectors.toList());
-                NavigationGutterIconBuilder<PsiElement> builder =
-                    NavigationGutterIconBuilder.create(Icons.MAPPER_LINE_MARKER_ICON)
-                        .setAlignment(GutterIconRenderer.Alignment.CENTER)
-                        .setCellRenderer(new GotoMapperXmlSchemaTypeRendererProvider.MyRenderer())
-                        .setTargets(xmlTags)
-                        .setTooltipTitle("Navigation to target in mapper xml");
-                final PsiElement targetMarkerInfo = Objects.requireNonNull(((PsiNameIdentifierOwner) element).getNameIdentifier());
-                result.add(builder.createLineMarkerInfo(targetMarkerInfo));
-            }
-        }
-    }
 
     /**
      * KtClass过滤器
      */
-    private class KtClassElementInnerFilter extends ElementInnerFilter {
+    private class KtClassAbstractElementFilter extends AbstractElementFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
@@ -84,7 +63,7 @@ public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvide
     /**
      * KtNamedFunction 过滤器
      */
-    private class KtFunctionElementInnerFilter extends ElementInnerFilter {
+    private class KtFunctionAbstractElementFilter extends AbstractElementFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {

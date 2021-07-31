@@ -34,7 +34,21 @@ public class GotoMapperXmlSchemaTypeRendererProvider implements GotoTargetRender
         @Override
         protected String getContainerText(XmlTagImpl element, String name) {
             final PsiFile file = element.getContainingFile();
-            return "(" + file.getVirtualFile().getPath() + ")";
+            String databaseId = getDatabaseId(element);
+            return databaseId + file.getVirtualFile().getName();
+        }
+
+        @NotNull
+        private String getDatabaseId(XmlTagImpl element) {
+            final XmlAttribute databaseIdAttr = element.getAttribute("databaseId");
+            String databaseId = null;
+            if (databaseIdAttr != null) {
+                databaseId = databaseIdAttr.getValue() + ",";
+            }
+            if (databaseId == null) {
+                databaseId = "";
+            }
+            return databaseId;
         }
 
         @Override

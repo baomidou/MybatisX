@@ -15,7 +15,7 @@
         from t_blog
 	</sql>
 
-    <select id="selectByAge" resultMap="BaseResultMap">
+    <select id="selectByAge" databaseId="mysql" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_blog
