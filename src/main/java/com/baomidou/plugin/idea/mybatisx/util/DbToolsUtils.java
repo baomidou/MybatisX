@@ -13,6 +13,7 @@ import com.intellij.util.containers.JBIterable;
 import com.rits.cloning.Cloner;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,69 +140,69 @@ public class DbToolsUtils {
 //这个我也不知道是什么，复制别人的代码
     public static int convertTypeNameToJdbcType(String jdbcTypeName, int size, String databaseType) {
         if (StringUtil.isEmpty(jdbcTypeName)) {
-            return 1111;
-        } else {
-            String fixed = jdbcTypeName.toUpperCase();
-            if (fixed.contains("BIGINT")) {
-                return -5;
-            } else if (fixed.contains("TINYINT")) {
-                return size == 1 ? 16 : -6;
-            } else if (fixed.contains("LONGVARBINARY")) {
-                return -4;
-            } else if (fixed.contains("VARBINARY")) {
-                return -3;
-            } else if (fixed.contains("LONGVARCHAR")) {
-                return -1;
-            } else if (fixed.contains("SMALLINT")) {
-                return 5;
-            } else if (fixed.contains("DATETIME")) {
-                return 93;
-            } else if ("DATE".equals(fixed) && "Oracle".equals(databaseType)) {
-                return 93;
-            } else if (fixed.contains("NUMBER")) {
-                return 3;
-            } else if (fixed.contains("BOOLEAN")) {
-                return 16;
-            } else if (fixed.contains("BINARY")) {
-                return -3;
-            } else if (fixed.contains("BIT")) {
-                return -7;
-            } else if (fixed.contains("BOOL")) {
-                return 16;
-            } else if (fixed.contains("DATE")) {
-                return 91;
-            } else if (fixed.contains("TIMESTAMP")) {
-                return 93;
-            } else if (fixed.contains("TIME")) {
-                return 92;
-            } else if (!fixed.contains("REAL") && !fixed.contains("NUMBER")) {
-                if (fixed.contains("FLOAT")) {
-                    return 6;
-                } else if (fixed.contains("DOUBLE")) {
-                    return 8;
-                } else if ("CHAR".equals(fixed)) {
-                    return 1;
-                } else if (fixed.contains("INT") && !fixed.contains("INTERVAL")) {
-                    return 4;
-                } else if (fixed.contains("DECIMAL")) {
-                    return 3;
-                } else if (fixed.contains("NUMERIC")) {
-                    return 2;
-                } else if (!fixed.contains("CHAR") && !fixed.contains("TEXT")) {
-                    if (fixed.contains("BLOB")) {
-                        return 2004;
-                    } else if (fixed.contains("CLOB")) {
-                        return 2005;
-                    } else {
-                        return fixed.contains("REFERENCE") ? 2006 : 1111;
-                    }
+            return Types.OTHER;
+        }
+        String fixed = jdbcTypeName.toUpperCase();
+        if (fixed.contains("BIGINT")) {
+            return Types.BIGINT;
+        } else if (fixed.contains("TINYINT")) {
+            return size == 1 ? Types.BOOLEAN : Types.TINYINT;
+        } else if (fixed.contains("LONGVARBINARY")) {
+            return Types.LONGVARBINARY;
+        } else if (fixed.contains("VARBINARY")) {
+            return Types.VARBINARY;
+        } else if (fixed.contains("LONGVARCHAR")) {
+            return Types.LONGVARCHAR;
+        } else if (fixed.contains("SMALLINT")) {
+            return Types.SMALLINT;
+        } else if (fixed.contains("DATETIME")) {
+            return Types.TIMESTAMP;
+        } else if ("DATE".equals(fixed) && "Oracle".equals(databaseType)) {
+            return Types.TIMESTAMP;
+        } else if (fixed.contains("NUMBER")) {
+            return Types.DECIMAL;
+        } else if (fixed.contains("BOOLEAN")) {
+            return Types.BOOLEAN;
+        } else if (fixed.contains("BINARY")) {
+            return Types.VARBINARY;
+        } else if (fixed.contains("BIT")) {
+            return Types.BIT;
+        } else if (fixed.contains("BOOL")) {
+            return Types.BOOLEAN;
+        } else if (fixed.contains("DATE")) {
+            return Types.DATE;
+        } else if (fixed.contains("TIMESTAMP")) {
+            return Types.TIMESTAMP;
+        } else if (fixed.contains("TIME")) {
+            return Types.TIME;
+        } else if (!fixed.contains("REAL") && !fixed.contains("NUMBER")) {
+            if (fixed.contains("FLOAT")) {
+                return Types.FLOAT;
+            } else if (fixed.contains("DOUBLE")) {
+                return Types.DOUBLE;
+            } else if ("CHAR".equals(fixed)) {
+                return Types.CHAR;
+            } else if (fixed.contains("INT") && !fixed.contains("INTERVAL")) {
+                return Types.INTEGER;
+            } else if (fixed.contains("DECIMAL")) {
+                return Types.DECIMAL;
+            } else if (fixed.contains("NUMERIC")) {
+                return Types.NUMERIC;
+            } else if (!fixed.contains("CHAR") && !fixed.contains("TEXT")) {
+                if (fixed.contains("BLOB")) {
+                    return Types.BLOB;
+                } else if (fixed.contains("CLOB")) {
+                    return Types.CLOB;
                 } else {
-                    return 12;
+                    return fixed.contains("REFERENCE") ? Types.REF : Types.OTHER;
                 }
             } else {
-                return 7;
+                return Types.VARCHAR;
             }
+        } else {
+            return Types.REAL;
         }
+
     }
 
 }
