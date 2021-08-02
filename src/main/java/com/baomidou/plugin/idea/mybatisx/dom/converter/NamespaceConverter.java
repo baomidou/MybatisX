@@ -3,7 +3,9 @@ package com.baomidou.plugin.idea.mybatisx.dom.converter;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
+import com.intellij.util.xml.GenericDomValue;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,5 +31,14 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> {
         }
         Optional<PsiClass> clazz = JavaUtils.findClazz(context.getProject(), id);
         return clazz.orElse(null);
+    }
+
+    @Override
+    public void bindReference(GenericDomValue<PsiClass> genericValue, ConvertContext context, PsiElement newTarget) {
+        if (newTarget instanceof PsiClass) {
+            final PsiClass psiClass = (PsiClass) newTarget;
+            final String qualifiedName = psiClass.getQualifiedName();
+            genericValue.setStringValue(qualifiedName);
+        }
     }
 }
