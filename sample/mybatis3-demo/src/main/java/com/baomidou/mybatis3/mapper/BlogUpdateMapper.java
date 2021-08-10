@@ -46,5 +46,5 @@ public interface BlogUpdateMapper extends BaseMapper<Blog> {
 
     int updateAgeAndContentByAgeFalse(@Param("age")Integer age,@Param("content")String content);
 
-
+    int updateSelective(Blog blog);
 }

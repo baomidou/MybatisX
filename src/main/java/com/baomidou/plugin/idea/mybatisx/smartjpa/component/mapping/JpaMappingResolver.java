@@ -44,6 +44,7 @@ public abstract class JpaMappingResolver {
      * The constant TABLE_NAME.
      */
     public static final String TABLE_NAME = "name";
+    public static final String ID_ANNOTATION = "javax.persistence.Id";
 
     /**
      * Find entity class by mapper class optional.
@@ -148,14 +149,18 @@ public abstract class JpaMappingResolver {
             .filter(this::filterField)
             .map(field -> {
                 TxField txField = new TxField();
-                txField.setTipName(com.baomidou.plugin.idea.mybatisx.util.StringUtils.upperCaseFirstChar(field.getName()));
+                txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
                 txField.setFieldType(field.getType().getCanonicalText());
 
                 String columnName = getColumnNameByJpaOrCamel(field);
                 // 实体的字段名称
                 txField.setFieldName(field.getName());
+
                 // 表的列名
                 txField.setColumnName(columnName);
+                if(field.hasAnnotation(ID_ANNOTATION)){
+                    txField.setPrimaryKey(true);
+                }
 
                 txField.setClassName(field.getContainingClass().getQualifiedName());
                 Optional<String> jdbcTypeByJavaType = JdbcTypeUtils.findJdbcTypeByJavaType(field.getType().getCanonicalText());

@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.baomidou.mybatis3.mapper.BlogUpdateMapper">
-
+    <resultMap id="BaseResultMap"
+               type="com.baomidou.mybatis3.domain.Blog">
+        <id column="id" property="id"/>
+        <result column="age" property="age"/>
+        <result column="content" property="content"/>
+        <result column="title" property="title"/>
+        <result column="money" property="money"/>
+    </resultMap>
 
     <update id="updateAgeAndContentByIdIn">
         update t_blog
@@ -111,5 +118,20 @@ update t_blog
 , content = #{content,jdbcType=VARCHAR}
 where age = true
 </update>
+    <update id="updateSelective">
+        update t_blog
+        <set>
+            <if test="title != null">title=#{title,jdbcType=VARCHAR},</if>
+            <if test="content != null">content=#{content,jdbcType=VARCHAR},</if>
+            <if test="money != null">money=#{money,jdbcType=DECIMAL},</if>
+            <if test="age != null">age=#{age,jdbcType=NUMERIC},</if>
+            <if test="createTime != null">createTime=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="blobText != null">blobText=#{blobText},</if>
+            <if test="objects != null">objects=#{objects},</if>
+            <if test="ids != null">ids=#{ids},</if>
+        </set>
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
+
 
 </mapper>

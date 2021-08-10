@@ -22,6 +22,7 @@ import com.intellij.psi.PsiMethod;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -37,20 +38,21 @@ public class UpdateOperator extends BaseOperatorManager {
      * @param entityClass
      */
     public UpdateOperator(final List<TxField> mappingField, PsiClass entityClass) {
-        this.setOperatorNameList(AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns());
-        this.init(mappingField, entityClass);
+        final Set<String> patterns = AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns();
+        this.init(mappingField, entityClass,patterns);
+        patterns.forEach(this::addOperatorName);
     }
 
     /**
      * Init.
-     *
-     * @param mappingField the mapping field
+     *  @param mappingField the mapping field
      * @param entityClass
+     * @param operatorNameList
      */
-    public void init(final List<TxField> mappingField, PsiClass entityClass) {
+    public void init(final List<TxField> mappingField, PsiClass entityClass, Set<String> operatorNameList) {
         TxReturnDescriptor anInt = TxReturnDescriptor.createByOrigin(null, "int");
 
-        for (final String areaName : this.getOperatorNameList()) {
+        for (final String areaName : operatorNameList) {
             final ResultAppenderFactory updateFactory = new UpdateResultAppenderFactory(areaName);
             this.initResultAppender(updateFactory, mappingField, areaName);
 
@@ -60,6 +62,8 @@ public class UpdateOperator extends BaseOperatorManager {
             statementBlock.setConditionAppenderFactory(new ConditionAppenderFactory(areaName, mappingField));
             statementBlock.setReturnWrapper(anInt);
             this.registerStatementBlock(statementBlock);
+            // 初始化扩展信息
+            this.initCustomArea(areaName, mappingField);
         }
 
     }
