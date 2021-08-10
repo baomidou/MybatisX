@@ -54,6 +54,11 @@ public class MybatisPlus3MappingResolver extends AbstractMybatisPlusMappingResol
     }
 
     @Override
+    protected Boolean findIsPrimaryKeyFromField(PsiField psiField) {
+        return psiField.hasAnnotation(TABLE_ID);
+    }
+
+    @Override
     protected String getBaseMapperClassName() {
         return BASE_MAPPER;
     }

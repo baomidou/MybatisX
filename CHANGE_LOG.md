@@ -1,3 +1,11 @@
+# 1.5.0
+1. 绑定接口名称和xml的namespace, 支持接口重命名
+2. 多数据环境时, 加入databaseId
+3. 生成的模板强制绑定domain
+4. 修复jpa提示的insert,insertSelective的keyColumn错误问题
+5. idea最低版本升级为2020.2
+6. 加入updateSelective
+
 # 1.4.17
 1. 生成代码支持模块选择
 2. 增加额外的列信息, 允许为空, 是否自增

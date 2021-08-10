@@ -100,6 +100,15 @@ public class BlogUpdateMapperTest {
         int changeCount = blogUpdateMapper.updateAgeByAgeAfter(50,20);
         Assert.assertEquals(changeCount,3);
     }
+    @Test
+    public void updateSelective() {
+        Blog blog = new Blog();
+        blog.setId(3L);
+        blog.setAge(30);
+        blog.setContent("haha");
+        int changeCount = blogUpdateMapper.updateSelective(blog);
+        Assert.assertEquals(changeCount,1);
+    }
 
     @Resource
     BlogInsertMapper blogInsertMapper;

@@ -30,4 +30,16 @@
         id = #{id,jdbcType=NUMERIC}
         AND title = #{title,jdbcType=VARCHAR}
     </select>
+    <update id="updateSelective">
+        update t_blog
+        <set>
+            <if test="title != null">title=#{title,jdbcType=VARCHAR},</if>
+            <if test="content != null">content=#{content,jdbcType=VARCHAR},</if>
+            <if test="money != null">money=#{money,jdbcType=DECIMAL},</if>
+            <if test="age != null">age=#{age,jdbcType=NUMERIC},</if>
+            <if test="createTime != null">createTime=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="createTime != null">createTime=#{createTime,jdbcType=TIMESTAMP},</if>
+        </set>
+        where id = #{id,jdbcType=NUMERIC}
+    </update>
 </mapper>

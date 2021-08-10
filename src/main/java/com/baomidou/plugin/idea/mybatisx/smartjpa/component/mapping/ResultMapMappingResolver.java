@@ -123,11 +123,20 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
     }
 
     private Collection<? extends TxField> determineResults(List<Result> results, PsiClass mapperClass) {
-        return results.stream().map(result -> determineField(mapperClass, result.getProperty(), result.getXmlTag(),result.getJdbcType())).filter(Objects::nonNull).collect(Collectors.toList());
+        return results.stream().map(result -> determineField(mapperClass, result.getProperty(), result.getXmlTag(),result.getJdbcType(), false)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param entityClass
+     * @param property
+     * @param xmlTag
+     * @param jdbcType
+     * @param isPrimaryKey 是不是主键
+     * @return
+     */
     @Nullable
-    private TxField determineField(PsiClass entityClass, GenericAttributeValue<XmlAttributeValue> property, final XmlTag xmlTag, GenericAttributeValue<XmlAttributeValue> jdbcType) {
+    private TxField determineField(PsiClass entityClass, GenericAttributeValue<XmlAttributeValue> property, final XmlTag xmlTag, GenericAttributeValue<XmlAttributeValue> jdbcType, boolean isPrimaryKey) {
         String propertyValue = property.getStringValue();
         PsiField field = entityClass.findFieldByName(propertyValue, true);
 
@@ -148,6 +157,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             txField.setFieldType(field.getType().getCanonicalText());
             txField.setTipName(StringUtils.upperCaseFirstChar(field.getName()));
             txField.setClassName(field.getContainingClass().getQualifiedName());
+            txField.setPrimaryKey(isPrimaryKey);
             String fieldJdbcType = null;
             if(jdbcType !=null){
                 fieldJdbcType = jdbcType.getStringValue();
@@ -184,7 +194,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
      */
     @Nullable
     private TxField getTxField(PsiClass mapperClass, Id id) {
-        return determineField(mapperClass, id.getProperty(), id.getXmlTag(), id.getJdbcType());
+        return determineField(mapperClass, id.getProperty(), id.getXmlTag(), id.getJdbcType(),true);
     }
 
     /**

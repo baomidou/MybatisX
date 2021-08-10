@@ -92,30 +92,40 @@ public class EntityMappingResolverFactory {
             // 处理字段上面没有注解的情况,
             for (TxField field : entityMappingHolder.getFields()) {
                 TxField defaultField = resultMapMapping.get(field.getFieldName());
-                // 处理列名
-                String columnName = null;
-                // 处理列名, 强制以 resultMap 为准
-                if (defaultField != null) {
-                    columnName = defaultField.getColumnName();
-                }
-                // 原先映射的列名
-                if (columnName == null) {
-                    columnName = field.getColumnName();
-                }
-                // 如果没有映射, 默认按照下划线映射
-                if (columnName == null) {
-                    columnName = StringUtils.camelToSlash(field.getFieldName());
-                }
+                String columnName = findColumnName(field, defaultField);
                 field.setColumnName(columnName);
-                // 处理jdbcType, 强制以 resultMap 为准
-                if (defaultField != null && defaultField.getJdbcType() != null) {
-                    field.setJdbcType(defaultField.getJdbcType());
+                // 采用合并的方式设置主键, 默认识别的主键+resultMap的主键都标记为主键
+                if (defaultField != null) {
+                    final Boolean primaryKey = defaultField.getPrimaryKey();
+                    if (primaryKey) {
+                        field.setPrimaryKey(primaryKey);
+                    }
+                    // 处理jdbcType, 强制以 resultMap 为准
+                    if (defaultField.getJdbcType() != null) {
+                        field.setJdbcType(defaultField.getJdbcType());
+                    }
                 }
-
-
             }
         }
         return entityMappingHolder;
+    }
+
+    private String findColumnName(TxField field, TxField defaultField) {
+        // 处理列名
+        String columnName = null;
+        // 处理列名, 强制以 resultMap 为准
+        if (defaultField != null) {
+            columnName = defaultField.getColumnName();
+        }
+        // 原先映射的列名
+        if (columnName == null) {
+            columnName = field.getColumnName();
+        }
+        // 如果没有映射, 默认按照下划线映射
+        if (columnName == null) {
+            columnName = StringUtils.camelToSlash(field.getFieldName());
+        }
+        return columnName;
     }
 
 

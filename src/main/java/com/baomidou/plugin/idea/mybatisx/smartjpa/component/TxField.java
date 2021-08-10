@@ -6,6 +6,10 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
  */
 public class TxField {
     /**
+     * 是不是主键
+     */
+    private Boolean primaryKey = false;
+    /**
      * 定义字段的类全路径名称
      */
     private String className;
@@ -117,5 +121,13 @@ public class TxField {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public Boolean getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(Boolean primaryKey) {
+        this.primaryKey = primaryKey;
     }
 }

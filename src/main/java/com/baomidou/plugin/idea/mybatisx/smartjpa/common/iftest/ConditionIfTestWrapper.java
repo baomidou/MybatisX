@@ -68,14 +68,31 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     @Override
     public String wrapConditionText(String fieldName, String templateText) {
         if (selectedWrapFields.contains(fieldName)) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("<if test=\"").append(getConditionField(fieldName)).append("\">");
-            stringBuilder.append("\n").append(templateText);
-            stringBuilder.append("\n").append("</if>");
-            templateText = stringBuilder.toString();
+            templateText = wrapCondition(fieldName, templateText);
         }
         return templateText;
     }
+
+    @NotNull
+    private String wrapCondition(String fieldName, String templateText) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<if test=\"").append(getConditionField(fieldName)).append("\">");
+        stringBuilder.append("\n").append(templateText);
+        stringBuilder.append("\n").append("</if>");
+        templateText = stringBuilder.toString();
+        return templateText;
+    }
+
+
+    private String getConditionField(String fieldName) {
+        TxField txField = txFieldMap.get(fieldName);
+        String appender = "";
+        if (Objects.equals(txField.getFieldType(), "java.lang.String")) {
+            appender = " and " + fieldName + " != ''";
+        }
+        return fieldName + " != null" + appender;
+    }
+
 
     @Override
     public String wrapWhere(String content) {
@@ -138,15 +155,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
             return new MybatisXmlGenerator(mapperClassGenerateFactory, mapper, project);
         }
         return new EmptyGenerator();
-    }
-
-    private String getConditionField(String fieldName) {
-        TxField txField = txFieldMap.get(fieldName);
-        String appender = "";
-        if (Objects.equals(txField.getFieldType(), "java.lang.String")) {
-            appender = " and " + fieldName + " != ''";
-        }
-        return fieldName + " != null" + appender;
     }
 
     /**
