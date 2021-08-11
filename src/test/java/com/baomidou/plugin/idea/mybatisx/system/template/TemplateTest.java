@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.template;
+package com.baomidou.plugin.idea.mybatisx.system.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.DefaultSettingsConfig;

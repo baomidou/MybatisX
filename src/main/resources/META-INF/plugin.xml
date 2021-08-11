@@ -30,28 +30,10 @@
           <li>fixed xml generate for multi module</li>
           <li>fixed alias scan for springboot</li>
       </ul>
-      <h4>1.3.2</h4>
-      <ul>
-          <li>fixed some bugs</li>
-          <li>Support community version</li>
-      </ul>
-      <h4>2020.09.03</h4>
-      <ul>
-          <li>support generate Class from table name</li>
-          <li>support two ways of oracle insertBatch</li>
-      </ul>
-       <h4>2020.08.12</h4>
-      <ul>
-          <li>mapper and xml support auto prompt like jpa</li>
-      </ul>
-      <h4>2017.10.20</h4>
-      <ul>
-          <li>mybatisx-1.0.0</li>
-      </ul>
       ]]>
     </change-notes>
 
-    <idea-version since-build="192.0"/>
+    <idea-version since-build="202.0"/>
     <depends>com.intellij.modules.java</depends>
     <depends optional="true" config-file="database.xml">com.intellij.database</depends>
     <!-- support aliases -->
@@ -59,21 +41,24 @@
     <!-- support aliases -->
     <depends optional="true" config-file="spring-boot.xml">com.intellij.spring.boot</depends>
     <depends optional="true" config-file="withKotlin.xml">org.jetbrains.kotlin</depends>
+    <depends optional="true" config-file="injection.xml">org.intellij.intelliLang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <projectService id="baomidou.TemplatesSettings"
                         serviceImplementation="com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings"/>
         <!--文件描述-->
         <!-- mapper.xml文件属性提示 -->
-        <dom.fileDescription id="baomidou.MapperDescription"
+        <dom.fileMetaData id="baomidou.MapperDescription"
+                          rootTagName="mapper"
                              implementation="com.baomidou.plugin.idea.mybatisx.dom.description.MapperDescription"/>
         <!-- mybatis配置文件属性提示 -->
-        <dom.fileDescription id="baomidou.ConfigurationDescription"
+        <dom.fileMetaData id="baomidou.ConfigurationDescription"
+                             rootTagName="configuration"
             implementation="com.baomidou.plugin.idea.mybatisx.dom.description.ConfigurationDescription"/>
 
-        <!-- 定义搜索, 用来实现通过Mapper接口类搜索实现类时直接跳转至mapper.xml文件 -->
-        <definitionsSearch id="baomidou.MapperDefinitionSearch"
-                           implementation="com.baomidou.plugin.idea.mybatisx.definitionsearch.MapperDefinitionSearch"/>
+        <!-- Ctrl+B, 定位类的跳转, 定位方法的跳转 -->
+        <definitionsScopedSearch id="baomidou.MapperClassSearch"
+                implementation="com.baomidou.plugin.idea.mybatisx.system.definitionsearch.MapperClassSearch"/>
         <!-- 与搜索配套的跳转 -->
         <gotoTargetRendererProvider order="first" implementation="com.baomidou.plugin.idea.mybatisx.provider.GotoMapperXmlSchemaTypeRendererProvider"/>
 
@@ -106,23 +91,24 @@
         <!-- xml 标签提示 -->
         <!-- 在mapper.xml内部, 进行智能提示, 例如: #{提示位置} -->
         <completion.contributor id="baomidou.SqlParamCompletionContributor" language="SQL"
-                                implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.SqlParamCompletionContributor"
+                                implementationClass="com.baomidou.plugin.idea.mybatisx.system.contributor.SqlParamCompletionContributor"
                                 order="first"/>
         <!-- jpa规范提示, 在mapper类声明方法提示, 提示字符串完成后, 后续可以根据字符串生成方法参数和XML内容 -->
         <completion.contributor id="baomidou.MapperMethodCompletionContributor" language="JAVA"
-                                implementationClass="com.baomidou.plugin.idea.mybatisx.contributor.MapperMethodCompletionContributor"/>
+                                implementationClass="com.baomidou.plugin.idea.mybatisx.system.contributor.MapperMethodCompletionContributor"/>
 
 
         <!--文件模板组，新建文件选择模板, 这里只是定义一个模板, 在mapper类方法定义完成后, 可以根据这个空模板生成一个文件 -->
         <fileTemplateGroup id="baomidou.MybatisFileTemplateDescriptorFactory"
-            implementation="com.baomidou.plugin.idea.mybatisx.template.MybatisFileTemplateDescriptorFactory"/>
+            implementation="com.baomidou.plugin.idea.mybatisx.system.template.MybatisFileTemplateDescriptorFactory"/>
 
         <!--附加的LiveTemplate模板-->
-        <defaultLiveTemplatesProvider id="baomidou.SqlLiveTemplateProvider"
-                                      implementation="com.baomidou.plugin.idea.mybatisx.template.SqlLiveTemplateProvider"/>
+        <defaultLiveTemplates id="baomidou.SqlLiveTemplateProvider"
+                              file="liveTemplates/sql"/>
+
         <!-- Mapper类 重命名 -->
         <refactoring.elementListenerProvider id="baomidou.MapperRefactoringProvider"
-            implementation="com.baomidou.plugin.idea.mybatisx.refactoring.MapperRefactoringProvider"/>
+            implementation="com.baomidou.plugin.idea.mybatisx.system.refactoring.MapperRefactoringProvider"/>
 
         <!-- 语法校验，让没有生成代码的方法产生错误 -->
         <localInspection language="JAVA" shortName="MybatisXMapperMethodInspection"
@@ -163,7 +149,8 @@
         <!--提示动作 end-->
 
         <!-- mybatis的xml和mapper类 文件图标都改成一只鸟-->
-        <iconProvider id="baomidou.XmlAndMapperIconProvider"  implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
+        <iconProvider id="baomidou.XmlAndMapperIconProvider"
+                      implementation="com.baomidou.plugin.idea.mybatisx.provider.XmlAndMapperIconProvider"/>
 
 
         <!-- mapper.xml文件 #{} 区域的引用跳转 -->
@@ -173,11 +160,9 @@
         <!-- 应用服务, 必须放在主文件,否则 XmlAndMapperIconProvider 会加载不到-->
         <applicationService id="baomidou.MybatisSetting"
                             serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
-
-
-        <!-- 兼容mapper.xml的sql标签检测 -->
-        <lang.inspectionSuppressor language="SQL" id="baomidou.MapperSqlInspectionsFilter"
-                                   implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperSqlInspectionsFilter"/>
+        <!-- 使用 Alt+Delete 删除方法时, 也删掉对应的标签 -->
+        <refactoring.safeDeleteProcessor
+            implementation="com.baomidou.plugin.idea.mybatisx.system.refactoring.MapperMethodSafeDeleteProcessor"/>
     </extensions>
 
 </idea-plugin>

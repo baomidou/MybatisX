@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.refactoring;
+package com.baomidou.plugin.idea.mybatisx.system.refactoring;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.VirtualFile;

@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.setting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.intellij.debugger.DebuggerBundle;
+import com.intellij.debugger.JavaDebuggerBundle;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.AnActionButtonRunnable;
@@ -87,7 +88,9 @@ public class MybatisXTemplateSettings {
 
     private class CopyAction extends AnActionButton {
         CopyAction() {
-            super(DebuggerBundle.message("button.copy"), DebuggerBundle.message("user.renderers.configurable.button.description.copy"), PlatformIcons.COPY_ICON);
+            super(JavaDebuggerBundle.message("button.copy"),
+                JavaDebuggerBundle.message("user.renderers.configurable.button.description.copy"),
+                PlatformIcons.COPY_ICON);
         }
 
         @Override

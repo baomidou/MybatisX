@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.contributor;
+package com.baomidou.plugin.idea.mybatisx.system.contributor;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.CommentAnnotationMappingResolver;

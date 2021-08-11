@@ -20,9 +20,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.xml.XmlElement;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.Processor;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
+import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -147,6 +149,56 @@ public final class MapperUtils {
         return result;
     }
 
+    @NotNull
+    @NonNls
+    public static Collection<XmlElement> findTags(@NotNull Project project, @NotNull PsiMethod method) {
+        final PsiClass containingClass = method.getContainingClass();
+        if (containingClass == null) {
+            return Collections.emptyList();
+        }
+        List<XmlElement> result = Lists.newArrayList();
+        for (Mapper mapper : findMappers(project)) {
+            final GenericAttributeValue<PsiClass> namespace = mapper.getNamespace();
+            final PsiClass namespaceValue = namespace.getValue();
+            if (namespaceValue == null) {
+                continue;
+            }
+            if (namespaceValue.equals(containingClass) ||
+                namespaceValue.isInheritor(containingClass, true)) {
+                final Optional<IdDomElement> first = mapper.getDaoElements().stream()
+                    .filter(item -> method.getName().equals(item.getId().getStringValue()))
+                    .findFirst();
+                first.ifPresent(item -> result.add(item.getXmlElement()));
+            }
+        }
+        return result;
+    }
+
+    public static XmlTag findTag(Project project, PsiMethod psiMethod) {
+        final PsiClass containingClass = psiMethod.getContainingClass();
+        if (containingClass == null) {
+            return null;
+        }
+        for (Mapper mapper : findMappers(project)) {
+            final GenericAttributeValue<PsiClass> namespace = mapper.getNamespace();
+            final String namespaceStringValue = namespace.getStringValue();
+            if (namespaceStringValue != null &&
+                namespaceStringValue.equals(containingClass.getQualifiedName())) {
+                return findTagByMapper(mapper, psiMethod.getName());
+            }
+        }
+        return null;
+    }
+
+    private static XmlTag findTagByMapper(Mapper mapper, String id) {
+        for (IdDomElement daoElement : mapper.getDaoElements()) {
+            if (id.equals(daoElement.getId().getStringValue())) {
+                return daoElement.getXmlTag();
+            }
+        }
+        return null;
+    }
+
     /**
      * Find mappers collection.
      *
@@ -169,7 +221,7 @@ public final class MapperUtils {
     @NotNull
     public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull PsiMethod method) {
         PsiClass clazz = method.getContainingClass();
-        return null == clazz ? Collections.<Mapper>emptyList() : findMappers(project, clazz);
+        return null == clazz ? Collections.emptyList() : findMappers(project, clazz);
     }
 
     /**
@@ -354,4 +406,6 @@ public final class MapperUtils {
             }
         }
     }
+
+
 }

@@ -7,6 +7,7 @@ import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.NameValue;
+import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.SubTagList;
 import com.intellij.util.xml.SubTagsList;
@@ -22,6 +23,7 @@ import java.util.List;
  * @author yanglin jobob
  * @since 2018 -07-30
  */
+@Namespace("MybatisXml")
 public interface Mapper extends DomElement {
 
     /**

@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.description;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.DomUtils;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomFileDescription;
@@ -26,9 +25,7 @@ public class MapperDescription extends DomFileDescription<Mapper> {
     }
 
     @Override
-    public boolean isMyFile(@NotNull XmlFile file, @Nullable Module module) {
-        return DomUtils.isMybatisFile(file);
+    protected void initializeFileDescription() {
+        registerNamespacePolicy("MybatisXml", "http://mybatis.org/dtd/mybatis-3-mapper.dtd");
     }
-
-
 }
