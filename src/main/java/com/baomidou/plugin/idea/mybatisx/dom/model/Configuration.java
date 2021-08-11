@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.dom.model;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @author yanglin
  */
+@Namespace("MybatisConfiguration")
 public interface Configuration extends DomElement {
 
     /**

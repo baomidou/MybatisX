@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.contributor;
+package com.baomidou.plugin.idea.mybatisx.system.contributor;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.tip.hashmark.CompositeHashMarkTip;

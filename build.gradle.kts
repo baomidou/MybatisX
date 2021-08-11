@@ -35,6 +35,7 @@ intellij {
     type = "IU" // 企业版
     setPlugins("java",
         "Kotlin",
+        "IntelliLang",
         "Spring",
         "SpringBoot",
         "DatabaseTools") //Bundled plugin dependencies
@@ -55,7 +56,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group="com.baomidou.plugin.idea.mybatisx"
-version="1.5.0"
+version="1.5.1"
 
 repositories {
     mavenLocal()
