@@ -272,6 +272,10 @@ public class CodeGenerateUI {
 
         // 添加列的内容
         for (ModuleInfoGo item : list) {
+            // 忽略为空的设置
+            if (item == null) {
+                continue;
+            }
             // domain 域特殊处理, 不可更改
             if (DOMAIN.equals(item.getConfigName())) {
                 ModuleInfoGo itemX = new ModuleInfoGo();
