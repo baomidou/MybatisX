@@ -19,6 +19,12 @@ import java.util.Collection;
  * </p>
  */
 public class MapperClassSearch extends QueryExecutorBase<PsiElement, DefinitionsScopedSearch.SearchParameters> {
+    /**
+     * 必须是只读的操作, 否则无法读取java的类
+     */
+    public MapperClassSearch() {
+        super(true);
+    }
 
     @Override
     public void processQuery(@NotNull DefinitionsScopedSearch.SearchParameters queryParameters, @NotNull Processor<? super PsiElement> consumer) {
