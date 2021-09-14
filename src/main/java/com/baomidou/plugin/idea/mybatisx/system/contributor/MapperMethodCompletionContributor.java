@@ -78,7 +78,8 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         }
         PsiClass mapperClass = editor.getUserData(MAPPER);
         if (mapperClass == null) {
-            Optional<PsiClass> mapperClassOptional = findMapperClass(parameters);
+            PsiClass foundMapperClass = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), PsiClass.class);
+            Optional<PsiClass> mapperClassOptional = getIfIsMapper(foundMapperClass);
             if (mapperClassOptional.isPresent()) {
                 mapperClass = mapperClassOptional.get();
                 editor.putUserData(MAPPER, mapperClass);
@@ -87,7 +88,10 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
                 editor.putUserData(FOUND, false);
                 return;
             }
-
+        }
+        if (!checkPosition(parameters)) {
+            logger.info("JPA 提示位置错误, 无法提示");
+            return;
         }
 
         logger.info("MapperMethodCompletionContributor.fillCompletionVariants start");
@@ -110,34 +114,11 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
     /**
      * Find mapper class optional.
      *
-     * @param parameters the parameters
+     * @param mapperClass the mapperClass
      * @return the optional
      */
     @NotNull
-    protected Optional<PsiClass> findMapperClass(@NotNull CompletionParameters parameters) {
-        if (parameters.getCompletionType() != CompletionType.BASIC) {
-            logger.info("类型不是 BASIC");
-            return Optional.empty();
-        }
-        if (inCommentOrLiteral(parameters)) {
-            logger.info("注释区间不提示");
-            return Optional.empty();
-        }
-        // 验证当前类必须是接口
-        PsiElement originalPosition = parameters.getOriginalPosition();
-
-        PsiMethod currentMethod = PsiTreeUtil.getParentOfType(originalPosition, PsiMethod.class);
-        if (currentMethod != null) {
-            logger.info("当前位置在方法体内部, 不提示");
-            return Optional.empty();
-        }
-
-        PsiClass mapperClass = PsiTreeUtil.getParentOfType(originalPosition, PsiClass.class);
-        if (mapperClass == null || !mapperClass.isInterface()) {
-            logger.info("当前类不是接口, 不提示");
-            return Optional.empty();
-        }
-
+    protected Optional<PsiClass> getIfIsMapper(PsiClass mapperClass) {
         Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
         if (!firstMapper.isPresent()) {
             logger.info("当前类不是mapper接口, 不提示");
@@ -150,5 +131,31 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         return Optional.of(mapperClass);
     }
 
+    private boolean checkPosition(CompletionParameters parameters){
+        if (parameters.getCompletionType() != CompletionType.BASIC) {
+            logger.info("类型不是 BASIC");
+            return false;
+        }
+
+        // 验证当前类必须是接口
+        PsiElement originalPosition = parameters.getOriginalPosition();
+
+        PsiMethod currentMethod = PsiTreeUtil.getParentOfType(originalPosition, PsiMethod.class);
+        if (currentMethod != null) {
+            logger.info("当前位置在方法体内部, 不提示");
+            return false;
+        }
+
+        PsiClass mapperClass = PsiTreeUtil.getParentOfType(originalPosition, PsiClass.class);
+        if (mapperClass == null || !mapperClass.isInterface()) {
+            logger.info("当前类不是接口, 不提示");
+            return false;
+        }
+        if (inCommentOrLiteral(parameters)) {
+            logger.info("注释区间不提示");
+            return false;
+        }
+        return true;
+    }
 
 }
