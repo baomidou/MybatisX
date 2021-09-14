@@ -8,6 +8,7 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiConstantEvaluationHelper;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiLiteralExpression;
@@ -114,9 +115,10 @@ public abstract class JpaMappingResolver {
         PsiAnnotation annotation = field.getAnnotation(JAVAX_PERSISTENCE_COLUMN);
         if (annotation != null) {
             PsiAnnotationMemberValue originFieldAnnotation = annotation.findAttributeValue(COLUMN_NAME);
-            PsiLiteralExpression expression = (PsiLiteralExpression) originFieldAnnotation;
-            if (expression != null) {
-                Object value = expression.getValue();
+
+            PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(field.getProject()).getConstantEvaluationHelper();
+            if (originFieldAnnotation != null) {
+                Object value = constantEvaluationHelper.computeConstantExpression(originFieldAnnotation);
                 if (value != null) {
                     columnName = value.toString();
                 }
