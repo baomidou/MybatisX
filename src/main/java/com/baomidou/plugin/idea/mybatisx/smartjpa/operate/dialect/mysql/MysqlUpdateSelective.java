@@ -184,7 +184,7 @@ public class MysqlUpdateSelective implements CustomStatement {
 
 
     /**
-     * 批量插入
+     * 可选更新
      */
     private class UpdateSelectiveSuffixOperator implements SuffixOperator {
 
@@ -211,7 +211,7 @@ public class MysqlUpdateSelective implements CustomStatement {
                 .map(field -> {
                     String fieldValue = JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType());
                     fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
-                    return "<if test=\"" + field.getFieldName() + " != null\">" + field.getFieldName() + "=" + fieldValue + ",</if>";
+                    return "<if test=\"" + field.getFieldName() + " != null\">" + field.getColumnName() + "=" + fieldValue + ",</if>";
                 })
                 .collect(Collectors.joining("\n"));
             stringBuilder.append(selectiveItems);

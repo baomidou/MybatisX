@@ -1,12 +1,35 @@
 <LanguageInjectionConfiguration>
-    <injection language="SQL" injector-id="xml">
-        <display-name>MyBatisX select|insert|update|delete</display-name>
-        <place><![CDATA[xmlTag().withLocalName(string().oneOf("select", "insert", "update", "delete")).withNamespace(string().oneOf("http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd", "http://mybatis.org/dtd/mybatis-3-mapper.dtd"))]]></place>
-        <apply-to-subtags />
+    <!-- 支持 @Select 注解写SQL语句 -->
+    <injection language="SQL" injector-id="java">
+        <display-name>MybatisX Select.value (org.apache.ibatis.annotations)</display-name>
+        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
+        <single-file />
+        <place><![CDATA[
+        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Select")
+]]></place>
     </injection>
-    <injection language="SQL" injector-id="xml">
-        <display-name>MyBatisX select|insert|update|delete|statement</display-name>
-        <place><![CDATA[xmlTag().withLocalName(string().oneOf("select", "insert", "update", "delete", "statement")).withNamespace(string().equalTo("http://ibatis.apache.org/dtd/sql-map-2.dtd"))]]></place>
-        <apply-to-subtags />
+    <injection language="SQL" injector-id="java">
+        <display-name>MybatisX Insert.value (org.apache.ibatis.annotations)</display-name>
+        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
+        <single-file />
+        <place><![CDATA[
+        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Insert")
+]]></place>
+    </injection>
+    <injection language="SQL" injector-id="java">
+        <display-name>MybatisX Update.value (org.apache.ibatis.annotations)</display-name>
+        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
+        <single-file />
+        <place><![CDATA[
+        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Update")
+]]></place>
+    </injection>
+    <injection language="SQL" injector-id="java">
+        <display-name>MybatisX Delete.value (org.apache.ibatis.annotations)</display-name>
+        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
+        <single-file />
+        <place><![CDATA[
+        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Delete")
+]]></place>
     </injection>
 </LanguageInjectionConfiguration>

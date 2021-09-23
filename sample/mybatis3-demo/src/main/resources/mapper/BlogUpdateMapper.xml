@@ -119,14 +119,14 @@ update t_blog
 where age = true
 </update>
     <update id="updateSelective">
-        update t_blog
+        update blog
         <set>
             <if test="title != null">title=#{title,jdbcType=VARCHAR},</if>
             <if test="content != null">content=#{content,jdbcType=VARCHAR},</if>
             <if test="money != null">money=#{money,jdbcType=DECIMAL},</if>
             <if test="age != null">age=#{age,jdbcType=NUMERIC},</if>
-            <if test="createTime != null">createTime=#{createTime,jdbcType=TIMESTAMP},</if>
-            <if test="blobText != null">blobText=#{blobText},</if>
+            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="blobText != null">blob_text=#{blobText},</if>
             <if test="objects != null">objects=#{objects},</if>
             <if test="ids != null">ids=#{ids},</if>
         </set>
