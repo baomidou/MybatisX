@@ -249,4 +249,17 @@ public class TestUpdate extends BaseJpaTest {
             true);
 
     }
+
+    public void testUpdateSelective() throws IOException {
+        launchAction("updateSelective");
+
+        myFixture.checkResultByFile("template/TipMapper.java",
+            "after/update/UpdateSelective.java",
+            true);
+
+        myFixture.checkResultByFile("template/TipMapper.xml",
+            "after/update/UpdateSelective.xml",
+            true);
+
+    }
 }

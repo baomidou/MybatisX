@@ -1,6 +1,5 @@
 <idea-plugin>
     <extensions defaultExtensionNs="org.intellij.intelliLang">
-<!--        <languageSupport implementation="com.intellij.sql.injection.SqlTypeBasedInjectionSupport"/>-->
         <injectionConfig config="injection/sqlInjections.xml"/>
     </extensions>
 </idea-plugin>
