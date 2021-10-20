@@ -27,6 +27,7 @@ import java.util.Map;
 public class FreeMakerFormatter implements JavaFormatter {
 
     public static final String TEMPLATE = "template";
+    public static final String USER_NAME = "user.name";
     private CustomTemplateRoot rootObject;
     private final ClassInfo classInfo;
     private Context context;
@@ -70,6 +71,7 @@ public class FreeMakerFormatter implements JavaFormatter {
 
             map.put("baseInfo", templateSettingDTO);
             map.put("tableClass", classInfo);
+            map.put("author", System.getProperty(USER_NAME, "mybatisX"));
             map.putAll(rootObject.toMap());
             templateName.process(map, writer);
             final String templateContent = writer.toString();
@@ -83,5 +85,4 @@ public class FreeMakerFormatter implements JavaFormatter {
             return "填充模板出错," + out.toString();
         }
     }
-
 }
