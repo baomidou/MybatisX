@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 /**
 * @author ${author!}
-* @description 针对表【${tableClass.tableName}<#if tableClass.remark??>(${tableClass.remark!})</#if>】的数据库操作Service实现
+* @description 针对表【${tableClass.tableName}<#if tableClass.remark?has_content>(${tableClass.remark!})</#if>】的数据库操作Service实现
 * @createDate ${.now?string('yyyy-MM-dd HH:mm:ss')}
 */
 @Service

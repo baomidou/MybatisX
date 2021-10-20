@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
 * @author ${author!}
-* @description 针对表【${tableClass.tableName}<#if tableClass.remark??>(${tableClass.remark!})</#if>】的数据库操作Mapper
+* @description 针对表【${tableClass.tableName}<#if tableClass.remark?has_content>(${tableClass.remark!})</#if>】的数据库操作Mapper
 * @createDate ${.now?string('yyyy-MM-dd HH:mm:ss')}
 * @Entity ${tableClass.fullClassName}
 */
