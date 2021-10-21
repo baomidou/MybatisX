@@ -79,8 +79,9 @@ public class FreeMakerFormatter implements JavaFormatter {
             return templateContent;
         } catch (IOException | TemplateException e) {
             StringWriter out = new StringWriter();
-            PrintWriter stringWriter = new PrintWriter(out);
-            e.printStackTrace(stringWriter);
+            try (PrintWriter stringWriter = new PrintWriter(out)) {
+                e.printStackTrace(stringWriter);
+            }
             logger.error("模板内容生成失败", e);
             return "填充模板出错," + out.toString();
         }
