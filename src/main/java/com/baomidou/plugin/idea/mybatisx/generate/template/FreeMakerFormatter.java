@@ -27,10 +27,10 @@ import java.util.Map;
 public class FreeMakerFormatter implements JavaFormatter {
 
     public static final String TEMPLATE = "template";
-    public static final String USER_NAME = "user.name";
+    private static final String USER_NAME = "user.name";
     private CustomTemplateRoot rootObject;
     private final ClassInfo classInfo;
-    private Context context;
+    protected Context context;
 
     public FreeMakerFormatter(CustomTemplateRoot rootObject, ClassInfo classInfo) {
         this.rootObject = rootObject;
