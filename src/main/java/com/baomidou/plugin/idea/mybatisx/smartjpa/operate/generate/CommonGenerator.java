@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * 常用的生成器
+ * @author ls9527
  */
 public class CommonGenerator implements PlatformGenerator {
     /**
@@ -103,13 +103,12 @@ public class CommonGenerator implements PlatformGenerator {
     }
 
     @Override
-    public void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
-                                  PsiMethod psiMethod,
+    public void generateMapperXml(PsiMethod psiMethod,
                                   ConditionFieldWrapper conditionFieldWrapper,
-                                  List<TxField> resultFields) {
+                                  List<TxField> resultFields,
+                                  Generator generator) {
         WriteAction.run(() -> {
             // 生成完整版的内容
-            Generator generator = conditionFieldWrapper.getGenerator(mapperClassGenerateFactory);
             appenderManager.generateMapperXml(
                 text,
                 new LinkedList<>(jpaList),

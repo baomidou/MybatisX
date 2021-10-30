@@ -48,7 +48,7 @@ public class MapperMethodInspection extends MapperInspection {
             add("org.apache.ibatis.annotations.DeleteProvider");
         }
     };
-    private static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<String>() {
+    public static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<String>() {
         {
             // mp3
             add("com.baomidou.mybatisplus.core.mapper.BaseMapper");

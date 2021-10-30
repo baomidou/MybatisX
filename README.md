@@ -4,7 +4,7 @@ MybatisX 辅助 idea 快速开发 mybatis 插件，为效率而生。【入 Q �
 
 官方安装： File -> Settings -> Plugins -> Browse Repositories.. 输入 mybatisx 安装下载
 
-Jar 安装： File -> Settings -> Plugins -> Install plugin from disk.. 选中 mybatisx..jar 安装
+Jar 安装： File -> Settings -> Plugins -> Install plugin from disk.. 选中 mybatisx.zip(重要,是zip包) 安装
 
 亲！好用 五分好评 哦！！
 

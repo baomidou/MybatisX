@@ -1,4 +1,4 @@
-package com.baomidou.plugin.idea.mybatisx.intention;
+package com.baomidou.plugin.idea.mybatisx.smartjpa;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
@@ -8,6 +8,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingHolder;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappingResolverFactory;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformDbGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformGenerator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.PlatformSimpleGenerator;
@@ -28,7 +29,6 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiTypeElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 在mapper类中通过名字生成方法和xml内容
@@ -98,37 +97,50 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                 logger.info("没找到合适的条件包装器, mapperClass: {}", mapperClass.getName());
                 return;
             }
-            ConditionFieldWrapper conditionFieldWrapper = conditionFieldWrapperOptional.get();
-            // 找到 mapper.xml 的 Mapper 对象
-            Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(project, mapperClass);
-            if (firstMapper.isPresent()) {
-                Mapper mapper = firstMapper.get();
-                conditionFieldWrapper.setMapper(mapper);
-            }
-
-
-            MapperClassGenerateFactory mapperClassGenerateFactory =
-                new MapperClassGenerateFactory(project,
-                    editor,
-                    statementElement,
-                    mapperClass,
-                    parameterDescriptor,
-                    conditionFieldWrapper,
-                    returnDescriptor);
-
-            String newMethodString = mapperClassGenerateFactory.generateMethodStr(conditionFieldWrapper.getResultType());
-            PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
-            final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
-
-            List<TxField> resultTxFields = conditionFieldWrapper.getResultTxFields();
-            platformGenerator.generateMapperXml(mapperClassGenerateFactory,
-                psiMethod,
-                conditionFieldWrapper,
-                resultTxFields);
-
-
+            generate(project, editor, statementElement, mapperClass, platformGenerator, parameterDescriptor, returnDescriptor, conditionFieldWrapperOptional);
         } catch (ProcessCanceledException e) {
             logger.info("cancel info", e);
+        }
+    }
+
+    private void generate(@NotNull Project project,
+                          Editor editor,
+                          PsiTypeElement statementElement,
+                          PsiClass mapperClass,
+                          PlatformGenerator platformGenerator,
+                          TypeDescriptor parameterDescriptor,
+                          TypeDescriptor returnDescriptor,
+                          Optional<ConditionFieldWrapper> conditionFieldWrapperOptional) {
+        ConditionFieldWrapper conditionFieldWrapper = conditionFieldWrapperOptional.get();
+        // 找到 mapper.xml 的 Mapper 对象
+        Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(project, mapperClass);
+        if (firstMapper.isPresent()) {
+            Mapper mapper = firstMapper.get();
+            conditionFieldWrapper.setMapper(mapper);
+        }
+
+
+        MapperClassGenerateFactory mapperClassGenerateFactory =
+            new MapperClassGenerateFactory(project,
+                editor,
+                statementElement,
+                mapperClass,
+                parameterDescriptor,
+                conditionFieldWrapper,
+                returnDescriptor);
+
+        String newMethodString = mapperClassGenerateFactory.generateMethodStr(conditionFieldWrapper.getResultType());
+        PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
+        final PsiMethod psiMethod = factory.createMethodFromText(newMethodString, mapperClass);
+
+        List<TxField> resultTxFields = conditionFieldWrapper.getResultTxFields();
+        final Generator generator = conditionFieldWrapper.getGenerator(mapperClassGenerateFactory);
+        if(generator.checkCanGenerate(mapperClass)){
+            platformGenerator.generateMapperXml(
+                psiMethod,
+                conditionFieldWrapper,
+                resultTxFields, generator);
+
         }
     }
 
@@ -215,15 +227,17 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
             return false;
         }
 
-        // 查找最近的有效节点
+        // 查找最近的有效节点, 找到Class类
         PsiTypeElement statementElement = PsiTreeUtil.getParentOfType(element, PsiTypeElement.class);
         if (statementElement == null) {
             statementElement = PsiTreeUtil.getPrevSiblingOfType(element, PsiTypeElement.class);
         }
-        // 当前节点的父类不是mapper类就返回
-        PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
-        if (mapperClass == null) {
-            return false;
+        if (statementElement != null) {
+            // 当前节点的父类不是mapper类就返回
+            PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
+            if (mapperClass == null) {
+                return false;
+            }
         }
         return true;
     }

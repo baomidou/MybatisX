@@ -51,4 +51,12 @@ public interface Generator {
      * @param value the value
      */
     void generateUpdate(String id, String value);
+
+    /**
+     * 检查是否能生成代码
+     * @param mapperClass mapper接口类
+     * @return 能还是不能？
+     */
+    boolean checkCanGenerate(PsiClass mapperClass);
+
 }

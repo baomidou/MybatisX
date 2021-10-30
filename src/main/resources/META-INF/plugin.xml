@@ -140,11 +140,11 @@
 
         <!-- 根据jpa名字生成方法和xml文件内容 -->
         <intentionAction id="baomidou.GenerateMapperMethodSmartJpaAction">
-            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateSmartJpaAction</className>
+            <className>com.baomidou.plugin.idea.mybatisx.smartjpa.GenerateSmartJpaAction</className>
         </intentionAction>
 
         <intentionAction id="baomidou.GenerateMapperMethodSmartAdvanceJpaAction">
-            <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateSmartJpaAdvanceAction</className>
+            <className>com.baomidou.plugin.idea.mybatisx.smartjpa.GenerateSmartJpaAdvanceAction</className>
         </intentionAction>
         <!--提示动作 end-->
 
