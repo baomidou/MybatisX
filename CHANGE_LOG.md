@@ -1,3 +1,10 @@
+# 1.5.1
+1. 修复alt+delete删除mapper方法时,关联删除xml声明
+2. 修复insertSelective模板生成的字段名错误 by: makejava
+3. 完善模板注释, 支持author
+4. 完善mybatisx安装描述, 修复mybatis-plus3部分类无法使用JPA生成代码
+5. 完善没有XML使用JPA生成代码的提示
+
 # 1.5.0
 1. 绑定接口名称和xml的namespace, 支持接口重命名
 2. 多数据环境时, 加入databaseId
