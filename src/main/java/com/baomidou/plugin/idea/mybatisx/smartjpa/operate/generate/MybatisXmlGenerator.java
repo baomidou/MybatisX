@@ -4,7 +4,9 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.ClassCreator;
+import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.xml.XmlAttribute;
@@ -13,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -116,6 +120,12 @@ public class MybatisXmlGenerator implements Generator {
 
     }
 
+    Set<String> allowedResultMapNames = new HashSet<String>(){
+        {
+            add("BaseResultMap");
+            add("BlobResultMap");
+        }
+    };
     private void generateResultMapClass(PsiClass entityClass, String resultType, List<TxField> resultFields) {
 
         Set<String> allowFields = resultFields.stream().map(TxField::getFieldName).collect(Collectors.toSet());
@@ -131,13 +141,13 @@ public class MybatisXmlGenerator implements Generator {
         classCreator.createFromAllowedFields(allowFields, entityClass, dtoName);
     }
 
-    private boolean isGenerateResultMap(XmlTag xmlTag, String resultMapId) {
+    private Boolean isGenerateResultMap(XmlTag xmlTag, String resultMapId) {
         Boolean generate = null;
         // 支持countByXX的形式, 这种形式没有resultMapId
         if (resultMapId == null) {
             generate = false;
         }
-        if ("BaseResultMap".equals(resultMapId) || "BlobResultMap".equals(resultMapId)) {
+        if (allowedResultMapNames.contains(resultMapId)) {
             generate = false;
         }
 
@@ -193,5 +203,20 @@ public class MybatisXmlGenerator implements Generator {
 
         mapperClassGenerateFactory.generateMethod();
 
+    }
+
+    @Override
+    public boolean checkCanGenerate(PsiClass mapperClass) {
+        final Collection<Mapper> mappers = MapperUtils.findMappers(mapperClass.getProject(), mapperClass);
+        if (!hasMapperXmlFiles(mappers)) {
+            final String message = "mapper :'" + mapperClass.getQualifiedName() + "'is not related mapper xml";
+            Messages.showWarningDialog(message, "generate failure");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean hasMapperXmlFiles(Collection<Mapper> mappers) {
+        return mappers.size() > 0;
     }
 }

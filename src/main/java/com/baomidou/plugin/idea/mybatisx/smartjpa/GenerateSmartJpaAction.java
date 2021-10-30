@@ -1,11 +1,10 @@
-package com.baomidou.plugin.idea.mybatisx.intention;
+package com.baomidou.plugin.idea.mybatisx.smartjpa;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.NeverContainsFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

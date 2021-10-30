@@ -13,6 +13,11 @@ import java.util.List;
  * 平台生成器, 为后续生成 注解, springjpa注解等方式预留
  */
 public interface PlatformGenerator {
+
+    /**
+     * 默认日期字段
+     * @return
+     */
     String getDefaultDateWord();
 
     /**
@@ -32,15 +37,14 @@ public interface PlatformGenerator {
     /**
      * 生成mapper方法
      *
-     * @param mapperClassGenerateFactory PSI 方法描述
      * @param psiMethod
      * @param conditionFieldWrapper      the condition field wrapper
      * @param resultFields
+     * @param generator1
      */
-    void generateMapperXml(MapperClassGenerateFactory mapperClassGenerateFactory,
-                           PsiMethod psiMethod,
+    void generateMapperXml(PsiMethod psiMethod,
                            ConditionFieldWrapper conditionFieldWrapper,
-                           List<TxField> resultFields);
+                           List<TxField> resultFields, Generator generator1);
 
     /**
      * Gets condition fields.
@@ -63,5 +67,9 @@ public interface PlatformGenerator {
      */
     PsiClass getEntityClass();
 
+    /**
+     * 结果集字段
+     * @return
+     */
     List<String> getResultFields();
 }

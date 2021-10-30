@@ -99,12 +99,7 @@ public final class MapperUtils {
      */
     @NotNull
     public static Collection<PsiDirectory> findMapperDirectories(@NotNull Project project) {
-        return Collections2.transform(findMappers(project), new Function<Mapper, PsiDirectory>() {
-            @Override
-            public PsiDirectory apply(Mapper input) {
-                return input.getXmlElement().getContainingFile().getContainingDirectory();
-            }
-        });
+        return Collections2.transform(findMappers(project), input -> Objects.requireNonNull(input.getXmlElement()).getContainingFile().getContainingDirectory());
     }
 
     /**

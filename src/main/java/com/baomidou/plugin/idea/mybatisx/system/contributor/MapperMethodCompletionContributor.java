@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.system.contributor;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.inspection.MapperMethodInspection;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.CommentAnnotationMappingResolver;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.ui.SmartJpaCompletionProvider;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
@@ -17,11 +18,14 @@ import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,18 +124,48 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
     @NotNull
     protected Optional<PsiClass> getIfIsMapper(PsiClass mapperClass) {
         Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
-        if (!firstMapper.isPresent()) {
-            logger.info("当前类不是mapper接口, 不提示");
-            // 支持 mapper 接口上面写 @Entity 注解
-            PsiDocComment docComment = mapperClass.getDocComment();
-            if (docComment != null && docComment.findTagByName(CommentAnnotationMappingResolver.TABLE_ENTITY) == null) {
-                return Optional.empty();
-            }
+        if (firstMapper.isPresent()) {
+            return Optional.of(mapperClass);
         }
-        return Optional.of(mapperClass);
+        logger.info("当前类不是mapper接口, 不提示. class: " + mapperClass.getQualifiedName());
+        Optional<PsiClass> psiMapper = getMapperIfHasAnnotation(mapperClass);
+        if (psiMapper.isPresent()) {
+            return psiMapper;
+        }
+        return getMapperIfExtendsFromMybatisPlus(mapperClass);
+
+
     }
 
-    private boolean checkPosition(CompletionParameters parameters){
+    @Nullable
+    private Optional<PsiClass> getMapperIfHasAnnotation(PsiClass mapperClass) {
+        // 支持 mapper 接口上面写 @Entity 注解
+        PsiDocComment docComment = mapperClass.getDocComment();
+        if (docComment != null && docComment.findTagByName(CommentAnnotationMappingResolver.TABLE_ENTITY) != null) {
+            return Optional.of(mapperClass);
+        }
+        return Optional.empty();
+    }
+
+    @Nullable
+    private Optional<PsiClass> getMapperIfExtendsFromMybatisPlus(PsiClass mapperClass) {
+        final PsiReferenceList extendsList = mapperClass.getExtendsList();
+        if (extendsList != null) {
+            final PsiJavaCodeReferenceElement[] referenceElements = extendsList.getReferenceElements();
+            if (referenceElements.length > 0) {
+                for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
+                    final String qualifiedName = referenceElement.getQualifiedName();
+                    if (MapperMethodInspection.MYBATIS_PLUS_BASE_MAPPER_NAMES.contains(qualifiedName)) {
+                        return Optional.of(mapperClass);
+                    }
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+
+    private boolean checkPosition(CompletionParameters parameters) {
         if (parameters.getCompletionType() != CompletionType.BASIC) {
             logger.info("类型不是 BASIC");
             return false;

@@ -97,4 +97,9 @@ public class MybatisAnnotationGenerator implements Generator {
         text = "@Update(\"" + text + "\")";
         mapperClassGenerateFactory.generateMethod(text, Collections.singletonList("org.apache.ibatis.annotations.Update"));
     }
+
+    @Override
+    public boolean checkCanGenerate(PsiClass mapperClass) {
+        return true;
+    }
 }
