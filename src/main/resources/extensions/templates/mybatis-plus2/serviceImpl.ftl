@@ -15,7 +15,9 @@ import ${mapperInterface.packageName}.${mapperInterface.fileName};
 import org.springframework.stereotype.Service;
 
 /**
-*
+* @author ${author!}
+* @description 针对表【${tableClass.tableName}<#if tableClass.remark?has_content>(${tableClass.remark!})</#if>】的数据库操作Service实现
+* @createDate ${.now?string('yyyy-MM-dd HH:mm:ss')}
 */
 @Service
 public class ${baseInfo.fileName} extends ServiceImpl<${mapperInterface.fileName}, ${tableClass.shortClassName}>
