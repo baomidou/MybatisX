@@ -123,6 +123,9 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
      */
     @NotNull
     protected Optional<PsiClass> getIfIsMapper(PsiClass mapperClass) {
+        if (mapperClass == null) {
+            return Optional.empty();
+        }
         Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(mapperClass.getProject(), mapperClass);
         if (firstMapper.isPresent()) {
             return Optional.of(mapperClass);
@@ -137,7 +140,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
     }
 
-    @Nullable
+    @NotNull
     private Optional<PsiClass> getMapperIfHasAnnotation(PsiClass mapperClass) {
         // 支持 mapper 接口上面写 @Entity 注解
         PsiDocComment docComment = mapperClass.getDocComment();
@@ -147,7 +150,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         return Optional.empty();
     }
 
-    @Nullable
+    @NotNull
     private Optional<PsiClass> getMapperIfExtendsFromMybatisPlus(PsiClass mapperClass) {
         final PsiReferenceList extendsList = mapperClass.getExtendsList();
         if (extendsList != null) {
