@@ -8,9 +8,11 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.TablePreviewUI;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,8 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
 
     private int page = 0;
     private int lastPage = 1;
+    private Project project;
+    private List<DbTable> tableElements;
 
     protected ClassGenerateDialogWrapper(@Nullable Project project) {
         super(project);
@@ -72,20 +76,30 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
             super.doOKAction();
             return;
         }
-        page = page + 1;
-        setOKButtonText("Finish");
-
-        previousAction.setEnabled(true);
-
         // 替换第二个panel的占位符
         DomainInfo domainInfo = tablePreviewUI.buildDomainInfo();
-        codeGenerateUI.fillDomainInfo(domainInfo);
+        if (StringUtils.isEmpty(domainInfo.getModulePath())) {
+            Messages.showMessageDialog("Please select module to generate files", "Generate File", Messages.getWarningIcon());
+            return;
+        }
+        page = page + 1;
+        setOKButtonText("Finish");
+        previousAction.setEnabled(true);
 
+        TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
+        final TemplateContext templateContext = templatesSettings.getTemplateConfigs();
+        final Map<String, List<TemplateSettingDTO>> settingMap = templatesSettings.getTemplateSettingMap();
+        if (settingMap.isEmpty()) {
+            throw new RuntimeException("无法获取模板");
+        }
+        codeGenerateUI.fillData(project,
+            generateConfig,
+            domainInfo,
+            templateContext.getTemplateName(),
+            settingMap);
         switchPage(page);
 
     }
-
-
 
 
     private void switchPage(int newPage) {
@@ -107,11 +121,14 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
         return new Action[]{previousAction, getOKAction(), getCancelAction()};
     }
 
+    private GenerateConfig generateConfig;
 
     public void fillData(Project project, List<DbTable> tableElements) {
+        this.project = project;
+        this.tableElements = tableElements;
         TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
         final TemplateContext templateContext = templatesSettings.getTemplateConfigs();
-        GenerateConfig generateConfig = templateContext.getGenerateConfig();
+        generateConfig = templateContext.getGenerateConfig();
         if (generateConfig == null) {
             generateConfig = new DefaultGenerateConfig(templateContext);
         }
@@ -121,9 +138,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
             throw new RuntimeException("无法获取模板");
         }
 
-        tablePreviewUI.fillData(project,tableElements, generateConfig);
-        codeGenerateUI.fillData(project,generateConfig,templateContext.getTemplateName(), settingMap);
-
+        tablePreviewUI.fillData(project, tableElements, generateConfig);
 
     }
 
@@ -133,7 +148,6 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
         tablePreviewUI.refreshGenerateConfig(generateConfig);
         return generateConfig;
     }
-
 
 
 }

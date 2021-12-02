@@ -55,7 +55,9 @@ public class MybatisGeneratorMainAction extends AnAction {
         if (classGenerateDialogWrapper.getExitCode() == Messages.YES) {
             // 生成代码
             GenerateConfig generateConfig = classGenerateDialogWrapper.determineGenerateConfig();
-
+            if(!generateConfig.checkGenerate()){
+                return;
+            }
             generateCode(project, dbTables, generateConfig);
         }
     }
