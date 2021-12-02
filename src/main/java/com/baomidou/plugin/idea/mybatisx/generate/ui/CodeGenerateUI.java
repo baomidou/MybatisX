@@ -79,9 +79,11 @@ public class CodeGenerateUI {
 
     public void fillData(Project project,
                          GenerateConfig generateConfig,
+                         DomainInfo domainInfo,
                          String defaultsTemplatesName,
                          Map<String, List<TemplateSettingDTO>> templateSettingMap) {
         this.project = project;
+        this.domainInfo = domainInfo;
 
         // 选择注解还是XML
         selectAnnotation(generateConfig.getAnnotationType());
@@ -109,38 +111,45 @@ public class CodeGenerateUI {
         if (generateConfig.isUseActualColumnAnnotationInject()) {
             useActualColumnAnnotationInjectCheckBox.setSelected(true);
         }
-
         // 初始化表格, 用于展示要生成的文件模块
         initTemplates(generateConfig, defaultsTemplatesName, templateSettingMap);
-
-        selectedTemplateName = generateConfig.getTemplatesName();
+        // 如果没有选择过, 就用上次选中的模板名称
     }
 
-    private void selectDefaultTemplateRadio(String templatesName) {
+    private void selectDefaultTemplateRadio(List<TemplateSettingDTO> list) {
+        String templatesName = this.selectedTemplateName;
         // 选择默认的模板, 或者记忆的模板
         if (StringUtils.isEmpty(templatesName)) {
             final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
             if (elements.hasMoreElements()) {
                 final AbstractButton abstractButton = elements.nextElement();
-                abstractButton.setSelected(true);
-            }
-        } else {
-            final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
-            while (elements.hasMoreElements()) {
-                final AbstractButton abstractButton = elements.nextElement();
-                final String text = abstractButton.getText();
-                if (templatesName.equals(text)) {
-                    abstractButton.setSelected(true);
-                    break;
-                }
+                templatesName = abstractButton.getText();
             }
         }
+        // 如果找不到, 并且无法选中默认模板就不选择了
+        if (templatesName == null) {
+            return;
+        }
+        final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
+        while (elements.hasMoreElements()) {
+            final AbstractButton abstractButton = elements.nextElement();
+            final String text = abstractButton.getText();
+            if (templatesName.equals(text)) {
+                abstractButton.setSelected(true);
+                break;
+            }
+        }
+        initSelectedModuleTable(list, domainInfo.getModulePath());
     }
 
     private boolean refresh = false;
 
-    private void initTemplates(GenerateConfig generateConfig, String defaultsTemplatesName, Map<String, List<TemplateSettingDTO>> templateSettingMap) {
-
+    private void initTemplates(GenerateConfig generateConfig,
+                               String defaultsTemplatesName,
+                               Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+        if (selectedTemplateName == null) {
+            selectedTemplateName = generateConfig.getTemplatesName();
+        }
         TableView<ModuleInfoGo> tableView = new TableView<>(model);
 
         GridConstraints gridConstraints = new GridConstraints();
@@ -169,16 +178,7 @@ public class CodeGenerateUI {
             .setPreferredSize(new Dimension(840, 150))
             .createPanel(), gridConstraints);
 
-        // N 行 3 列 的排版模式
-        GridLayout templateRadioLayout = new GridLayout(0, 3, 0, 0);
-        templateExtraRadiosPanel.setLayout(templateRadioLayout);
-        // 添加动态模板组
-        for (String templateName : templateSettingMap.keySet()) {
-            JRadioButton comp = new JRadioButton();
-            comp.setText(templateName);
-            templateButtonGroup.add(comp);
-            templateExtraRadiosPanel.add(comp);
-        }
+        initRaidoLayout(templateSettingMap);
 
         final ItemListener itemListener = new ItemListener() {
 
@@ -193,6 +193,7 @@ public class CodeGenerateUI {
                 List<TemplateSettingDTO> list = buildTemplatesSettings(templatesName);
                 List<ModuleInfoGo> moduleUIInfoList = buildModuleUIInfos(templatesName, list);
                 initMemoryModuleTable(moduleUIInfoList);
+                selectedTemplateName = jRadioButton.getText();
             }
 
             private List<ModuleInfoGo> buildModuleUIInfos(String templatesName, List<TemplateSettingDTO> list) {
@@ -249,6 +250,29 @@ public class CodeGenerateUI {
             final JRadioButton radioButton = (JRadioButton) radios.nextElement();
             radioButton.addItemListener(itemListener);
         }
+        final List<TemplateSettingDTO> list = templateSettingMap.get(selectedTemplateName);
+        selectDefaultTemplateRadio(list);
+
+    }
+
+    private boolean initRadioTemplates = false;
+
+    private void initRaidoLayout(Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+        if (initRadioTemplates) {
+            return;
+        }
+        // N 行 3 列 的排版模式
+        GridLayout templateRadioLayout = new GridLayout(0, 3, 0, 0);
+        templateExtraRadiosPanel.setLayout(templateRadioLayout);
+        // 添加动态模板组
+
+        for (String templateName : templateSettingMap.keySet()) {
+            JRadioButton comp = new JRadioButton();
+            comp.setText(templateName);
+            templateButtonGroup.add(comp);
+            templateExtraRadiosPanel.add(comp);
+        }
+        initRadioTemplates = true;
     }
 
     private AbstractButton findSelectedTemplateName() {
@@ -321,14 +345,8 @@ public class CodeGenerateUI {
             moduleInfoGoList.add(item);
         }
         initMemoryModuleTable(moduleInfoGoList);
-
-
     }
 
-    public void fillDomainInfo(DomainInfo domainInfo) {
-        this.domainInfo = domainInfo;
-        selectDefaultTemplateRadio(selectedTemplateName);
-    }
 
     private class MybaitsxModuleInfo extends ColumnInfo<ModuleInfoGo, String> {
 

@@ -1,5 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import com.intellij.openapi.ui.Messages;
+
 import java.util.List;
 
 public class GenerateConfig {
@@ -299,5 +302,17 @@ public class GenerateConfig {
 
     public void setIgnoreFieldSuffix(String ignoreFieldSuffix) {
         this.ignoreFieldSuffix = ignoreFieldSuffix;
+    }
+
+    public boolean checkGenerate() {
+        if (StringUtils.isEmpty(moduleName)) {
+            Messages.showErrorDialog("moduleName must not be empty", "Generate Info");
+            return false;
+        }
+        if (StringUtils.isEmpty(templatesName)) {
+            Messages.showErrorDialog("templatesName must not be empty", "Generate Info");
+            return false;
+        }
+        return true;
     }
 }
