@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis3.mapper.PerfDomainMapper">
+
+    <resultMap id="BaseResultMap" type="com.baomidou.mybatis3.domain.NestedDO$InnerClass">
+        <!-- 支持嵌套类的提示, 实现了TypeHandler接口, 不报错 -->
+        <result typeHandler="com.baomidou.mybatis3.domain.NestedDO$InnerClass"/>
+        <!-- 没有实现 TypeHandler 接口, 应该提示报错-->
+        <result typeHandler="com.baomidou.mybatis3.domain.NestedDO$InnerClassNotTypeHandler"/>
+    </resultMap>
+
+
+
+</mapper>
