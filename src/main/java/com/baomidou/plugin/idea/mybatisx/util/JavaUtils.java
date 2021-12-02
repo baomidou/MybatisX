@@ -105,7 +105,12 @@ public final class JavaUtils {
      * @return the optional
      */
     public static Optional<PsiClass> findClazz(@NotNull Project project, @NotNull String clazzName) {
-        return Optional.ofNullable(JavaPsiFacade.getInstance(project).findClass(clazzName, GlobalSearchScope.allScope(project)));
+        String classNameNeedFind = clazzName;
+        if(classNameNeedFind.contains("$")){
+            classNameNeedFind = classNameNeedFind.replace("$", ".");
+        }
+        final JavaPsiFacade instance = JavaPsiFacade.getInstance(project);
+        return Optional.ofNullable(instance.findClass(classNameNeedFind, GlobalSearchScope.allScope(project)));
     }
 
     /**

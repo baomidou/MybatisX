@@ -54,11 +54,15 @@ public class AliasConverter extends ConverterAdaptor<PsiClass> implements Custom
     @NotNull
     @Override
     public PsiReference[] createReferences(GenericDomValue<PsiClass> value, PsiElement element, ConvertContext context) {
-        if (((XmlAttributeValue) element).getValue().contains(MybatisConstants.DOT_SEPARATOR)) {
+        if (notAlias((XmlAttributeValue) element)) {
             return delegate.createReferences(value, element, context);
         } else {
             return new PsiReference[]{new AliasClassReference((XmlAttributeValue) element)};
         }
+    }
+
+    private boolean notAlias(XmlAttributeValue element) {
+        return element.getValue().contains(MybatisConstants.DOT_SEPARATOR);
     }
 
 
