@@ -86,7 +86,12 @@ public class GenerateCode {
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
         String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();
         javaModelGeneratorConfiguration.setTargetProject(targetProject);
-        javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + "." + generateConfig.getRelativePackage());
+         
+        if (null != generateConfig.getRelativePackage() && !"".equals(generateConfig.getRelativePackage())) {
+            generateConfig.setRelativePackage("." + generateConfig.getRelativePackage());
+        }
+        javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + generateConfig.getRelativePackage());
+        
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         final List<ClassLoader> classLoaderList = new ArrayList<>();
