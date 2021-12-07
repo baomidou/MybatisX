@@ -1,3 +1,11 @@
+# 1.5.2
+1. 支持 生成的Entity实体类名希望可设置或跟数据表名保持一致
+2. tinyint,smallint 默认映射为Integer
+3. resultMap->result->property 查找setter方法时,支持特殊的setter写法
+4. 无法生成代码时，提示具体原因
+5. 修复insert模板生成代码问题
+6. typeHandler 支持嵌套类的写法和报错提示
+****
 # 1.5.1
 1. 修复alt+delete删除mapper方法时,关联删除xml声明
 2. 修复insertSelective模板生成的字段名错误 by: makejava
