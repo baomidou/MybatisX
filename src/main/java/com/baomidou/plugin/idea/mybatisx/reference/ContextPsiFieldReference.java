@@ -1,8 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
 import com.baomidou.plugin.idea.mybatisx.dom.MapperBacktrackingUtils;
+import com.baomidou.plugin.idea.mybatisx.dom.converter.PropertySetterFind;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
-import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiClass;
@@ -14,6 +14,8 @@ import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -51,14 +53,24 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
     @Override
     public PsiElement resolve() {
         Optional<PsiField> resolved = resolver.resolve(index);
-        return resolved.orElse(null);
+        if (!resolved.isPresent()) {
+            final Optional<PsiClass> targetClazz = getTargetClazz();
+            return targetClazz.orElse(null);
+        }
+        return resolved.get();
     }
 
     @NotNull
     @Override
     public Object[] getVariants() {
         Optional<PsiClass> clazz = getTargetClazz();
-        return clazz.isPresent() ? JavaUtils.findSettablePsiFields(clazz.get()) : PsiReference.EMPTY_ARRAY;
+        if (!clazz.isPresent()) {
+            return PsiReference.EMPTY_ARRAY;
+        }
+        final PsiClass psiClass = clazz.get();
+        PropertySetterFind propertySetterFind = new PropertySetterFind();
+        final List<PsiField> setterFields = propertySetterFind.getSetterFields(psiClass);
+        return setterFields.toArray(new Object[0]);
     }
 
     @SuppressWarnings("unchecked")
