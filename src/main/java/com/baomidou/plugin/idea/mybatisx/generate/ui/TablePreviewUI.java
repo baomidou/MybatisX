@@ -1,5 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
+import com.baomidou.plugin.idea.mybatisx.generate.classname.CamelStrategy;
+import com.baomidou.plugin.idea.mybatisx.generate.classname.ClassNameStrategy;
+import com.baomidou.plugin.idea.mybatisx.generate.classname.SameAsTableNameStrategy;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TableUIInfo;
@@ -25,8 +28,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,6 +54,10 @@ public class TablePreviewUI {
     private JPanel leftPanel;
     private JPanel rightPanel;
     private JTextField extraClassSuffixTextField;
+    private JLabel keepTableName;
+    private JRadioButton camelRadioButton;
+    private JRadioButton sameAsTablenameRadioButton;
+    private JPanel classNameStrategyPanel;
     private PsiElement[] tableElements;
     private List<DbTable> dbTables;
 
@@ -89,23 +99,6 @@ public class TablePreviewUI {
 
     }
 
-    private String calculateClassName(String tableName, String ignorePrefixs, String ignoreSuffixs) {
-        String fName = tableName;
-        final String EMPTY = "";
-        if (!StringUtils.isEmpty(ignorePrefixs)) {
-            String[] splitPrefixs = ignorePrefixs.split(",");
-            for (String ignorePrefix : splitPrefixs) {
-                fName = fName.replaceAll("^" + ignorePrefix, EMPTY);
-            }
-        }
-        if (!StringUtils.isEmpty(ignoreSuffixs)) {
-            String[] splitSuffixs = ignoreSuffixs.split(",");
-            for (String ignoreSuffix : splitSuffixs) {
-                fName = fName.replaceFirst(ignoreSuffix + "$", EMPTY);
-            }
-        }
-        return StringUtils.dbStringToCamelStyle(fName);
-    }
 
     public JPanel getRootPanel() {
         return rootPanel;
@@ -116,7 +109,9 @@ public class TablePreviewUI {
         String ignorePrefix = generateConfig.getIgnoreTablePrefix();
         String ignoreSuffix = generateConfig.getIgnoreTableSuffix();
 
-        refreshTableNames(dbTables, ignorePrefix, ignoreSuffix);
+        String classNameStrategy = generateConfig.getClassNameStrategy();
+        selectClassNameStrategyByName(findStrategyByName(classNameStrategy));
+        refreshTableNames(classNameStrategy, dbTables, ignorePrefix, ignoreSuffix);
 
         ignoreTablePrefixTextField.setText(generateConfig.getIgnoreTablePrefix());
         ignoreTableSuffixTextField.setText(generateConfig.getIgnoreTableSuffix());
@@ -149,33 +144,74 @@ public class TablePreviewUI {
         DocumentListener listener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                refreshTableNames(dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
+                refreshTableNames(classNameStrategy, dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                refreshTableNames(dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
+                refreshTableNames(classNameStrategy, dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                refreshTableNames(dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
+                refreshTableNames(classNameStrategy, dbTables, ignoreTablePrefixTextField.getText(), ignoreTableSuffixTextField.getText());
             }
         };
+
+        final ItemListener classNameChangeListener = new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                final Object source = e.getItem();
+                if (!(source instanceof JRadioButton)) {
+                    return;
+                }
+                JRadioButton radioButton = (JRadioButton) source;
+                if (!radioButton.isSelected()) {
+                    return;
+                }
+                refreshTableNames(findClassNameStrategy(), dbTables, ignorePrefix, ignoreSuffix);
+            }
+        };
+        camelRadioButton.addItemListener(classNameChangeListener);
+        sameAsTablenameRadioButton.addItemListener(classNameChangeListener);
+
         ignoreTablePrefixTextField.getDocument().addDocumentListener(listener);
 
         ignoreTableSuffixTextField.getDocument().addDocumentListener(listener);
     }
 
-    private void refreshTableNames(List<DbTable> dbTables, String ignorePrefix, String ignoreSuffix) {
+
+    private void refreshTableNames(String classNameStrategyName, List<DbTable> dbTables, String ignorePrefix, String ignoreSuffix) {
         for (int currentRowIndex = model.getRowCount() - 1; currentRowIndex >= 0; currentRowIndex--) {
             model.removeRow(currentRowIndex);
         }
+        ClassNameStrategy classNameStrategy = findStrategyByName(classNameStrategyName);
         for (DbTable dbTable : dbTables) {
             String tableName = dbTable.getName();
-            String className = calculateClassName(tableName, ignorePrefix, ignoreSuffix);
+            String className = classNameStrategy.calculateClassName(tableName, ignorePrefix, ignoreSuffix);
             model.addRow(new TableUIInfo(tableName, className));
         }
+    }
+
+    List<ClassNameStrategy> classNameStrategies = new ArrayList<ClassNameStrategy>(){
+        {
+            add(new CamelStrategy());
+            add(new SameAsTableNameStrategy());
+        }
+    };
+    private ClassNameStrategy findStrategyByName(String classNameStrategyName) {
+        ClassNameStrategy classNameStrategy = null;
+        for (ClassNameStrategy nameStrategy : classNameStrategies) {
+            if (nameStrategy.getText().equals(classNameStrategyName)) {
+                classNameStrategy = nameStrategy;
+                break;
+            }
+        }
+        // 策略为空, 或者不是SAME的, 统统都是驼峰命名
+        if (classNameStrategy == null) {
+            classNameStrategy = new CamelStrategy();
+        }
+        return classNameStrategy;
     }
 
     private void chooseModule(Project project) {
@@ -214,8 +250,35 @@ public class TablePreviewUI {
         generateConfig.setModulePath(moduleChooseTextField.getText());
         generateConfig.setModuleName(moduleName);
         generateConfig.setExtraClassSuffix(extraClassSuffixTextField.getText());
+        generateConfig.setClassNameStrategy(findClassNameStrategy());
         // 保存对象, 用于传递和对象生成
         generateConfig.setTableUIInfoList(model.getItems());
+    }
+
+    private void selectClassNameStrategyByName(ClassNameStrategy classNameStrategy) {
+        for (Component component : classNameStrategyPanel.getComponents()) {
+            if (component instanceof JRadioButton) {
+                JRadioButton radioButton = (JRadioButton) component;
+                if (radioButton.getText().equals(classNameStrategy.getText())) {
+                    radioButton.setSelected(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    private String findClassNameStrategy() {
+        String name = null;
+        for (Component component : classNameStrategyPanel.getComponents()) {
+            if (component instanceof JRadioButton) {
+                JRadioButton radioButton = (JRadioButton) component;
+                if (radioButton.isSelected()) {
+                    name = radioButton.getText();
+                    break;
+                }
+            }
+        }
+        return name;
     }
 
     private static class MybaitsxTableColumnInfo extends ColumnInfo<TableUIInfo, String> {

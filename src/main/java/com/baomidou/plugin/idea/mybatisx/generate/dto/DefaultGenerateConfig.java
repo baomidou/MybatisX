@@ -2,6 +2,8 @@ package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 
 
+import com.baomidou.plugin.idea.mybatisx.generate.classname.ClassNameStrategy;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -61,5 +63,10 @@ public class DefaultGenerateConfig extends GenerateConfig {
     @Override
     public String getEncoding() {
         return "UTF-8";
+    }
+
+    @Override
+    public String getClassNameStrategy() {
+        return ClassNameStrategy.ClassNameStrategyEnum.CAMEL.name();
     }
 }
