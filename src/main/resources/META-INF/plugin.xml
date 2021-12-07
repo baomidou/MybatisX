@@ -122,6 +122,7 @@
                          id="baomidou.MybatisMapperXmlInspection"
                          displayName="Mapper xml inspection"
                          groupName="Mybatis"
+                         hasStaticDescription="true"
                          implementationClass="com.baomidou.plugin.idea.mybatisx.inspection.MapperXmlInspection"/>
 
         <!--提示动作 start-->
