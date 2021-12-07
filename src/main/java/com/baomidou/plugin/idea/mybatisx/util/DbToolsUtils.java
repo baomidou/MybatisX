@@ -142,11 +142,12 @@ public class DbToolsUtils {
         if (StringUtil.isEmpty(jdbcTypeName)) {
             return Types.OTHER;
         }
+
         String fixed = jdbcTypeName.toUpperCase();
         if (fixed.contains("BIGINT")) {
             return Types.BIGINT;
         } else if (fixed.contains("TINYINT")) {
-            return size == 1 ? Types.BOOLEAN : Types.TINYINT;
+            return Types.TINYINT;
         } else if (fixed.contains("LONGVARBINARY")) {
             return Types.LONGVARBINARY;
         } else if (fixed.contains("VARBINARY")) {
@@ -157,7 +158,7 @@ public class DbToolsUtils {
             return Types.SMALLINT;
         } else if (fixed.contains("DATETIME")) {
             return Types.TIMESTAMP;
-        } else if ("DATE".equals(fixed) && "Oracle".equals(databaseType)) {
+        } else if (fixed.equals("DATE") && "Oracle".equals(databaseType)) {
             return Types.TIMESTAMP;
         } else if (fixed.contains("NUMBER")) {
             return Types.DECIMAL;
@@ -182,7 +183,7 @@ public class DbToolsUtils {
                 return Types.DOUBLE;
             } else if ("CHAR".equals(fixed)) {
                 return Types.CHAR;
-            } else if (fixed.contains("INT") && !fixed.contains("INTERVAL")) {
+            } else if (fixed.equals("INT")) {
                 return Types.INTEGER;
             } else if (fixed.contains("DECIMAL")) {
                 return Types.DECIMAL;
