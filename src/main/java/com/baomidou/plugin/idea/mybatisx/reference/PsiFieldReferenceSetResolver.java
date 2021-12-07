@@ -1,13 +1,11 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
-import com.baomidou.plugin.idea.mybatisx.dom.MapperBacktrackingUtils;
+import com.baomidou.plugin.idea.mybatisx.dom.converter.PropertySetterFind;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
-import com.intellij.psi.util.PropertyUtil;
 import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,19 +48,8 @@ public class PsiFieldReferenceSetResolver extends ContextReferenceSetResolver<Xm
 
     @Override
     public Optional<PsiField> getStartElement(@Nullable String firstText) {
-        if (firstText == null) {
-            return Optional.empty();
-        }
-        Optional<PsiClass> clazz = MapperBacktrackingUtils.getPropertyClazz(getElement());
-        if (!clazz.isPresent()) {
-            return Optional.empty();
-        }
-        PsiClass psiClass = clazz.get();
-        if (psiClass.isAnnotationType() || psiClass.isInterface()) {
-            return Optional.empty();
-        }
-        PsiMethod propertySetter = PropertyUtil.findPropertySetter(psiClass, firstText, false, true);
-        return null == propertySetter ? Optional.empty() : Optional.ofNullable(PropertyUtil.findPropertyField(psiClass, firstText, false));
+        PropertySetterFind propertySetterFind = new PropertySetterFind();
+        return propertySetterFind.getStartElement(firstText, getElement());
     }
 
 }
