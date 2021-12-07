@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.Messages;
 import java.util.List;
 
 public class GenerateConfig {
+
     /**
      * 忽略表的前缀
      */
@@ -92,6 +93,13 @@ public class GenerateConfig {
      */
 
     private transient List<TableUIInfo> tableUIInfoList;
+
+    /**
+     * 类名生成策略
+     * CAMEL: 根据表名生成驼峰命名
+     * SAME: 使用表明
+     */
+    private String classNameStrategy;
 
     public List<TableUIInfo> getTableUIInfoList() {
         return tableUIInfoList;
@@ -314,5 +322,13 @@ public class GenerateConfig {
             return false;
         }
         return true;
+    }
+
+    public String getClassNameStrategy() {
+        return classNameStrategy;
+    }
+
+    public void setClassNameStrategy(String classNameStrategy) {
+        this.classNameStrategy = classNameStrategy;
     }
 }
