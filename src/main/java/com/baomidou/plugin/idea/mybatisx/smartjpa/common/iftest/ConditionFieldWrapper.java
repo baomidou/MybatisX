@@ -79,4 +79,6 @@ public interface ConditionFieldWrapper {
     int getNewline();
 
     String wrapperField(String originName, String name, String canonicalTypeText);
+
+    String wrapperBetweenCondition(String fieldName, String begin, String end, String canonicalTypeText);
 }

@@ -113,4 +113,9 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
         // 默认jdbcType 映射方式
         return JdbcTypeUtils.wrapperField(name, canonicalTypeText);
     }
+
+    @Override
+    public String wrapperBetweenCondition(String fieldName, String begin, String end, String canonicalTypeText) {
+        return canonicalTypeText;
+    }
 }

@@ -76,7 +76,8 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     @NotNull
     private String wrapCondition(String fieldName, String templateText) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<if test=\"").append(getConditionField(fieldName)).append("\">");
+        final TxField txField = txFieldMap.get(fieldName);
+        stringBuilder.append("<if test=\"").append(getConditionField(fieldName, txField.getFieldType())).append("\">");
         stringBuilder.append("\n").append(templateText);
         stringBuilder.append("\n").append("</if>");
         templateText = stringBuilder.toString();
@@ -84,10 +85,9 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     }
 
 
-    private String getConditionField(String fieldName) {
-        TxField txField = txFieldMap.get(fieldName);
+    private String getConditionField(String fieldName, String fieldType) {
         String appender = "";
-        if (Objects.equals(txField.getFieldType(), "java.lang.String")) {
+        if (Objects.equals(fieldType, "java.lang.String")) {
             appender = " and " + fieldName + " != ''";
         }
         return fieldName + " != null" + appender;
@@ -224,6 +224,19 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
             }
         }
         return JdbcTypeUtils.wrapperField(name, canonicalTypeText);
+    }
+
+    @Override
+    public String wrapperBetweenCondition(String fieldName, String begin, String end, String templateText) {
+        StringBuilder stringBuilder = new StringBuilder();
+        final TxField txField = txFieldMap.get(fieldName);
+        stringBuilder.append("<if test=\"").append(getConditionField(begin, txField.getFieldType()))
+            .append(" and ")
+            .append(getConditionField(end, txField.getFieldType()))
+            .append("\">");
+        stringBuilder.append("\n").append(templateText);
+        stringBuilder.append("\n").append("</if>");
+        return stringBuilder.toString();
     }
 
     public void setDefaultDateList(List<String> defaultDateList) {

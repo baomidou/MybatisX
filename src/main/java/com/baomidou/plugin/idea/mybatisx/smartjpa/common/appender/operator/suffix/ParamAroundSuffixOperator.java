@@ -35,11 +35,12 @@ public class ParamAroundSuffixOperator implements SuffixOperator {
 
         TxParameter parameter = parameters.poll();
         Validate.notNull(parameter, "parameter must not be null");
-        return fieldName
+        final String templateText = fieldName
             + " "
             + prefix
             + " "
             + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText())
             + suffix;
+        return  conditionFieldWrapper.wrapConditionText(fieldName, templateText);
     }
 }

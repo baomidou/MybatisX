@@ -29,10 +29,11 @@ public class ParamBeforeSuffixOperator implements SuffixOperator {
     public String getTemplateText(String columnName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
 
         TxParameter parameter = parameters.poll();
-        return columnName
+        final String templateText = columnName
             + " "
             + operatorName
             + " "
             + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
+        return  conditionFieldWrapper.wrapConditionText(columnName, templateText);
     }
 }

@@ -20,11 +20,12 @@ public class ParamIgnoreCaseSuffixOperator implements SuffixOperator {
                                   ConditionFieldWrapper conditionFieldWrapper) {
 
         TxParameter parameter = parameters.poll();
-        return "UPPER(" + fieldName + ")"
+        final String templateText = "UPPER(" + fieldName + ")"
             + " "
             + "="
             + " "
             + "UPPER(" + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText()) + ")";
+        return  conditionFieldWrapper.wrapConditionText(fieldName, templateText);
     }
 
 

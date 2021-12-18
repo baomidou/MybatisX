@@ -45,7 +45,8 @@ public class InParameterChanger implements MxParameterChanger {
             .append("\" item=\"item\" open=\"(\" close=\")\" separator=\",\">").append("\n");
         stringBuilder.append(itemContent).append("\n");
         stringBuilder.append("</foreach>");
-        return stringBuilder.toString();
+        final String templateText = stringBuilder.toString();
+        return conditionFieldWrapper.wrapConditionText(fieldName, templateText);
     }
 
     /**

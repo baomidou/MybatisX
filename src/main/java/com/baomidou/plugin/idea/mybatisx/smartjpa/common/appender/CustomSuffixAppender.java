@@ -225,8 +225,8 @@ public class CustomSuffixAppender implements SyntaxAppender {
         String suffixTemplateText = suffixOperator.
             getTemplateText(columnName, parameters, conditionFieldWrapper);
         stringBuilder.append(suffixTemplateText);
-
-        return conditionFieldWrapper.wrapConditionText(fieldName, stringBuilder.toString());
+       
+        return stringBuilder.toString();
     }
 
     protected String getFieldTemplateText(String tableName,
