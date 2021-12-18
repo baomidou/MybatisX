@@ -8,6 +8,11 @@ Jar 安装： File -> Settings -> Plugins -> Install plugin from disk.. 选中 m
 
 亲！好用 五分好评 哦！！
 
+# 扫码加入微信交流群
+
+<img src="https://images.gitee.com/uploads/images/2021/1218/170328_d229e3d1_12260.png">
+
+
 [Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 简化开发
 
 使用文档：https://mp.baomidou.com/guide/mybatisx-idea-plugin.html
