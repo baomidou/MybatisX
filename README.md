@@ -10,7 +10,7 @@ Jar 安装： File -> Settings -> Plugins -> Install plugin from disk.. 选中 m
 
 # 扫码加入微信交流群
 
-<img src="https://images.gitee.com/uploads/images/2022/0108/141012_b65cc995_12260.png">
+<img src="https://images.gitee.com/uploads/images/2022/0115/134442_8b58d4f3_12260.png">
 
 
 [Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 简化开发
