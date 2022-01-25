@@ -35,7 +35,11 @@ public class MapperMethodSafeDeleteProcessor extends SafeDeleteProcessorDelegate
         if (containingClass == null) {
             return false;
         }
-        return MapperUtils.findMappers(psiMethod.getProject(), containingClass).size() > 0;
+        final XmlTag tag = MapperUtils.findTag(containingClass.getProject(), psiMethod);
+        if (tag == null) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -69,7 +73,7 @@ public class MapperMethodSafeDeleteProcessor extends SafeDeleteProcessorDelegate
     @Override
     public @Nullable
     UsageInfo[] preprocessUsages(Project project, UsageInfo[] usages) {
-        return new UsageInfo[0];
+        return usages;
     }
 
 

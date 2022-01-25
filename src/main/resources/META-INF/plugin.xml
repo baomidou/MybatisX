@@ -162,7 +162,7 @@
         <applicationService id="baomidou.MybatisSetting"
                             serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
         <!-- 使用 Alt+Delete 删除方法时, 也删掉对应的标签 -->
-        <refactoring.safeDeleteProcessor
+        <refactoring.safeDeleteProcessor id="MapperMethodSafeDeleteProcessor"
             implementation="com.baomidou.plugin.idea.mybatisx.system.refactoring.MapperMethodSafeDeleteProcessor"/>
     </extensions>
 
