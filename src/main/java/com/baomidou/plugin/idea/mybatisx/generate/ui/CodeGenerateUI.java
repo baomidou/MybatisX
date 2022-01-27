@@ -6,6 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.util.DomainPlaceHolder;
+import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.actionSystem.ActionToolbarPosition;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -324,6 +325,9 @@ public class CodeGenerateUI {
      * @param modulePath
      */
     private void initSelectedModuleTable(List<TemplateSettingDTO> list, String modulePath) {
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
         // 扩展面板的列表内容
         // 移除所有行, 重新刷新
         for (int rowCount = model.getRowCount(); rowCount > 0; rowCount--) {

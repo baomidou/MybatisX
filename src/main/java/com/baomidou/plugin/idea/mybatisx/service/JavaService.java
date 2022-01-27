@@ -24,6 +24,7 @@ import com.intellij.util.Query;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
@@ -34,7 +35,10 @@ import java.util.Set;
  *
  * @author yanglin
  */
-public class JavaService {
+public class JavaService implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Project project;
 
     private JavaPsiFacade javaPsiFacade;
