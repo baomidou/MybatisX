@@ -43,7 +43,7 @@ public class FixedSuffixOperator implements SuffixOperator {
                                   LinkedList<TxParameter> parameters,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         return mappingField.stream()
-            .filter(field -> field.getFieldName().equals(fieldName))
+            .filter(field -> field.getColumnName().equals(fieldName))
             .map(field -> field.getColumnName() + " " + operatorName)
             .collect(Collectors.joining());
     }

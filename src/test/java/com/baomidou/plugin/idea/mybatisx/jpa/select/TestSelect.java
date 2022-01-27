@@ -287,6 +287,31 @@ public class TestSelect extends BaseJpaTest {
     }
 
 
+    // List<Blog> selectAllByAgeOrderByAge(@Param("age") Integer age);
+    public void testSelectOrderByAge() throws IOException {
+        launchAction("selectAllByAgeOrderByAge");
 
+        myFixture.checkResultByFile("template/TipMapper.java",
+            "after/select/SelectOrderByAge.java",
+            true);
 
+        myFixture.checkResultByFile("template/TipMapper.xml",
+            "after/select/SelectOrderByAge.xml",
+            true);
+
+    }
+
+    // List<Blog> selectAllByAgeOrderByAgeDesc(@Param("age") Integer age);
+    public void testSelectOrderByAgeDesc() throws IOException {
+        launchAction("selectAllByAgeOrderByAgeDesc");
+
+        myFixture.checkResultByFile("template/TipMapper.java",
+            "after/select/SelectOrderByAgeDesc.java",
+            true);
+
+        myFixture.checkResultByFile("template/TipMapper.xml",
+            "after/select/SelectOrderByAgeDesc.xml",
+            true);
+
+    }
 }
