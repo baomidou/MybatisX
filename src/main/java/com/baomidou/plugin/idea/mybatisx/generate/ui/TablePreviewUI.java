@@ -12,7 +12,9 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.TableView;
@@ -35,6 +37,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class TablePreviewUI {
     private JPanel rootPanel;
@@ -229,12 +232,36 @@ public class TablePreviewUI {
     }
 
     private void chooseModulePath(Module module) {
+
         String moduleDirPath = ModuleUtil.getModuleDirPath(module);
-        int ideaIndex = moduleDirPath.indexOf(".idea");
-        if (ideaIndex > -1) {
-            moduleDirPath = moduleDirPath.substring(0, ideaIndex);
+        int childModuleIndex = indexFromChildModule(moduleDirPath);
+        if (hasChildModule(childModuleIndex)) {
+            Optional<String> pathFromModule = getPathFromModule(module);
+            if(pathFromModule.isPresent()){
+                moduleDirPath = pathFromModule.get();
+            }else{
+                moduleDirPath = moduleDirPath.substring(0, childModuleIndex);
+            }
         }
+
         moduleChooseTextField.setText(moduleDirPath);
+    }
+
+    private boolean hasChildModule(int childModuleIndex) {
+        return childModuleIndex > -1;
+    }
+
+    private int indexFromChildModule(String moduleDirPath) {
+        return moduleDirPath.indexOf(".idea");
+    }
+
+    private Optional<String> getPathFromModule(Module module) {
+        // 兼容gradle获取子模块
+        VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
+        if(contentRoots.length == 1){
+            return  Optional.ofNullable(contentRoots[0].getPath());
+        }
+        return Optional.empty();
     }
 
     public void refreshGenerateConfig(GenerateConfig generateConfig) {
