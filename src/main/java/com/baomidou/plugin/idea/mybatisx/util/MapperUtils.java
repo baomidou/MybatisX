@@ -229,7 +229,7 @@ public final class MapperUtils {
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull String namespace) {
         Collection<Mapper> mappers = findMappers(project, namespace);
-        return CollectionUtils.isEmpty(mappers) ? Optional.<Mapper>empty() : Optional.of(mappers.iterator().next());
+        return CollectionUtils.isEmpty(mappers) ? Optional.empty() : Optional.of(mappers.iterator().next());
     }
 
     /**
@@ -242,7 +242,7 @@ public final class MapperUtils {
     @NonNls
     public static Optional<Mapper> findFirstMapper(@NotNull Project project, @NotNull PsiClass clazz) {
         String qualifiedName = clazz.getQualifiedName();
-        return null != qualifiedName ? findFirstMapper(project, qualifiedName) : Optional.<Mapper>empty();
+        return null != qualifiedName ? findFirstMapper(project, qualifiedName) : Optional.empty();
     }
 
     /**

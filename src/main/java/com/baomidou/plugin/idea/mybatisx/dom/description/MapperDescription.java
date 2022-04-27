@@ -17,6 +17,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MapperDescription extends DomFileDescription<Mapper> {
 
+    public static final String [] HTTP_MYBATIS_ORG_DTD_MYBATIS_3_MAPPER_DTD =
+        new String[]{"http://mybatis.org/dtd/mybatis-3-mapper.dtd",
+            "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd"
+    };
+
     /**
      * Instantiates a new Mapper description.
      */
@@ -26,6 +31,7 @@ public class MapperDescription extends DomFileDescription<Mapper> {
 
     @Override
     protected void initializeFileDescription() {
-        registerNamespacePolicy("MybatisXml", "http://mybatis.org/dtd/mybatis-3-mapper.dtd");
+        registerNamespacePolicy("MybatisXml",
+            HTTP_MYBATIS_ORG_DTD_MYBATIS_3_MAPPER_DTD);
     }
 }
