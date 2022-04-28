@@ -1,3 +1,10 @@
+# 1.5.4
+1. 生成代码时, 选择gradle子模块无效的BUG
+2. 修复dtd的支持, 对于www.mybatis.org的DTD进行支持,小鸟可以跳转
+3. 修复order by生成代码错误的BUG
+4. 修复安全删除无效的BUG
+5. 修复between代码生成错误的BUG
+
 # 1.5.2
 1. 支持 生成的Entity实体类名希望可设置或跟数据表名保持一致
 2. tinyint,smallint 默认映射为Integer
