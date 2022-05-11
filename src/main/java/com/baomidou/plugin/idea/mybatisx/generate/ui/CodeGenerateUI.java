@@ -240,6 +240,7 @@ public class CodeGenerateUI {
                     item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
                     item.setPackageName(templateSettingDTO.getPackageName());
                     item.setEncoding(templateSettingDTO.getEncoding());
+                    item.setConfigFileName(templateSettingDTO.getConfigFile());
                     moduleUIInfoList.add(item);
                 }
                 return moduleUIInfoList;
@@ -346,6 +347,7 @@ public class CodeGenerateUI {
             item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
             item.setPackageName(templateSettingDTO.getPackageName());
             item.setEncoding(templateSettingDTO.getEncoding());
+            item.setConfigFileName(templateSettingDTO.getConfigFile());
             moduleInfoGoList.add(item);
         }
         initMemoryModuleTable(moduleInfoGoList);

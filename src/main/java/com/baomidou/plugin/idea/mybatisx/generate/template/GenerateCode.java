@@ -232,6 +232,7 @@ public class GenerateCode {
         moduleUIInfo.setPackageName(DomainPlaceHolder.replace(moduleInfo.getPackageName(), domainInfo));
         moduleUIInfo.setFileName(DomainPlaceHolder.replace(moduleInfo.getFileName(), domainInfo));
         moduleUIInfo.setFileNameWithSuffix(DomainPlaceHolder.replace(moduleInfo.getFileNameWithSuffix(), domainInfo));
+        moduleUIInfo.setConfigFileName(moduleInfo.getConfigFileName());
         moduleUIInfo.setEncoding(DomainPlaceHolder.replace(moduleInfo.getEncoding(), domainInfo));
         return moduleUIInfo;
     }
@@ -267,13 +268,7 @@ public class GenerateCode {
         // 替换模板内容
         customTemplateRoot.setModuleInfoList(rootModuleUIInfo);
         rootModuleUIInfo.add(moduleUIInfo);
-        // 设置模板文本
-        for (TemplateSettingDTO templateConfig : templateConfigs) {
-            if (templateConfig.getConfigName().equals(moduleUIInfo.getConfigName())) {
-                customTemplateRoot.setTemplateText(templateConfig.getTemplateText());
-                break;
-            }
-        }
+        customTemplateRoot.setTemplateSettingDTOList(templateConfigs);
         return customTemplateRoot;
     }
 

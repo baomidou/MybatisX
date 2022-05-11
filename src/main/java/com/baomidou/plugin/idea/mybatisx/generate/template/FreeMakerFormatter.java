@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
+import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -59,13 +60,16 @@ public class FreeMakerFormatter implements JavaFormatter {
             cfg.setDirectoryForTemplateLoading(new File(modulePath));
             // 设置模板加载器
             StringTemplateLoader templateLoader = new StringTemplateLoader();
-            templateLoader.putTemplate(TEMPLATE, rootObject.getTemplateText());
+            for (TemplateSettingDTO settingDTO : rootObject.getTemplateSettingDTOList()) {
+                templateLoader.putTemplate(settingDTO.getConfigFile(), settingDTO.getTemplateText());
+            }
             cfg.setTemplateLoader(templateLoader);
 
             cfg.setDefaultEncoding(templateSettingDTO.getEncoding());
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
-            Template templateName = cfg.getTemplate(TEMPLATE);
+            Template templateName = cfg.getTemplate(rootObject.getModuleUIInfo().getConfigFileName());
+            // 因为 StringWriter 的close实现为空, 所以没有调用writer.close()
             Writer writer = new StringWriter();
             Map<String, Object> map = new HashMap<>();
 

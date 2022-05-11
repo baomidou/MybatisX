@@ -19,6 +19,10 @@ public class ModuleInfoGo implements Serializable {
      */
     private String fileName;
     /**
+     * 模板文件文件名
+     */
+    private String configFileName;
+    /**
      * 有后缀的文件名
      */
     private String fileNameWithSuffix;
@@ -94,5 +98,13 @@ public class ModuleInfoGo implements Serializable {
 
     public void setBasePath(String basePath) {
         this.basePath = basePath;
+    }
+
+    public String getConfigFileName() {
+        return configFileName;
+    }
+
+    public void setConfigFileName(String configFileName) {
+        this.configFileName = configFileName;
     }
 }

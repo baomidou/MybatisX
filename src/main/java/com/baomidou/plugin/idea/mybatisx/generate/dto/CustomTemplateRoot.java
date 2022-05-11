@@ -14,15 +14,8 @@ public class CustomTemplateRoot implements Serializable {
 
     private DomainInfo domainInfo;
 
-    private String templateText;
 
-    public String getTemplateText() {
-        return templateText;
-    }
-
-    public void setTemplateText(String templateText) {
-        this.templateText = templateText;
-    }
+    private List<TemplateSettingDTO> templateSettingDTOList;
 
     private List<ModuleInfoGo> moduleInfoList = new ArrayList<>();
 
@@ -49,5 +42,15 @@ public class CustomTemplateRoot implements Serializable {
 
     public void setModuleUIInfo(ModuleInfoGo moduleUIInfo) {
         this.moduleUIInfo = moduleUIInfo;
+    }
+
+
+
+    public List<TemplateSettingDTO> getTemplateSettingDTOList() {
+        return templateSettingDTOList;
+    }
+
+    public void setTemplateSettingDTOList(List<TemplateSettingDTO> templateSettingDTOList) {
+        this.templateSettingDTOList = templateSettingDTOList;
     }
 }
