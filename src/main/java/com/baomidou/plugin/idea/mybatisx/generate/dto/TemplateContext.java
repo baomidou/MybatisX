@@ -27,7 +27,7 @@ public class TemplateContext {
     /**
      * 扩展的自定义模板
      */
-    private Map<String, List<TemplateSettingDTO>> templateSettingMap = new HashMap<>();
+    private Map<String, ConfigSetting> templateSettingMap = new HashMap<>();
 
     private GenerateConfig generateConfig;
 
@@ -55,11 +55,11 @@ public class TemplateContext {
         this.annotationType = annotationType;
     }
 
-    public Map<String, List<TemplateSettingDTO>> getTemplateSettingMap() {
+    public Map<String, ConfigSetting> getTemplateSettingMap() {
         return templateSettingMap;
     }
 
-    public void setTemplateSettingMap(Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+    public void setTemplateSettingMap(Map<String, ConfigSetting> templateSettingMap) {
         this.templateSettingMap = templateSettingMap;
     }
 

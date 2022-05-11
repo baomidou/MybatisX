@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
@@ -63,7 +64,7 @@ public class GenerateCode {
 
     public static void generate(Project project,
                                 GenerateConfig generateConfig,
-                                Map<String, List<TemplateSettingDTO>> templateSettingMap,
+                                Map<String, ConfigSetting> configSettingMap,
                                 DbTable dbTable,
                                 String domainName,
                                 String tableName) throws Exception {
@@ -120,14 +121,14 @@ public class GenerateCode {
         JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
         javaTypeResolverConfiguration.addProperty("forceBigDecimals", "false");
         context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
-        final List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(generateConfig.getTemplatesName());
-        if (templateSettingDTOS == null) {
+        final ConfigSetting configSetting = configSettingMap.get(generateConfig.getTemplatesName());
+        if (configSetting == null) {
             logger.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
             return;
         }
         DomainInfo domainInfo = buildDomainInfo(generateConfig, domainName);
         // 根据模板生成代码的插件
-        configExtraPlugin(extraDomainName, context, domainInfo, templateSettingDTOS, generateConfig.getModuleUIInfoList());
+        configExtraPlugin(extraDomainName, context, domainInfo, configSetting, generateConfig.getModuleUIInfoList());
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
         config.addContext(context);
@@ -186,11 +187,11 @@ public class GenerateCode {
     private static void configExtraPlugin(String extraDomainName,
                                           Context context,
                                           DomainInfo domainInfo,
-                                          List<TemplateSettingDTO> templateSettingDTOList,
+                                          ConfigSetting configSetting,
                                           List<ModuleInfoGo> extraTemplateNames) {
 
 
-        Map<String, TemplateSettingDTO> templateSettingDTOMap = templateSettingDTOList
+        Map<String, TemplateSettingDTO> templateSettingDTOMap = configSetting.getTemplateSettingDTOList()
             .stream()
             .collect(Collectors.toMap(TemplateSettingDTO::getConfigName, m -> m, (a, b) -> a));
 
@@ -201,9 +202,8 @@ public class GenerateCode {
             if (templateSettingDTO != null) {
                 DomainInfo customDomainInfo = determineDomainInfo(extraDomainName, domainInfo, moduleInfo);
                 ModuleInfoGo moduleInfoReplaced = replaceByDomainInfo(moduleInfo, customDomainInfo);
-                CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleInfoReplaced, templateSettingDTOList, rootModuleInfo);
+                CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleInfoReplaced, configSetting, rootModuleInfo);
                 templateRootList.add(templateRoot);
-
             }
         }
 
@@ -259,7 +259,7 @@ public class GenerateCode {
 
     private static CustomTemplateRoot buildRootConfig(DomainInfo domainInfo,
                                                       ModuleInfoGo moduleUIInfo,
-                                                      List<TemplateSettingDTO> templateConfigs,
+                                                      ConfigSetting configSetting,
                                                       List<ModuleInfoGo> rootModuleUIInfo) {
         // 生成的模板参照 https://gitee.com/baomidou/SpringWind/tree/spring-mvc/SpringWind/src/main/java/com/baomidou/springwind/mapper
         CustomTemplateRoot customTemplateRoot = new CustomTemplateRoot();
@@ -268,20 +268,9 @@ public class GenerateCode {
         // 替换模板内容
         customTemplateRoot.setModuleInfoList(rootModuleUIInfo);
         rootModuleUIInfo.add(moduleUIInfo);
-        customTemplateRoot.setTemplateSettingDTOList(templateConfigs);
+        customTemplateRoot.setTemplateSettingDTOList(configSetting.getTemplateSettingDTOList());
+        customTemplateRoot.setTemplateBasePath(configSetting.getPath());
         return customTemplateRoot;
-    }
-
-    private static TemplateSettingDTO replaceWithModel(TemplateSettingDTO paramSetting, DomainInfo domainInfo) {
-        TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
-        templateSettingDTO.setConfigName(paramSetting.getConfigName());
-        templateSettingDTO.setTemplateText(paramSetting.getTemplateText());
-        templateSettingDTO.setPackageName(DomainPlaceHolder.replace(paramSetting.getPackageName(), domainInfo));
-        templateSettingDTO.setEncoding(DomainPlaceHolder.replace(paramSetting.getEncoding(), domainInfo));
-        templateSettingDTO.setSuffix(DomainPlaceHolder.replace(paramSetting.getSuffix(), domainInfo));
-        templateSettingDTO.setFileName(DomainPlaceHolder.replace(paramSetting.getFileName(), domainInfo));
-        templateSettingDTO.setBasePath(DomainPlaceHolder.replace(paramSetting.getBasePath(), domainInfo));
-        return templateSettingDTO;
     }
 
 

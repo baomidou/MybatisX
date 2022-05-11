@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 
 public class CustomTemplateRoot implements Serializable {
 
+    /**
+     * 模板路径
+     */
+    private String templateBasePath;
+
     private ModuleInfoGo moduleUIInfo;
 
     private DomainInfo domainInfo;
@@ -52,5 +57,13 @@ public class CustomTemplateRoot implements Serializable {
 
     public void setTemplateSettingDTOList(List<TemplateSettingDTO> templateSettingDTOList) {
         this.templateSettingDTOList = templateSettingDTOList;
+    }
+
+    public String getTemplateBasePath() {
+        return templateBasePath;
+    }
+
+    public void setTemplateBasePath(String templateBasePath) {
+        this.templateBasePath = templateBasePath;
     }
 }

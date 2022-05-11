@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.action;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DefaultGenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
@@ -88,7 +89,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
 
         TemplatesSettings templatesSettings = TemplatesSettings.getInstance(project);
         final TemplateContext templateContext = templatesSettings.getTemplateConfigs();
-        final Map<String, List<TemplateSettingDTO>> settingMap = templatesSettings.getTemplateSettingMap();
+        final Map<String, ConfigSetting> settingMap = templatesSettings.getTemplateSettingMap();
         if (settingMap.isEmpty()) {
             throw new RuntimeException("无法获取模板");
         }
@@ -133,7 +134,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
             generateConfig = new DefaultGenerateConfig(templateContext);
         }
 
-        final Map<String, List<TemplateSettingDTO>> settingMap = templatesSettings.getTemplateSettingMap();
+        final Map<String, ConfigSetting> settingMap = templatesSettings.getTemplateSettingMap();
         if (settingMap.isEmpty()) {
             throw new RuntimeException("无法获取模板");
         }

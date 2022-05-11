@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -57,10 +58,10 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
      *
      * @return
      */
-    public Map<String, List<TemplateSettingDTO>> getTemplateSettingMap() {
-        final Map<String, List<TemplateSettingDTO>> templateSettingMap = new HashMap<>();
-        final Map<String, List<TemplateSettingDTO>> settingMap = templateConfigs.getTemplateSettingMap();
-        Map<String, List<TemplateSettingDTO>> setTemplateSettingMap = DefaultSettingsConfig.defaultSettings();
+    public Map<String, ConfigSetting> getTemplateSettingMap() {
+        final Map<String, ConfigSetting> templateSettingMap = new HashMap<>();
+        final Map<String, ConfigSetting> settingMap = templateConfigs.getTemplateSettingMap();
+        Map<String, ConfigSetting> setTemplateSettingMap = DefaultSettingsConfig.defaultSettings();
         templateSettingMap.putAll(settingMap);
         templateSettingMap.putAll(setTemplateSettingMap);
         return templateSettingMap;

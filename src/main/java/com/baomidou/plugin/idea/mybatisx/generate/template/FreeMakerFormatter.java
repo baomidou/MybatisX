@@ -3,7 +3,9 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
+import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.StringTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -59,10 +61,8 @@ public class FreeMakerFormatter implements JavaFormatter {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
             cfg.setDirectoryForTemplateLoading(new File(modulePath));
             // 设置模板加载器
-            StringTemplateLoader templateLoader = new StringTemplateLoader();
-            for (TemplateSettingDTO settingDTO : rootObject.getTemplateSettingDTOList()) {
-                templateLoader.putTemplate(settingDTO.getConfigFile(), settingDTO.getTemplateText());
-            }
+
+            TemplateLoader templateLoader = getTemplateLoader(rootObject.getTemplateBasePath());
             cfg.setTemplateLoader(templateLoader);
 
             cfg.setDefaultEncoding(templateSettingDTO.getEncoding());
@@ -90,4 +90,9 @@ public class FreeMakerFormatter implements JavaFormatter {
             return "填充模板出错," + out.toString();
         }
     }
+
+    private TemplateLoader getTemplateLoader(String basePath) throws IOException {
+        return new FileTemplateLoader(new File(basePath));
+    }
+
 }

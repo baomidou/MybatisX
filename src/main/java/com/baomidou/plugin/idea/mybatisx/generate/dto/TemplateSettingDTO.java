@@ -29,10 +29,6 @@ public class TemplateSettingDTO implements Serializable {
      */
     private String encoding;
     /**
-     * 模板内容
-     */
-    private String templateText;
-    /**
      * 相对模块的资源文件路径
      */
     private String basePath;
@@ -93,13 +89,6 @@ public class TemplateSettingDTO implements Serializable {
         this.encoding = encoding;
     }
 
-    public String getTemplateText() {
-        return templateText;
-    }
-
-    public void setTemplateText(String templateText) {
-        this.templateText = templateText;
-    }
 
 
 }

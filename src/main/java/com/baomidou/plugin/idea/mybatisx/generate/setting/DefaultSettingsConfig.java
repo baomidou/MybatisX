@@ -1,13 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.util.XmlUtils;
-import com.baomidou.plugin.idea.mybatisx.util.IOUtils;
 import com.intellij.ide.extensionResources.ExtensionsRootType;
 import com.intellij.ide.scratch.ScratchFileService;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.ReflectionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,8 +47,8 @@ public class DefaultSettingsConfig {
      *
      * @return
      */
-    public static Map<String, List<TemplateSettingDTO>> defaultSettings() {
-        Map<String, List<TemplateSettingDTO>> map = new HashMap<>();
+    public static Map<String, ConfigSetting> defaultSettings() {
+        Map<String, ConfigSetting> map = new HashMap<>();
         try {
             File resourceDirectory = getPath(TEMPLATES);
             if (!resourceDirectory.exists()) {
@@ -73,7 +71,6 @@ public class DefaultSettingsConfig {
                     logger.error("加载配置出错", e);
                     continue;
                 }
-                //defaultTemplateSettingMapping();
 
                 // 模板一定是.ftl后缀名的文件
                 File[] templateFiles = file.listFiles(pathname -> pathname.getName().endsWith(".ftl"));
@@ -87,14 +84,11 @@ public class DefaultSettingsConfig {
                         continue;
                     }
                     TemplateSettingDTO templateSettingDTO = defaultTemplateSettingMapping.get(configFileName);
-                    try (FileInputStream fileInputStream = new FileInputStream(templateFile)) {
-                        String templateText = IOUtils.toString(fileInputStream, "UTF-8");
-                        TemplateSettingDTO templateSetting = copyFromTemplateText(templateSettingDTO, templateText);
-                        templateSettingDTOS.add(templateSetting);
-                    }
+                    TemplateSettingDTO templateSetting = copyFromTemplateText(templateSettingDTO);
+                    templateSettingDTOS.add(templateSetting);
                 }
                 if (templateSettingDTOS.size() > 0) {
-                    map.put(configName, templateSettingDTOS);
+                    map.put(configName, buildConfigSetting(file, templateSettingDTOS));
                 }
             }
         } catch (IOException e) {
@@ -103,7 +97,16 @@ public class DefaultSettingsConfig {
         return map;
     }
 
-    private static TemplateSettingDTO copyFromTemplateText(TemplateSettingDTO templateSetting, String templateText) {
+    @NotNull
+    private static ConfigSetting buildConfigSetting(File file, List<TemplateSettingDTO> templateSettingDTOS) {
+        ConfigSetting configSetting = new ConfigSetting();
+        configSetting.setName(file.getName());
+        configSetting.setPath(file.getAbsolutePath());
+        configSetting.setTemplateSettingDTOList(templateSettingDTOS);
+        return configSetting;
+    }
+
+    private static TemplateSettingDTO copyFromTemplateText(TemplateSettingDTO templateSetting) {
         TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
         templateSettingDTO.setBasePath(templateSetting.getBasePath());
         templateSettingDTO.setConfigName(templateSetting.getConfigName());
@@ -112,7 +115,6 @@ public class DefaultSettingsConfig {
         templateSettingDTO.setSuffix(templateSetting.getSuffix());
         templateSettingDTO.setPackageName(templateSetting.getPackageName());
         templateSettingDTO.setEncoding(templateSetting.getEncoding());
-        templateSettingDTO.setTemplateText(templateText);
         return templateSettingDTO;
     }
 

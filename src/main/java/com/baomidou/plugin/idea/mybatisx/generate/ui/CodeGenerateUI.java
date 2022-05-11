@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
@@ -41,6 +42,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -82,7 +84,7 @@ public class CodeGenerateUI {
                          GenerateConfig generateConfig,
                          DomainInfo domainInfo,
                          String defaultsTemplatesName,
-                         Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+                         Map<String, ConfigSetting> templateSettingMap) {
         this.project = project;
         this.domainInfo = domainInfo;
 
@@ -147,7 +149,7 @@ public class CodeGenerateUI {
 
     private void initTemplates(GenerateConfig generateConfig,
                                String defaultsTemplatesName,
-                               Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+                               Map<String, ConfigSetting> templateSettingMap) {
         if (selectedTemplateName == null) {
             selectedTemplateName = generateConfig.getTemplatesName();
         }
@@ -165,11 +167,11 @@ public class CodeGenerateUI {
                     if (selectedTemplateName == null) {
                         return;
                     }
-                    List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(selectedTemplateName.getText());
-                    if (templateSettingDTOS == null) {
+                    ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName.getText());
+                    if (configSetting == null) {
                         return;
                     }
-                    initSelectedModuleTable(templateSettingDTOS, domainInfo.getModulePath());
+                    initSelectedModuleTable(configSetting.getTemplateSettingDTOList(), domainInfo.getModulePath());
                     refresh = true;
                 }
 
@@ -179,7 +181,7 @@ public class CodeGenerateUI {
             .setPreferredSize(new Dimension(840, 150))
             .createPanel(), gridConstraints);
 
-        initRaidoLayout(templateSettingMap);
+        initRaidoLayout(templateSettingMap.keySet());
 
         final ItemListener itemListener = new ItemListener() {
 
@@ -191,8 +193,8 @@ public class CodeGenerateUI {
                     return;
                 }
                 String templatesName = jRadioButton.getText();
-                List<TemplateSettingDTO> list = buildTemplatesSettings(templatesName);
-                List<ModuleInfoGo> moduleUIInfoList = buildModuleUIInfos(templatesName, list);
+                ConfigSetting configSetting = buildTemplatesSettings(templatesName);
+                List<ModuleInfoGo> moduleUIInfoList = buildModuleUIInfos(templatesName, configSetting.getTemplateSettingDTOList());
                 initMemoryModuleTable(moduleUIInfoList);
                 selectedTemplateName = jRadioButton.getText();
             }
@@ -210,21 +212,21 @@ public class CodeGenerateUI {
                 return moduleUIInfoList;
             }
 
-            private List<TemplateSettingDTO> buildTemplatesSettings(String templatesName) {
-                List<TemplateSettingDTO> list = null;
+            private ConfigSetting buildTemplatesSettings(String templatesName) {
+                ConfigSetting configSetting = null;
                 // 选择选定的模板
                 if (!StringUtils.isEmpty(templatesName)) {
-                    list = templateSettingMap.get(templatesName);
+                    configSetting = templateSettingMap.get(templatesName);
                 }
                 // 选择默认模板
-                if (list == null && !StringUtils.isEmpty(defaultsTemplatesName)) {
-                    list = templateSettingMap.get(defaultsTemplatesName);
+                if (configSetting == null && !StringUtils.isEmpty(defaultsTemplatesName)) {
+                    configSetting = templateSettingMap.get(defaultsTemplatesName);
                 }
                 // 默认模板没有设置, 或者默认模板改了新的名字, 找到values的第一条记录
-                if (list == null) {
-                    list = templateSettingMap.values().iterator().next();
+                if (configSetting == null) {
+                    configSetting = templateSettingMap.values().iterator().next();
                 }
-                return list;
+                return configSetting;
             }
 
             private List<ModuleInfoGo> buildByTemplates(List<TemplateSettingDTO> list, String modulePath) {
@@ -252,14 +254,14 @@ public class CodeGenerateUI {
             final JRadioButton radioButton = (JRadioButton) radios.nextElement();
             radioButton.addItemListener(itemListener);
         }
-        final List<TemplateSettingDTO> list = templateSettingMap.get(selectedTemplateName);
-        selectDefaultTemplateRadio(list);
+        ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName);
+        selectDefaultTemplateRadio(configSetting.getTemplateSettingDTOList());
 
     }
 
     private boolean initRadioTemplates = false;
 
-    private void initRaidoLayout(Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+    private void initRaidoLayout(Set<String> strings) {
         if (initRadioTemplates) {
             return;
         }
@@ -268,7 +270,7 @@ public class CodeGenerateUI {
         templateExtraRadiosPanel.setLayout(templateRadioLayout);
         // 添加动态模板组
 
-        for (String templateName : templateSettingMap.keySet()) {
+        for (String templateName : strings) {
             JRadioButton comp = new JRadioButton();
             comp.setText(templateName);
             templateButtonGroup.add(comp);

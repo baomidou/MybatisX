@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
+import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.intellij.debugger.DebuggerBundle;
@@ -47,16 +48,16 @@ public class MybatisXTemplateSettings {
     public void loadBySettings(TemplatesSettings templatesSettings) {
         TemplateContext templateContext = templatesSettings.getTemplateConfigs();
         // 第一个版本只有一个不可更改的配置, 这里直接取默认就可以了
-        Map<String, List<TemplateSettingDTO>> templateSettingMap = templatesSettings.getTemplateSettingMap();
-        configTree.addTreeSelectionListener(new MyTreeSelectionListener(templateSettingMap));
+        Map<String, ConfigSetting> settingMap = templatesSettings.getTemplateSettingMap();
+        configTree.addTreeSelectionListener(new MyTreeSelectionListener(settingMap));
 
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) configTree.getModel().getRoot();
         root.removeAllChildren();
 
-        for (Map.Entry<String, List<TemplateSettingDTO>> stringListEntry : templateSettingMap.entrySet()) {
+        for (Map.Entry<String, ConfigSetting> stringListEntry : settingMap.entrySet()) {
             DefaultMutableTreeNode theme = new DefaultMutableTreeNode(stringListEntry.getKey());
             root.add(theme);
-            for (TemplateSettingDTO templateSettingDTO : stringListEntry.getValue()) {
+            for (TemplateSettingDTO templateSettingDTO : stringListEntry.getValue().getTemplateSettingDTOList()) {
                 DefaultMutableTreeNode template = new DefaultMutableTreeNode(templateSettingDTO.getConfigName());
                 theme.add(template);
             }
@@ -70,16 +71,16 @@ public class MybatisXTemplateSettings {
         gridConstraints.setFill(GridConstraints.FILL_VERTICAL | GridConstraints.ALIGN_LEFT);
         gridConstraints.setHSizePolicy(GridConstraints.SIZEPOLICY_FIXED);
         rootPanel.add(ToolbarDecorator.createDecorator(configTree).setAddAction(new AnActionButtonRunnable() {
-                @Override
-                public void run(AnActionButton anActionButton) {
+                    @Override
+                    public void run(AnActionButton anActionButton) {
 
-                }
-            }).setRemoveAction(new AnActionButtonRunnable() {
-                @Override
-                public void run(AnActionButton anActionButton) {
+                    }
+                }).setRemoveAction(new AnActionButtonRunnable() {
+                    @Override
+                    public void run(AnActionButton anActionButton) {
 
-                }
-            }).addExtraAction(new CopyAction())
+                    }
+                }).addExtraAction(new CopyAction())
                 .setPreferredSize(new Dimension(220, -1))
                 .createPanel(),
             gridConstraints);
@@ -137,10 +138,10 @@ public class MybatisXTemplateSettings {
             return;
         }
         TemplateContext templateConfigs = templatesSettings.getTemplateConfigs();
-        Map<String, List<TemplateSettingDTO>> templateSettingMap = templateConfigs.getTemplateSettingMap();
+        Map<String, ConfigSetting> templateSettingMap = templateConfigs.getTemplateSettingMap();
         String DEFAULT_TEMPLATE_NAME = "mybatis-plus3";
-        List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(DEFAULT_TEMPLATE_NAME);
-        if (templateSettingDTOS == null) {
+        ConfigSetting configSetting = templateSettingMap.get(DEFAULT_TEMPLATE_NAME);
+        if (configSetting == null) {
             return;
         }
 
@@ -151,18 +152,17 @@ public class MybatisXTemplateSettings {
         templateSettingDTO.setBasePath(basePathTextField.getText());
         templateSettingDTO.setConfigName(userObject.toString());
         templateSettingDTO.setEncoding(encodingTextField.getText());
-        templateSettingDTO.setTemplateText(templateText.getText());
 
 
-        List<TemplateSettingDTO> replacedSettings = templateSettingDTOS.stream().map(x -> {
-            if (x.getConfigName().equalsIgnoreCase(key)) {
-                return templateSettingDTO;
-            }
-            return x;
-        }).collect(Collectors.toList());
-
-
-        templateSettingMap.put(DEFAULT_TEMPLATE_NAME, replacedSettings);
+        List<TemplateSettingDTO> replacedSettings = configSetting.getTemplateSettingDTOList()
+            .stream()
+            .map(x -> {
+                if (x.getConfigName().equalsIgnoreCase(key)) {
+                    return templateSettingDTO;
+                }
+                return x;
+            }).collect(Collectors.toList());
+        configSetting.setTemplateSettingDTOList(replacedSettings);
 
         templatesSettings.setTemplateConfigs(templateConfigs);
     }
@@ -174,9 +174,9 @@ public class MybatisXTemplateSettings {
     private static final Logger logger = LoggerFactory.getLogger(MybatisXTemplateSettings.class);
 
     private class MyTreeSelectionListener implements TreeSelectionListener {
-        private Map<String, List<TemplateSettingDTO>> templateSettingMap;
+        private Map<String, ConfigSetting> templateSettingMap;
 
-        public MyTreeSelectionListener(Map<String, List<TemplateSettingDTO>> templateSettingMap) {
+        public MyTreeSelectionListener(Map<String, ConfigSetting> templateSettingMap) {
             this.templateSettingMap = templateSettingMap;
         }
 
@@ -195,13 +195,13 @@ public class MybatisXTemplateSettings {
             TemplateSettingDTO foundDto = new TemplateSettingDTO();
 
 
-            List<TemplateSettingDTO> templateSettingDTOS = templateSettingMap.get(templatesName);
-            if (templateSettingDTOS == null) {
+            ConfigSetting configSetting = templateSettingMap.get(templatesName);
+            if (configSetting == null) {
                 // 没有找到配置
                 logger.info("没有找到配置,templatesName: {}", templatesName);
                 return;
             }
-            for (TemplateSettingDTO templateSettingDTO : templateSettingDTOS) {
+            for (TemplateSettingDTO templateSettingDTO : configSetting.getTemplateSettingDTOList()) {
                 if (templateSettingDTO.getConfigName().equals(templateName)) {
                     foundDto = templateSettingDTO;
                     break;
@@ -212,7 +212,6 @@ public class MybatisXTemplateSettings {
             suffixTextField.setText(foundDto.getSuffix());
             packageNameTextField.setText(foundDto.getPackageName());
             encodingTextField.setText(foundDto.getEncoding());
-            templateText.setText(foundDto.getTemplateText());
             basePathTextField.setText(foundDto.getBasePath());
         }
 
