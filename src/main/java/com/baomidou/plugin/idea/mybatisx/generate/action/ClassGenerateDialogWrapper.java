@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,10 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
         DomainInfo domainInfo = tablePreviewUI.buildDomainInfo();
         if (StringUtils.isEmpty(domainInfo.getModulePath())) {
             Messages.showMessageDialog("Please select module to generate files", "Generate File", Messages.getWarningIcon());
+            return;
+        }
+        if (!new File(domainInfo.getModulePath()).exists()) {
+            Messages.showMessageDialog("modulePath is not a legal path", "Generate File", Messages.getWarningIcon());
             return;
         }
         page = page + 1;

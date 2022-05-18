@@ -4,6 +4,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.action;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TableUIInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
+import com.baomidou.plugin.idea.mybatisx.generate.notify.Notifier;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateCode;
 import com.baomidou.plugin.idea.mybatisx.util.PluginExistsUtils;
@@ -30,6 +31,8 @@ import java.util.stream.Stream;
  */
 public class MybatisGeneratorMainAction extends AnAction {
 
+    public static final String TITLE = "MybatisX Generate";
+
     /**
      * 点击后打开插件主页面
      *
@@ -55,7 +58,7 @@ public class MybatisGeneratorMainAction extends AnAction {
         if (classGenerateDialogWrapper.getExitCode() == Messages.YES) {
             // 生成代码
             GenerateConfig generateConfig = classGenerateDialogWrapper.determineGenerateConfig();
-            if(!generateConfig.checkGenerate()){
+            if (!generateConfig.checkGenerate()) {
                 return;
             }
             generateCode(project, dbTables, generateConfig);
@@ -90,9 +93,16 @@ public class MybatisGeneratorMainAction extends AnAction {
             }
             VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
             logger.info("全部代码生成成功, 文件内容已更新. config: {}", generateConfig);
+            notify(project, generateConfig);
         } catch (Exception e) {
             logger.error("生成代码出错", e);
         }
+    }
+
+    private void notify(Project project, GenerateConfig generateConfig) {
+        Notifier.notifyInformation(project,
+            TITLE,
+            generateConfig.getModuleName()+" generate finished");
     }
 
 
