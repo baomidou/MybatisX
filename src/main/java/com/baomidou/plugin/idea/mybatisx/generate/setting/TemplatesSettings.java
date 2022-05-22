@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @State(name = "TemplatesSettings", storages = {@Storage("mybatisx/templates.xml")})
@@ -59,11 +59,13 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
      * @return
      */
     public Map<String, ConfigSetting> getTemplateSettingMap() {
-        final Map<String, ConfigSetting> templateSettingMap = new HashMap<>();
-        final Map<String, ConfigSetting> settingMap = templateConfigs.getTemplateSettingMap();
+        final Map<String, ConfigSetting> templateSettingMap = new LinkedHashMap<>();
+        // 保存全局配置
         Map<String, ConfigSetting> setTemplateSettingMap = DefaultSettingsConfig.defaultSettings();
-        templateSettingMap.putAll(settingMap);
         templateSettingMap.putAll(setTemplateSettingMap);
+        // 加载自定义配置
+        final Map<String, ConfigSetting> settingMap = templateConfigs.getTemplateSettingMap();
+        templateSettingMap.putAll(settingMap);
         return templateSettingMap;
     }
 }

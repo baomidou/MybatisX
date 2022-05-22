@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class DefaultSettingsConfig {
 
@@ -48,7 +49,7 @@ public class DefaultSettingsConfig {
      * @return
      */
     public static Map<String, ConfigSetting> defaultSettings() {
-        Map<String, ConfigSetting> map = new HashMap<>();
+        Map<String, ConfigSetting> map = new TreeMap<>();
         try {
             File resourceDirectory = getPath(TEMPLATES);
             if (!resourceDirectory.exists()) {

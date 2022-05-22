@@ -115,6 +115,7 @@ public class GenerateCode {
         commentGeneratorConfiguration.setConfigurationType(CustomDefaultCommentGenerator.class.getName());
         commentGeneratorConfiguration.addProperty("suppressDate", "true");
         commentGeneratorConfiguration.addProperty("annotationType", generateConfig.getAnnotationType());
+        commentGeneratorConfiguration.addProperty("needsComment", Boolean.valueOf(generateConfig.isNeedsComment()).toString());
 
         context.setCommentGeneratorConfiguration(commentGeneratorConfiguration);
 

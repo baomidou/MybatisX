@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 import com.baomidou.plugin.idea.mybatisx.generate.type.AnnotationTypeOperator;
 import com.baomidou.plugin.idea.mybatisx.generate.type.AnnotationTypeOperatorFactory;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 public class CustomDefaultCommentGenerator extends DefaultCommentGenerator implements CommentGenerator {
     private AnnotationTypeOperator annotationTypeOperator;
+    private Boolean needsComment;
 
     public CustomDefaultCommentGenerator() {
 
@@ -37,6 +39,16 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
         super.addConfigurationProperties(properties);
         String annotations = properties.getProperty("annotationType");
         this.annotationTypeOperator = AnnotationTypeOperatorFactory.findByType(annotations);
+        this.needsComment = determineNeedsComment(properties);
+    }
+
+    @NotNull
+    private Boolean determineNeedsComment(Properties properties) {
+        String needsComment = properties.getProperty("needsComment");
+        if (needsComment == null) {
+            needsComment = "false";
+        }
+        return Boolean.valueOf(needsComment);
     }
 
     @Override
@@ -45,12 +57,17 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
 
     @Override
     public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
         topLevelClass.addJavaDocLine("/**");
-        String remarks = introspectedTable.getRemarks();
-        if (remarks == null) {
-            remarks = "";
+        // 加入表注释
+        if (needsComment) {
+            String remarks = introspectedTable.getRemarks();
+            if (remarks == null) {
+                remarks = "";
+            }
+            topLevelClass.addJavaDocLine(" * " + remarks);
         }
-        topLevelClass.addJavaDocLine(" * " + remarks);
+        // 强制加入@TableName注释, 为了后续的JPA识别表名
         topLevelClass.addJavaDocLine(" * @TableName " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
         topLevelClass.addJavaDocLine(" */");
         annotationTypeOperator.addModelClassComment(topLevelClass, introspectedTable);
@@ -60,6 +77,9 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
 
     @Override
     public void addGetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
+        if (!needsComment) {
+            return;
+        }
         method.addJavaDocLine("/**");
         String remarks = introspectedColumn.getRemarks();
         if (StringUtils.isEmpty(remarks)) {
@@ -72,6 +92,9 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
 
     @Override
     public void addComment(XmlElement xmlElement) {
+        if (!needsComment) {
+            return;
+        }
         xmlElement.addElement(new TextElement("<!--" + MergeConstants.NEW_ELEMENT_TAG + "-->"));
     }
 
@@ -81,6 +104,9 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
 
     @Override
     public void addSetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
+        if (!needsComment) {
+            return;
+        }
         method.addJavaDocLine("/**");
         String remarks = introspectedColumn.getRemarks();
         if (StringUtils.isEmpty(remarks)) {
@@ -93,6 +119,9 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
 
     @Override
     public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
+        if (!needsComment) {
+            return;
+        }
         field.addJavaDocLine("/**");
         String remarks = introspectedColumn.getRemarks();
         if (StringUtils.isEmpty(remarks)) {
@@ -108,12 +137,18 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
 
     @Override
     public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable, boolean markAsDoNotDelete) {
+        if (!needsComment) {
+            return;
+        }
         innerClass.addJavaDocLine("/**");
         innerClass.addJavaDocLine(" */");
     }
 
     @Override
     public void addFieldComment(Field field, IntrospectedTable introspectedTable) {
+        if (!needsComment) {
+            return;
+        }
         field.addJavaDocLine("/**");
         String remarks = field.getName();
         if (StringUtils.isEmpty(remarks)) {
@@ -135,8 +170,10 @@ public class CustomDefaultCommentGenerator extends DefaultCommentGenerator imple
 
     @Override
     public void addFieldAnnotation(Field field, IntrospectedTable introspectedTable, Set<FullyQualifiedJavaType> imports) {
-
-        annotationTypeOperator.addSerialVersionUIDAnnotation(field,introspectedTable);
+        if (!needsComment) {
+            return;
+        }
+        annotationTypeOperator.addSerialVersionUIDAnnotation(field, introspectedTable);
     }
 
     @Override
