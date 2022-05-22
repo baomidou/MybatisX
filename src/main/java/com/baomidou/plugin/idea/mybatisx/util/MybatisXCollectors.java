@@ -26,6 +26,16 @@ public class MybatisXCollectors {
     }
 
 
+    /**
+     * 多列换行连接器
+     * 例如总共有7个字段,希望每3列换一行
+     * 原始输入:
+     * a,b,c,d,e,f,g
+     * 使用多列连接器的输出:
+     * a,b,c,
+     * d,e,f,
+     * g
+     */
     private static class MultiStringJoiner {
 
         private String delimiter;

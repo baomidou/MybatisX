@@ -150,39 +150,33 @@ public class CodeGenerateUI {
     private void initTemplates(GenerateConfig generateConfig,
                                String defaultsTemplatesName,
                                Map<String, ConfigSetting> templateSettingMap) {
-        if (selectedTemplateName == null) {
-            selectedTemplateName = generateConfig.getTemplatesName();
+        if (templateSettingMap.keySet().isEmpty()) {
+            throw new RuntimeException("模板列表为空, 请加入模板");
         }
+        // 使用上一次生成代码的模板名称
+        this.selectedTemplateName = determineTemplateName(templateSettingMap, generateConfig.getTemplatesName());
         TableView<ModuleInfoGo> tableView = new TableView<>(model);
 
         GridConstraints gridConstraints = new GridConstraints();
         gridConstraints.setFill(GridConstraints.FILL_HORIZONTAL);
 
-        templateExtraPanel.add(ToolbarDecorator.createDecorator(tableView)
-            .setToolbarPosition(ActionToolbarPosition.LEFT)
-            .addExtraAction(new AnActionButton("Refresh Template", PlatformIcons.SYNCHRONIZE_ICON) {
-                @Override
-                public void actionPerformed(@NotNull AnActionEvent e) {
-                    AbstractButton selectedTemplateName = findSelectedTemplateName();
-                    if (selectedTemplateName == null) {
-                        return;
-                    }
-                    ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName.getText());
-                    if (configSetting == null) {
-                        return;
-                    }
-                    initSelectedModuleTable(configSetting.getTemplateSettingDTOList(), domainInfo.getModulePath());
-                    refresh = true;
-                }
-
-            })
-            .disableAddAction()
-            .disableUpDownActions()
-            .setPreferredSize(new Dimension(840, 150))
-            .createPanel(), gridConstraints);
+        initPanel(templateSettingMap, tableView, gridConstraints);
 
         initRaidoLayout(templateSettingMap.keySet());
 
+        final ItemListener itemListener = initItemListener(generateConfig, defaultsTemplatesName, templateSettingMap);
+
+        final Enumeration<AbstractButton> radios = templateButtonGroup.getElements();
+        while (radios.hasMoreElements()) {
+            final JRadioButton radioButton = (JRadioButton) radios.nextElement();
+            radioButton.addItemListener(itemListener);
+        }
+        ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName);
+        selectDefaultTemplateRadio(configSetting.getTemplateSettingDTOList());
+
+    }
+
+    private ItemListener initItemListener(GenerateConfig generateConfig, String defaultsTemplatesName, Map<String, ConfigSetting> templateSettingMap) {
         final ItemListener itemListener = new ItemListener() {
 
             @Override
@@ -248,15 +242,44 @@ public class CodeGenerateUI {
                 return moduleUIInfoList;
             }
         };
+        return itemListener;
+    }
 
-        final Enumeration<AbstractButton> radios = templateButtonGroup.getElements();
-        while (radios.hasMoreElements()) {
-            final JRadioButton radioButton = (JRadioButton) radios.nextElement();
-            radioButton.addItemListener(itemListener);
+    private void initPanel(Map<String, ConfigSetting> templateSettingMap,
+                           TableView<ModuleInfoGo> tableView,
+                           GridConstraints gridConstraints) {
+        templateExtraPanel.add(ToolbarDecorator.createDecorator(tableView)
+            .setToolbarPosition(ActionToolbarPosition.LEFT)
+            .addExtraAction(new AnActionButton("Refresh Template", PlatformIcons.SYNCHRONIZE_ICON) {
+                @Override
+                public void actionPerformed(@NotNull AnActionEvent e) {
+                    AbstractButton selectedTemplateName = findSelectedTemplateName();
+                    if (selectedTemplateName == null) {
+                        return;
+                    }
+                    ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName.getText());
+                    if (configSetting == null) {
+                        return;
+                    }
+                    initSelectedModuleTable(configSetting.getTemplateSettingDTOList(), domainInfo.getModulePath());
+                    refresh = true;
+                }
+
+            })
+            .disableAddAction()
+            .disableUpDownActions()
+            .setPreferredSize(new Dimension(840, 150))
+            .createPanel(), gridConstraints);
+    }
+
+    private String determineTemplateName(Map<String, ConfigSetting> templateSettingMap, String templatesName) {
+        // 使用上一次生成代码的模板
+        String selectedTemplateName = templatesName;
+        // 如果是第一次生成代码, 使用模板列表的第一个模板
+        if (selectedTemplateName == null) {
+            selectedTemplateName = templateSettingMap.keySet().iterator().next();
         }
-        ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName);
-        selectDefaultTemplateRadio(configSetting.getTemplateSettingDTOList());
-
+        return selectedTemplateName;
     }
 
     private boolean initRadioTemplates = false;
@@ -313,6 +336,7 @@ public class CodeGenerateUI {
                 itemX.setFileName(domainInfo.getFileName());
                 itemX.setPackageName(domainInfo.getBasePackage() + "." + domainInfo.getRelativePackage());
                 itemX.setFileNameWithSuffix(domainInfo.getFileName() + ".java");
+                itemX.setConfigFileName(item.getConfigFileName());
                 itemX.setConfigName(DOMAIN);
                 item = itemX;
             }

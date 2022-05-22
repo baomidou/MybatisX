@@ -235,6 +235,10 @@ public class GenerateCode {
         moduleUIInfo.setFileNameWithSuffix(DomainPlaceHolder.replace(moduleInfo.getFileNameWithSuffix(), domainInfo));
         moduleUIInfo.setConfigFileName(moduleInfo.getConfigFileName());
         moduleUIInfo.setEncoding(DomainPlaceHolder.replace(moduleInfo.getEncoding(), domainInfo));
+        // 校验文件模板必须存在
+        if (moduleUIInfo.getConfigFileName() == null) {
+            throw new RuntimeException("模板文件为空, 无法生成代码. config: "+moduleUIInfo.getConfigName());
+        }
         return moduleUIInfo;
     }
 

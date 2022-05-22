@@ -171,7 +171,8 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                     }
                 }
             }
-        } catch (ParserException | ComposerException e) {
+        } catch (Exception e) {
+            // https://gitee.com/baomidou/MybatisX/issues/I58K0P  yaml.loadAll(content).next 会导致git流程的空指针
             // 错误的 yml 文件, 不予支持
             logger.info("yml parse fail, fileName: {}", fileName, e);
         }
