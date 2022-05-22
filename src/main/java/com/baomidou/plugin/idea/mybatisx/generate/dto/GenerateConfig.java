@@ -75,6 +75,10 @@ public class GenerateConfig {
     private boolean useLombokPlugin;
     private boolean useActualColumns;
     private boolean jsr310Support;
+    /**
+     * 是否生成实体类
+     */
+    private boolean needsModel;
     private boolean useActualColumnAnnotationInject;
     /**
      * 模板组名称
@@ -156,6 +160,14 @@ public class GenerateConfig {
 
     public void setNeedsComment(boolean needsComment) {
         this.needsComment = needsComment;
+    }
+
+    public boolean isNeedsModel() {
+        return needsModel;
+    }
+
+    public void setNeedsModel(boolean needsModel) {
+        this.needsModel = needsModel;
     }
 
     public String getAnnotationType() {

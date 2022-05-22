@@ -21,6 +21,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.generator.api.GeneratedJavaFile;
+import org.mybatis.generator.api.GeneratedKotlinFile;
+import org.mybatis.generator.api.GeneratedXmlFile;
+import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.ColumnRenamingRule;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Configuration;
@@ -45,6 +49,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,6 +79,14 @@ public class GenerateCode {
         Context context = new Context(ModelType.CONDITIONAL) {
             @Override
             public void validate(List<String> errors) {
+            }
+
+            @Override
+            public void generateFiles(ProgressCallback callback, List<GeneratedJavaFile> generatedJavaFiles, List<GeneratedXmlFile> generatedXmlFiles, List<GeneratedKotlinFile> generatedKotlinFiles, List<String> warnings) throws InterruptedException {
+                super.generateFiles(callback, generatedJavaFiles, generatedXmlFiles, generatedKotlinFiles, warnings);
+                if (!generateConfig.isNeedsModel()) {
+                    generatedJavaFiles.removeIf(next -> !(next instanceof FreemarkerFile));
+                }
             }
         };
         context.setId("MybatisXContext");
@@ -141,7 +154,12 @@ public class GenerateCode {
         IntellijMyBatisGenerator intellijMyBatisGenerator = new IntellijMyBatisGenerator(config, SHELL_CALLBACK, warnings);
 
 
-        intellijMyBatisGenerator.generate(new NullProgressCallback(), contexts, fullyqualifiedTables, true, classLoaderList, intellijTableInfo);
+        intellijMyBatisGenerator.generate(new NullProgressCallback(),
+            contexts,
+            fullyqualifiedTables,
+            true,
+            classLoaderList,
+            intellijTableInfo);
     }
 
     private static DomainInfo buildDomainInfo(GenerateConfig generateConfig, String domainName) {
@@ -237,7 +255,7 @@ public class GenerateCode {
         moduleUIInfo.setEncoding(DomainPlaceHolder.replace(moduleInfo.getEncoding(), domainInfo));
         // 校验文件模板必须存在
         if (moduleUIInfo.getConfigFileName() == null) {
-            throw new RuntimeException("模板文件为空, 无法生成代码. config: "+moduleUIInfo.getConfigName());
+            throw new RuntimeException("模板文件为空, 无法生成代码. config: " + moduleUIInfo.getConfigName());
         }
         return moduleUIInfo;
     }
@@ -285,8 +303,6 @@ public class GenerateCode {
      * @param context
      */
     private static void addPluginConfiguration(Context context, GenerateConfig generateConfig) {
-
-
         //实体添加序列化
         PluginConfiguration serializablePlugin = new PluginConfiguration();
         serializablePlugin.addProperty("type", SerializablePlugin.class.getName());

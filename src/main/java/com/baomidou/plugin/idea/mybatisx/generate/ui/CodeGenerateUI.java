@@ -63,6 +63,7 @@ public class CodeGenerateUI {
     private JRadioButton noneRadioButton;
     private JPanel templateExtraPanel;
     private JPanel templateExtraRadiosPanel;
+    private JCheckBox needsModelCheckBox;
 
     private ButtonGroup templateButtonGroup = new ButtonGroup();
 
@@ -93,6 +94,10 @@ public class CodeGenerateUI {
         // 是否需要字段注释
         if (generateConfig.isNeedsComment()) {
             commentCheckBox.setSelected(true);
+        }
+        // 是否需要字段注释
+        if (generateConfig.isNeedsComment()) {
+            needsModelCheckBox.setSelected(true);
         }
         // 需要生成 toString/hashcode/equals
         if (generateConfig.isNeedToStringHashcodeEquals()) {
@@ -548,6 +553,7 @@ public class CodeGenerateUI {
 //        generateConfig.setRepositoryAnnotation(repositoryAnnotationCheckBox.isSelected());
 //        generateConfig.setNeedMapperAnnotation(mapperAnnotationCheckBox.isSelected());
         generateConfig.setNeedsComment(commentCheckBox.isSelected());
+        generateConfig.setNeedsModel(needsModelCheckBox.isSelected());
         generateConfig.setNeedToStringHashcodeEquals(toStringHashCodeEqualsCheckBox.isSelected());
         generateConfig.setUseLombokPlugin(lombokCheckBox.isSelected());
         generateConfig.setUseActualColumns(actualColumnCheckBox.isSelected());
