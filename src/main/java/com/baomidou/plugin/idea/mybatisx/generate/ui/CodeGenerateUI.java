@@ -124,8 +124,7 @@ public class CodeGenerateUI {
         // 如果没有选择过, 就用上次选中的模板名称
     }
 
-    private void selectDefaultTemplateRadio(List<TemplateSettingDTO> list) {
-        String templatesName = this.selectedTemplateName;
+    private void selectDefaultTemplateRadio(List<TemplateSettingDTO> list, String templatesName) {
         // 选择默认的模板, 或者记忆的模板
         if (StringUtils.isEmpty(templatesName)) {
             final Enumeration<AbstractButton> elements = templateButtonGroup.getElements();
@@ -177,7 +176,7 @@ public class CodeGenerateUI {
             radioButton.addItemListener(itemListener);
         }
         ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName);
-        selectDefaultTemplateRadio(configSetting.getTemplateSettingDTOList());
+        selectDefaultTemplateRadio(configSetting.getTemplateSettingDTOList(), this.selectedTemplateName);
 
     }
 
@@ -203,12 +202,33 @@ public class CodeGenerateUI {
                 // 1. 优先选择默认的
                 if (!refresh && templatesName.equals(generateConfig.getTemplatesName())) {
                     moduleUIInfoList = generateConfig.getModuleUIInfoList();
+                    // 如果默认选择的数据是历史版本, 则重置为空. 使用插件的最新默认配置
+                    boolean check =  checkModuleInfo(moduleUIInfoList);
+                    if (!check) {
+                        moduleUIInfoList = null;
+                    }
                 }
                 // 2. 其次根据选择的模板名称来决定使用哪个模板
                 if (moduleUIInfoList == null) {
                     moduleUIInfoList = buildByTemplates(list, domainInfo.getModulePath());
                 }
                 return moduleUIInfoList;
+            }
+
+            private boolean checkModuleInfo(List<ModuleInfoGo> moduleUIInfoList) {
+                for (ModuleInfoGo moduleInfoGo : moduleUIInfoList) {
+                    if (moduleInfoGo.getFileNameWithSuffix() == null ||
+                        moduleInfoGo.getModulePath() == null ||
+                        moduleInfoGo.getEncoding() == null ||
+                        moduleInfoGo.getFileName() == null ||
+                        moduleInfoGo.getConfigName() == null ||
+                        moduleInfoGo.getBasePath() == null ||
+                        moduleInfoGo.getPackageName() == null ||
+                        moduleInfoGo.getConfigFileName() == null) {
+                        return false;
+                    }
+                }
+                return true;
             }
 
             private ConfigSetting buildTemplatesSettings(String templatesName) {
