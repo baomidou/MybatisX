@@ -78,7 +78,7 @@ public class GenerateConfig {
     /**
      * 是否生成实体类
      */
-    private boolean needsModel;
+    private Boolean needsModel;
     private boolean useActualColumnAnnotationInject;
     /**
      * 模板组名称
@@ -162,11 +162,11 @@ public class GenerateConfig {
         this.needsComment = needsComment;
     }
 
-    public boolean isNeedsModel() {
+    public Boolean isNeedsModel() {
         return needsModel;
     }
 
-    public void setNeedsModel(boolean needsModel) {
+    public void setNeedsModel(Boolean needsModel) {
         this.needsModel = needsModel;
     }
 

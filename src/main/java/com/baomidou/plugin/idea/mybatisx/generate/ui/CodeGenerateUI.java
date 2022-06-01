@@ -95,9 +95,9 @@ public class CodeGenerateUI {
         if (generateConfig.isNeedsComment()) {
             commentCheckBox.setSelected(true);
         }
-        // 是否需要字段注释
-        if (generateConfig.isNeedsComment()) {
-            needsModelCheckBox.setSelected(true);
+        // 是否需要生成默认的模型类
+        if (generateConfig.isNeedsModel() != null) {
+            needsModelCheckBox.setSelected(generateConfig.isNeedsModel());
         }
         // 需要生成 toString/hashcode/equals
         if (generateConfig.isNeedToStringHashcodeEquals()) {
