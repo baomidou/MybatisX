@@ -202,8 +202,18 @@ public final class MapperUtils {
      * @return the collection
      */
     @NotNull
-    public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull PsiClass clazz) {
-        return JavaUtils.isElementWithinInterface(clazz) ? findMappers(project, Objects.requireNonNull(clazz.getQualifiedName())) : Collections.emptyList();
+    public static Collection<Mapper> findMappers(Project project,PsiClass clazz) {
+        Collection<Mapper> mappers = null;
+        if (project == null || clazz == null) {
+            mappers = Collections.emptyList();
+        }
+        if(mappers!=null && JavaUtils.isElementWithinInterface(clazz)){
+            mappers = findMappers(project, Objects.requireNonNull(clazz.getQualifiedName()));
+        }
+        if (mappers == null) {
+            mappers = Collections.emptyList();
+        }
+        return mappers;
     }
 
     /**
