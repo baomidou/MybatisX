@@ -26,7 +26,7 @@ public class PropertyConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     @Override
     public String getErrorMessage(@Nullable String property, ConvertContext context) {
-        return "property :" + property + " can not be found ";
+        return "property (" + property + ") can not found setter method";
     }
 
     @NotNull
