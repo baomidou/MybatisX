@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiClass;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class EmptyGenerator implements Generator {
     }
 
     @Override
-    public boolean checkCanGenerate(PsiClass mapperClass) {
+    public boolean checkCanGenerate(Project project, PsiClass mapperClass) {
         final Collection<Mapper> mappers = MapperUtils.findMappers(mapperClass.getProject(), mapperClass);
         if (!hasMapperXmlFiles(mappers)) {
             final String message = "mapper :'" + mapperClass.getQualifiedName() + "'\n is not related mapper xml";

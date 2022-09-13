@@ -206,8 +206,8 @@ public class MybatisXmlGenerator implements Generator {
     }
 
     @Override
-    public boolean checkCanGenerate(PsiClass mapperClass) {
-        final Collection<Mapper> mappers = MapperUtils.findMappers(mapperClass.getProject(), mapperClass);
+    public boolean checkCanGenerate(Project project, PsiClass mapperClass) {
+        final Collection<Mapper> mappers = MapperUtils.findMappers(project, mapperClass);
         if (!hasMapperXmlFiles(mappers)) {
             final String message = "mapper :'" + mapperClass.getQualifiedName() + "'is not related mapper xml";
             Messages.showWarningDialog(message, "generate failure");

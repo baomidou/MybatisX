@@ -99,7 +99,7 @@ public class MybatisAnnotationGenerator implements Generator {
     }
 
     @Override
-    public boolean checkCanGenerate(PsiClass mapperClass) {
+    public boolean checkCanGenerate(Project project, PsiClass mapperClass) {
         return true;
     }
 }

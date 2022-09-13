@@ -207,7 +207,7 @@ public final class MapperUtils {
         if (project == null || clazz == null) {
             mappers = Collections.emptyList();
         }
-        if(mappers!=null && JavaUtils.isElementWithinInterface(clazz)){
+        if(mappers==null && JavaUtils.isElementWithinInterface(clazz)){
             mappers = findMappers(project, Objects.requireNonNull(clazz.getQualifiedName()));
         }
         if (mappers == null) {

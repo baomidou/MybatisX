@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 
 import java.util.List;
@@ -54,9 +55,11 @@ public interface Generator {
 
     /**
      * 检查是否能生成代码
+     *
+     * @param project
      * @param mapperClass mapper接口类
      * @return 能还是不能？
      */
-    boolean checkCanGenerate(PsiClass mapperClass);
+    boolean checkCanGenerate(Project project, PsiClass mapperClass);
 
 }

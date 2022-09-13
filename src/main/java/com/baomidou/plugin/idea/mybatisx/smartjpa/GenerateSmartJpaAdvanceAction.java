@@ -135,7 +135,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
 
         List<TxField> resultTxFields = conditionFieldWrapper.getResultTxFields();
         final Generator generator = conditionFieldWrapper.getGenerator(mapperClassGenerateFactory);
-        if(generator.checkCanGenerate(mapperClass)){
+        if(generator.checkCanGenerate(project,mapperClass)){
             platformGenerator.generateMapperXml(
                 psiMethod,
                 conditionFieldWrapper,
