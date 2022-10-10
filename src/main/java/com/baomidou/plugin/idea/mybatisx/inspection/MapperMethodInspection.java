@@ -11,15 +11,11 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.debugger.engine.evaluation.expression.Modifier;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -134,7 +130,20 @@ public class MapperMethodInspection extends MapperInspection {
         if (found) {
             final PsiClass targetClass = target.get();
             PsiClass clazz = select.getResultType().getValue();
-            if (!equalsOrInheritor(clazz, targetClass)) {
+            if (clazz == null) {
+                final String aliasValue = select.getResultType().getStringValue();
+                if (aliasValue != null) {
+                    // 别名识别失败, 无需提示
+                    String descriptionTemplate = "the alias \""+aliasValue+"\" not recognized";
+                    PsiIdentifier ide = method.getNameIdentifier();
+                    descriptor = manager.createProblemDescriptor(ide,
+                        descriptionTemplate,
+                        (LocalQuickFix) null,
+                        ProblemHighlightType.WEAK_WARNING,
+                        isOnTheFly);
+                }
+            }
+            if (descriptor==null && !equalsOrInheritor(clazz, targetClass)) {
                 String srcType = clazz != null ? clazz.getQualifiedName() : "";
                 String targetType = targetClass.getQualifiedName();
                 String descriptionTemplate = "Result type not match for select id=\"#ref\""
