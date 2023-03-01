@@ -293,7 +293,7 @@ public class CodeGenerateUI {
             })
             .disableAddAction()
             .disableUpDownActions()
-            .setPreferredSize(new Dimension(840, 150))
+            .setPreferredSize(new Dimension(860, 200))
             .createPanel(), gridConstraints);
     }
 
