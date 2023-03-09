@@ -183,7 +183,7 @@ public class DbToolsUtils {
                 return Types.DOUBLE;
             } else if ("CHAR".equals(fixed)) {
                 return Types.CHAR;
-            } else if (fixed.equals("INT")) {
+            } else if (fixed.contains("INT")) {
                 return Types.INTEGER;
             } else if (fixed.contains("DECIMAL")) {
                 return Types.DECIMAL;
