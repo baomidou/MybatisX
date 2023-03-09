@@ -68,10 +68,10 @@ public class CodeGenerateUI {
     private ButtonGroup templateButtonGroup = new ButtonGroup();
 
     ListTableModel<ModuleInfoGo> model = new ListTableModel<>(
-        new MybaitsxModuleInfo("config name", 120, false),
-        new MybaitsxModuleInfo("module path", 420, true, true),
-        new MybaitsxModuleInfo("base path", 140, true),
-        new MybaitsxModuleInfo("package name", 160, true)
+        new MybaitsxModuleInfo("config name", false),
+        new MybaitsxModuleInfo("module path", true, true),
+        new MybaitsxModuleInfo("base path", true),
+        new MybaitsxModuleInfo("package name", true)
     );
     private Project project;
     private DomainInfo domainInfo;
@@ -203,7 +203,7 @@ public class CodeGenerateUI {
                 if (!refresh && templatesName.equals(generateConfig.getTemplatesName())) {
                     moduleUIInfoList = generateConfig.getModuleUIInfoList();
                     // 如果默认选择的数据是历史版本, 则重置为空. 使用插件的最新默认配置
-                    boolean check =  checkModuleInfo(moduleUIInfoList);
+                    boolean check = checkModuleInfo(moduleUIInfoList);
                     if (!check) {
                         moduleUIInfoList = null;
                     }
@@ -293,7 +293,7 @@ public class CodeGenerateUI {
             })
             .disableAddAction()
             .disableUpDownActions()
-            .setPreferredSize(new Dimension(840, 150))
+            .setPreferredSize(new Dimension(860, 200))
             .createPanel(), gridConstraints);
     }
 
@@ -407,31 +407,23 @@ public class CodeGenerateUI {
 
     private class MybaitsxModuleInfo extends ColumnInfo<ModuleInfoGo, String> {
 
-        public MybaitsxModuleInfo(String name, int width, boolean editable) {
+        public MybaitsxModuleInfo(String name, boolean editable) {
             super(name);
-            this.width = width;
             this.editable = editable;
         }
 
-        public MybaitsxModuleInfo(String name, int width, boolean editable, boolean moduleEditor) {
+        public MybaitsxModuleInfo(String name, boolean editable, boolean moduleEditor) {
             super(name);
-            this.width = width;
             this.editable = editable;
             this.moduleEditor = moduleEditor;
         }
 
-        private int width;
         private boolean editable;
         private boolean moduleEditor;
 
         @Override
         public boolean isCellEditable(ModuleInfoGo moduleUIInfo) {
             return editable;
-        }
-
-        @Override
-        public int getWidth(JTable table) {
-            return width;
         }
 
         @Nullable
