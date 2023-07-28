@@ -27,7 +27,7 @@ import java.util.List;
  * 基础方言管理器
  */
 public class BaseDialectManager implements AreaOperateManager {
-    private List<AreaOperateManager> typeManagers = new ArrayList<>();
+    private final List<AreaOperateManager> typeManagers = new ArrayList<>();
 
 
     /**

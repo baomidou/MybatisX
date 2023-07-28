@@ -49,7 +49,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -64,8 +63,8 @@ import java.util.stream.Collectors;
  */
 public class GenerateCode {
 
-    private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
     public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true);
+    private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
 
     public static void generate(Project project,
                                 GenerateConfig generateConfig,
@@ -350,5 +349,3 @@ public class GenerateCode {
     }
 
 }
-
-

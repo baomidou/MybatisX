@@ -36,7 +36,7 @@ public final class ArrayUtils {
      * @return the only element
      */
     public static <T> Optional<T> getOnlyElement(@Nullable T[] target) {
-        return (null == target || 1 != target.length) ? Optional.<T>empty() : Optional.ofNullable(target[0]);
+        return (null == target || 1 != target.length) ? Optional.empty() : Optional.ofNullable(target[0]);
     }
 
 }

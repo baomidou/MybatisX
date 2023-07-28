@@ -1,11 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.dom.description;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Configuration;
-import com.intellij.openapi.module.Module;
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomFileDescription;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * The type Configuration description.

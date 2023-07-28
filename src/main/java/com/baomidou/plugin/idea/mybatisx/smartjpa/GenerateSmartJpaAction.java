@@ -36,7 +36,7 @@ public class GenerateSmartJpaAction extends GenerateSmartJpaAdvanceAction {
                                                                        List<String> resultFields,
                                                                        List<String> conditionFields,
                                                                        PsiClass entityClass, boolean isSelect) {
-        return Optional.of(new NeverContainsFieldWrapper(project,allFields));
+        return Optional.of(new NeverContainsFieldWrapper(project, allFields));
     }
 
     @Override

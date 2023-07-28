@@ -1,7 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class ConfigSetting {
 
     /**
@@ -17,24 +20,12 @@ public class ConfigSetting {
      */
     private List<TemplateSettingDTO> templateSettingDTOList;
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getPath() {
-        return path;
-    }
-
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public List<TemplateSettingDTO> getTemplateSettingDTOList() {
-        return templateSettingDTOList;
     }
 
     public void setTemplateSettingDTOList(List<TemplateSettingDTO> templateSettingDTOList) {

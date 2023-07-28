@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * 常用的生成器
+ *
  * @author ls9527
  */
 public class CommonGenerator implements PlatformGenerator {
@@ -36,13 +37,13 @@ public class CommonGenerator implements PlatformGenerator {
      */
     final AreaOperateManager appenderManager;
     private final String defaultDateWord;
-    private @NotNull
+    private final @NotNull
     LinkedList<SyntaxAppender> jpaList;
-    private List<TxField> mappingField;
-    private String tableName;
-    private PsiClass entityClass;
-    private String text;
-    private Set<String> notNeedsResult = new HashSet<String>() {
+    private final List<TxField> mappingField;
+    private final String tableName;
+    private final PsiClass entityClass;
+    private final String text;
+    private final Set<String> notNeedsResult = new HashSet<String>() {
         {
             add("update");
             add("insert");

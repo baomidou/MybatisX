@@ -39,13 +39,14 @@ public class UpdateOperator extends BaseOperatorManager {
      */
     public UpdateOperator(final List<TxField> mappingField, PsiClass entityClass) {
         final Set<String> patterns = AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns();
-        this.init(mappingField, entityClass,patterns);
+        this.init(mappingField, entityClass, patterns);
         patterns.forEach(this::addOperatorName);
     }
 
     /**
      * Init.
-     *  @param mappingField the mapping field
+     *
+     * @param mappingField     the mapping field
      * @param entityClass
      * @param operatorNameList
      */

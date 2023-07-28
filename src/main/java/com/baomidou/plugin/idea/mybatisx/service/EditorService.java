@@ -21,9 +21,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class EditorService {
 
-    private Project project;
+    private final Project project;
 
-    private FileEditorManager fileEditorManager;
+    private final FileEditorManager fileEditorManager;
 
     private CodeFormatterFacade codeFormatterFacade;
 

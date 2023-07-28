@@ -5,7 +5,6 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.DefaultGenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.TablePreviewUI;
@@ -29,20 +28,21 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassGenerateDialogWrapper.class);
 
-    private CodeGenerateUI codeGenerateUI = new CodeGenerateUI();
+    private final CodeGenerateUI codeGenerateUI = new CodeGenerateUI();
 
-    private TablePreviewUI tablePreviewUI = new TablePreviewUI();
+    private final TablePreviewUI tablePreviewUI = new TablePreviewUI();
 
-    private JPanel rootPanel = new JPanel();
+    private final JPanel rootPanel = new JPanel();
 
-    private java.util.List<JPanel> containerPanelList;
+    private final java.util.List<JPanel> containerPanelList;
 
-    private Action previousAction;
+    private final Action previousAction;
 
     private int page = 0;
-    private int lastPage = 1;
+    private final int lastPage = 1;
     private Project project;
     private List<DbTable> tableElements;
+    private GenerateConfig generateConfig;
 
     protected ClassGenerateDialogWrapper(@Nullable Project project) {
         super(project);
@@ -107,7 +107,6 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
 
     }
 
-
     private void switchPage(int newPage) {
         rootPanel.removeAll();
         JPanel comp = containerPanelList.get(newPage);
@@ -126,8 +125,6 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
     protected Action[] createActions() {
         return new Action[]{previousAction, getOKAction(), getCancelAction()};
     }
-
-    private GenerateConfig generateConfig;
 
     public void fillData(Project project, List<DbTable> tableElements) {
         this.project = project;

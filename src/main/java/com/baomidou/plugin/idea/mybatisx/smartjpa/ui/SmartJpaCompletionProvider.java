@@ -40,11 +40,11 @@ public class SmartJpaCompletionProvider {
     /**
      * 是否找到区域管理器
      */
-    private Key<Boolean> FOUND_OPERATOR_MANAGER = Key.create("FOUND_OPERATOR_MANAGER");
+    private final Key<Boolean> FOUND_OPERATOR_MANAGER = Key.create("FOUND_OPERATOR_MANAGER");
     /**
      * 实际上缓存的区域管理器
      */
-    private Key<AreaOperateManager> OPERATOR_MANAGER = Key.create("OPERATOR_MANAGER");
+    private final Key<AreaOperateManager> OPERATOR_MANAGER = Key.create("OPERATOR_MANAGER");
 
     /**
      * Add completion.

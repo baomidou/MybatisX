@@ -106,7 +106,7 @@ public final class JavaUtils {
      */
     public static Optional<PsiClass> findClazz(@NotNull Project project, @NotNull String clazzName) {
         String classNameNeedFind = clazzName;
-        if(classNameNeedFind.contains("$")){
+        if (classNameNeedFind.contains("$")) {
             classNameNeedFind = classNameNeedFind.replace("$", ".");
         }
         final JavaPsiFacade instance = JavaPsiFacade.getInstance(project);
@@ -139,7 +139,7 @@ public final class JavaUtils {
         Optional<PsiClass> clazz = findClazz(project, clazzName);
         if (clazz.isPresent()) {
             PsiMethod[] methods = clazz.get().findMethodsByName(methodName, true);
-            return ArrayUtils.isEmpty(methods) ? Optional.<PsiMethod>empty() : Optional.of(methods[0]);
+            return ArrayUtils.isEmpty(methods) ? Optional.empty() : Optional.of(methods[0]);
         }
         return Optional.empty();
     }

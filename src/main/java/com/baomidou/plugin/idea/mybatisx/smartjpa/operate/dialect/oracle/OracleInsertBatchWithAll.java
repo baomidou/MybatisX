@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * oracle的批量插入
@@ -32,8 +31,8 @@ import java.util.stream.Collectors;
 public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
 
-    private DasTableAdaptor dasTable;
-    private String tableName;
+    private final DasTableAdaptor dasTable;
+    private final String tableName;
 
 
     /**
@@ -128,9 +127,9 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
      * 批量插入
      */
     private class InsertBatchSuffixOperator implements SuffixOperator {
-        private String tableName;
+        private final String tableName;
         @NotNull
-        private List<TxField> mappingField;
+        private final List<TxField> mappingField;
 
         /**
          * Instantiates a new Insert batch suffix operator.
@@ -153,7 +152,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
             // 追加列名
             final String columns = mappingField.stream()
                 .map(TxField::getColumnName)
-                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
+                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
 
             final TxParameter collection = parameters.poll();
             if (collection == null) {
@@ -179,7 +178,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                     fieldStr = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldStr);
                     return fieldStr;
                 })
-                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
+                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
             stringBuilder.append(" item=\"").append(itemName).append("\"").append(">").append("\n");

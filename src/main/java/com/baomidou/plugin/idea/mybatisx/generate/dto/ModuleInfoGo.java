@@ -1,11 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
 /**
  * @author :ls9527
  * @date : 2021/6/30
  */
+@Getter
 public class ModuleInfoGo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,64 +47,32 @@ public class ModuleInfoGo implements Serializable {
      */
     private String basePath;
 
-    public String getFileNameWithSuffix() {
-        return fileNameWithSuffix;
-    }
-
     public void setFileNameWithSuffix(String fileNameWithSuffix) {
         this.fileNameWithSuffix = fileNameWithSuffix;
-    }
-
-    public String getConfigName() {
-        return configName;
     }
 
     public void setConfigName(String configName) {
         this.configName = configName;
     }
 
-    public String getModulePath() {
-        return modulePath;
-    }
-
     public void setModulePath(String modulePath) {
         this.modulePath = modulePath;
-    }
-
-    public String getPackageName() {
-        return packageName;
     }
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
-    public String getEncoding() {
-        return encoding;
-    }
-
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }
-
-    public String getFileName() {
-        return fileName;
     }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    public String getBasePath() {
-        return basePath;
-    }
-
     public void setBasePath(String basePath) {
         this.basePath = basePath;
-    }
-
-    public String getConfigFileName() {
-        return configFileName;
     }
 
     public void setConfigFileName(String configFileName) {

@@ -16,7 +16,8 @@ public class MybatisTemplateGeneratorConfigurable extends ConfigurableBase<Mybat
     /**
      * 项目
      */
-    private Project project;
+    private final Project project;
+    private final MybatisXTemplateSettings mybatisXTemplateSettings = new MybatisXTemplateSettings();
 
 
     protected MybatisTemplateGeneratorConfigurable(Project project) {
@@ -24,14 +25,11 @@ public class MybatisTemplateGeneratorConfigurable extends ConfigurableBase<Mybat
         this.project = project;
     }
 
-
     @NotNull
     @Override
     protected MybatisXTemplateSettings getSettings() {
         return mybatisXTemplateSettings;
     }
-
-    private MybatisXTemplateSettings mybatisXTemplateSettings = new MybatisXTemplateSettings();
 
     @Override
     protected MyConfigurableUi createUi() {

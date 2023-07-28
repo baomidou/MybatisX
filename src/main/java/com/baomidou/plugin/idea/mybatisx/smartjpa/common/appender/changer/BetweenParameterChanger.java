@@ -45,6 +45,6 @@ public class BetweenParameterChanger implements MxParameterChanger {
         final String endStr = conditionFieldWrapper.wrapperField(fieldName, end.getName(), end.getCanonicalTypeText());
 
         final String templateText = fieldName + SPACE + "between" + SPACE + beginStr + " and " + endStr;
-        return conditionFieldWrapper.wrapperBetweenCondition(fieldName,begin.getName(), end.getName(), templateText);
+        return conditionFieldWrapper.wrapperBetweenCondition(fieldName, begin.getName(), end.getName(), templateText);
     }
 }

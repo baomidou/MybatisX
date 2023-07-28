@@ -30,9 +30,9 @@ public class MybatisAnnotationGenerator implements Generator {
      * The constant RESULT_TYPE.
      */
     public static final String RESULT_TYPE = "resultType";
-    private Mapper mapper;
-    private MapperClassGenerateFactory mapperClassGenerateFactory;
-    private Project project;
+    private final Mapper mapper;
+    private final MapperClassGenerateFactory mapperClassGenerateFactory;
+    private final Project project;
 
     /**
      * Instantiates a new Mybatis annotation generator.

@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,12 +26,24 @@ public abstract class ContextReferenceSetResolver<F extends PsiElement, K extend
 
     /**
      * The Project.
+     * -- GETTER --
+     *  Gets project.
+     *
+     * @return the project
+
      */
+    @Getter
     protected Project project;
 
     /**
      * The Element.
+     * -- GETTER --
+     *  Gets element.
+     *
+     * @return the element
+
      */
+    @Getter
     protected F element;
 
     /**
@@ -112,30 +125,12 @@ public abstract class ContextReferenceSetResolver<F extends PsiElement, K extend
     }
 
     /**
-     * Gets element.
-     *
-     * @return the element
-     */
-    public F getElement() {
-        return element;
-    }
-
-    /**
      * Sets element.
      *
      * @param element the element
      */
     public void setElement(F element) {
         this.element = element;
-    }
-
-    /**
-     * Gets project.
-     *
-     * @return the project
-     */
-    public Project getProject() {
-        return project;
     }
 
     /**

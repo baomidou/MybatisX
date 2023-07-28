@@ -188,7 +188,7 @@ public class MysqlUpdateSelective implements CustomStatement {
      */
     private class UpdateSelectiveSuffixOperator implements SuffixOperator {
 
-        private List<TxField> mappingField;
+        private final List<TxField> mappingField;
 
         /**
          * Instantiates a new Insert batch suffix operator.

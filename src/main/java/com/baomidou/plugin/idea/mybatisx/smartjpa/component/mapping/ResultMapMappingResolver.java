@@ -37,7 +37,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
     private static final String RESULT_MAP_WITH_BLOBS = "ResultMapWithBLOBs";
     //
     private static final String BASE_RESULT_MAP = "BaseResultMap";
-    private Project project;
+    private final Project project;
 
     public ResultMapMappingResolver(Project project) {
         super();
@@ -123,11 +123,10 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
     }
 
     private Collection<? extends TxField> determineResults(List<Result> results, PsiClass mapperClass) {
-        return results.stream().map(result -> determineField(mapperClass, result.getProperty(), result.getXmlTag(),result.getJdbcType(), false)).filter(Objects::nonNull).collect(Collectors.toList());
+        return results.stream().map(result -> determineField(mapperClass, result.getProperty(), result.getXmlTag(), result.getJdbcType(), false)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
-     *
      * @param entityClass
      * @param property
      * @param xmlTag
@@ -159,7 +158,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
             txField.setClassName(field.getContainingClass().getQualifiedName());
             txField.setPrimaryKey(isPrimaryKey);
             String fieldJdbcType = null;
-            if(jdbcType !=null){
+            if (jdbcType != null) {
                 fieldJdbcType = jdbcType.getStringValue();
             }
             if (fieldJdbcType == null) {
@@ -194,7 +193,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
      */
     @Nullable
     private TxField getTxField(PsiClass mapperClass, Id id) {
-        return determineField(mapperClass, id.getProperty(), id.getXmlTag(), id.getJdbcType(),true);
+        return determineField(mapperClass, id.getProperty(), id.getXmlTag(), id.getJdbcType(), true);
     }
 
     /**

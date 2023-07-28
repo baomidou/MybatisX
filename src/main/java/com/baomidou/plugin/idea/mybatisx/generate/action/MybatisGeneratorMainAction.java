@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 public class MybatisGeneratorMainAction extends AnAction {
 
     public static final String TITLE = "MybatisX Generate";
+    private static final Logger logger = LoggerFactory.getLogger(MybatisGeneratorMainAction.class);
 
     /**
      * 点击后打开插件主页面
@@ -64,8 +65,6 @@ public class MybatisGeneratorMainAction extends AnAction {
             generateCode(project, dbTables, generateConfig);
         }
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(MybatisGeneratorMainAction.class);
 
     public void generateCode(Project project, List<DbTable> psiElements, GenerateConfig generateConfig) {
         try {
@@ -102,7 +101,7 @@ public class MybatisGeneratorMainAction extends AnAction {
     private void notify(Project project, GenerateConfig generateConfig) {
         Notifier.notifyInformation(project,
             TITLE,
-            generateConfig.getModuleName()+" generate finished");
+            generateConfig.getModuleName() + " generate finished");
     }
 
 

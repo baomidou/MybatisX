@@ -3,7 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.generate.setting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
-import com.intellij.debugger.DebuggerBundle;
 import com.intellij.debugger.JavaDebuggerBundle;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.AnActionButton;
@@ -11,6 +10,7 @@ import com.intellij.ui.AnActionButtonRunnable;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.util.PlatformIcons;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MybatisXTemplateSettings {
+    private static final Logger logger = LoggerFactory.getLogger(MybatisXTemplateSettings.class);
     private JTextField packageNameTextField;
     private JTextField fieldNameTextField;
+    @Getter
     private JPanel rootPanel;
     private JPanel configPanel;
     private JTextField suffixTextField;
@@ -40,9 +42,26 @@ public class MybatisXTemplateSettings {
     private JPanel treePanel;
     private JPanel treeConfigPanel;
 
+    public static void expandTree(JTree tree) {
+        TreeNode root = (TreeNode) tree.getModel().getRoot();
+        expandTree(tree, new TreePath(root));
+    }
 
-    public JPanel getRootPanel() {
-        return rootPanel;
+    public static void expandTree(JTree tree, TreePath path) {
+        TreeNode node = (TreeNode) path.getLastPathComponent();
+
+        // Go to leaf
+        if (node.getChildCount() > 0) {
+            Enumeration<TreeNode> children = (Enumeration<TreeNode>) node.children();
+
+            while (children.hasMoreElements()) {
+                TreeNode n = children.nextElement();
+                TreePath newPath = path.pathByAddingChild(n);
+                expandTree(tree, newPath);
+            }
+        }
+
+        tree.expandPath(path);
     }
 
     public void loadBySettings(TemplatesSettings templatesSettings) {
@@ -85,44 +104,6 @@ public class MybatisXTemplateSettings {
                 .createPanel(),
             gridConstraints);
 
-    }
-
-    private class CopyAction extends AnActionButton {
-        CopyAction() {
-            super(JavaDebuggerBundle.message("button.copy"),
-                JavaDebuggerBundle.message("user.renderers.configurable.button.description.copy"),
-                PlatformIcons.COPY_ICON);
-        }
-
-        @Override
-        public void actionPerformed(@NotNull AnActionEvent e) {
-        }
-
-        @Override
-        public void updateButton(@NotNull AnActionEvent e) {
-        }
-    }
-
-    public static void expandTree(JTree tree) {
-        TreeNode root = (TreeNode) tree.getModel().getRoot();
-        expandTree(tree, new TreePath(root));
-    }
-
-    public static void expandTree(JTree tree, TreePath path) {
-        TreeNode node = (TreeNode) path.getLastPathComponent();
-
-        // Go to leaf
-        if (node.getChildCount() > 0) {
-            Enumeration<TreeNode> children = (Enumeration<TreeNode>) node.children();
-
-            while (children.hasMoreElements()) {
-                TreeNode n = children.nextElement();
-                TreePath newPath = path.pathByAddingChild(n);
-                expandTree(tree, newPath);
-            }
-        }
-
-        tree.expandPath(path);
     }
 
     public void apply(TemplatesSettings templatesSettings) {
@@ -171,10 +152,24 @@ public class MybatisXTemplateSettings {
         return true;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(MybatisXTemplateSettings.class);
+    private class CopyAction extends AnActionButton {
+        CopyAction() {
+            super(JavaDebuggerBundle.message("button.copy"),
+                JavaDebuggerBundle.message("user.renderers.configurable.button.description.copy"),
+                PlatformIcons.COPY_ICON);
+        }
+
+        @Override
+        public void actionPerformed(@NotNull AnActionEvent e) {
+        }
+
+        @Override
+        public void updateButton(@NotNull AnActionEvent e) {
+        }
+    }
 
     private class MyTreeSelectionListener implements TreeSelectionListener {
-        private Map<String, ConfigSetting> templateSettingMap;
+        private final Map<String, ConfigSetting> templateSettingMap;
 
         public MyTreeSelectionListener(Map<String, ConfigSetting> templateSettingMap) {
             this.templateSettingMap = templateSettingMap;

@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
-import com.intellij.database.psi.DbElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;

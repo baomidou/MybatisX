@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.FieldInfo;
+import lombok.Getter;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 
@@ -12,6 +13,7 @@ import java.util.stream.Stream;
 /**
  * 实体类的信息
  */
+@Getter
 public class ClassInfo {
     /**
      * 类的全称(包括包名)
@@ -21,11 +23,6 @@ public class ClassInfo {
      * 类的简称
      */
     private String shortClassName;
-
-    public String getTableName() {
-        return tableName;
-    }
-
     /**
      * 表名
      */
@@ -64,23 +61,23 @@ public class ClassInfo {
         classInfo.remark = introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks();
 
         classInfo.pkFields = introspectedTable.getPrimaryKeyColumns()
-                .stream()
-                .map(FieldInfo::build)
-                .collect(Collectors.toList());
+            .stream()
+            .map(FieldInfo::build)
+            .collect(Collectors.toList());
 
         classInfo.allFields = Stream.of(introspectedTable.getPrimaryKeyColumns(),
                 introspectedTable.getBaseColumns(),
                 introspectedTable.getBLOBColumns())
-                .flatMap(Collection::stream)
-                .map(FieldInfo::build)
-                .collect(Collectors.toList());
+            .flatMap(Collection::stream)
+            .map(FieldInfo::build)
+            .collect(Collectors.toList());
 
         classInfo.baseFields = introspectedTable.getBaseColumns().stream()
-                .map(FieldInfo::build)
-                .collect(Collectors.toList());
+            .map(FieldInfo::build)
+            .collect(Collectors.toList());
 
         classInfo.baseBlobFields = Stream.of(introspectedTable.getBaseColumns(),
-            introspectedTable.getBLOBColumns())
+                introspectedTable.getBLOBColumns())
             .flatMap(Collection::stream)
             .map(FieldInfo::build)
             .collect(Collectors.toList());
@@ -88,41 +85,10 @@ public class ClassInfo {
         classInfo.importList = classInfo.allFields.stream()
             .filter(fieldInfo -> !fieldInfo.isColumnIsArray())
             .map(FieldInfo::getFullTypeName)
-            .filter(typeName->!typeName.startsWith("java.lang"))
+            .filter(typeName -> !typeName.startsWith("java.lang"))
             .distinct()
             .collect(Collectors.toList());
         return classInfo;
     }
 
-    public String getFullClassName() {
-        return fullClassName;
-    }
-
-    public String getShortClassName() {
-        return shortClassName;
-    }
-
-    public List<FieldInfo> getPkFields() {
-        return pkFields;
-    }
-
-    public List<FieldInfo> getAllFields() {
-        return allFields;
-    }
-
-    public List<FieldInfo> getBaseFields() {
-        return baseFields;
-    }
-
-    public List<FieldInfo> getBaseBlobFields() {
-        return baseBlobFields;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public List<String> getImportList() {
-        return importList;
-    }
 }

@@ -6,7 +6,6 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Package;
 import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAlias;
 import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAliases;
-import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.intellij.ide.fileTemplates.FileTemplate;
@@ -202,12 +201,12 @@ public final class MapperUtils {
      * @return the collection
      */
     @NotNull
-    public static Collection<Mapper> findMappers(Project project,PsiClass clazz) {
+    public static Collection<Mapper> findMappers(Project project, PsiClass clazz) {
         Collection<Mapper> mappers = null;
         if (project == null || clazz == null) {
             mappers = Collections.emptyList();
         }
-        if(mappers==null && JavaUtils.isElementWithinInterface(clazz)){
+        if (mappers == null && JavaUtils.isElementWithinInterface(clazz)) {
             mappers = findMappers(project, Objects.requireNonNull(clazz.getQualifiedName()));
         }
         if (mappers == null) {

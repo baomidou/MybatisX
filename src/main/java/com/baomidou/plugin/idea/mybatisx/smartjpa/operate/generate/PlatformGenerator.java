@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate;
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.MapperClassGenerateFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
@@ -16,6 +15,7 @@ public interface PlatformGenerator {
 
     /**
      * 默认日期字段
+     *
      * @return
      */
     String getDefaultDateWord();
@@ -38,7 +38,7 @@ public interface PlatformGenerator {
      * 生成mapper方法
      *
      * @param psiMethod
-     * @param conditionFieldWrapper      the condition field wrapper
+     * @param conditionFieldWrapper the condition field wrapper
      * @param resultFields
      * @param generator1
      */
@@ -69,6 +69,7 @@ public interface PlatformGenerator {
 
     /**
      * 结果集字段
+     *
      * @return
      */
     List<String> getResultFields();

@@ -74,6 +74,7 @@ public interface ConditionFieldWrapper {
 
     /**
      * 默认换行数量
+     *
      * @return
      */
     int getNewline();

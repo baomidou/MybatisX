@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,10 +16,16 @@ import java.util.Set;
  *
  * @author yanglin
  */
+@Getter
 public abstract class AliasResolver {
 
     /**
      * The Project.
+     * -- GETTER --
+     *  Gets project.
+     *
+     * @return the project
+
      */
     protected Project project;
 
@@ -58,15 +65,6 @@ public abstract class AliasResolver {
      */
     @NotNull
     public abstract Set<AliasDesc> getClassAliasDescriptions(@Nullable PsiElement element);
-
-    /**
-     * Gets project.
-     *
-     * @return the project
-     */
-    public Project getProject() {
-        return project;
-    }
 
     /**
      * Sets project.

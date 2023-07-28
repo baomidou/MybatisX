@@ -2,9 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import freemarker.cache.FileTemplateLoader;
-import freemarker.cache.StringTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -31,9 +29,10 @@ public class FreeMakerFormatter implements JavaFormatter {
 
     public static final String TEMPLATE = "template";
     private static final String USER_NAME = "user.name";
-    private CustomTemplateRoot rootObject;
+    private static final Logger logger = LoggerFactory.getLogger(FreeMakerFormatter.class);
     private final ClassInfo classInfo;
     protected Context context;
+    private final CustomTemplateRoot rootObject;
 
     public FreeMakerFormatter(CustomTemplateRoot rootObject, ClassInfo classInfo) {
         this.rootObject = rootObject;
@@ -44,8 +43,6 @@ public class FreeMakerFormatter implements JavaFormatter {
     public void setContext(Context context) {
         this.context = context;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(FreeMakerFormatter.class);
 
     /**
      * free marker 生成的代码, 不关心这里设置的任何属性
@@ -87,7 +84,7 @@ public class FreeMakerFormatter implements JavaFormatter {
                 e.printStackTrace(stringWriter);
             }
             logger.error("模板内容生成失败", e);
-            return "填充模板出错," + out.toString();
+            return "填充模板出错," + out;
         }
     }
 

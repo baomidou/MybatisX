@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.util;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.intellij.psi.PsiClass;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,11 +16,17 @@ public class SyntaxAppenderWrapper {
     /**
      * 缓存不可变更的
      */
-    private SyntaxAppender syntaxAppender;
+    private final SyntaxAppender syntaxAppender;
     /**
      * 为了扩展符号追加器的内容的集合
+     * -- GETTER --
+     *  Gets collector.
+     *
+     * @return the collector
+
      */
-    private LinkedList<SyntaxAppenderWrapper> collector;
+    @Getter
+    private final LinkedList<SyntaxAppenderWrapper> collector;
 
     /**
      * Instantiates a new Syntax appender wrapper.
@@ -59,15 +66,6 @@ public class SyntaxAppenderWrapper {
      */
     public SyntaxAppender getAppender() {
         return syntaxAppender;
-    }
-
-    /**
-     * Gets collector.
-     *
-     * @return the collector
-     */
-    public LinkedList<SyntaxAppenderWrapper> getCollector() {
-        return collector;
     }
 
     public List<TxParameter> getMxParameter(PsiClass entityClass) {

@@ -15,9 +15,9 @@ public class ParamAroundSuffixOperator implements SuffixOperator {
     /**
      * 比较符号
      */
-    private String prefix;
+    private final String prefix;
 
-    private String suffix;
+    private final String suffix;
 
     /**
      * Instantiates a new Param around suffix operator.
@@ -41,6 +41,6 @@ public class ParamAroundSuffixOperator implements SuffixOperator {
             + " "
             + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText())
             + suffix;
-        return  conditionFieldWrapper.wrapConditionText(fieldName, templateText);
+        return conditionFieldWrapper.wrapConditionText(fieldName, templateText);
     }
 }

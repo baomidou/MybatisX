@@ -17,6 +17,7 @@ import com.intellij.util.xml.CustomReferenceConverter;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
+import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ import java.util.Optional;
  */
 public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
-    private static String clazzName = "org.apache.ibatis.type.JdbcType";
+    private static final String clazzName = "org.apache.ibatis.type.JdbcType";
     JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
 
     @NotNull
@@ -63,12 +64,9 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
     /**
      * cache the variants
      */
+    @Getter
     static class JdbcTypeVariantHolder {
         Object[] variants;
-
-        public Object[] getVariants() {
-            return variants;
-        }
 
         public synchronized void setVariants(Object[] variants) {
             this.variants = variants;
@@ -94,7 +92,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
     private class JdbcTypePsiReferenceBase extends PsiReferenceBase {
 
         private final ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
-        private int index;
+        private final int index;
 
         public JdbcTypePsiReferenceBase(@NotNull XmlAttributeValue element, TextRange rangeInElement, int index) {
             super(element, rangeInElement, false);

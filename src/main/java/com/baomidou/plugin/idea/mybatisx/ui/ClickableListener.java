@@ -10,6 +10,6 @@ public interface ClickableListener extends ExecutableListener {
     /**
      * Clicked.
      */
-    public void clicked();
+    void clicked();
 
 }

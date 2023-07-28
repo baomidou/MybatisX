@@ -21,7 +21,7 @@ public class StatementBlockFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(StatementBlockFactory.class);
     private final List<StatementBlock> blockList = new ArrayList<>();
-    private Map<String, StatementBlock> appenderFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, StatementBlock> appenderFactoryMap = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new Statement block factory.

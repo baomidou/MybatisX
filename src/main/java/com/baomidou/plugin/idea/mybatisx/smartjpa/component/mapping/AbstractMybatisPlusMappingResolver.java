@@ -8,14 +8,12 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiConstantEvaluationHelper;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.PsiConstantEvaluationHelperImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

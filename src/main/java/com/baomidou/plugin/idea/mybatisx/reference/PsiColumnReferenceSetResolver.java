@@ -18,6 +18,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.containers.JBIterable;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,12 +37,24 @@ public class PsiColumnReferenceSetResolver {
 
     /**
      * The Project.
+     * -- GETTER --
+     *  Gets project.
+     *
+     * @return the project
+
      */
+    @Getter
     protected Project project;
 
     /**
      * The Element.
+     * -- GETTER --
+     *  Gets element.
+     *
+     * @return the element
+
      */
+    @Getter
     protected XmlAttributeValue element;
 
     /**
@@ -81,30 +94,12 @@ public class PsiColumnReferenceSetResolver {
 
 
     /**
-     * Gets element.
-     *
-     * @return the element
-     */
-    public XmlAttributeValue getElement() {
-        return element;
-    }
-
-    /**
      * Sets element.
      *
      * @param element the element
      */
     public void setElement(XmlAttributeValue element) {
         this.element = element;
-    }
-
-    /**
-     * Gets project.
-     *
-     * @return the project
-     */
-    public Project getProject() {
-        return project;
     }
 
     /**

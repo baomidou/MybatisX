@@ -12,6 +12,6 @@ public interface ExecutableListener {
      *
      * @return the boolean
      */
-    public boolean isWriteAction();
+    boolean isWriteAction();
 
 }

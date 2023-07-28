@@ -3,8 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.JpaGenerateException;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

@@ -27,7 +27,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
     private static final FullyQualifiedJavaType PARAM_ANNOTATION_TYPE = new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param");
     private static final FullyQualifiedJavaType LIST_TYPE = FullyQualifiedJavaType.getNewListInstance();
     private static final FullyQualifiedJavaType SERIALIZEBLE_TYPE = new FullyQualifiedJavaType("java.io.Serializable");
-    private List<Method> methods = new ArrayList();
+    private final List<Method> methods = new ArrayList();
     private ShellCallback shellCallback = null;
 
     public CommonDAOInterfacePlugin() {
@@ -96,7 +96,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
         if (introspectedTable.getPrimaryKeyColumns().size() > 1) {
             primaryKeyTypeJavaType = new FullyQualifiedJavaType(targetPackage + "." + domainObjectName + "Key");
         } else if (introspectedTable.hasPrimaryKeyColumns()) {
-            primaryKeyTypeJavaType = ((IntrospectedColumn) introspectedTable.getPrimaryKeyColumns().get(0)).getFullyQualifiedJavaType();
+            primaryKeyTypeJavaType = introspectedTable.getPrimaryKeyColumns().get(0).getFullyQualifiedJavaType();
         } else {
             primaryKeyTypeJavaType = baseModelJavaType;
         }

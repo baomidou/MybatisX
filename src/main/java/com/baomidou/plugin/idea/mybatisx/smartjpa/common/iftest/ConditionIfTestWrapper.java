@@ -26,22 +26,23 @@ import java.util.stream.Collectors;
  */
 public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     public static final int DEFAULT_NEWLINE_VALUE = 3;
-    private Project project;
-    private Set<String> selectedWrapFields;
+    private final Project project;
+    private final Set<String> selectedWrapFields;
     private String allFieldsStr;
     private String resultMap;
     private boolean resultType;
     private String resultTypeClass;
-    private List<String> resultFields;
-    private Map<String, TxField> txFieldMap;
-    private List<TxField> allFields;
+    private final List<String> resultFields;
+    private final Map<String, TxField> txFieldMap;
+    private final List<TxField> allFields;
     /**
      * 默认字段的关键字：  oracle: SYSDATE, mysql: NOW()
      */
-    private String defaultDateWord;
+    private final String defaultDateWord;
     private SmartJpaAdvanceUI.GeneratorEnum generatorType;
     private Mapper mapper;
     private List<String> defaultDateList;
+    private int newLine;
 
     /**
      * Instantiates a new Condition if test wrapper.
@@ -84,7 +85,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return templateText;
     }
 
-
     private String getConditionField(String fieldName, String fieldType) {
         String appender = "";
         if (Objects.equals(fieldType, "java.lang.String")) {
@@ -92,7 +92,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         }
         return fieldName + " != null" + appender;
     }
-
 
     @Override
     public String wrapWhere(String content) {
@@ -197,13 +196,15 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return defaultDateList;
     }
 
+    public void setDefaultDateList(List<String> defaultDateList) {
+        this.defaultDateList = defaultDateList;
+    }
+
     @Override
     public List<TxField> getResultTxFields() {
         Set<String> addedFields = new HashSet<>();
         return allFields.stream().filter(field -> resultFields.contains(field.getFieldName()) && addedFields.add(field.getFieldName())).collect(Collectors.toList());
     }
-
-    private int newLine;
 
     @Override
     public int getNewline() {
@@ -216,11 +217,10 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         if (txField != null) {
             String jdbcType = txField.getJdbcType();
             if (jdbcType != null) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("#{").append(name);
-                stringBuilder.append(",jdbcType=").append(jdbcType);
-                stringBuilder.append("}");
-                return stringBuilder.toString();
+                String stringBuilder = "#{" + name +
+                    ",jdbcType=" + jdbcType +
+                    "}";
+                return stringBuilder;
             }
         }
         return JdbcTypeUtils.wrapperField(name, canonicalTypeText);
@@ -238,11 +238,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         stringBuilder.append("\n").append("</if>");
         return stringBuilder.toString();
     }
-
-    public void setDefaultDateList(List<String> defaultDateList) {
-        this.defaultDateList = defaultDateList;
-    }
-
 
     public void setNewLine(int newLine) {
         // 如果设置错误的值, 给一个合适的默认值

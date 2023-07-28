@@ -17,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.composer.ComposerException;
-import org.yaml.snakeyaml.parser.ParserException;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
 import java.io.IOException;
@@ -39,16 +37,20 @@ import java.util.Set;
  */
 public class SpringBootPackageResolver extends PackageAliasResolver {
 
-    private static final String YML = "yml";
-    private static final String YAML = "yaml";
-    private static final String PROPERTIES = "properties";
     public static final String REGEX = ",; ";
     /**
      * spring boot 扩展点
      */
     public static final String SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR = "com.intellij.spring.boot.modelConfigFileContributor";
-    private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);
     public static final String UTF_8 = "UTF-8";
+    private static final String YML = "yml";
+    private static final String YAML = "yaml";
+    private static final String PROPERTIES = "properties";
+    private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);
+    /**
+     * 静态存储, 就算启用了内置的 springboot 插件，还是要重启idea的。 所以可以静态存储
+     */
+    private static volatile Boolean springBootExtensionExists = null;
 
     /**
      * Instantiates a new Bean alias resolver.
@@ -58,11 +60,6 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     public SpringBootPackageResolver(Project project) {
         super(project);
     }
-
-    /**
-     * 静态存储, 就算启用了内置的 springboot 插件，还是要重启idea的。 所以可以静态存储
-     */
-    private static volatile Boolean springBootExtensionExists = null;
 
     @NotNull
     @Override

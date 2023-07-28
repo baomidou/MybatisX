@@ -2,13 +2,13 @@ package com.baomidou.plugin.idea.mybatisx.generate.setting;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
-import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Getter
 @State(name = "TemplatesSettings", storages = {@Storage("mybatisx/templates.xml")})
 public class TemplatesSettings implements PersistentStateComponent<TemplatesSettings> {
 
@@ -43,10 +44,6 @@ public class TemplatesSettings implements PersistentStateComponent<TemplatesSett
     @Override
     public void loadState(@NotNull TemplatesSettings state) {
         XmlSerializerUtil.copyBean(state, this);
-    }
-
-    public TemplateContext getTemplateConfigs() {
-        return templateConfigs;
     }
 
     public void setTemplateConfigs(TemplateContext templateConfigs) {

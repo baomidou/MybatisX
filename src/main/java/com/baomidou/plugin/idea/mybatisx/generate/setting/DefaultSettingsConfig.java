@@ -16,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,9 +24,8 @@ import java.util.TreeMap;
 
 public class DefaultSettingsConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSettingsConfig.class);
-
     public static final String TEMPLATES = "templates";
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSettingsConfig.class);
 
     private static File getPath(@NotNull String pathParam) throws IOException {
         @NotNull PluginId id = Objects.requireNonNull(PluginId.findId("com.baomidou.plugin.idea.mybatisx"));

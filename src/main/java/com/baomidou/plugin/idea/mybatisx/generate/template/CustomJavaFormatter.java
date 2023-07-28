@@ -1,15 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
-import org.mybatis.generator.api.JavaFormatter;
 import org.mybatis.generator.api.dom.DefaultJavaFormatter;
-import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.mybatis.generator.api.dom.java.render.TopLevelClassRenderer;
-import org.mybatis.generator.config.Context;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.mybatis.generator.api.dom.java.render.RenderingUtilities.renderImports;
 import static org.mybatis.generator.api.dom.java.render.RenderingUtilities.renderInnerClassNoIndent;

@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -19,11 +20,32 @@ import java.util.stream.Collectors;
  */
 public class SmartJpaAdvanceUI {
     public static final String BASE_RESULT_MAP = "BaseResultMap";
+    public static final String BASE_COLUMN_LIST = "Base_Column_List";
     /**
      * The Condition panel.
+     * -- GETTER --
+     *  Gets condition panel.
+     *
+     * @return the condition panel
+
      */
+    @Getter
     public JPanel conditionPanel;
+    /**
+     * -- GETTER --
+     *  Gets root panel.
+     *
+     * @return the root panel
+     */
+    @Getter
     private JPanel rootPanel;
+    /**
+     * -- GETTER --
+     *  Gets check all condition field.
+     *
+     * @return the check all condition field
+     */
+    @Getter
     private JCheckBox checkAllConditionField;
     private JRadioButton includeRadioButton;
     private JRadioButton allColumnRadioButton;
@@ -37,11 +59,17 @@ public class SmartJpaAdvanceUI {
     private JRadioButton radioCreateCustomClass;
     private JSpinner splitFieldSpiner;
     private List<TxField> allFields;
-
+    /**
+     * -- GETTER --
+     *  Is result type boolean.
+     *
+     * @return the boolean
+     */
+    @Getter
     private boolean resultType = false;
     private List<String> resultFields;
     private PsiClass entityClass;
-    public static final String BASE_COLUMN_LIST = "Base_Column_List";
+    private ResultExecutor resultExecutor = new CommonResultExecutor();
 
     /**
      * Instantiates a new Smart jpa advance ui.
@@ -136,7 +164,6 @@ public class SmartJpaAdvanceUI {
         resultType = false;
     }
 
-
     /**
      * Gets generator type.
      *
@@ -152,33 +179,6 @@ public class SmartJpaAdvanceUI {
     }
 
     /**
-     * Gets root panel.
-     *
-     * @return the root panel
-     */
-    public JPanel getRootPanel() {
-        return rootPanel;
-    }
-
-    /**
-     * Gets condition panel.
-     *
-     * @return the condition panel
-     */
-    public JPanel getConditionPanel() {
-        return conditionPanel;
-    }
-
-    /**
-     * Gets check all condition field.
-     *
-     * @return the check all condition field
-     */
-    public JCheckBox getCheckAllConditionField() {
-        return checkAllConditionField;
-    }
-
-    /**
      * Gets all fields text.
      *
      * @return the all fields text
@@ -186,8 +186,6 @@ public class SmartJpaAdvanceUI {
     public String getAllFieldsText() {
         return columnsTextArea.getText();
     }
-
-    private ResultExecutor resultExecutor = new CommonResultExecutor();
 
     /**
      * Gets result map.
@@ -208,15 +206,6 @@ public class SmartJpaAdvanceUI {
         return getEntityClassName(entityClass);
     }
 
-    /**
-     * Is result type boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isResultType() {
-        return resultType;
-    }
-
     public void init(List<TxField> allFields, PsiClass entityClass, List<String> resultFields) {
         this.allFields = allFields;
         this.resultFields = resultFields;
@@ -233,6 +222,25 @@ public class SmartJpaAdvanceUI {
 
     public List<String> getResultFields() {
         return resultExecutor.getResultFields();
+    }
+
+    public int getNewLine() {
+        final Object value = splitFieldSpiner.getValue();
+        return Integer.parseInt(value.toString());
+    }
+
+    /**
+     * The enum Generator enum.
+     */
+    public enum GeneratorEnum {
+        /**
+         * Mybatis xml generator enum.
+         */
+        MYBATIS_XML,
+        /**
+         * Mybatis annotation generator enum.
+         */
+        MYBATIS_ANNOTATION,
     }
 
     private abstract class ResultExecutor {
@@ -253,7 +261,7 @@ public class SmartJpaAdvanceUI {
 
         @Override
         public String getEntityClassName(PsiClass entityClass) {
-            return  entityClass.getQualifiedName();
+            return entityClass.getQualifiedName();
         }
 
         @Override
@@ -297,24 +305,5 @@ public class SmartJpaAdvanceUI {
         public List<String> getResultFields() {
             return allFields.stream().map(TxField::getFieldName).distinct().collect(Collectors.toList());
         }
-    }
-
-    public int getNewLine() {
-        final Object value = splitFieldSpiner.getValue();
-        return Integer.parseInt(value.toString());
-    }
-
-    /**
-     * The enum Generator enum.
-     */
-    public enum GeneratorEnum {
-        /**
-         * Mybatis xml generator enum.
-         */
-        MYBATIS_XML,
-        /**
-         * Mybatis annotation generator enum.
-         */
-        MYBATIS_ANNOTATION,
     }
 }

@@ -7,8 +7,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +21,7 @@ import java.util.Set;
  */
 public class JpaAdvanceDialog extends DialogWrapper {
 
-    private SmartJpaAdvanceUI smartJpaAdvanceUI = new SmartJpaAdvanceUI();
+    private final SmartJpaAdvanceUI smartJpaAdvanceUI = new SmartJpaAdvanceUI();
 
 
     /**

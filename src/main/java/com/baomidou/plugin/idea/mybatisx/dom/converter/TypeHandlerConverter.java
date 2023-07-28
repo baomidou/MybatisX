@@ -57,10 +57,7 @@ public class TypeHandlerConverter extends ConverterAdaptor<PsiClass>
             return true;
         }
         PsiClass typeHandlerCla = typeHandlerClassOptional.get();
-        if (!psiClass.isInheritor(typeHandlerCla, true)) {
-            return true;
-        }
-        return false;
+        return !psiClass.isInheritor(typeHandlerCla, true);
     }
 
 }

@@ -10,12 +10,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
+import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,8 +21,22 @@ import java.util.stream.Collectors;
 public class CustomAreaAppender implements SyntaxAppender {
     private final String area;
     private final String areaType;
-    private AreaSequence areaSequence;
-    private SyntaxAppenderFactory syntaxAppenderFactory;
+    private final AreaSequence areaSequence;
+    /**
+     * -- GETTER --
+     *  Gets syntax appender factory.
+     *
+     * @return the syntax appender factory
+     */
+    @Getter
+    private final SyntaxAppenderFactory syntaxAppenderFactory;
+    /**
+     * -- GETTER --
+     *  Gets child area sequence.
+     *
+     * @return the child area sequence
+     */
+    @Getter
     private AreaSequence childAreaSequence;
 
     /**
@@ -114,15 +125,6 @@ public class CustomAreaAppender implements SyntaxAppender {
             '}';
     }
 
-    /**
-     * Gets syntax appender factory.
-     *
-     * @return the syntax appender factory
-     */
-    public SyntaxAppenderFactory getSyntaxAppenderFactory() {
-        return syntaxAppenderFactory;
-    }
-
     @Override
     public AreaSequence getAreaSequence() {
         return areaSequence;
@@ -140,7 +142,7 @@ public class CustomAreaAppender implements SyntaxAppender {
 
     @Override
     public List<AppendTypeCommand> getCommand(String areaPrefix, List<SyntaxAppender> splitList) {
-        return Arrays.asList(new AreaPrefixAppendTypeCommand(this.area, areaType, getAreaSequence(), getChildAreaSequence(), syntaxAppenderFactory));
+        return Collections.singletonList(new AreaPrefixAppendTypeCommand(this.area, areaType, getAreaSequence(), getChildAreaSequence(), syntaxAppenderFactory));
     }
 
     @Override
@@ -192,15 +194,6 @@ public class CustomAreaAppender implements SyntaxAppender {
                 currentAppender.toTree(jpaStringList, syntaxAppenderWrapper);
             }
         }
-    }
-
-    /**
-     * Gets child area sequence.
-     *
-     * @return the child area sequence
-     */
-    public AreaSequence getChildAreaSequence() {
-        return childAreaSequence;
     }
 
     @Override

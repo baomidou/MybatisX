@@ -12,10 +12,11 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author yanglin
  */
-public interface Select extends GroupTwo, ResultMapGroup, IdDomElement  {
+public interface Select extends GroupTwo, ResultMapGroup, IdDomElement {
 
     /**
      * select 标签对应的 resultType
+     *
      * @return the result type
      */
     @NotNull

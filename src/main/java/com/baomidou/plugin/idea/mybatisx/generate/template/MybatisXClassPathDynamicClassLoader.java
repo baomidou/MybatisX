@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MybatisXClassPathDynamicClassLoader extends ClassLoader {
-    private PsiClass psiClass;
+    private final PsiClass psiClass;
 
     public MybatisXClassPathDynamicClassLoader(PsiClass psiClass) {
         this.psiClass = psiClass;

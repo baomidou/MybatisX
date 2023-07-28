@@ -16,8 +16,8 @@ import java.util.List;
  * oracle 方言
  */
 public class OracleManager extends BaseDialectManager {
-    private DasTableAdaptor dasTable;
-    private String tableName;
+    private final DasTableAdaptor dasTable;
+    private final String tableName;
 
     /**
      * Instantiates a new Oracle manager.

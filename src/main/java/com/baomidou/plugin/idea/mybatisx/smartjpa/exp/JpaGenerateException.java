@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.exp;
 
-public class JpaGenerateException extends RuntimeException{
+public class JpaGenerateException extends RuntimeException {
     public JpaGenerateException() {
     }
 

@@ -12,6 +12,6 @@ public interface ListSelectionListener extends ExecutableListener {
      *
      * @param index the index
      */
-    public void selected(int index);
+    void selected(int index);
 
 }

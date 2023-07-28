@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class BooleanParameterChanger implements MxParameterChanger {
 
-    private Boolean booleanValue;
+    private final Boolean booleanValue;
 
     /**
      * Instantiates a new Boolean parameter changer.

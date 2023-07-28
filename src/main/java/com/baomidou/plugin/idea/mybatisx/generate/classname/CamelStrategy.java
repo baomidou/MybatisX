@@ -2,7 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.classname;
 
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 
-public class CamelStrategy implements ClassNameStrategy{
+public class CamelStrategy implements ClassNameStrategy {
 
     @Override
     public String getText() {

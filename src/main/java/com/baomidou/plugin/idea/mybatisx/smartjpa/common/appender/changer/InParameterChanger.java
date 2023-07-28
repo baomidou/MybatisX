@@ -38,14 +38,12 @@ public class InParameterChanger implements MxParameterChanger {
         if (parameter.getItemContent(itemName) != null) {
             itemContent = parameter.getItemContent(itemName);
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(fieldName).append(" ").append(getIn()).append("\n");
-        stringBuilder.append("<foreach collection=\"")
-            .append(collectionName)
-            .append("\" item=\"item\" open=\"(\" close=\")\" separator=\",\">").append("\n");
-        stringBuilder.append(itemContent).append("\n");
-        stringBuilder.append("</foreach>");
-        final String templateText = stringBuilder.toString();
+        final String templateText = fieldName + " " + getIn() + "\n" +
+            "<foreach collection=\"" +
+            collectionName +
+            "\" item=\"item\" open=\"(\" close=\")\" separator=\",\">" + "\n" +
+            itemContent + "\n" +
+            "</foreach>";
         return conditionFieldWrapper.wrapConditionText(fieldName, templateText);
     }
 

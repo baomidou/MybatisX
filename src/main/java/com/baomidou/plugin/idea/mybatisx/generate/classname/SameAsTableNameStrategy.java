@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.classname;
 
-public class SameAsTableNameStrategy implements ClassNameStrategy{
+public class SameAsTableNameStrategy implements ClassNameStrategy {
     @Override
     public String getText() {
         return "same as tablename";

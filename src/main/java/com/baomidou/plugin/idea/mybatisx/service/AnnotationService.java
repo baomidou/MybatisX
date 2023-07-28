@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AnnotationService {
 
-    private Project project;
+    private final Project project;
 
     /**
      * Instantiates a new Annotation service.

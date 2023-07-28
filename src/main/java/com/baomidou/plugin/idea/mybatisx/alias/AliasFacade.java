@@ -25,11 +25,11 @@ import java.util.Optional;
  */
 public class AliasFacade {
 
-    private Project project;
+    private final Project project;
 
-    private JavaPsiFacade javaPsiFacade;
+    private final JavaPsiFacade javaPsiFacade;
 
-    private List<AliasResolver> resolvers;
+    private final List<AliasResolver> resolvers;
 
     /**
      * Instantiates a new Alias facade.
@@ -137,7 +137,6 @@ public class AliasFacade {
     public void registerResolver(@NotNull AliasResolver resolver) {
         this.resolvers.add(resolver);
     }
-
 
 
     private static class InternalAlias {

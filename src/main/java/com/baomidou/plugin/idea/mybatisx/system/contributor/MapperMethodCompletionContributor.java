@@ -25,7 +25,6 @@ import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,12 +154,10 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         final PsiReferenceList extendsList = mapperClass.getExtendsList();
         if (extendsList != null) {
             final PsiJavaCodeReferenceElement[] referenceElements = extendsList.getReferenceElements();
-            if (referenceElements.length > 0) {
-                for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
-                    final String qualifiedName = referenceElement.getQualifiedName();
-                    if (MapperMethodInspection.MYBATIS_PLUS_BASE_MAPPER_NAMES.contains(qualifiedName)) {
-                        return Optional.of(mapperClass);
-                    }
+            for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
+                final String qualifiedName = referenceElement.getQualifiedName();
+                if (MapperMethodInspection.MYBATIS_PLUS_BASE_MAPPER_NAMES.contains(qualifiedName)) {
+                    return Optional.of(mapperClass);
                 }
             }
         }

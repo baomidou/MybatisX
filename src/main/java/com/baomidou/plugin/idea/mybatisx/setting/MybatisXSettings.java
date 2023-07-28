@@ -7,6 +7,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,11 +19,13 @@ import java.io.Serializable;
  *
  * @author yanglin
  */
+@Getter
 @State(
     name = "MybatisXSettings",
     storages = @Storage(value = "$APP_CONFIG$/mybatisx.xml"))
 public class MybatisXSettings implements PersistentStateComponent<MybatisXSettings>, Serializable {
 
+    private static final Joiner joiner = Joiner.on(";");
     // 配置的默认值
     private String mapperIcon;
     private String insertGenerator;
@@ -30,7 +33,6 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
     private String deleteGenerator;
     private String selectGenerator;
 
-    private static transient Joiner joiner = Joiner.on(";");
     /**
      * Gets instance.
      *
@@ -68,26 +70,6 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
         XmlSerializerUtil.copyBean(state, this);
     }
 
-    public String getInsertGenerator() {
-        return insertGenerator;
-    }
-
-    public String getUpdateGenerator() {
-        return updateGenerator;
-    }
-
-    public String getDeleteGenerator() {
-        return deleteGenerator;
-    }
-
-    public String getSelectGenerator() {
-        return selectGenerator;
-    }
-
-    public String getMapperIcon() {
-        return mapperIcon;
-    }
-
     public void setInsertGenerator(String insertGenerator) {
         this.insertGenerator = insertGenerator;
     }
@@ -110,6 +92,6 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
 
     public enum MapperIcon {
         DEFAULT,
-        BIRD;
+        BIRD
     }
 }

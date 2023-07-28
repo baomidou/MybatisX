@@ -78,7 +78,7 @@ public class JdbcTypeHashMarkTip implements HashMarkTip {
         TIME_WITH_TIMEZONE(Types.TIME_WITH_TIMEZONE), // JDBC 4.2 JDK8
         TIMESTAMP_WITH_TIMEZONE(Types.TIMESTAMP_WITH_TIMEZONE); // JDBC 4.2 JDK8
 
-        private static Map<Integer, JdbcType> codeLookup = new HashMap<>();
+        private static final Map<Integer, JdbcType> codeLookup = new HashMap<>();
 
         static {
             for (JdbcType type : JdbcType.values()) {

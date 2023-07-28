@@ -13,6 +13,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
@@ -35,11 +36,18 @@ public class CustomFieldAppender implements SyntaxAppender {
     protected String tipName;
     /**
      * The Field name.
+     * -- GETTER --
+     *  Gets field name.
+     *
+     * @return the field name
+
      */
+    @Getter
     protected String fieldName;
     /**
      * The Column name.
      */
+    @Getter
     protected String columnName;
     private AreaSequence areaSequence;
 
@@ -68,19 +76,6 @@ public class CustomFieldAppender implements SyntaxAppender {
      */
     public void setAreaSequence(AreaSequence areaSequence) {
         this.areaSequence = areaSequence;
-    }
-
-    /**
-     * Gets field name.
-     *
-     * @return the field name
-     */
-    public String getFieldName() {
-        return this.fieldName;
-    }
-
-    public String getColumnName() {
-        return columnName;
     }
 
     @Override

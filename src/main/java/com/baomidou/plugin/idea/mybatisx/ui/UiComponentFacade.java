@@ -26,9 +26,9 @@ import java.awt.event.ActionListener;
  */
 public final class UiComponentFacade {
 
-    private Project project;
+    private final Project project;
 
-    private FileEditorManager fileEditorManager;
+    private final FileEditorManager fileEditorManager;
 
     private UiComponentFacade(Project project) {
         this.project = project;

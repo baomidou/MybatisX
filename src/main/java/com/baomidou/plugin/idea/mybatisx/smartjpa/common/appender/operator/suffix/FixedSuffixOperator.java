@@ -18,8 +18,8 @@ public class FixedSuffixOperator implements SuffixOperator {
     /**
      * 比较符号
      */
-    private String operatorName;
-    private List<TxField> mappingField;
+    private final String operatorName;
+    private final List<TxField> mappingField;
 
     /**
      * Instantiates a new Fixed suffix operator.

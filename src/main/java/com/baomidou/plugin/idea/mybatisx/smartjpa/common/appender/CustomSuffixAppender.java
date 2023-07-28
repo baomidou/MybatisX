@@ -14,6 +14,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
@@ -33,7 +34,13 @@ public class CustomSuffixAppender implements SyntaxAppender {
     private final String tipName;
     /**
      * The Suffix operator.
+     * -- GETTER --
+     *  Gets suffix operator.
+     *
+     * @return the suffix operator
+
      */
+    @Getter
     protected SuffixOperator suffixOperator;
     private MxParameterChanger mxParameterFinder;
     private AreaSequence areaSequence;
@@ -225,7 +232,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
         String suffixTemplateText = suffixOperator.
             getTemplateText(columnName, parameters, conditionFieldWrapper);
         stringBuilder.append(suffixTemplateText);
-       
+
         return stringBuilder.toString();
     }
 
@@ -315,12 +322,4 @@ public class CustomSuffixAppender implements SyntaxAppender {
     }
 
 
-    /**
-     * Gets suffix operator.
-     *
-     * @return the suffix operator
-     */
-    public SuffixOperator getSuffixOperator() {
-        return suffixOperator;
-    }
 }

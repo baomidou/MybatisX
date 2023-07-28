@@ -1,9 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 
+import lombok.Getter;
+
 /**
  * The type Tx field.
  */
+@Getter
 public class TxField {
     /**
      * 是不是主键
@@ -15,19 +18,39 @@ public class TxField {
     private String className;
     /**
      * 提示名称
+     * -- GETTER --
+     *  Gets tip name.
+     *
+     * @return the tip name
+
      */
     private String tipName;
     /**
      * 字段名称
+     * -- GETTER --
+     *  Gets field name.
+     *
+     * @return the field name
+
      */
     private String fieldName;
 
     /**
      * 表的列名
+     * -- GETTER --
+     *  Gets column name.
+     *
+     * @return the column name
+
      */
     private String columnName;
     /**
      * 字段类型
+     * -- GETTER --
+     *  Gets field type.
+     *
+     * @return the field type
+
      */
     private String fieldType;
     /**
@@ -36,30 +59,12 @@ public class TxField {
     private String jdbcType;
 
     /**
-     * Gets field type.
-     *
-     * @return the field type
-     */
-    public String getFieldType() {
-        return this.fieldType;
-    }
-
-    /**
      * Sets field type.
      *
      * @param fieldType the field type
      */
     public void setFieldType(final String fieldType) {
         this.fieldType = fieldType;
-    }
-
-    /**
-     * Gets tip name.
-     *
-     * @return the tip name
-     */
-    public String getTipName() {
-        return this.tipName;
     }
 
     /**
@@ -72,30 +77,12 @@ public class TxField {
     }
 
     /**
-     * Gets field name.
-     *
-     * @return the field name
-     */
-    public String getFieldName() {
-        return this.fieldName;
-    }
-
-    /**
      * Sets field name.
      *
      * @param fieldName the field name
      */
     public void setFieldName(final String fieldName) {
         this.fieldName = fieldName;
-    }
-
-    /**
-     * Gets column name.
-     *
-     * @return the column name
-     */
-    public String getColumnName() {
-        return this.columnName;
     }
 
     /**
@@ -107,24 +94,12 @@ public class TxField {
         this.columnName = columnName;
     }
 
-    public String getJdbcType() {
-        return jdbcType;
-    }
-
     public void setJdbcType(String jdbcType) {
         this.jdbcType = jdbcType;
     }
 
-    public String getClassName() {
-        return className;
-    }
-
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public Boolean getPrimaryKey() {
-        return primaryKey;
     }
 
     public void setPrimaryKey(Boolean primaryKey) {

@@ -13,7 +13,7 @@ public class Notifier {
 
     public static void notifyInformation(@Nullable Project project, String title, String content) {
         NOTIFICATION_GROUP.createNotification(title, content, NotificationType.INFORMATION, null)
-           .notify(project);
+            .notify(project);
     }
 
 }

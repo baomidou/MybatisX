@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The type Mysql insert batch.
@@ -188,7 +187,7 @@ public class MysqlInsertBatch implements CustomStatement {
      */
     private class InsertBatchSuffixOperator implements SuffixOperator {
 
-        private List<TxField> mappingField;
+        private final List<TxField> mappingField;
 
         /**
          * Instantiates a new Insert batch suffix operator.
@@ -206,7 +205,7 @@ public class MysqlInsertBatch implements CustomStatement {
             // 追加列名
             final String columns = mappingField.stream()
                 .map(field -> field.getColumnName())
-                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
+                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("values").append("\n");
@@ -218,7 +217,7 @@ public class MysqlInsertBatch implements CustomStatement {
                     fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
                     return fieldValue;
                 })
-                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
+                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
             stringBuilder.append(" item=\"" + itemName + "\"");

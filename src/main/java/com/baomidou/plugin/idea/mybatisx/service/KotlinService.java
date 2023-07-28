@@ -22,6 +22,7 @@ public class KotlinService {
 
     /**
      * Process Kotlin Class
+     *
      * @param clazz     the ktclass
      * @param processor the processor
      */
@@ -38,12 +39,13 @@ public class KotlinService {
 
     /**
      * process KtNamedFunction
+     *
      * @param ktMethod  the kotlin method
      * @param processor the processor
      */
     public void processKotlinMethod(@NotNull KtNamedFunction ktMethod, @NotNull Processor<IdDomElement> processor) {
         KtClass parentClass = PsiTreeUtil.getParentOfType(ktMethod, KtClass.class);
-        if (null == parentClass || !KtPsiUtil.isTrait(parentClass)) {
+        if (!KtPsiUtil.isTrait(parentClass)) {
             return;
         }
         String packageName = KtPsiUtil.getPackageName(parentClass);

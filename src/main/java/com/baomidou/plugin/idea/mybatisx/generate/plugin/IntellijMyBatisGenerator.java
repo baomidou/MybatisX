@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.plugin;
 
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijIntrospector;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
+import lombok.Getter;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.GeneratedKotlinFile;
 import org.mybatis.generator.api.GeneratedXmlFile;
@@ -39,13 +40,16 @@ import java.util.List;
 import java.util.Set;
 
 public class IntellijMyBatisGenerator {
-    private Configuration configuration;
-    private ShellCallback shellCallback;
-    private List<GeneratedJavaFile> generatedJavaFiles = new ArrayList();
-    private List<GeneratedXmlFile> generatedXmlFiles = new ArrayList();
-    private List<GeneratedKotlinFile> generatedKotlinFiles = new ArrayList();
-    private List<String> warnings;
-    private Set<String> projects = new HashSet();
+    private final Configuration configuration;
+    private final ShellCallback shellCallback;
+    @Getter
+    private final List<GeneratedJavaFile> generatedJavaFiles = new ArrayList();
+    @Getter
+    private final List<GeneratedXmlFile> generatedXmlFiles = new ArrayList();
+    @Getter
+    private final List<GeneratedKotlinFile> generatedKotlinFiles = new ArrayList();
+    private final List<String> warnings;
+    private final Set<String> projects = new HashSet();
 
     public IntellijMyBatisGenerator(Configuration configuration, ShellCallback shellCallback, List<String> warnings) throws InvalidConfigurationException {
         if (configuration == null) {
@@ -69,15 +73,15 @@ public class IntellijMyBatisGenerator {
     }
 
     public void generate(ProgressCallback callback, IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
-        this.generate(callback, null, null, true,null, tableInfo);
+        this.generate(callback, null, null, true, null, tableInfo);
     }
 
     public void generate(ProgressCallback callback, Set<String> contextIds, IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
-        this.generate(callback, contextIds, null, true, null,tableInfo);
+        this.generate(callback, contextIds, null, true, null, tableInfo);
     }
 
     public void generate(ProgressCallback callback, Set<String> contextIds, Set<String> fullyQualifiedTableNames, IntellijTableInfo tableInfo) throws SQLException, IOException, InterruptedException {
-        this.generate(callback, contextIds, fullyQualifiedTableNames, true,null, tableInfo);
+        this.generate(callback, contextIds, fullyQualifiedTableNames, true, null, tableInfo);
     }
 
     public void generate(ProgressCallback callback,
@@ -360,15 +364,4 @@ public class IntellijMyBatisGenerator {
         }
     }
 
-    public List<GeneratedJavaFile> getGeneratedJavaFiles() {
-        return this.generatedJavaFiles;
-    }
-
-    public List<GeneratedKotlinFile> getGeneratedKotlinFiles() {
-        return this.generatedKotlinFiles;
-    }
-
-    public List<GeneratedXmlFile> getGeneratedXmlFiles() {
-        return this.generatedXmlFiles;
-    }
 }

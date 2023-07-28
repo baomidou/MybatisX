@@ -233,7 +233,7 @@ public class InsertOperator extends BaseOperatorManager {
 
     private class InsertAllSuffixOperator implements SuffixOperator {
 
-        private List<TxField> mappingField;
+        private final List<TxField> mappingField;
 
         /**
          * Instantiates a new Insert all suffix operator.
@@ -251,7 +251,7 @@ public class InsertOperator extends BaseOperatorManager {
             // 追加列名
             final String columns = mappingField.stream()
                 .map(TxField::getColumnName)
-                .collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
+                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符
             stringBuilder.append("values").append("\n");
@@ -259,7 +259,7 @@ public class InsertOperator extends BaseOperatorManager {
                 .map(field -> {
                     String fieldValue = JdbcTypeUtils.wrapperField(field.getFieldName(), field.getFieldType());
                     return conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
-                }).collect(MybatisXCollectors.joining(",",conditionFieldWrapper.getNewline()));
+                }).collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
             stringBuilder.append("(\n");
             stringBuilder.append(fields).append("\n");
             stringBuilder.append(")").append("\n");
@@ -271,7 +271,7 @@ public class InsertOperator extends BaseOperatorManager {
 
     private class InsertSelectiveSuffixOperator implements SuffixOperator {
 
-        private List<TxField> mappingField;
+        private final List<TxField> mappingField;
 
         /**
          * Instantiates a new Insert selective suffix operator.
@@ -317,12 +317,11 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         private String selective(String paramName, String origin) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("<if test=\"").append(paramName).append(" != null").append("\">");
-            stringBuilder.append(origin);
-            stringBuilder.append(",");
-            stringBuilder.append("</if>");
-            return stringBuilder.toString();
+            String stringBuilder = "<if test=\"" + paramName + " != null" + "\">" +
+                origin +
+                "," +
+                "</if>";
+            return stringBuilder;
         }
 
 

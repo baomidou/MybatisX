@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ResultColumnReferenceSet extends ReferenceSetBase<PsiReference> {
 
-    private PsiClass mapperClass;
+    private final PsiClass mapperClass;
 
     /**
      * Instantiates a new Result property reference set.

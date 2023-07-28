@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
  */
 public class AllTxFields extends TxField {
 
-    private List<TxField> mappingField;
-    private PsiClass entityClass;
+    private final List<TxField> mappingField;
+    private final PsiClass entityClass;
 
     public AllTxFields(List<TxField> mappingField, PsiClass entityClass) {
         super();

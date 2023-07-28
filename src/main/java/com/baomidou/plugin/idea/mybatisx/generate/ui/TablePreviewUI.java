@@ -21,6 +21,7 @@ import com.intellij.ui.table.TableView;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -40,6 +41,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class TablePreviewUI {
+    ListTableModel<TableUIInfo> model = new ListTableModel<>(
+        new MybaitsxTableColumnInfo("tableName", false),
+        new MybaitsxTableColumnInfo("className", true)
+    );
+    List<ClassNameStrategy> classNameStrategies = new ArrayList<ClassNameStrategy>() {
+        {
+            add(new CamelStrategy());
+            add(new SameAsTableNameStrategy());
+        }
+    };
+    @Getter
     private JPanel rootPanel;
     private JPanel listPanel;
     private JTextField ignoreTablePrefixTextField;
@@ -63,14 +75,8 @@ public class TablePreviewUI {
     private JPanel classNameStrategyPanel;
     private PsiElement[] tableElements;
     private List<DbTable> dbTables;
-
-
     private String moduleName;
 
-    ListTableModel<TableUIInfo> model = new ListTableModel<>(
-        new MybaitsxTableColumnInfo("tableName", false),
-        new MybaitsxTableColumnInfo("className", true)
-    );
 
     public TablePreviewUI() {
         TableView<TableUIInfo> tableView = new TableView<>(model);
@@ -88,7 +94,6 @@ public class TablePreviewUI {
 
     }
 
-
     public DomainInfo buildDomainInfo() {
         DomainInfo domainInfo = new DomainInfo();
         domainInfo.setModulePath(moduleChooseTextField.getText());
@@ -100,11 +105,6 @@ public class TablePreviewUI {
         domainInfo.setFileName("${domain.fileName}");
         return domainInfo;
 
-    }
-
-
-    public JPanel getRootPanel() {
-        return rootPanel;
     }
 
     public void fillData(Project project, List<DbTable> dbTables, GenerateConfig generateConfig) {
@@ -183,7 +183,6 @@ public class TablePreviewUI {
         ignoreTableSuffixTextField.getDocument().addDocumentListener(listener);
     }
 
-
     private void refreshTableNames(String classNameStrategyName, List<DbTable> dbTables, String ignorePrefix, String ignoreSuffix) {
         for (int currentRowIndex = model.getRowCount() - 1; currentRowIndex >= 0; currentRowIndex--) {
             model.removeRow(currentRowIndex);
@@ -196,12 +195,6 @@ public class TablePreviewUI {
         }
     }
 
-    List<ClassNameStrategy> classNameStrategies = new ArrayList<ClassNameStrategy>(){
-        {
-            add(new CamelStrategy());
-            add(new SameAsTableNameStrategy());
-        }
-    };
     private ClassNameStrategy findStrategyByName(String classNameStrategyName) {
         ClassNameStrategy classNameStrategy = null;
         for (ClassNameStrategy nameStrategy : classNameStrategies) {
@@ -237,9 +230,9 @@ public class TablePreviewUI {
         int childModuleIndex = indexFromChildModule(moduleDirPath);
         if (hasChildModule(childModuleIndex)) {
             Optional<String> pathFromModule = getPathFromModule(module);
-            if(pathFromModule.isPresent()){
+            if (pathFromModule.isPresent()) {
                 moduleDirPath = pathFromModule.get();
-            }else{
+            } else {
                 moduleDirPath = moduleDirPath.substring(0, childModuleIndex);
             }
         }
@@ -258,8 +251,8 @@ public class TablePreviewUI {
     private Optional<String> getPathFromModule(Module module) {
         // 兼容gradle获取子模块
         VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
-        if(contentRoots.length == 1){
-            return  Optional.ofNullable(contentRoots[0].getPath());
+        if (contentRoots.length == 1) {
+            return Optional.ofNullable(contentRoots[0].getPath());
         }
         return Optional.empty();
     }
@@ -310,7 +303,7 @@ public class TablePreviewUI {
 
     private static class MybaitsxTableColumnInfo extends ColumnInfo<TableUIInfo, String> {
 
-        private boolean editable;
+        private final boolean editable;
 
         public MybaitsxTableColumnInfo(String name, boolean editable) {
             super(name);

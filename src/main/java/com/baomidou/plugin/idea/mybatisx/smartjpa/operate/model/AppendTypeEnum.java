@@ -1,16 +1,20 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model;
 
+import lombok.Getter;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * The enum Append type enum.
  */
+@Getter
 public enum AppendTypeEnum {
     /**
      * 无前缀
      */
-    EMPTY(Arrays.asList("AREA")),
+    EMPTY(Collections.singletonList("AREA")),
 
 
     /**
@@ -28,26 +32,23 @@ public enum AppendTypeEnum {
     /**
      * 连接符
      */
-    JOIN(Arrays.asList("FIELD")),
+    JOIN(Collections.singletonList("FIELD")),
 
     /**
      * 后缀
      */
     SUFFIX(Arrays.asList("FIELD", "JOIN", "AREA"));
 
+    /**
+     * -- GETTER --
+     *  Gets allowed after list.
+     *
+     * @return the allowed after list
+     */
     private final List<String> allowedAfterList;
 
     AppendTypeEnum(final List<String> allowedAfterList) {
         this.allowedAfterList = allowedAfterList;
-    }
-
-    /**
-     * Gets allowed after list.
-     *
-     * @return the allowed after list
-     */
-    public List<String> getAllowedAfterList() {
-        return allowedAfterList;
     }
 
     /**

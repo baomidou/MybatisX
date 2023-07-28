@@ -31,8 +31,8 @@ public class CustomJoinAppender implements SyntaxAppender {
     public static final String SPACE = " ";
     private static final Logger logger = LoggerFactory.getLogger(CustomJoinAppender.class);
     private final String tipText;
-    private String sqlText;
-    private AreaSequence areaSequence;
+    private final String sqlText;
+    private final AreaSequence areaSequence;
 
     /**
      * Instantiates a new Custom join appender.
@@ -64,7 +64,7 @@ public class CustomJoinAppender implements SyntaxAppender {
 
     @Override
     public List<AppendTypeCommand> getCommand(String areaPrefix, List<SyntaxAppender> splitList) {
-        return Arrays.asList(new JoinAppendTypeCommand(this));
+        return Collections.singletonList(new JoinAppendTypeCommand(this));
     }
 
     @Override

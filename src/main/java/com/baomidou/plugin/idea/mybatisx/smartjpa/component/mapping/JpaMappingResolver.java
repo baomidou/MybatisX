@@ -58,23 +58,21 @@ public abstract class JpaMappingResolver {
         PsiReferenceList extendsList = mapperClass.getExtendsList();
         if (extendsList != null) {
             @NotNull PsiJavaCodeReferenceElement[] referenceElements = extendsList.getReferenceElements();
-            if (referenceElements.length > 0) {
-                for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
-                    PsiReferenceParameterList parameterList = referenceElement.getParameterList();
-                    if (parameterList != null) {
-                        @NotNull PsiType[] typeArguments = parameterList.getTypeArguments();
-                        if (typeArguments != null) {
-                            for (PsiType type : typeArguments) {
-                                String canonicalText = type.getCanonicalText();
-                                // 当存在多个类型的时候, 排除主键类型.  java开头的包
-                                if (!canonicalText.startsWith("java")
-                                    && !StringUtils.isEmpty(canonicalText)) {
-                                    PsiClass entityClass = instance.findClass(canonicalText, mapperClass.getResolveScope());
-                                    if (entityClass != null) {
-                                        PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
-                                        if (annotation != null) {
-                                            return Optional.of(entityClass);
-                                        }
+            for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
+                PsiReferenceParameterList parameterList = referenceElement.getParameterList();
+                if (parameterList != null) {
+                    @NotNull PsiType[] typeArguments = parameterList.getTypeArguments();
+                    if (typeArguments != null) {
+                        for (PsiType type : typeArguments) {
+                            String canonicalText = type.getCanonicalText();
+                            // 当存在多个类型的时候, 排除主键类型.  java开头的包
+                            if (!canonicalText.startsWith("java")
+                                && !StringUtils.isEmpty(canonicalText)) {
+                                PsiClass entityClass = instance.findClass(canonicalText, mapperClass.getResolveScope());
+                                if (entityClass != null) {
+                                    PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
+                                    if (annotation != null) {
+                                        return Optional.of(entityClass);
                                     }
                                 }
                             }
@@ -160,7 +158,7 @@ public abstract class JpaMappingResolver {
 
                 // 表的列名
                 txField.setColumnName(columnName);
-                if(field.hasAnnotation(ID_ANNOTATION)){
+                if (field.hasAnnotation(ID_ANNOTATION)) {
                     txField.setPrimaryKey(true);
                 }
 

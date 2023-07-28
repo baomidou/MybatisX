@@ -9,6 +9,7 @@ import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Set;
  */
 public class TxParameter {
     public static final String JAVA_LANG = "java.lang";
-    private static Set<String> primitiveType = new HashSet<String>() {
+    private static final Set<String> primitiveType = new HashSet<String>() {
         {
             add("boolean");
             add("byte");
@@ -33,12 +34,42 @@ public class TxParameter {
             add("double");
         }
     };
+    @Getter
     private AreaSequence areaSequence;
+    /**
+     * -- GETTER --
+     *  字段类型简称
+     *
+     * @return type text
+     */
+    @Getter
     private String typeText;
+    /**
+     * -- GETTER --
+     *  Gets canonical type text.
+     *
+     * @return the canonical type text
+     */
+    @Getter
     private String canonicalTypeText;
+    /**
+     * -- GETTER --
+     *  字段名称
+     *
+     * @return name
+     */
+    @Getter
     private String name;
+    /**
+     * -- GETTER --
+     *  Is param annotation boolean.
+     *
+     * @return the boolean
+     */
+    @Getter
     private boolean paramAnnotation;
     //
+    @Getter
     private List<String> importClass = Collections.emptyList();
     private String itemContent;
 
@@ -94,10 +125,7 @@ public class TxParameter {
         if (canonicalText.startsWith(JAVA_LANG)) {
             return true;
         }
-        if (primitiveType.contains(canonicalText)) {
-            return true;
-        }
-        return false;
+        return primitiveType.contains(canonicalText);
     }
 
     public static TxParameter createCollectionByTxParameter(TxParameter txParameter) {
@@ -166,37 +194,6 @@ public class TxParameter {
         );
     }
 
-    public AreaSequence getAreaSequence() {
-        return areaSequence;
-    }
-
-    /**
-     * 字段类型简称
-     *
-     * @return type text
-     */
-    public String getTypeText() {
-        return typeText;
-    }
-
-    /**
-     * Gets canonical type text.
-     *
-     * @return the canonical type text
-     */
-    public String getCanonicalTypeText() {
-        return canonicalTypeText;
-    }
-
-    /**
-     * 字段名称
-     *
-     * @return name
-     */
-    public String getName() {
-        return name;
-    }
-
     /**
      * Sets name.
      *
@@ -204,19 +201,6 @@ public class TxParameter {
      */
     public void setName(final String name) {
         this.name = name;
-    }
-
-    /**
-     * Is param annotation boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isParamAnnotation() {
-        return paramAnnotation;
-    }
-
-    public List<String> getImportClass() {
-        return importClass;
     }
 
     public String getItemContent(String item) {

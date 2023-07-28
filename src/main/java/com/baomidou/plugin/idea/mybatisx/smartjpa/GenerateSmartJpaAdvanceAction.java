@@ -135,7 +135,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
 
         List<TxField> resultTxFields = conditionFieldWrapper.getResultTxFields();
         final Generator generator = conditionFieldWrapper.getGenerator(mapperClassGenerateFactory);
-        if(generator.checkCanGenerate(project,mapperClass)){
+        if (generator.checkCanGenerate(project, mapperClass)) {
             platformGenerator.generateMapperXml(
                 psiMethod,
                 conditionFieldWrapper,
@@ -235,9 +235,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
         if (statementElement != null) {
             // 当前节点的父类不是mapper类就返回
             PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
-            if (mapperClass == null) {
-                return false;
-            }
+            return mapperClass != null;
         }
         return true;
     }

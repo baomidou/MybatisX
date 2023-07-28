@@ -21,7 +21,7 @@ import java.util.StringJoiner;
  * 支持条件区域直接写 AllFields 方法生成代码，然后选择其中一部分
  */
 public class ConditionAllFieldAppender extends CustomFieldAppender {
-    private List<TxField> mappingField;
+    private final List<TxField> mappingField;
 
     public ConditionAllFieldAppender(TxField field, AreaSequence areaSequence, List<TxField> mappingField) {
         super(field, areaSequence);

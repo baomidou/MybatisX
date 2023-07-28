@@ -8,9 +8,9 @@ import org.mybatis.generator.api.dom.java.Interface;
 import java.util.List;
 
 public class RepositoryPlugin extends PluginAdapter {
-    private FullyQualifiedJavaType annotationRepository =
+    private final FullyQualifiedJavaType annotationRepository =
         new FullyQualifiedJavaType("org.springframework.stereotype.Repository");
-    private String annotation = "@Repository";
+    private final String annotation = "@Repository";
 
     public RepositoryPlugin() {
     }

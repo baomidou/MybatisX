@@ -20,15 +20,15 @@ public class MybatisPlus3AnnotationTypeOperator implements AnnotationTypeOperato
     public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
         for (IntrospectedColumn column : introspectedTable.getPrimaryKeyColumns()) {
             if (introspectedColumn == column) {
-                if(introspectedColumn.isAutoIncrement()) {
-                    if(useActualColumnAnnotationInject(introspectedColumn)) {
+                if (introspectedColumn.isAutoIncrement()) {
+                    if (useActualColumnAnnotationInject(introspectedColumn)) {
                         field.addAnnotation("@TableId(value = \"" + introspectedColumn.getActualColumnName() + "\", type = IdType.AUTO)");
                     } else {
                         field.addAnnotation("@TableId(type = IdType.AUTO)");
                     }
 
                 } else {
-                    if(useActualColumnAnnotationInject(introspectedColumn)) {
+                    if (useActualColumnAnnotationInject(introspectedColumn)) {
                         field.addAnnotation("@TableId(value = \"" + introspectedColumn.getActualColumnName() + "\")");
                     } else {
                         field.addAnnotation("@TableId");
@@ -38,8 +38,8 @@ public class MybatisPlus3AnnotationTypeOperator implements AnnotationTypeOperato
             }
         }
 
-        if(useActualColumnAnnotationInject(introspectedColumn)) {
-            if(!introspectedTable.getPrimaryKeyColumns().contains(introspectedColumn)) {
+        if (useActualColumnAnnotationInject(introspectedColumn)) {
+            if (!introspectedTable.getPrimaryKeyColumns().contains(introspectedColumn)) {
                 field.addAnnotation("@TableField(value = \"" + introspectedColumn.getActualColumnName() + "\")");
             }
         }

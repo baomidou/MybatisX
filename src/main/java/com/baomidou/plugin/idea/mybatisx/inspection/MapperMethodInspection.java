@@ -36,14 +36,6 @@ import java.util.stream.Stream;
  */
 public class MapperMethodInspection extends MapperInspection {
 
-    private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<String>() {
-        {
-            add("org.apache.ibatis.annotations.SelectProvider");
-            add("org.apache.ibatis.annotations.UpdateProvider");
-            add("org.apache.ibatis.annotations.InsertProvider");
-            add("org.apache.ibatis.annotations.DeleteProvider");
-        }
-    };
     public static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<String>() {
         {
             // mp3
@@ -54,6 +46,14 @@ public class MapperMethodInspection extends MapperInspection {
     };
     public static final String MAP_KEY = "org.apache.ibatis.annotations.MapKey";
     public static final String MAP = "java.util.Map";
+    private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<String>() {
+        {
+            add("org.apache.ibatis.annotations.SelectProvider");
+            add("org.apache.ibatis.annotations.UpdateProvider");
+            add("org.apache.ibatis.annotations.InsertProvider");
+            add("org.apache.ibatis.annotations.DeleteProvider");
+        }
+    };
 
     @Nullable
     @Override
@@ -134,7 +134,7 @@ public class MapperMethodInspection extends MapperInspection {
                 final String aliasValue = select.getResultType().getStringValue();
                 if (aliasValue != null) {
                     // 别名识别失败, 无需提示
-                    String descriptionTemplate = "the alias \""+aliasValue+"\" not recognized";
+                    String descriptionTemplate = "the alias \"" + aliasValue + "\" not recognized";
                     PsiIdentifier ide = method.getNameIdentifier();
                     descriptor = manager.createProblemDescriptor(ide,
                         descriptionTemplate,
@@ -143,7 +143,7 @@ public class MapperMethodInspection extends MapperInspection {
                         isOnTheFly);
                 }
             }
-            if (descriptor==null && !equalsOrInheritor(clazz, targetClass)) {
+            if (descriptor == null && !equalsOrInheritor(clazz, targetClass)) {
                 String srcType = clazz != null ? clazz.getQualifiedName() : "";
                 String targetType = targetClass.getQualifiedName();
                 String descriptionTemplate = "Result type not match for select id=\"#ref\""
@@ -171,12 +171,10 @@ public class MapperMethodInspection extends MapperInspection {
         PsiIdentifier ide = method.getNameIdentifier();
         // SelectProvider爆红 issue: https://gitee.com/baomidou/MybatisX/issues/I17JQ4
         PsiAnnotation[] annotation = method.getAnnotations();
-        if (annotation.length > 0) {
-            // 如果存在提供者注解, 就返回验证成功
-            for (PsiAnnotation psiAnnotation : annotation) {
-                if (STATEMENT_PROVIDER_NAMES.contains(psiAnnotation.getQualifiedName())) {
-                    return Optional.empty();
-                }
+        // 如果存在提供者注解, 就返回验证成功
+        for (PsiAnnotation psiAnnotation : annotation) {
+            if (STATEMENT_PROVIDER_NAMES.contains(psiAnnotation.getQualifiedName())) {
+                return Optional.empty();
             }
         }
         JavaService instance = JavaService.getInstance(method.getProject());

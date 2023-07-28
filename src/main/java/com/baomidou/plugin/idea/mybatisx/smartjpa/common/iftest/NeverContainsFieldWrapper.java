@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
  * @author ls9527
  */
 public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
-    private Project project;
+    private final Project project;
     private Mapper mapper;
-    private Map<String, TxField> txFieldMap;
+    private final Map<String, TxField> txFieldMap;
 
     public NeverContainsFieldWrapper(Project project, List<TxField> allFields) {
         this.project = project;
@@ -103,11 +103,10 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
         if (txField != null) {
             String jdbcType = txField.getJdbcType();
             if (jdbcType != null) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("#{").append(name);
-                stringBuilder.append(",jdbcType=").append(jdbcType);
-                stringBuilder.append("}");
-                return stringBuilder.toString();
+                String stringBuilder = "#{" + name +
+                    ",jdbcType=" + jdbcType +
+                    "}";
+                return stringBuilder;
             }
         }
         // 默认jdbcType 映射方式

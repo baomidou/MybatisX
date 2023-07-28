@@ -76,7 +76,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
             String templateText = syntaxAppender.getAppender().getTemplateText(tableName, entityClass, parameters, syntaxAppender.getCollector(), conditionFieldWrapper);
             stringBuilder.append(templateText).append(" ");
         }
-        return "order by " + stringBuilder.toString();
+        return "order by " + stringBuilder;
     }
 
     @Override

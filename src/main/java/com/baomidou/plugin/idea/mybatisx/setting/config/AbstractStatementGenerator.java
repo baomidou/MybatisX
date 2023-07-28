@@ -27,6 +27,7 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.CommonProcessors.CollectProcessor;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +45,7 @@ import java.util.Set;
  * @author jobob
  * @since 2018 -07-30
  */
+@Getter
 public abstract class AbstractStatementGenerator {
 
     /**
@@ -78,6 +80,12 @@ public abstract class AbstractStatementGenerator {
         }
         return vf.getCanonicalPath();
     };
+    /**
+     * -- GETTER --
+     *  Gets patterns.
+     *
+     * @return the patterns
+     */
     private Set<String> patterns;
 
     /**
@@ -125,7 +133,7 @@ public abstract class AbstractStatementGenerator {
     /**
      * Apply generate.
      *
-     * @param method the method
+     * @param method  the method
      * @param project
      */
     public static void applyGenerate(@Nullable final PsiMethod method, Project project) {
@@ -159,7 +167,7 @@ public abstract class AbstractStatementGenerator {
         for (AbstractStatementGenerator generator : ALL) {
             for (String pattern : generator.getPatterns()) {
                 // 一定是以关键字开头
-                if(target.startsWith(pattern)){
+                if (target.startsWith(pattern)) {
                     result.add(generator);
                 }
             }
@@ -170,7 +178,7 @@ public abstract class AbstractStatementGenerator {
     /**
      * Execute.
      *
-     * @param method the method
+     * @param method  the method
      * @param project
      */
     public void execute(@NotNull final PsiMethod method, final Project project) {
@@ -249,15 +257,6 @@ public abstract class AbstractStatementGenerator {
      */
     @NotNull
     public abstract String getDisplayText();
-
-    /**
-     * Gets patterns.
-     *
-     * @return the patterns
-     */
-    public Set<String> getPatterns() {
-        return patterns;
-    }
 
     /**
      * Sets patterns.

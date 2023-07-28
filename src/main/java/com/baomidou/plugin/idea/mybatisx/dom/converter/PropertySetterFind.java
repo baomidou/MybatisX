@@ -62,7 +62,7 @@ public class PropertySetterFind {
         String setterMethodName = "set" + StringUtils.upperCaseFirstChar(firstText);
         final PsiMethod[] methodsByName = psiClass.findMethodsByName(setterMethodName, true);
         for (PsiMethod psiMethod : methodsByName) {
-            if (psiMethod.hasModifierProperty(PsiModifier.STATIC) != false) {
+            if (psiMethod.hasModifierProperty(PsiModifier.STATIC)) {
                 continue;
             }
             return psiMethod;

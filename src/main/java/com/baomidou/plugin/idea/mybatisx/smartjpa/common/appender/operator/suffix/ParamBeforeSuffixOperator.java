@@ -14,7 +14,7 @@ public class ParamBeforeSuffixOperator implements SuffixOperator {
     /**
      * 比较符号
      */
-    private String operatorName;
+    private final String operatorName;
 
     /**
      * Instantiates a new Param before suffix operator.
@@ -34,6 +34,6 @@ public class ParamBeforeSuffixOperator implements SuffixOperator {
             + operatorName
             + " "
             + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
-        return  conditionFieldWrapper.wrapConditionText(columnName, templateText);
+        return conditionFieldWrapper.wrapConditionText(columnName, templateText);
     }
 }

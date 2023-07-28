@@ -1,7 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
+@Getter
 public class TemplateSettingDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
@@ -33,62 +36,33 @@ public class TemplateSettingDTO implements Serializable {
      */
     private String basePath;
 
-    public String getConfigFile() {
-        return configFile;
-    }
-
     public void setConfigFile(String configFile) {
         this.configFile = configFile;
-    }
-
-    public String getBasePath() {
-        return basePath;
     }
 
     public void setBasePath(String basePath) {
         this.basePath = basePath;
     }
 
-    public String getConfigName() {
-        return configName;
-    }
-
     public void setConfigName(String configName) {
         this.configName = configName;
-    }
-
-    public String getFileName() {
-        return fileName;
     }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    public String getSuffix() {
-        return suffix;
-    }
-
     public void setSuffix(String suffix) {
         this.suffix = suffix;
-    }
-
-    public String getPackageName() {
-        return packageName;
     }
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
-    public String getEncoding() {
-        return encoding;
-    }
-
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
-
 
 
 }

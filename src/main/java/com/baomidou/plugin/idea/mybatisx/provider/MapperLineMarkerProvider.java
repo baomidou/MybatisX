@@ -45,7 +45,6 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
     }
 
 
-
     /**
      * PsiClass过滤器
      */

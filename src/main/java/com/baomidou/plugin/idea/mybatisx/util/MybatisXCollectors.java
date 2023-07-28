@@ -38,12 +38,13 @@ public class MybatisXCollectors {
      */
     private static class MultiStringJoiner {
 
-        private String delimiter;
         private final CharSequence prefix;
         private final CharSequence suffix;
-        private String newLine;
-        private int step;
-
+        int currentIndex = 0;
+        private final String delimiter;
+        private final String newLine;
+        private final int step;
+        private final StringBuilder stringBuilder = new StringBuilder();
         /**
          * @param delimiter 分隔符
          * @param newLine   换行标识
@@ -56,9 +57,6 @@ public class MybatisXCollectors {
             this.newLine = newLine;
             this.step = step;
         }
-
-        private StringBuilder stringBuilder = new StringBuilder();
-        int currentIndex = 0;
 
         public MultiStringJoiner add(CharSequence str) {
             stringBuilder.append(str).append(delimiter);

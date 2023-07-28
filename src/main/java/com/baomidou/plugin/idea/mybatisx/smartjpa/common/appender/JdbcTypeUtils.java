@@ -16,7 +16,7 @@ public class JdbcTypeUtils {
      *
      * @return
      */
-    private static Map<String, String> fieldJdbcType = new ConcurrentHashMap<>();
+    private static final Map<String, String> fieldJdbcType = new ConcurrentHashMap<>();
 
     static {
         fieldJdbcType.put("java.lang.Byte", "NUMERIC");

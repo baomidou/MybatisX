@@ -5,8 +5,8 @@ import org.mybatis.generator.api.JavaFormatter;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
 
 public class FreemarkerFile extends GeneratedJavaFile {
-    private String fileName;
-    private String packageName;
+    private final String fileName;
+    private final String packageName;
 
     public FreemarkerFile(CompilationUnit compilationUnit, JavaFormatter javaFormatter, String targetProject, String fileEncoding, String fileName, String packageName) {
         super(compilationUnit, targetProject, fileEncoding, javaFormatter);

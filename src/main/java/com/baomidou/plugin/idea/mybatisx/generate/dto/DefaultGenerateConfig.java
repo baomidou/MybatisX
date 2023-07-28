@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 
-
 import com.baomidou.plugin.idea.mybatisx.generate.classname.ClassNameStrategy;
 
 import java.util.Collections;
@@ -9,11 +8,12 @@ import java.util.List;
 
 /**
  * 默认生成器配置
+ *
  * @author : ls9527
  * @date : 2021/7/2
  */
 public class DefaultGenerateConfig extends GenerateConfig {
-    private TemplateContext templateContext;
+    private final TemplateContext templateContext;
 
     public DefaultGenerateConfig(TemplateContext templateContext) {
         this.templateContext = templateContext;

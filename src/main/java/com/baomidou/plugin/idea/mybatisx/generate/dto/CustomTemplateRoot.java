@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -13,13 +14,16 @@ public class CustomTemplateRoot implements Serializable {
     /**
      * 模板路径
      */
+    @Getter
     private String templateBasePath;
 
     private ModuleInfoGo moduleUIInfo;
 
+    @Getter
     private DomainInfo domainInfo;
 
 
+    @Getter
     private List<TemplateSettingDTO> templateSettingDTOList;
 
     private List<ModuleInfoGo> moduleInfoList = new ArrayList<>();
@@ -30,10 +34,6 @@ public class CustomTemplateRoot implements Serializable {
 
     public Map<? extends String, ?> toMap() {
         return moduleInfoList.stream().collect(Collectors.toMap(ModuleInfoGo::getConfigName, v -> v, (a, b) -> a));
-    }
-
-    public DomainInfo getDomainInfo() {
-        return domainInfo;
     }
 
     public void setDomainInfo(DomainInfo domainInfo) {
@@ -50,17 +50,8 @@ public class CustomTemplateRoot implements Serializable {
     }
 
 
-
-    public List<TemplateSettingDTO> getTemplateSettingDTOList() {
-        return templateSettingDTOList;
-    }
-
     public void setTemplateSettingDTOList(List<TemplateSettingDTO> templateSettingDTOList) {
         this.templateSettingDTOList = templateSettingDTOList;
-    }
-
-    public String getTemplateBasePath() {
-        return templateBasePath;
     }
 
     public void setTemplateBasePath(String templateBasePath) {

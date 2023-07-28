@@ -39,11 +39,11 @@ public class JavaService implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Project project;
+    private final Project project;
 
-    private JavaPsiFacade javaPsiFacade;
+    private final JavaPsiFacade javaPsiFacade;
 
-    private EditorService editorService;
+    private final EditorService editorService;
 
     /**
      * Instantiates a new Java service.
@@ -173,4 +173,3 @@ public class JavaService implements Serializable {
         }
     }
 }
-

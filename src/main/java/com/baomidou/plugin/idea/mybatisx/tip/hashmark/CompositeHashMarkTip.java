@@ -47,18 +47,12 @@ public class CompositeHashMarkTip {
     public static final String DOT = ".";
     /**
      * 方法上面的注释名称, 例如
+     *
      * @param userName 用户名
      */
     public static final String PARAM = "param";
-    private Project project;
-
-    public CompositeHashMarkTip(Project project) {
-        this.project = project;
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(CompositeHashMarkTip.class);
-
-    private static List<HashMarkTip> hashMarkTips = new ArrayList<HashMarkTip>() {
+    private static final List<HashMarkTip> hashMarkTips = new ArrayList<HashMarkTip>() {
         {
             add(new JdbcTypeHashMarkTip());
             add(new TypeHandlerHashMarkTip());
@@ -69,7 +63,11 @@ public class CompositeHashMarkTip {
             add(new JdbcTypeNameHashMarkTip());
         }
     };
+    private final Project project;
 
+    public CompositeHashMarkTip(Project project) {
+        this.project = project;
+    }
 
     /**
      * Add element for psi parameter.

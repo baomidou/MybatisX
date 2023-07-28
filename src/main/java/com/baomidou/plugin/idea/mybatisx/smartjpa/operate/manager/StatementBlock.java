@@ -5,6 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Comparator;
@@ -14,37 +15,54 @@ import java.util.PriorityQueue;
 /**
  * The type Statement block.
  */
+@Getter
 public class StatementBlock {
 
     /**
      * 标签名称
+     * -- GETTER --
+     *  Gets tag name.
+     *
+     * @return the tag name
+
      */
     private String tagName;
     /**
      * 结果集区域
+     * -- GETTER --
+     *  Gets result appender factory.
+     *
+     * @return the result appender factory
+
      */
     private SyntaxAppenderFactory resultAppenderFactory;
     /**
      * 条件区域
+     * -- GETTER --
+     *  Gets condition appender factory.
+     *
+     * @return the condition appender factory
+
      */
     private SyntaxAppenderFactory conditionAppenderFactory;
     /**
      * 排序区域
+     * -- GETTER --
+     *  Gets sort appender factory.
+     *
+     * @return the sort appender factory
+
      */
     private SyntaxAppenderFactory sortAppenderFactory;
     /**
      * 返回值类型
+     * -- GETTER --
+     *  Gets return descriptor.
+     *
+     * @return the return descriptor
+
      */
     private TypeDescriptor returnDescriptor;
-
-    /**
-     * Gets result appender factory.
-     *
-     * @return the result appender factory
-     */
-    public SyntaxAppenderFactory getResultAppenderFactory() {
-        return resultAppenderFactory;
-    }
 
     /**
      * Sets result appender factory.
@@ -53,15 +71,6 @@ public class StatementBlock {
      */
     public void setResultAppenderFactory(SyntaxAppenderFactory resultAppenderFactory) {
         this.resultAppenderFactory = resultAppenderFactory;
-    }
-
-    /**
-     * Gets condition appender factory.
-     *
-     * @return the condition appender factory
-     */
-    public SyntaxAppenderFactory getConditionAppenderFactory() {
-        return conditionAppenderFactory;
     }
 
     /**
@@ -74,30 +83,12 @@ public class StatementBlock {
     }
 
     /**
-     * Gets sort appender factory.
-     *
-     * @return the sort appender factory
-     */
-    public SyntaxAppenderFactory getSortAppenderFactory() {
-        return sortAppenderFactory;
-    }
-
-    /**
      * Sets sort appender factory.
      *
      * @param sortAppenderFactory the sort appender factory
      */
     public void setSortAppenderFactory(SyntaxAppenderFactory sortAppenderFactory) {
         this.sortAppenderFactory = sortAppenderFactory;
-    }
-
-    /**
-     * Gets tag name.
-     *
-     * @return the tag name
-     */
-    public String getTagName() {
-        return tagName;
     }
 
     /**
@@ -133,10 +124,7 @@ public class StatementBlock {
         if (appenderFactory == null) {
             return false;
         }
-        if (text.equals(appenderFactory.getTipText())) {
-            return true;
-        }
-        return false;
+        return text.equals(appenderFactory.getTipText());
     }
 
     /**
@@ -146,15 +134,6 @@ public class StatementBlock {
      */
     public void setReturnWrapper(TypeDescriptor typeDescriptor) {
         this.returnDescriptor = typeDescriptor;
-    }
-
-    /**
-     * Gets return descriptor.
-     *
-     * @return the return descriptor
-     */
-    public TypeDescriptor getReturnDescriptor() {
-        return returnDescriptor;
     }
 
     /**

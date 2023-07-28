@@ -36,10 +36,7 @@ public class MapperMethodSafeDeleteProcessor extends SafeDeleteProcessorDelegate
             return false;
         }
         final XmlTag tag = MapperUtils.findTag(containingClass.getProject(), psiMethod);
-        if (tag == null) {
-            return false;
-        }
-        return true;
+        return tag != null;
     }
 
 

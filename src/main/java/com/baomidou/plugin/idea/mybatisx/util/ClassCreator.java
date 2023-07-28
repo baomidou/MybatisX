@@ -68,7 +68,7 @@ public class ClassCreator {
 
         // 添加字段的 import
         for (PsiField field : entityClass.getAllFields()) {
-            if (allowFields.contains(field.getName()) ) {
+            if (allowFields.contains(field.getName())) {
                 String importType = field.getType().getCanonicalText();
                 stringBuilder.append("import").append(" ").append(importType).append(";").append("\n");
             }
