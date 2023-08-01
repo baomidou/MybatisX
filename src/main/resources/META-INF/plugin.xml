@@ -85,7 +85,8 @@
                                         implementationClass="com.baomidou.plugin.idea.mybatisx.provider.InjectionLineMarkerProvider"/>
 
 <!--         设置中的配置 -->
-        <applicationConfigurable id="mybatisx.settings" instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
+        <applicationConfigurable id="mybatisx.settings" displayName="MybatisX"
+                                 instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisConfigurable"/>
 
 
 
