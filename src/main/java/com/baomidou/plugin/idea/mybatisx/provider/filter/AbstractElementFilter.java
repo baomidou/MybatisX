@@ -5,6 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.xml.XmlTag;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_MAPPER_METHOD_SVG;
+
 public abstract class AbstractElementFilter {
 
     protected abstract Collection<? extends DomElement> getResults(@NotNull PsiElement element);
@@ -25,7 +28,7 @@ public abstract class AbstractElementFilter {
         if (!results.isEmpty()) {
             final List<XmlTag> xmlTags = results.stream().map(DomElement::getXmlTag).collect(Collectors.toList());
             NavigationGutterIconBuilder<PsiElement> builder =
-                NavigationGutterIconBuilder.create(Icons.MAPPER_LINE_MARKER_ICON)
+                NavigationGutterIconBuilder.create(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG))
                     .setAlignment(GutterIconRenderer.Alignment.CENTER)
                     .setCellRenderer(new GotoMapperXmlSchemaTypeRendererProvider.MyRenderer())
                     .setTargets(xmlTags)

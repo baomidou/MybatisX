@@ -21,8 +21,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 // https://github.com/JetBrains/gradle-intellij-plugin/
@@ -56,7 +56,7 @@ intellij {
 // https://www.jetbrains.com/intellij-repository/releases
 
 group="com.baomidou.plugin.idea.mybatisx"
-version="1.5.5"
+version="1.6.0"
 
 repositories {
     mavenLocal()
@@ -72,7 +72,8 @@ dependencies {
     implementation("com.itranswarp:compiler:1.0")
     testCompile("junit:junit:4.12")
     testCompile("commons-io:commons-io:2.8.0")
-    compileOnly("org.projectlombok:lombok:1.18.0")
+    compileOnly("org.projectlombok:lombok:1.18.18")
+    annotationProcessor ("org.projectlombok:lombok:1.18.18")
 }
 
 tasks.withType<JavaCompile> {

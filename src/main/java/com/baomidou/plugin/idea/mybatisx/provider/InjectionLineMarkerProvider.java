@@ -9,6 +9,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
 import com.intellij.psi.PsiClass;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Optional;
+
+import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_STATEMENT_SVG;
 
 /**
  * The type Injection line marker provider.
@@ -56,7 +59,7 @@ public class InjectionLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
 
         NavigationGutterIconBuilder<PsiElement> builder =
-            NavigationGutterIconBuilder.create(Icons.SPRING_INJECTION_ICON)
+            NavigationGutterIconBuilder.create(IconLoader.getIcon(IMAGES_STATEMENT_SVG))
                 .setAlignment(GutterIconRenderer.Alignment.CENTER)
                 .setTarget(psiClass)
                 .setTooltipTitle("Data access object found - " + psiClass.getQualifiedName());

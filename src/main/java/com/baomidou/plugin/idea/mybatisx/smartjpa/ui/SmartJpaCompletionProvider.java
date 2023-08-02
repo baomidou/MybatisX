@@ -16,6 +16,7 @@ import com.intellij.codeInsight.completion.JavaCompletionSorting;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_MAPPER_METHOD_SVG;
 
 /**
  * The type Smart jpa completion provider.
@@ -167,7 +170,7 @@ public class SmartJpaCompletionProvider {
     private LookupElement buildLookupElement(final String str,
                                              InsertHandler<LookupElement> insertHandler) {
         return LookupElementBuilder.create(str)
-            .withIcon(Icons.MAPPER_LINE_MARKER_ICON)
+            .withIcon(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG))
             .bold()
             .withInsertHandler(insertHandler);
 

@@ -7,6 +7,7 @@ import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.ide.IconProvider;
 import com.intellij.lang.Language;
 import com.intellij.lang.java.JavaLanguage;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
+
+import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_MAPPER_METHOD_SVG;
+import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_STATEMENT_SVG;
 
 /**
  * mapper.xml 和 mapperClass 的文件图标修改为骚气的小鸟
@@ -40,10 +44,10 @@ public class XmlAndMapperIconProvider extends IconProvider {
             return null;
         }
         if (isMapperClass(element)) {
-            return Icons.MAPPER_CLASS_ICON;
+            return IconLoader.getIcon(IMAGES_STATEMENT_SVG);
         }
         if (MapperUtils.isElementWithinMybatisFile(element)) {
-            return Icons.MAPPER_XML_ICON;
+            return IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG);
         }
         return null;
     }

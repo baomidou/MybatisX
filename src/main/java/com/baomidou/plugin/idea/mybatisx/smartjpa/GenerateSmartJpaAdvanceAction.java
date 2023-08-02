@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.rmi.AccessException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -100,6 +101,8 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
             generate(project, editor, statementElement, mapperClass, platformGenerator, parameterDescriptor, returnDescriptor, conditionFieldWrapperOptional);
         } catch (ProcessCanceledException e) {
             logger.info("cancel info", e);
+        }catch (RuntimeException e){
+            logger.info("生成JPA语句失败", e);
         }
     }
 

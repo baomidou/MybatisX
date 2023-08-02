@@ -86,7 +86,7 @@ public class AliasFacade {
         }
         for (AliasResolver resolver : resolvers) {
             for (AliasDesc desc : resolver.getClassAliasDescriptions(element)) {
-                if (desc.getAlias().equalsIgnoreCase(fullName)) {
+                if (desc!=null && desc.getAlias().equalsIgnoreCase(fullName)) {
                     return Optional.of(desc.getClazz());
                 }
             }

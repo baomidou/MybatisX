@@ -11,6 +11,7 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.google.common.collect.ImmutableSet;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
@@ -24,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Optional;
+
+import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_STATEMENT_SVG;
 
 /**
  * The type Statement line marker provider.
@@ -110,7 +113,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
     @NotNull
     @Override
     public Icon getIcon() {
-        return Icons.STATEMENT_LINE_MARKER_ICON;
+        return  IconLoader.getIcon(IMAGES_STATEMENT_SVG);
     }
 
 
