@@ -24,6 +24,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
 import com.intellij.util.xml.GenericAttributeValue;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -206,7 +207,7 @@ public final class MapperUtils {
         if (project == null || clazz == null) {
             mappers = Collections.emptyList();
         }
-        if (mappers == null && JavaUtils.isElementWithinInterface(clazz)) {
+        if (mappers == null && StringUtils.isNotBlank(clazz.getQualifiedName()) && JavaUtils.isElementWithinInterface(clazz)) {
             mappers = findMappers(project, Objects.requireNonNull(clazz.getQualifiedName()));
         }
         if (mappers == null) {
