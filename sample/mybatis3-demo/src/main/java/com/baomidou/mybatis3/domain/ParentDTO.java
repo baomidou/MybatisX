@@ -21,4 +21,10 @@ public class ParentDTO  {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    private Date updateTime;
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
 }

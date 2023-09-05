@@ -9,11 +9,18 @@
         <result column="title" property="title"/>
         <result column="money" property="money"/>
         <result column="create_time" property="createTime"/>
+
     </resultMap>
     <sql id="Base_Column_List">
         select id, age, content, title, money, create_time
         from t_blog
 	</sql>
+
+    <resultMap id="CustomBaseResultMapA"
+               type="com.baomidou.mybatis3.domain.BlogTitleContentDTOChild">
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
 
     <select id="selectByAge" databaseId="oracle"  resultMap="BaseResultMap">
         select
