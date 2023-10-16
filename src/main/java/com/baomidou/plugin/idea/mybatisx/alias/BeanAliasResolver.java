@@ -9,11 +9,13 @@ import com.intellij.spring.CommonSpringModel;
 import com.intellij.spring.model.SpringModelSearchParameters;
 import com.intellij.spring.model.utils.SpringModelUtils;
 import com.intellij.spring.model.utils.SpringPropertyUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import java.util.Set;
  *
  * @author yanglin
  */
+@Slf4j
 public class BeanAliasResolver extends PackageAliasResolver {
 
     private static final List<String> MAPPER_ALIAS_PACKAGE_CLASSES = new ArrayList<String>() {
@@ -51,10 +54,18 @@ public class BeanAliasResolver extends PackageAliasResolver {
     @NotNull
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
+        // 兼容低版本获取不到 ServiceManager 报错的场景。 直接忽略
+        SpringModelUtils instance = null;
+        try {
+            instance = SpringModelUtils.getInstance();
+        } catch (Throwable e) {
+            log.warn("获取SpringManager异常, 无法通过bean定义别名",e);
+            return Collections.emptyList();
+        }
         Set<String> packages = new HashSet<>();
         Set<PsiClass> classes = findSqlSessionFactories();
         for (PsiClass sqlSessionFactoryClass : classes) {
-            CommonSpringModel springModel = SpringModelUtils.getInstance().getPsiClassSpringModel(sqlSessionFactoryClass);
+            CommonSpringModel springModel = instance.getPsiClassSpringModel(sqlSessionFactoryClass);
             SpringModelSearchParameters.BeanClass beanClass = SpringModelSearchParameters.BeanClass.byClass(sqlSessionFactoryClass);
             springModel.processByClass(beanClass, springBeanPointer -> {
                 String propertyStringValue = SpringPropertyUtils.getPropertyStringValue(springBeanPointer.getSpringBean(), MAPPER_ALIAS_PROPERTY);

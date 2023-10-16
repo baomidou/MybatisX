@@ -24,6 +24,7 @@ import com.intellij.util.PlatformIcons;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,6 +48,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Slf4j
 public class CodeGenerateUI {
     public static final String DOMAIN = "domain";
     ListTableModel<ModuleInfoGo> model = new ListTableModel<>(
@@ -170,7 +172,14 @@ public class CodeGenerateUI {
             final JRadioButton radioButton = (JRadioButton) radios.nextElement();
             radioButton.addItemListener(itemListener);
         }
+        if(StringUtils.isEmpty(selectedTemplateName)){
+            log.info("默认选中模板为空");
+            return;
+        }
         ConfigSetting configSetting = templateSettingMap.get(selectedTemplateName);
+        if (configSetting == null) {
+            return;
+        }
         selectDefaultTemplateRadio(configSetting.getTemplateSettingDTOList(), this.selectedTemplateName);
 
     }
@@ -295,8 +304,12 @@ public class CodeGenerateUI {
     private String determineTemplateName(Map<String, ConfigSetting> templateSettingMap, String templatesName) {
         // 使用上一次生成代码的模板
         String selectedTemplateName = templatesName;
+        // 由于升级IDEA, 导致选择的模板在本地不存在, 清空默认选则
+        if(selectedTemplateName !=null && !templateSettingMap.containsKey(selectedTemplateName)){
+            selectedTemplateName = null;
+        }
         // 如果是第一次生成代码, 使用模板列表的第一个模板
-        if (selectedTemplateName == null) {
+        if (StringUtils.isEmpty(selectedTemplateName)) {
             selectedTemplateName = templateSettingMap.keySet().iterator().next();
         }
         return selectedTemplateName;
