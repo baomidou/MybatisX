@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
@@ -25,8 +26,10 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
+import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.CommonProcessors.CollectProcessor;
+import com.intellij.util.xml.DomService;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -216,6 +219,12 @@ public abstract class AbstractStatementGenerator {
     }
 
     private void setupTag(PsiMethod method, Mapper mapper, Project project) {
+        XmlFile containingFile = DomService.getInstance().getContainingFile(mapper);
+        if(containingFile.getFileType().isReadOnly()){
+            Messages.showErrorDialog("xml filetype must not be readonly", "Generate Info");
+            return;
+        }
+
         IdDomElement target = getTarget(mapper, method);
         target.getId().setStringValue(method.getName());
         target.setValue(" ");

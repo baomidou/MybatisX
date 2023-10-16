@@ -2,7 +2,11 @@ package com.baomidou.plugin.idea.mybatisx.setting.config;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.impl.file.impl.FileManager;
+import com.intellij.psi.xml.XmlFile;
+import com.intellij.util.xml.DomService;
 import org.jetbrains.annotations.NotNull;
 
 /**
