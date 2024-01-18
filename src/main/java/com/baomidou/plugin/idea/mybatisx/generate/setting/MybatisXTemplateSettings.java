@@ -126,13 +126,7 @@ public class MybatisXTemplateSettings {
             return;
         }
 
-        TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
-        templateSettingDTO.setFileName(fieldNameTextField.getText());
-        templateSettingDTO.setSuffix(suffixTextField.getText());
-        templateSettingDTO.setPackageName(packageNameTextField.getText());
-        templateSettingDTO.setBasePath(basePathTextField.getText());
-        templateSettingDTO.setConfigName(userObject.toString());
-        templateSettingDTO.setEncoding(encodingTextField.getText());
+        TemplateSettingDTO templateSettingDTO = buildTemplateSettingDTO(key);
 
 
         List<TemplateSettingDTO> replacedSettings = configSetting.getTemplateSettingDTOList()
@@ -146,6 +140,18 @@ public class MybatisXTemplateSettings {
         configSetting.setTemplateSettingDTOList(replacedSettings);
 
         templatesSettings.setTemplateConfigs(templateConfigs);
+    }
+
+    @NotNull
+    private TemplateSettingDTO buildTemplateSettingDTO(String key) {
+        TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
+        templateSettingDTO.setFileName(fieldNameTextField.getText());
+        templateSettingDTO.setSuffix(suffixTextField.getText());
+        templateSettingDTO.setPackageName(packageNameTextField.getText());
+        templateSettingDTO.setBasePath(basePathTextField.getText());
+        templateSettingDTO.setConfigName(key);
+        templateSettingDTO.setEncoding(encodingTextField.getText());
+        return templateSettingDTO;
     }
 
     public boolean isModified() {

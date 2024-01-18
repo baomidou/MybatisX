@@ -217,12 +217,15 @@ public class GenerateCode {
         List<ModuleInfoGo> rootModuleInfo = new ArrayList<>();
         for (ModuleInfoGo moduleInfo : extraTemplateNames) {
             TemplateSettingDTO templateSettingDTO = templateSettingDTOMap.get(moduleInfo.getConfigName());
-            if (templateSettingDTO != null) {
-                DomainInfo customDomainInfo = determineDomainInfo(extraDomainName, domainInfo, moduleInfo);
-                ModuleInfoGo moduleInfoReplaced = replaceByDomainInfo(moduleInfo, customDomainInfo);
-                CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleInfoReplaced, configSetting, rootModuleInfo);
-                templateRootList.add(templateRoot);
+            if (templateSettingDTO == null) {
+                continue;
             }
+            DomainInfo customDomainInfo = determineDomainInfo(extraDomainName, domainInfo, moduleInfo);
+            ModuleInfoGo moduleInfoReplaced = replaceByDomainInfo(moduleInfo, customDomainInfo);
+            // 文件不存在, 不生成代码
+            moduleInfoReplaced.setEnable(templateSettingDTO.getExistsFileNames().contains(moduleInfo.getConfigFileName()));
+            CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleInfoReplaced, configSetting, rootModuleInfo);
+            templateRootList.add(templateRoot);
         }
 
         for (CustomTemplateRoot templateRoot : templateRootList) {

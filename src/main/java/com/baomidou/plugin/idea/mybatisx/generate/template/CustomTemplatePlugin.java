@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 自定义模板填充插件
@@ -37,8 +38,12 @@ public class CustomTemplatePlugin extends PluginAdapter {
         String root = properties.getProperty(ROOT);
         CustomTemplateRoot rootObject = readRootObject(root);
 
-        ModuleInfoGo moduleUIInfo = rootObject.getModuleUIInfo();
+        ModuleInfoGo moduleUIInfo = Objects.requireNonNull(rootObject).getModuleUIInfo();
+        if (moduleUIInfo.getEnable()==null|| !moduleUIInfo.getEnable()) {
+            logger.info("模板文件未启用, modulePath: {}", moduleUIInfo.getModulePath());
+            return Collections.emptyList();
 
+        }
         String modulePath = rootObject.getModuleUIInfo().getModulePath() + "/" + moduleUIInfo.getBasePath();
         final File file = new File(modulePath);
         if (!file.exists()) {

@@ -47,6 +47,8 @@ public class ModuleInfoGo implements Serializable {
      */
     private String basePath;
 
+    private Boolean enable = false;
+
     public void setFileNameWithSuffix(String fileNameWithSuffix) {
         this.fileNameWithSuffix = fileNameWithSuffix;
     }
@@ -77,5 +79,9 @@ public class ModuleInfoGo implements Serializable {
 
     public void setConfigFileName(String configFileName) {
         this.configFileName = configFileName;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 }

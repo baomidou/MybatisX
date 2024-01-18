@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.dto;
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Getter
 public class TemplateSettingDTO implements Serializable {
@@ -36,6 +37,11 @@ public class TemplateSettingDTO implements Serializable {
      */
     private String basePath;
 
+    /**
+     * 是否启用
+     */
+    private Set<String> existsFileNames;
+
     public void setConfigFile(String configFile) {
         this.configFile = configFile;
     }
@@ -64,5 +70,7 @@ public class TemplateSettingDTO implements Serializable {
         this.encoding = encoding;
     }
 
-
+    public void setExistsFileNames(Set<String> existsFileNames) {
+        this.existsFileNames = existsFileNames;
+    }
 }

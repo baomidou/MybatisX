@@ -14,13 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DefaultSettingsConfig {
 
@@ -53,7 +48,7 @@ public class DefaultSettingsConfig {
             if (!resourceDirectory.exists()) {
                 return Collections.emptyMap();
             }
-            for (File file : resourceDirectory.listFiles()) {
+            for (File file : Objects.requireNonNull(resourceDirectory.listFiles())) {
 
                 String configName = file.getName();
                 // 模板配置的元数据信息
@@ -72,21 +67,11 @@ public class DefaultSettingsConfig {
                 }
 
                 // 模板一定是.ftl后缀名的文件
-                File[] templateFiles = file.listFiles(pathname -> pathname.getName().endsWith(".ftl"));
-                Set<String> fileNames = defaultTemplateSettingMapping.keySet();
-                List<TemplateSettingDTO> templateSettingDTOS = new ArrayList<>();
-                // 每个配置文件都有自己的元数据配置文件???
-                for (File templateFile : templateFiles) {
-                    // 元数据的文件名和文件名不一致
-                    String configFileName = templateFile.getName();
-                    if (!fileNames.contains(configFileName)) {
-                        continue;
-                    }
-                    TemplateSettingDTO templateSettingDTO = defaultTemplateSettingMapping.get(configFileName);
-                    TemplateSettingDTO templateSetting = copyFromTemplateText(templateSettingDTO);
-                    templateSettingDTOS.add(templateSetting);
-                }
-                if (templateSettingDTOS.size() > 0) {
+                Set<String> existsFileNames = Arrays.stream(Objects.requireNonNull(file.listFiles(pathname -> pathname.getName().endsWith(".ftl")))).map(File::getName).collect(Collectors.toSet());
+                List<TemplateSettingDTO> templateSettingDTOS = defaultTemplateSettingMapping.values().stream()
+                    .map(templateSettingDTO -> copyFromTemplateText(templateSettingDTO, existsFileNames))
+                    .collect(Collectors.toList());
+                if (!templateSettingDTOS.isEmpty()) {
                     map.put(configName, buildConfigSetting(file, templateSettingDTOS));
                 }
             }
@@ -105,7 +90,7 @@ public class DefaultSettingsConfig {
         return configSetting;
     }
 
-    private static TemplateSettingDTO copyFromTemplateText(TemplateSettingDTO templateSetting) {
+    private static TemplateSettingDTO copyFromTemplateText(TemplateSettingDTO templateSetting, Set<String> existsFileNames) {
         TemplateSettingDTO templateSettingDTO = new TemplateSettingDTO();
         templateSettingDTO.setBasePath(templateSetting.getBasePath());
         templateSettingDTO.setConfigName(templateSetting.getConfigName());
@@ -114,6 +99,7 @@ public class DefaultSettingsConfig {
         templateSettingDTO.setSuffix(templateSetting.getSuffix());
         templateSettingDTO.setPackageName(templateSetting.getPackageName());
         templateSettingDTO.setEncoding(templateSetting.getEncoding());
+        templateSettingDTO.setExistsFileNames(existsFileNames);
         return templateSettingDTO;
     }
 
