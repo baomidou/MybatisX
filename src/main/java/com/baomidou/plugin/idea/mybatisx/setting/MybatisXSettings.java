@@ -32,6 +32,10 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
     private String updateGenerator;
     private String deleteGenerator;
     private String selectGenerator;
+    /**
+     * 强制找字段
+     */
+    private Boolean forceFindField;
 
     /**
      * Gets instance.
@@ -55,6 +59,9 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
         }
         if (service.mapperIcon == null) {
             service.mapperIcon = MapperIcon.BIRD.name();
+        }
+        if (service.forceFindField == null) {
+            service.forceFindField = Boolean.TRUE;
         }
         return service;
     }
@@ -88,6 +95,10 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
 
     public void setMapperIcon(String mapperIcon) {
         this.mapperIcon = mapperIcon;
+    }
+
+    public void setForceFindField(Boolean forceFindField) {
+        this.forceFindField = forceFindField;
     }
 
     public enum MapperIcon {

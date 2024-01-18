@@ -42,5 +42,7 @@ public class MybatisSettingForm {
      * Bird Icon
      */
     public JRadioButton birdRadioButton;
+    public JRadioButton yesRadioButton;
+    public JRadioButton noRadioButton;
 
 }

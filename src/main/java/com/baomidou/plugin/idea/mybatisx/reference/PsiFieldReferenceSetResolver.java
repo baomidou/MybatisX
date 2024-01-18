@@ -48,6 +48,7 @@ public class PsiFieldReferenceSetResolver extends ContextReferenceSetResolver<Xm
 
     @Override
     public Optional<PsiField> getStartElement(@Nullable String firstText) {
+
         PropertySetterFind propertySetterFind = new PropertySetterFind();
         return propertySetterFind.getStartElement(firstText, getElement());
     }

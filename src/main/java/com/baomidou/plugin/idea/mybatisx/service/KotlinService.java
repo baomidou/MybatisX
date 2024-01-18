@@ -45,6 +45,9 @@ public class KotlinService {
      */
     public void processKotlinMethod(@NotNull KtNamedFunction ktMethod, @NotNull Processor<IdDomElement> processor) {
         KtClass parentClass = PsiTreeUtil.getParentOfType(ktMethod, KtClass.class);
+        if (parentClass == null) {
+            return;
+        }
         if (!KtPsiUtil.isTrait(parentClass)) {
             return;
         }

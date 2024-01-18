@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
 import com.baomidou.plugin.idea.mybatisx.dom.MapperBacktrackingUtils;
+import com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
@@ -41,6 +42,10 @@ public class PropertySetterFind {
     private Optional<PsiField> getPsiField(@NotNull String firstText, PsiClass psiClass) {
         if (psiClass.isAnnotationType() || psiClass.isInterface()) {
             return Optional.empty();
+        }
+        Boolean forceFindField = MybatisXSettings.getInstance().getForceFindField();
+        if (forceFindField) {
+            return Optional.ofNullable(PropertyUtil.findPropertyField(psiClass, firstText, false));
         }
         PsiMethod propertySetter = PropertyUtil.findPropertySetter(psiClass, firstText, false, true);
         if (null == propertySetter) {

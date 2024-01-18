@@ -63,7 +63,8 @@ public class MybatisConfigurable implements SearchableConfigurable {
             || !mybatisXSettings.getSelectGenerator().equals(mybatisSettingForm.selectPatternTextField.getText())
             || (mybatisSettingForm.defaultRadioButton.isSelected() ?
             MybatisXSettings.MapperIcon.BIRD.name().equals(mybatisXSettings.getMapperIcon())
-            : MybatisXSettings.MapperIcon.DEFAULT.name().equals(mybatisXSettings.getMapperIcon()));
+            : MybatisXSettings.MapperIcon.DEFAULT.name().equals(mybatisXSettings.getMapperIcon()))
+            || (mybatisSettingForm.yesRadioButton.isSelected() != mybatisXSettings.getForceFindField());
     }
 
     @Override
@@ -77,6 +78,7 @@ public class MybatisConfigurable implements SearchableConfigurable {
             MybatisXSettings.MapperIcon.DEFAULT.name() :
             MybatisXSettings.MapperIcon.BIRD.name();
         mybatisXSettings.setMapperIcon(mapperIcon);
+        mybatisXSettings.setForceFindField(mybatisSettingForm.yesRadioButton.isSelected());
     }
 
     @Override
@@ -91,6 +93,8 @@ public class MybatisConfigurable implements SearchableConfigurable {
             jRadioButton = mybatisSettingForm.defaultRadioButton;
         }
         jRadioButton.setSelected(true);
+        mybatisSettingForm.yesRadioButton.setSelected(mybatisXSettings.getForceFindField());
+        mybatisSettingForm.noRadioButton.setSelected(!mybatisXSettings.getForceFindField());
     }
 
     @Override
