@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.setting.config;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.intention.GenerateStatementIntention;
 import com.baomidou.plugin.idea.mybatisx.service.EditorService;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
 import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
@@ -33,6 +34,8 @@ import com.intellij.util.xml.DomService;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,9 +51,10 @@ import java.util.Set;
  * @author jobob
  * @since 2018 -07-30
  */
+
 @Getter
 public abstract class AbstractStatementGenerator {
-
+    private static final Logger logger = LoggerFactory.getLogger(GenerateStatementIntention.class);
     /**
      * The constant UPDATE_GENERATOR.
      */
@@ -143,7 +147,8 @@ public abstract class AbstractStatementGenerator {
         if (null == method) {
             return;
         }
-        final AbstractStatementGenerator[] generators = getGenerators(method);
+        try {
+            final AbstractStatementGenerator[] generators = getGenerators(method);
         if (1 == generators.length) {
             generators[0].execute(method, method.getProject());
         } else {
@@ -154,6 +159,9 @@ public abstract class AbstractStatementGenerator {
                 }
             };
             JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
+        }
+        } catch (RuntimeException e) {
+            logger.error("生成xml文件声明失败",e);
         }
     }
 

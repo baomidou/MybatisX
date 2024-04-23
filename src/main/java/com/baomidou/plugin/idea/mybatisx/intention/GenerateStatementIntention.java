@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GenerateStatementIntention extends GenericIntention {
 
-    private static final Logger logger = LoggerFactory.getLogger(GenerateStatementIntention.class);
+
 
     /**
      * Instantiates a new Generate statement intention.
@@ -39,11 +39,7 @@ public class GenerateStatementIntention extends GenericIntention {
     @Override
     public void invoke(@NotNull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        try {
-            AbstractStatementGenerator.applyGenerate(PsiTreeUtil.getParentOfType(element, PsiMethod.class), project);
-        } catch (RuntimeException e) {
-            logger.error("生成xml文件声明失败",e);
-        }
+        AbstractStatementGenerator.applyGenerate(PsiTreeUtil.getParentOfType(element, PsiMethod.class), project);
     }
 
 }

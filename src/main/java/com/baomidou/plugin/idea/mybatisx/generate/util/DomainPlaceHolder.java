@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.util;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
+import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -42,7 +43,7 @@ public class DomainPlaceHolder {
             Writer writer = new StringWriter();
             Map<String, Object> map = new HashMap<>();
 
-            map.put("domain", domainInfo);
+            map.put(CodeGenerateUI.DOMAIN, domainInfo);
             templateName.process(map, writer);
             return writer.toString();
         } catch (Exception e) {

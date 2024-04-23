@@ -8,6 +8,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TableUIInfo;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
+import com.intellij.ide.util.TreeJavaClassChooserDialog;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtil;
@@ -15,7 +16,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.TableView;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -181,6 +184,24 @@ public class TablePreviewUI {
         ignoreTablePrefixTextField.getDocument().addDocumentListener(listener);
 
         ignoreTableSuffixTextField.getDocument().addDocumentListener(listener);
+
+
+        // 选择父类
+        superClassTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                TreeJavaClassChooserDialog treeJavaClassChooserDialog =
+                    new TreeJavaClassChooserDialog("Please Select a Parent Class", project, GlobalSearchScope.allScope(project),null,null);
+                treeJavaClassChooserDialog.show();
+                PsiClass selectedClass = treeJavaClassChooserDialog.getSelected();
+                // 没有选择类
+                if (selectedClass == null) {
+                    return;
+                }
+                superClassTextField.setText(selectedClass.getQualifiedName());
+            }
+
+        });
     }
 
     private void refreshTableNames(String classNameStrategyName, List<DbTable> dbTables, String ignorePrefix, String ignoreSuffix) {

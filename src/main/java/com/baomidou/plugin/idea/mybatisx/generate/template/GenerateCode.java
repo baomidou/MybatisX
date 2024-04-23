@@ -7,10 +7,12 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.DaoEntityAnnotationInterfacePlugin;
+import com.baomidou.plugin.idea.mybatisx.generate.plugin.IgnoreParentFieldsPlugin;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.IntellijMyBatisGenerator;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.JavaTypeResolverJsr310Impl;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.IntellijTableInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.plugin.helper.MergeJavaCallBack;
+import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import com.baomidou.plugin.idea.mybatisx.generate.util.DomainPlaceHolder;
 import com.baomidou.plugin.idea.mybatisx.util.DbToolsUtils;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
@@ -19,6 +21,9 @@ import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.util.ClassUtil;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.generator.api.GeneratedJavaFile;
@@ -47,6 +52,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
@@ -144,6 +150,7 @@ public class GenerateCode {
         configExtraPlugin(extraDomainName, context, domainInfo, configSetting, generateConfig.getModuleUIInfoList());
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
+        addIgnoreDupFieldsPlugin(context,generateConfig, project);
         config.addContext(context);
 
 
@@ -159,6 +166,20 @@ public class GenerateCode {
             true,
             classLoaderList,
             intellijTableInfo);
+    }
+
+    private static void addIgnoreDupFieldsPlugin(Context context, GenerateConfig generateConfig, Project project) {
+        PluginConfiguration ignoreParentDupFieldsPlugin = new PluginConfiguration();
+        PsiManager instance = PsiManager.getInstance(project);
+        PsiClass psiClass = ClassUtil.findPsiClass(instance, generateConfig.getSuperClass());
+        if (psiClass != null) {
+            String parentFields = Arrays.stream(psiClass.getAllFields()).map(PsiField::getName).collect(Collectors.joining(","));
+            ignoreParentDupFieldsPlugin.addProperty("parentFields", parentFields);
+        }
+        ignoreParentDupFieldsPlugin.addProperty("superClass", generateConfig.getSuperClass());
+
+        ignoreParentDupFieldsPlugin.setConfigurationType(IgnoreParentFieldsPlugin.class.getName());
+        context.addPluginConfiguration(ignoreParentDupFieldsPlugin);
     }
 
     private static DomainInfo buildDomainInfo(GenerateConfig generateConfig, String domainName) {
@@ -236,7 +257,7 @@ public class GenerateCode {
     private static DomainInfo determineDomainInfo(String extraDomainName, DomainInfo domainInfo, ModuleInfoGo moduleInfo) {
         DomainInfo customDomainInfo = null;
         // 重置实体模板的类名填充
-        if ("domain".equals(moduleInfo.getConfigName())) {
+        if (CodeGenerateUI.DOMAIN.equals(moduleInfo.getConfigName())) {
             customDomainInfo = domainInfo.copyFromFileName(extraDomainName);
         }
         if (customDomainInfo == null) {

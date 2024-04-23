@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 
 import com.baomidou.plugin.idea.mybatisx.generate.classname.ClassNameStrategy;
+import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +52,7 @@ public class DefaultGenerateConfig extends GenerateConfig {
 
     @Override
     public String getRelativePackage() {
-        return "domain";
+        return CodeGenerateUI.DOMAIN;
     }
 
     @Override
