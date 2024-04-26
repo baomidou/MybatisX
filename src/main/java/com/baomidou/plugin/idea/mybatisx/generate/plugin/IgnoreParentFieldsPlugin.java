@@ -23,23 +23,34 @@ public class IgnoreParentFieldsPlugin extends PluginAdapter {
         return true;
     }
 
+
     @Override
     public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
-        String parentFields1 = getProperties().getProperty("parentFields");
-        return Stream.of(StringUtils.split(parentFields1, ",")).noneMatch(item -> item.equals(field.getName()));
+        final String name = field.getName();
+        return noneMatch(name);
+    }
+
+    private boolean noneMatch(String name) {
+        String parentFields = getProperties().getProperty("parentFields");
+        if (StringUtils.isBlank(parentFields)) {
+            return true;
+        }
+        String[] splitArray = StringUtils.split(parentFields, ",");
+        if (splitArray.length == 0) {
+            return true;
+        }
+        return Stream.of(splitArray).noneMatch(item -> item.equals(name));
     }
 
 
     @Override
     public boolean modelSetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
-        String parentFields1 = getProperties().getProperty("parentFields");
-        return Stream.of(StringUtils.split(parentFields1, ",")).noneMatch(item -> item.equals(introspectedColumn.getActualColumnName()));
+        return noneMatch(introspectedColumn.getActualColumnName());
     }
 
     @Override
     public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
-        String parentFields1 = getProperties().getProperty("parentFields");
-        return Stream.of(StringUtils.split(parentFields1, ",")).noneMatch(item -> item.equals(introspectedColumn.getActualColumnName()));
+        return noneMatch(introspectedColumn.getActualColumnName());
     }
 
 
