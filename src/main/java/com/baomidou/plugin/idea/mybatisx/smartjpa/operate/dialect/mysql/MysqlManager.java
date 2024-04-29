@@ -45,6 +45,18 @@ public class MysqlManager extends BaseDialectManager {
             }
 
         });
+        // 批量插入,重复则更新
+        this.registerManagers(new InsertOperator(mappingField) {
+            @Override
+            protected void initCustomArea(String areaName, List<TxField> mappingField) {
+                super.initCustomArea(areaName, mappingField);
+                MysqlInsertDuplicateBatch customStatement = new MysqlInsertDuplicateBatch();
+                customStatement.initInsertBatch(areaName, mappingField);
+                this.registerStatementBlock(customStatement.getStatementBlock());
+                this.addOperatorName(customStatement.operatorName());
+            }
+
+        });
 
         this.registerManagers(new UpdateOperator(mappingField, entityClass) {
             @Override
