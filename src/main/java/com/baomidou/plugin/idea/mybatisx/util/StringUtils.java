@@ -122,4 +122,15 @@ public class StringUtils {
             return list.toArray(new String[list.size()]);
         }
     }
+
+    public static String firstToLowerCase(String shortClassName) {
+        if (shortClassName != null) {
+            String lowerCase = shortClassName.substring(0, 1).toLowerCase();
+            if (shortClassName.length() > 1) {
+                lowerCase = lowerCase + shortClassName.substring(1);
+            }
+            return lowerCase;
+        }
+        return null;
+    }
 }

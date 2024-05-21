@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.FieldInfo;
+import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import lombok.Getter;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -23,6 +24,10 @@ public class ClassInfo {
      * 类的简称
      */
     private String shortClassName;
+    /**
+     * 小写简称
+     */
+    private String lowerFirstShortClassName;
     /**
      * 表名
      */
@@ -57,6 +62,7 @@ public class ClassInfo {
         FullyQualifiedJavaType type = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
         classInfo.fullClassName = introspectedTable.getBaseRecordType();
         classInfo.shortClassName = type.getShortName();
+        classInfo.lowerFirstShortClassName = StringUtils.firstToLowerCase(classInfo.shortClassName);
         classInfo.tableName = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
         classInfo.remark = introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks();
 
