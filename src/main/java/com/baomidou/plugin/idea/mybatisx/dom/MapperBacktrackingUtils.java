@@ -3,10 +3,12 @@ package com.baomidou.plugin.idea.mybatisx.dom;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Association;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Collection;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ParameterMap;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Result;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiType;
@@ -47,8 +49,16 @@ public final class MapperBacktrackingUtils {
         }
 
         Collection collection = DomUtil.getParentOfType(domElement, Collection.class, true);
-        if (null != collection && !isWithinSameTag(collection, attributeValue)) {
-            PsiClass collectionClass = findLeastParentType(collection, attributeValue.getProject());
+        if (null != collection) {
+            DomElement parentOfType = null;
+            Result propertyResult = DomUtil.getParentOfType(domElement, Result.class, true);
+            if (propertyResult == null) {
+                parentOfType = DomUtil.getParentOfType(collection, DomElement.class, true);
+            }
+            if (parentOfType == null) {
+                parentOfType = collection;
+            }
+            PsiClass collectionClass = findLeastParentType(parentOfType, attributeValue.getProject());
             return Optional.ofNullable(collectionClass);
         }
 
@@ -175,7 +185,7 @@ public final class MapperBacktrackingUtils {
      */
     public static boolean isWithinSameTag(@NotNull DomElement domElement, XmlAttributeValue xmlElement) {
         XmlTag xmlTag = PsiTreeUtil.getParentOfType(xmlElement, XmlTag.class);
-        return null != xmlElement && domElement.getXmlTag().equals(xmlTag);
+        return xmlTag!=null && domElement.getXmlTag() != null && domElement.getXmlTag().equals(xmlTag);
     }
 
     public static Optional<PsiClass> getEntityClass(XmlAttributeValue attributeValue) {
