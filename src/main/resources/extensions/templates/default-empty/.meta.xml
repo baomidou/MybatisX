@@ -14,7 +14,7 @@
         <property name="configFile" value="mapperXml.ftl"/>
         <property name="fileName" value="${domain.fileName}Mapper"/>
         <property name="suffix" value=".xml"/>
-        <property name="packageName" value="mapper"/>
+        <property name="packageName" value="${domain.basePackage}.mapper"/>
         <property name="encoding" value="${domain.encoding}"/>
         <property name="basePath" value="src/main/resources"/>
     </template>

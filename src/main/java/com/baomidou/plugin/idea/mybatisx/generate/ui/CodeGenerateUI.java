@@ -73,6 +73,7 @@ public class CodeGenerateUI {
     private JPanel templateExtraPanel;
     private JPanel templateExtraRadiosPanel;
     private JCheckBox needsModelCheckBox;
+    private JCheckBox serializableCheckBox;
     private final ButtonGroup templateButtonGroup = new ButtonGroup();
     private Project project;
     private DomainInfo domainInfo;
@@ -97,6 +98,10 @@ public class CodeGenerateUI {
         // 是否需要生成默认的模型类
         if (generateConfig.isNeedsModel() != null) {
             needsModelCheckBox.setSelected(generateConfig.isNeedsModel());
+        }
+        // 是否实现Serializable接口
+        if (generateConfig.isNeedSerializable()) {
+            serializableCheckBox.setSelected(generateConfig.isNeedSerializable());
         }
         // 需要生成 toString/hashcode/equals
         if (generateConfig.isNeedToStringHashcodeEquals()) {
@@ -446,6 +451,7 @@ public class CodeGenerateUI {
 //        generateConfig.setNeedMapperAnnotation(mapperAnnotationCheckBox.isSelected());
         generateConfig.setNeedsComment(commentCheckBox.isSelected());
         generateConfig.setNeedsModel(needsModelCheckBox.isSelected());
+        generateConfig.setNeedSerializable(serializableCheckBox.isSelected());
         generateConfig.setNeedToStringHashcodeEquals(toStringHashCodeEqualsCheckBox.isSelected());
         generateConfig.setUseLombokPlugin(lombokCheckBox.isSelected());
         generateConfig.setUseActualColumns(actualColumnCheckBox.isSelected());

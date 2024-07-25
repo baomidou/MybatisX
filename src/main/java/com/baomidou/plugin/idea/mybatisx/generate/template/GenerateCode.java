@@ -327,10 +327,12 @@ public class GenerateCode {
      */
     private static void addPluginConfiguration(Context context, GenerateConfig generateConfig) {
         //实体添加序列化
-        PluginConfiguration serializablePlugin = new PluginConfiguration();
-        serializablePlugin.addProperty("type", SerializablePlugin.class.getName());
-        serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
-        context.addPluginConfiguration(serializablePlugin);
+        if (generateConfig.isNeedSerializable()){
+            PluginConfiguration serializablePlugin = new PluginConfiguration();
+            serializablePlugin.addProperty("type", SerializablePlugin.class.getName());
+            serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
+            context.addPluginConfiguration(serializablePlugin);
+        }
         /**
          * jpa 支持插件, 内置必选
          */
@@ -368,7 +370,6 @@ public class GenerateCode {
             pluginConfiguration.setConfigurationType(LombokPlugin.class.getName());
             context.addPluginConfiguration(pluginConfiguration);
         }
-
 
     }
 
