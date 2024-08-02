@@ -104,6 +104,10 @@ public class GenerateConfig {
     private Boolean needsModel;
     @Getter
     private boolean needSerializable;
+
+    @Getter
+    private boolean needJdbcType;
+
     @Getter
     private boolean useActualColumnAnnotationInject;
     /**
@@ -171,6 +175,10 @@ public class GenerateConfig {
 
     public void setNeedSerializable(boolean needSerializable) {
         this.needSerializable = needSerializable;
+    }
+
+    public void setNeedJdbcType(boolean needJdbcType) {
+        this.needJdbcType = needJdbcType;
     }
 
     public void setAnnotationType(String annotationType) {
@@ -250,6 +258,7 @@ public class GenerateConfig {
             ", useActualColumns=" + useActualColumns +
             ", jsr310Support=" + jsr310Support +
             ", needSerializable=" + needSerializable +
+            ", needJdbcType=" + needJdbcType +
             ", useActualColumnAnnotationInject=" + useActualColumnAnnotationInject +
             ", templatesName='" + templatesName + '\'' +
             ", extraTemplateNames=" + moduleUIInfoList +
