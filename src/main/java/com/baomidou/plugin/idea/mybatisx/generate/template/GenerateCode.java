@@ -147,7 +147,7 @@ public class GenerateCode {
         }
         DomainInfo domainInfo = buildDomainInfo(generateConfig, domainName);
         // 根据模板生成代码的插件
-        configExtraPlugin(extraDomainName, context, domainInfo, configSetting, generateConfig.getModuleUIInfoList());
+        configExtraPlugin(extraDomainName, context, domainInfo, configSetting,generateConfig);
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
         addIgnoreDupFieldsPlugin(context,generateConfig, project);
@@ -227,7 +227,7 @@ public class GenerateCode {
                                           Context context,
                                           DomainInfo domainInfo,
                                           ConfigSetting configSetting,
-                                          List<ModuleInfoGo> extraTemplateNames) {
+                                          GenerateConfig generateConfig) {
 
 
         Map<String, TemplateSettingDTO> templateSettingDTOMap = configSetting.getTemplateSettingDTOList()
@@ -236,13 +236,14 @@ public class GenerateCode {
 
         List<CustomTemplateRoot> templateRootList = new ArrayList<>();
         List<ModuleInfoGo> rootModuleInfo = new ArrayList<>();
-        for (ModuleInfoGo moduleInfo : extraTemplateNames) {
+        for (ModuleInfoGo moduleInfo : generateConfig.getModuleUIInfoList()) {
             TemplateSettingDTO templateSettingDTO = templateSettingDTOMap.get(moduleInfo.getConfigName());
             if (templateSettingDTO == null) {
                 continue;
             }
             DomainInfo customDomainInfo = determineDomainInfo(extraDomainName, domainInfo, moduleInfo);
             ModuleInfoGo moduleInfoReplaced = replaceByDomainInfo(moduleInfo, customDomainInfo);
+            moduleInfoReplaced.setNeedJdbcType(generateConfig.isNeedJdbcType());
             // 文件不存在, 不生成代码
             moduleInfoReplaced.setEnable(templateSettingDTO.getExistsFileNames().contains(moduleInfo.getConfigFileName()));
             CustomTemplateRoot templateRoot = buildRootConfig(customDomainInfo, moduleInfoReplaced, configSetting, rootModuleInfo);
@@ -327,10 +328,12 @@ public class GenerateCode {
      */
     private static void addPluginConfiguration(Context context, GenerateConfig generateConfig) {
         //实体添加序列化
-        PluginConfiguration serializablePlugin = new PluginConfiguration();
-        serializablePlugin.addProperty("type", SerializablePlugin.class.getName());
-        serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
-        context.addPluginConfiguration(serializablePlugin);
+        if (generateConfig.isNeedSerializable()){
+            PluginConfiguration serializablePlugin = new PluginConfiguration();
+            serializablePlugin.addProperty("type", SerializablePlugin.class.getName());
+            serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
+            context.addPluginConfiguration(serializablePlugin);
+        }
         /**
          * jpa 支持插件, 内置必选
          */
@@ -368,7 +371,6 @@ public class GenerateCode {
             pluginConfiguration.setConfigurationType(LombokPlugin.class.getName());
             context.addPluginConfiguration(pluginConfiguration);
         }
-
 
     }
 

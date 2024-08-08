@@ -103,6 +103,12 @@ public class GenerateConfig {
      */
     private Boolean needsModel;
     @Getter
+    private boolean needSerializable;
+
+    @Getter
+    private boolean needJdbcType;
+
+    @Getter
     private boolean useActualColumnAnnotationInject;
     /**
      * 模板组名称
@@ -165,6 +171,14 @@ public class GenerateConfig {
 
     public void setNeedsModel(Boolean needsModel) {
         this.needsModel = needsModel;
+    }
+
+    public void setNeedSerializable(boolean needSerializable) {
+        this.needSerializable = needSerializable;
+    }
+
+    public void setNeedJdbcType(boolean needJdbcType) {
+        this.needJdbcType = needJdbcType;
     }
 
     public void setAnnotationType(String annotationType) {
@@ -243,6 +257,8 @@ public class GenerateConfig {
             ", useLombokPlugin=" + useLombokPlugin +
             ", useActualColumns=" + useActualColumns +
             ", jsr310Support=" + jsr310Support +
+            ", needSerializable=" + needSerializable +
+            ", needJdbcType=" + needJdbcType +
             ", useActualColumnAnnotationInject=" + useActualColumnAnnotationInject +
             ", templatesName='" + templatesName + '\'' +
             ", extraTemplateNames=" + moduleUIInfoList +

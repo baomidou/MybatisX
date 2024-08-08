@@ -49,6 +49,8 @@ public class ModuleInfoGo implements Serializable {
 
     private Boolean enable = false;
 
+    private Boolean needJdbcType;
+
     public void setFileNameWithSuffix(String fileNameWithSuffix) {
         this.fileNameWithSuffix = fileNameWithSuffix;
     }
@@ -83,5 +85,9 @@ public class ModuleInfoGo implements Serializable {
 
     public void setEnable(Boolean enable) {
         this.enable = enable;
+    }
+
+    public void setNeedJdbcType(Boolean needJdbcType) {
+        this.needJdbcType = needJdbcType;
     }
 }

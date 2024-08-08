@@ -6,14 +6,14 @@
 
     <resultMap id="BaseResultMap" type="${tableClass.fullClassName}">
         <#list tableClass.pkFields as field>
-            <id property="${field.fieldName}" column="${field.columnName}" jdbcType="${field.jdbcType}"/>
+            <id property="${field.fieldName}" column="${field.columnName}" <#if baseInfo.needJdbcType>jdbcType="${field.jdbcType}"</#if>/>
         </#list>
         <#list tableClass.baseFields as field>
-            <result property="${field.fieldName}" column="${field.columnName}" jdbcType="${field.jdbcType}"/>
+            <result property="${field.fieldName}" column="${field.columnName}" <#if baseInfo.needJdbcType>jdbcType="${field.jdbcType}"</#if>/>
         </#list>
     </resultMap>
 
     <sql id="Base_Column_List">
-        <#list tableClass.allFields as field>${field.columnName}<#sep>,<#if field_index%3==2>${"\n        "}</#if></#list>
+        <#list tableClass.allFields as field>${field.columnName}<#sep>,<#if field_index &gt; 0 && field_index%5==0>${"\n        "}</#if></#list>
     </sql>
 </mapper>
