@@ -3,7 +3,18 @@
 
 [Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 简化开发
 
-使用文档：https://baomidou.com/pages/ba5b24/
+使用文档：https://baomidou.com/guides/mybatis-x/
+
+> 不允许非法项目使用，后果自负
+
+# 特别用户
+
+<p>
+  <a href="https://aizuda.com/product?from=mybaitsx" target="_blank">
+   <img alt="aizuda-Logo" src="https://foruda.gitee.com/images/1715955628416785121/954c16ef_12260.png" width="160px" height="50px">
+  </a>
+</p>
+
 
 MybatisX 辅助 idea 快速开发 mybatis 插件，为效率而生。
 
