@@ -16,6 +16,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.TableView;
@@ -584,12 +585,8 @@ public class CodeGenerateUI {
         }
 
         private String findModulePath(Module module) {
-            String moduleDirPath = ModuleUtil.getModuleDirPath(module);
-            int ideaIndex = moduleDirPath.indexOf(".idea");
-            if (ideaIndex > -1) {
-                moduleDirPath = moduleDirPath.substring(0, ideaIndex);
-            }
-            return moduleDirPath;
+            VirtualFile contentRoots = module.getModuleFile();
+            return contentRoots.getPath();
         }
 
         @Nullable

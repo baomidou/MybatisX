@@ -7,20 +7,22 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.notify.Notifier;
 import com.baomidou.plugin.idea.mybatisx.generate.setting.TemplatesSettings;
 import com.baomidou.plugin.idea.mybatisx.generate.template.GenerateCode;
-import com.baomidou.plugin.idea.mybatisx.util.PluginExistsUtils;
 import com.intellij.database.model.DasObject;
 import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -105,37 +107,37 @@ public class MybatisGeneratorMainAction extends AnAction {
     }
 
 
-    @Override
-    public void update(@NotNull AnActionEvent e) {
-        Boolean visible = null;
-        PsiElement[] psiElements = e.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
-        if (psiElements == null || psiElements.length == 0) {
-            visible = false;
-        }
-        boolean existsDbTools = PluginExistsUtils.existsDbTools();
-        if (!existsDbTools) {
-            visible = false;
-        }
-        if (visible == null) {
-            if (!Stream.of(psiElements).allMatch(item -> CheckMatch.checkAssignableFrom(item.getClass()))) {
-                visible = false;
-            }
-        }
-        // 未安装Database Tools插件时，不展示菜单
-        if (visible != null) {
-            e.getPresentation().setEnabledAndVisible(visible);
-        }
+//    @Override
+//    public void update(@NotNull AnActionEvent e) {
+//        Boolean visible = null;
+//        PsiElement[] psiElements = e.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
+//        if (psiElements == null || psiElements.length == 0) {
+//            visible = false;
+//        }
+//        boolean existsDbTools = PluginExistsUtils.existsDbTools();
+//        if (!existsDbTools) {
+//            visible = false;
+//        }
+//        if (visible == null) {
+//            if (!Stream.of(psiElements).allMatch(item -> CheckMatch.checkAssignableFrom(item.getClass()))) {
+//                visible = false;
+//            }
+//        }
+//        // 未安装Database Tools插件时，不展示菜单
+//        if (visible != null) {
+//            e.getPresentation().setEnabledAndVisible(visible);
+//        }
+//
+//    }
 
-    }
-
-    private static class CheckMatch {
-        public static boolean checkAssignableFrom(Class<? extends PsiElement> aClass) {
-            try {
-                return DbTable.class.isAssignableFrom(aClass);
-            } catch (Exception e) {
-                return false;
-            }
-        }
-    }
+//    private static class CheckMatch {
+//        public static boolean checkAssignableFrom(Class<? extends PsiElement> aClass) {
+//            try {
+//                return DbTable.class.isAssignableFrom(aClass);
+//            } catch (Exception e) {
+//                return false;
+//            }
+//        }
+//    }
 
 }

@@ -33,8 +33,9 @@
       ]]>
     </change-notes>
 
-    <idea-version since-build="202.0"/>
-    <depends>com.intellij.modules.java</depends>
+<!--    <idea-version since-build="243" />-->
+<!--    <depends>com.intellij.modules.java</depends>-->
+    <depends>com.intellij.java</depends>
     <depends optional="true" config-file="database.xml">com.intellij.database</depends>
     <!-- support aliases -->
     <depends optional="true" config-file="spring.xml">com.intellij.spring</depends>

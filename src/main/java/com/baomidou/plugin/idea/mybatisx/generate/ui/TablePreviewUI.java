@@ -11,7 +11,6 @@ import com.intellij.database.psi.DbTable;
 import com.intellij.ide.util.TreeJavaClassChooserDialog;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
@@ -236,18 +235,24 @@ public class TablePreviewUI {
         ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
         dialog.setSingleSelectionMode();
         dialog.show();
-
-        List<Module> chosenElements = dialog.getChosenElements();
-        if (chosenElements.size() > 0) {
-            Module module = chosenElements.get(0);
-            chooseModulePath(module);
-            moduleName = module.getName();
+        if(dialog.getExitCode()!=ChooseModulesDialog.OK_EXIT_CODE){
+            return;
         }
+        List<Module> chosenElements = dialog.getChosenElements();
+        if (chosenElements.size() == 0) {
+            return;
+        }
+        Module module = chosenElements.get(0);
+        chooseModulePath(module);
+        moduleName = module.getName();
     }
 
     private void chooseModulePath(Module module) {
-
-        String moduleDirPath = ModuleUtil.getModuleDirPath(module);
+        String moduleDirPath = null;
+        final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
+        if(contentRoots.length>0){
+            moduleDirPath = contentRoots[0].getPath();
+        }
         int childModuleIndex = indexFromChildModule(moduleDirPath);
         if (hasChildModule(childModuleIndex)) {
             Optional<String> pathFromModule = getPathFromModule(module);

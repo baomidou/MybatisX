@@ -6,3 +6,4 @@ idea-sandbox
 .gradle/
 .idea
 *.iml
+.intellijPlatform
