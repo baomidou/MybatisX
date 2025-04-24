@@ -6,7 +6,7 @@ plugins {
 //    id("java") // Java support
 //    alias(libs.plugins.kotlin) apply false // Kotlin support
 //    alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
-    id("org.jetbrains.intellij.platform") version "2.1.0"
+    id("org.jetbrains.intellij.platform") version "2.2.1"
 //    id("org.jetbrains.intellij.platform.migration") version "2.1.0"
     kotlin("jvm") version "1.9.0"
 }
@@ -14,7 +14,7 @@ intellijPlatform{
     pluginConfiguration  {
         ideaVersion {
             sinceBuild = "232"
-            untilBuild = "244.*"
+            untilBuild = "251.*"
         }
     }
 
@@ -66,7 +66,7 @@ dependencies {
         // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file for plugin from JetBrains Marketplace.
         plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
 
-        instrumentationTools()
+//        instrumentationTools()
         pluginVerifier()
         zipSigner()
         testFramework(TestFrameworkType.Platform)
@@ -99,3 +99,6 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
+tasks.named("buildSearchableOptions").configure {
+    enabled = false
+}
