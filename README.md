@@ -1,7 +1,9 @@
 ## MybatisX idea 快速开发插件
 
-
-[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 简化开发
+# 简化开发
+[Mybatis-Plus Gitee](https://gitee.com/baomidou/mybatis-plus)
+[Mybatis-Plus GitCode](https://gitcode.com/baomidou/mybatis-plus)
+[Mybatis-Plus GitHub](https://github.com/baomidou/mybatis-plus)
 
 使用文档：https://baomidou.com/guides/mybatis-x/
 
