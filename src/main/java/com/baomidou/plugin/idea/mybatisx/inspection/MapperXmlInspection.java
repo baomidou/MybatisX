@@ -1,10 +1,11 @@
 package com.baomidou.plugin.idea.mybatisx.inspection;
 
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.highlighting.BasicDomElementsInspection;
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder;
 import com.intellij.util.xml.highlighting.DomHighlightingHelper;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,5 +39,10 @@ public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> 
     @Override
     public String getStaticDescription() {
         return "Static MapperXmlInspection";
+    }
+
+    @Override
+    public boolean isAvailableForFile(@NotNull PsiFile file) {
+        return file.getName().endsWith("Mapper.xml");
     }
 }
