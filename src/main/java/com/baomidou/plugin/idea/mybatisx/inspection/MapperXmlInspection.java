@@ -1,6 +1,9 @@
 package com.baomidou.plugin.idea.mybatisx.inspection;
 
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.source.xml.XmlFileImpl;
+import com.intellij.psi.xml.XmlFile;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.highlighting.BasicDomElementsInspection;
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder;
@@ -43,6 +46,10 @@ public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> 
 
     @Override
     public boolean isAvailableForFile(@NotNull PsiFile file) {
-        return file.getName().endsWith("Mapper.xml");
+        if (file instanceof XmlFile) {
+            XmlTag rootTag = ((XmlFile) file).getRootTag();
+            return rootTag != null && rootTag.getName().equals("mapper");
+        }
+        return false;
     }
 }
