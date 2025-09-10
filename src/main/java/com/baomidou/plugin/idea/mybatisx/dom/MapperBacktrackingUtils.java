@@ -22,6 +22,8 @@ import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -48,36 +50,44 @@ public final class MapperBacktrackingUtils {
             return Optional.empty();
         }
 
-        Collection collection = DomUtil.getParentOfType(domElement, Collection.class, true);
-        if (null != collection) {
-            DomElement parentOfType = null;
-            Result propertyResult = DomUtil.getParentOfType(domElement, Result.class, true);
-            if (propertyResult == null) {
-                parentOfType = DomUtil.getParentOfType(collection, DomElement.class, true);
-            }
-            if (parentOfType == null) {
-                parentOfType = collection;
-            }
-            PsiClass collectionClass = findLeastParentType(parentOfType, attributeValue.getProject());
+        List<Class<? extends DomElement>> domList = Arrays.asList(Association.class, Collection.class, ParameterMap.class, ResultMap.class);
+        DomElement parent = getParent(domElement, domList);
+        if (parent != null && isWithinSameTag(parent, attributeValue)) {
+            parent = getParent(parent, domList);
+        }
+
+        if (parent instanceof Collection collection) {
+            PsiClass collectionClass = findLeastParentType(collection, attributeValue.getProject());
             return Optional.ofNullable(collectionClass);
         }
 
-        Association association = DomUtil.getParentOfType(domElement, Association.class, true);
-        if (null != association && !isWithinSameTag(association, attributeValue)) {
+        if (parent instanceof Association association) {
             PsiClass associationClass = findLeastParentType(association, attributeValue.getProject());
             return Optional.ofNullable(associationClass);
         }
 
-        ParameterMap parameterMap = DomUtil.getParentOfType(domElement, ParameterMap.class, true);
-        if (null != parameterMap && !isWithinSameTag(parameterMap, attributeValue)) {
+        if (parent instanceof ParameterMap parameterMap) {
             return Optional.ofNullable(parameterMap.getType().getValue());
         }
 
-        ResultMap resultMap = DomUtil.getParentOfType(domElement, ResultMap.class, true);
-        if (null != resultMap && !isWithinSameTag(resultMap, attributeValue)) {
+        if (parent instanceof ResultMap resultMap) {
             return Optional.ofNullable(resultMap.getType().getValue());
         }
         return Optional.empty();
+    }
+
+    private static DomElement getParent(DomElement domElement, List<Class<? extends DomElement>> list) {
+        for (DomElement cur = domElement != null ? domElement.getParent() : null;
+             cur != null;
+             cur = cur.getParent()
+        ) {
+            for (Class<? extends DomElement> aClass : list) {
+                if (aClass.isInstance(cur)) {
+                    return cur;
+                }
+            }
+        }
+        return null;
     }
 
     @Nullable
