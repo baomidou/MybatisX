@@ -159,6 +159,12 @@
         <!-- mapper.xml文件 #{} 区域的引用跳转 -->
         <psi.referenceContributor id="hashMarkerReferenceContributor"
                                   implementation="com.baomidou.plugin.idea.mybatisx.reference.ContextHashMarkReferenceContributor"/>
+        <!-- mapper.xml文件 <if test> <when test> 区域的引用跳转 -->
+        <psi.referenceContributor id="testParamReferenceContributor"
+                                  implementation="com.baomidou.plugin.idea.mybatisx.reference.TestParamReferenceContributor"/>
+        
+        <!-- mapper.xml文件 <if test> OGNL 高亮 -->
+        <annotator language="XML" implementationClass="com.baomidou.plugin.idea.mybatisx.system.annotator.TestParamOGNLAnnotator"/>
 
         <!-- 应用服务, 必须放在主文件,否则 XmlAndMapperIconProvider 会加载不到-->
         <applicationService id="baomidou.MybatisSetting"
