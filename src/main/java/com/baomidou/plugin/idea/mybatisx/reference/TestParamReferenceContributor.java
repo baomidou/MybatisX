@@ -54,9 +54,21 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
             .withParent(PlatformPatterns.psiElement(XmlTag.class)
                 .withName(StandardPatterns.string().oneOf("if", "when", "foreach", "bind"))));
 
+    public static final PsiElementPattern.Capture<XmlAttributeValue> COLLECTION_ATTRIBUTE_VALUE = PlatformPatterns.psiElement(XmlAttributeValue.class)
+        .withParent(PlatformPatterns.psiElement(XmlAttribute.class)
+            .withName("collection")
+            .withParent(PlatformPatterns.psiElement(XmlTag.class)
+                .withName("foreach")));
+
+    public static final PsiElementPattern.Capture<XmlAttributeValue> BIND_ATTRIBUTE_VALUE = PlatformPatterns.psiElement(XmlAttributeValue.class)
+        .withParent(PlatformPatterns.psiElement(XmlAttribute.class)
+            .withName("value")
+            .withParent(PlatformPatterns.psiElement(XmlTag.class)
+                .withName("bind")));
+
     @Override
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
-        registrar.registerReferenceProvider(TEST_ATTRIBUTE_VALUE, new PsiReferenceProvider() {
+        PsiReferenceProvider provider = new PsiReferenceProvider() {
             @Override
             public @NotNull PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
                 if (!(element instanceof XmlAttributeValue)) {
@@ -121,7 +133,10 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
                 return references.toArray(new PsiReference[0]);
             }
-        });
+        };
+        registrar.registerReferenceProvider(TEST_ATTRIBUTE_VALUE, provider);
+        registrar.registerReferenceProvider(COLLECTION_ATTRIBUTE_VALUE, provider);
+        registrar.registerReferenceProvider(BIND_ATTRIBUTE_VALUE, provider);
     }
 
     private void addReference(PsiElement element, List<PsiReference> references, String value, int startOffset) {
@@ -288,15 +303,38 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
             if (member == null) {
                 member = resolveMethodInType(type, name, project);
             }
+//            if (member == null) {
+//                member = resolveOgnlSpecialProperty(type, name, project);
+//            }
             return member;
         }
 
         @Nullable
+        private PsiElement resolveOgnlSpecialProperty(PsiType type, String name, Project project) {
+            if ("size".equals(name) || "isEmpty".equals(name)) {
+                PsiClass col = JavaPsiFacade.getInstance(project).findClass("java.util.Collection", GlobalSearchScope.allScope(project));
+                PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
+
+                boolean isCol = col != null && (type instanceof com.intellij.psi.PsiArrayType || (type instanceof com.intellij.psi.PsiClassType && ((com.intellij.psi.PsiClassType)type).resolve() != null && ((com.intellij.psi.PsiClassType)type).resolve().isInheritor(col, true)));
+                boolean isMap = map != null && type instanceof com.intellij.psi.PsiClassType && ((com.intellij.psi.PsiClassType)type).resolve() != null && ((com.intellij.psi.PsiClassType)type).resolve().isInheritor(map, true);
+
+                if (isCol || isMap) {
+                     return resolveMethodInType(type, "size".equals(name) ? "size" : "isEmpty", project);
+                }
+            }
+            if ("keys".equals(name) || "values".equals(name) || "entrySet".equals(name)) {
+                 PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
+                 if (map != null && type instanceof com.intellij.psi.PsiClassType && ((com.intellij.psi.PsiClassType)type).resolve() != null && ((com.intellij.psi.PsiClassType)type).resolve().isInheritor(map, true)) {
+                      return resolveMethodInType(type, name, project);
+                 }
+            }
+            return null;
+        }
+
+        @Nullable
         private PsiElement resolveFieldInType(PsiType type, String fieldName, Project project) {
-            String canonicalText = type.getCanonicalText();
-            Optional<PsiClass> clazzOpt = JavaUtils.findClazz(project, canonicalText);
-            if (clazzOpt.isPresent()) {
-                PsiClass psiClass = clazzOpt.get();
+            PsiClass psiClass = resolveClass(type, project);
+            if (psiClass != null) {
                 for (PsiField field : psiClass.getAllFields()) {
                     if (Objects.equals(field.getName(), fieldName)) {
                         return field;
@@ -308,12 +346,18 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
         @Nullable
         private PsiElement resolveMethodInType(PsiType type, String methodName, Project project) {
-            String canonicalText = type.getCanonicalText();
-            Optional<PsiClass> clazzOpt = JavaUtils.findClazz(project, canonicalText);
-            if (clazzOpt.isPresent()) {
-                 PsiClass psiClass = clazzOpt.get();
+            PsiClass psiClass = resolveClass(type, project);
+            if (psiClass != null) {
                  PsiMethod[] methods = psiClass.findMethodsByName(methodName, true);
                  if (methods.length > 0) return methods[0];
+            }
+            return null;
+        }
+
+        @Nullable
+        private PsiClass resolveClass(PsiType type, Project project) {
+            if (type instanceof com.intellij.psi.PsiClassType) {
+                return ((com.intellij.psi.PsiClassType) type).resolve();
             }
             return null;
         }
@@ -387,10 +431,8 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
         }
 
         private void addMemberVariants(List<Object> variants, PsiType type, String prefix, Project project) {
-            String canonicalText = type.getCanonicalText();
-            Optional<PsiClass> clazzOpt = JavaUtils.findClazz(project, canonicalText);
-             if (clazzOpt.isPresent()) {
-                PsiClass psiClass = clazzOpt.get();
+            PsiClass psiClass = resolveClass(type, project);
+             if (psiClass != null) {
                 for (PsiField field : psiClass.getAllFields()) {
                     variants.add(LookupElementBuilder.create(prefix + field.getName())
                         .withTypeText(field.getType().getPresentableText())
@@ -398,14 +440,15 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                 }
                 for (PsiMethod method : psiClass.getAllMethods()) {
                      if (!method.isConstructor() && BaseJpaTestIsOk(method)) {
-                         variants.add(LookupElementBuilder.create(prefix + method.getName())
-                             .withTailText("()")
-                             .withTypeText(method.getReturnType().getPresentableText())
+                         variants.add(LookupElementBuilder.create(prefix + method.getName() + "()")
+                             .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")
                              .withIcon(method.getIcon(0)));
                      }
                 }
+
             }
         }
+
 
         private boolean BaseJpaTestIsOk(PsiMethod method) {
             // Filter Object methods?

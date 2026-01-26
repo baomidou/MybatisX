@@ -165,6 +165,8 @@
         
         <!-- mapper.xml文件 <if test> OGNL 高亮 -->
         <annotator language="XML" implementationClass="com.baomidou.plugin.idea.mybatisx.system.annotator.TestParamOGNLAnnotator"/>
+        <!-- mapper.xml文件 <if test> <foreach collection> 校验 -->
+        <annotator language="XML" implementationClass="com.baomidou.plugin.idea.mybatisx.system.annotator.MybatisXmlValidationAnnotator"/>
 
         <!-- 应用服务, 必须放在主文件,否则 XmlAndMapperIconProvider 会加载不到-->
         <applicationService id="baomidou.MybatisSetting"
