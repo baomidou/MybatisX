@@ -46,10 +46,11 @@ public class SqlParamCompletionContributor extends CompletionContributor {
                 int editorCaret = parameters.getOffset() - position.getTextOffset();
                 // 根据SQL语言的位置找到XML语言的位置， 获取当前提示的CRUD节点
                 int offset = injectedLanguageManager.injectedToHost(position, position.getTextOffset());
-                Optional<IdDomElement> idDomElement = MapperUtils.findParentIdDomElement(topLevelFile.findElementAt(offset));
+                PsiElement xmlElement = topLevelFile.findElementAt(offset);
+                Optional<IdDomElement> idDomElement = MapperUtils.findParentIdDomElement(xmlElement);
                 // 如果当前的内容在CRUD节点内
                 idDomElement.ifPresent(domElement -> new CompositeHashMarkTip(position.getProject())
-                    .addElementForPsiParameter(result, domElement, position.getText(), editorCaret));
+                    .addElementForPsiParameter(result, domElement, position.getText(), editorCaret, xmlElement));
                 // 如果在#{}里面输入字符, 则阻断原生SQL提示
                 result.stopHere();
             }

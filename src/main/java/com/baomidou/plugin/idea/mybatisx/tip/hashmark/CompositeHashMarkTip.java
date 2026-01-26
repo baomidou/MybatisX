@@ -25,6 +25,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocTagValue;
 import com.intellij.psi.javadoc.PsiDocToken;
 import com.intellij.util.xml.DomUtil;
+import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -81,7 +82,8 @@ public class CompositeHashMarkTip {
     public void addElementForPsiParameter(CompletionResultSet result,
                                           IdDomElement idDomElement,
                                           String wrappedText,
-                                          int editorCaret) {
+                                          int editorCaret,
+                                          @Nullable PsiElement xmlElement) {
         Optional<PsiMethod> methodOptional = JavaUtils.findMethod(project, idDomElement);
         if (!methodOptional.isPresent()) {
             logger.info("the psiMethod is null");
@@ -107,6 +109,22 @@ public class CompositeHashMarkTip {
                 String fieldName = findFieldNameByParam(psiParameter);
 
                 promptFields(result, psiParameter, params, fieldFrontOfCaret, fieldName, canUseFields);
+            }
+
+            if (xmlElement != null) {
+                PsiElement current = xmlElement;
+                while (current != null && !current.equals(idDomElement.getXmlTag())) {
+                    if (current instanceof XmlTag) {
+                        XmlTag tag = (XmlTag) current;
+                        if ("foreach".equals(tag.getName())) {
+                            String item = tag.getAttributeValue("item");
+                            if (!StringUtils.isEmpty(item)) {
+                                result.addElement(LookupElementBuilder.create(item));
+                            }
+                        }
+                    }
+                    current = current.getParent();
+                }
             }
 
         }

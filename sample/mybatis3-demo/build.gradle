@@ -7,22 +7,24 @@ version '1.1.0'
 
 repositories {
     mavenLocal()
-    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        allowInsecureProtocol = true }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
+        allowInsecureProtocol = true}
     mavenCentral()
 }
 
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.2.RELEASE'
-    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.0'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.2.RELEASE'
+    implementation group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.0'
     // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api
-    compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.2.RELEASE'
-    testCompile group: 'junit', name: 'junit', version: '4.10'
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
+    implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.2.RELEASE'
+    testImplementation group: 'junit', name: 'junit', version: '4.10'
+    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 
 }
 
