@@ -1,8 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
-import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.util.OgnlUtils;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -31,15 +31,21 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.Introspector;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Optional;
+
+import static com.baomidou.plugin.idea.mybatisx.util.OgnlUtils.resolveClass;
 
 /**
  * <if test="username != null">
@@ -175,9 +181,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                 return resolveStatic(value);
             }
 
-            PsiMethod psiMethod = getPsiMethod();
-            if (psiMethod == null) return null;
-            return resolveTarget(psiMethod, this.value);
+            return OgnlUtils.resolveExpression(myElement, this.value);
         }
 
         private PsiElement resolveStatic(String value) {
@@ -230,138 +234,6 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
             return (PsiMethod) idValue;
         }
 
-        @Nullable
-        private PsiElement resolveTarget(PsiMethod psiMethod, String targetPath) {
-            PsiParameterList parameterList = psiMethod.getParameterList();
-            Project project = myElement.getProject();
-            PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
-            int parametersCount = parameterList.getParametersCount();
-
-            String[] parts = targetPath.split("\\.");
-            String rootParamName = parts[0];
-            if (rootParamName.isEmpty()) return null;
-
-            for (PsiParameter psiParameter : parameterList.getParameters()) {
-                PsiAnnotation annotation = psiParameter.getAnnotation(Annotation.PARAM.getQualifiedName());
-                String definedName = null;
-                boolean isAnnotated = false;
-
-                if (annotation != null) {
-                    PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
-                    definedName = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
-                    isAnnotated = true;
-                }
-                if (definedName == null) definedName = psiParameter.getName();
-
-                boolean match = false;
-                if (isAnnotated && Objects.equals(definedName, rootParamName)) {
-                     match = true;
-                } else if (!isAnnotated) {
-                    if (Objects.equals(definedName, rootParamName)) {
-                        match = true;
-                    } else if (parametersCount == 1) {
-                         // Fallback Single Param
-                         PsiElement field = resolveFieldInType(psiParameter.getType(), rootParamName, project);
-                         // Check method as well
-                         if (field == null) {
-                              field = resolveMethodInType(psiParameter.getType(), rootParamName, project);
-                         }
-
-                         if (field != null) {
-                             PsiElement current = field;
-                             for (int i = 1; i < parts.length; i++) {
-                                 current = resolveMemberInType(getType(current), parts[i], project);
-                                 if (current == null) break;
-                             }
-                             if (current != null) return current;
-                         }
-                    }
-                }
-
-                if (match) {
-                     if (parts.length == 1) return psiParameter;
-                     PsiElement current = resolveMemberInType(psiParameter.getType(), parts[1], project);
-                     for (int i = 2; i < parts.length; i++) {
-                          current = resolveMemberInType(getType(current), parts[i], project);
-                          if (current == null) break;
-                     }
-                     if (current != null) return current;
-                }
-            }
-            return null;
-        }
-
-        private PsiType getType(PsiElement element) {
-            if (element instanceof PsiVariable) return ((PsiVariable) element).getType();
-            if (element instanceof PsiMethod) return ((PsiMethod) element).getReturnType();
-            return null;
-        }
-
-        private PsiElement resolveMemberInType(PsiType type, String name, Project project) {
-            if (type == null) return null;
-            PsiElement member = resolveFieldInType(type, name, project);
-            if (member == null) {
-                member = resolveMethodInType(type, name, project);
-            }
-//            if (member == null) {
-//                member = resolveOgnlSpecialProperty(type, name, project);
-//            }
-            return member;
-        }
-
-        @Nullable
-        private PsiElement resolveOgnlSpecialProperty(PsiType type, String name, Project project) {
-            if ("size".equals(name) || "isEmpty".equals(name)) {
-                PsiClass col = JavaPsiFacade.getInstance(project).findClass("java.util.Collection", GlobalSearchScope.allScope(project));
-                PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
-
-                boolean isCol = col != null && (type instanceof com.intellij.psi.PsiArrayType || (type instanceof com.intellij.psi.PsiClassType && ((com.intellij.psi.PsiClassType)type).resolve() != null && ((com.intellij.psi.PsiClassType)type).resolve().isInheritor(col, true)));
-                boolean isMap = map != null && type instanceof com.intellij.psi.PsiClassType && ((com.intellij.psi.PsiClassType)type).resolve() != null && ((com.intellij.psi.PsiClassType)type).resolve().isInheritor(map, true);
-
-                if (isCol || isMap) {
-                     return resolveMethodInType(type, "size".equals(name) ? "size" : "isEmpty", project);
-                }
-            }
-            if ("keys".equals(name) || "values".equals(name) || "entrySet".equals(name)) {
-                 PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
-                 if (map != null && type instanceof com.intellij.psi.PsiClassType && ((com.intellij.psi.PsiClassType)type).resolve() != null && ((com.intellij.psi.PsiClassType)type).resolve().isInheritor(map, true)) {
-                      return resolveMethodInType(type, name, project);
-                 }
-            }
-            return null;
-        }
-
-        @Nullable
-        private PsiElement resolveFieldInType(PsiType type, String fieldName, Project project) {
-            PsiClass psiClass = resolveClass(type, project);
-            if (psiClass != null) {
-                for (PsiField field : psiClass.getAllFields()) {
-                    if (Objects.equals(field.getName(), fieldName)) {
-                        return field;
-                    }
-                }
-            }
-            return null;
-        }
-
-        @Nullable
-        private PsiElement resolveMethodInType(PsiType type, String methodName, Project project) {
-            PsiClass psiClass = resolveClass(type, project);
-            if (psiClass != null) {
-                 PsiMethod[] methods = psiClass.findMethodsByName(methodName, true);
-                 if (methods.length > 0) return methods[0];
-            }
-            return null;
-        }
-
-        @Nullable
-        private PsiClass resolveClass(PsiType type, Project project) {
-            if (type instanceof com.intellij.psi.PsiClassType) {
-                return ((com.intellij.psi.PsiClassType) type).resolve();
-            }
-            return null;
-        }
-
         @Override
         public Object @NotNull [] getVariants() {
             PsiMethod psiMethod = getPsiMethod();
@@ -374,14 +246,34 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                 String prefix = value.substring(0, lastDot);
                 String lookupPrefix = value.substring(0, lastDot + 1);
 
-                PsiElement target = resolveTarget(psiMethod, prefix);
-                PsiType type = getType(target);
+                PsiElement target = OgnlUtils.resolveExpression(myElement, prefix);
+                PsiType type = OgnlUtils.getType(target);
 
                 if (type != null) {
                    return getMemberVariants(type, lookupPrefix, myElement.getProject());
                 }
             }
             return new Object[0];
+        }
+
+        private void addForeachVariants(List<Object> variants) {
+            PsiElement current = myElement;
+            while (current != null) {
+                if (current instanceof XmlTag) {
+                    XmlTag tag = (XmlTag) current;
+                    if ("foreach".equals(tag.getName())) {
+                        String item = tag.getAttributeValue("item");
+                        if (item != null) {
+                            variants.add(LookupElementBuilder.create(item).withIcon(PlatformIcons.VARIABLE_ICON));
+                        }
+                        String index = tag.getAttributeValue("index");
+                        if (index != null) {
+                            variants.add(LookupElementBuilder.create(index).withIcon(PlatformIcons.VARIABLE_ICON));
+                        }
+                    }
+                }
+                current = current.getParent();
+            }
         }
 
         private Object[] getTopLevelVariants(PsiMethod psiMethod) {
@@ -391,7 +283,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
             PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
 
             for (PsiParameter psiParameter : parameterList.getParameters()) {
-                 PsiAnnotation annotation = psiParameter.getAnnotation(Annotation.PARAM.getQualifiedName());
+                 PsiAnnotation annotation = psiParameter.getAnnotation(com.baomidou.plugin.idea.mybatisx.annotation.Annotation.PARAM.getQualifiedName());
                  if (annotation != null) {
                      PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
                      String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
@@ -412,6 +304,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                      }
                  }
             }
+            addForeachVariants(variants);
             // Add keywords
             addKeywords(variants);
             return variants.toArray();
@@ -431,21 +324,39 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
         }
 
         private void addMemberVariants(List<Object> variants, PsiType type, String prefix, Project project) {
-            PsiClass psiClass = resolveClass(type, project);
-             if (psiClass != null) {
+            PsiClass psiClass = resolveClass(type);
+            if (psiClass != null) {
+                Set<String> addedProperties = new HashSet<>();
                 for (PsiField field : psiClass.getAllFields()) {
                     variants.add(LookupElementBuilder.create(prefix + field.getName())
                         .withTypeText(field.getType().getPresentableText())
                         .withIcon(field.getIcon(0)));
+                    addedProperties.add(field.getName());
                 }
                 for (PsiMethod method : psiClass.getAllMethods()) {
-                     if (!method.isConstructor() && BaseJpaTestIsOk(method)) {
-                         variants.add(LookupElementBuilder.create(prefix + method.getName() + "()")
-                             .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")
-                             .withIcon(method.getIcon(0)));
-                     }
+                    if (!method.isConstructor() && BaseJpaTestIsOk(method)) {
+                        // Add the method itself
+                        variants.add(LookupElementBuilder.create(prefix + method.getName() + "()")
+                            .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")
+                            .withIcon(method.getIcon(0)));
+                        
+                        // Also add as a property if it's a getter
+                        String name = method.getName();
+                        String propertyName = null;
+                        if (name.startsWith("get") && name.length() > 3) {
+                            propertyName = Introspector.decapitalize(name.substring(3));
+                        } else if (name.startsWith("is") && name.length() > 2) {
+                            propertyName = Introspector.decapitalize(name.substring(2));
+                        }
+                        
+                        if (propertyName != null && !addedProperties.contains(propertyName)) {
+                            variants.add(LookupElementBuilder.create(prefix + propertyName)
+                                .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")
+                                .withIcon(method.getIcon(0)));
+                            addedProperties.add(propertyName);
+                        }
+                    }
                 }
-
             }
         }
 

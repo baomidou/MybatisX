@@ -6,6 +6,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.xml.DomUtil;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlAttributeValue;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.psi.util.TypeConversionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,9 +55,50 @@ public class OgnlUtils {
      */
     @Nullable
     public static PsiElement resolveExpression(@NotNull PsiElement contextElement, @NotNull String expression) {
+        String[] parts = expression.split("\\.");
+        String rootName = parts[0];
+        if (rootName.isEmpty()) return null;
+
+        PsiElement foreachVar = resolveForeachVariable(contextElement, rootName);
+        if (foreachVar != null) {
+            if (parts.length == 1) return foreachVar;
+            PsiType type = getType(foreachVar);
+            if (type == null) return null;
+            PsiElement current = resolveMemberInType(type, parts[1], contextElement.getProject());
+            for (int i = 2; i < parts.length; i++) {
+                current = resolveMemberInType(getType(current), parts[i], contextElement.getProject());
+                if (current == null) break;
+            }
+            return current;
+        }
+
         PsiMethod psiMethod = getPsiMethod(contextElement);
         if (psiMethod == null) return null;
         return resolveTarget(psiMethod, expression, contextElement.getProject());
+    }
+
+    @Nullable
+    private static PsiElement resolveForeachVariable(@NotNull PsiElement context, @NotNull String name) {
+        PsiElement current = context;
+        while (current != null) {
+            if (current instanceof XmlTag) {
+                XmlTag tag = (XmlTag) current;
+                if ("foreach".equals(tag.getName())) {
+                    String item = tag.getAttributeValue("item");
+                    if (name.equals(item)) {
+                        XmlAttribute itemAttr = tag.getAttribute("item");
+                        if (itemAttr != null) return itemAttr.getValueElement();
+                    }
+                    String index = tag.getAttributeValue("index");
+                    if (name.equals(index)) {
+                        XmlAttribute indexAttr = tag.getAttribute("index");
+                        if (indexAttr != null) return indexAttr.getValueElement();
+                    }
+                }
+            }
+            current = current.getParent();
+        }
+        return null;
     }
 
     @Nullable
@@ -130,6 +175,76 @@ public class OgnlUtils {
     public static PsiType getType(PsiElement element) {
         if (element instanceof PsiVariable) return ((PsiVariable) element).getType();
         if (element instanceof PsiMethod) return ((PsiMethod) element).getReturnType();
+        if (element instanceof XmlAttributeValue) {
+            return getForeachVariableType((XmlAttributeValue) element);
+        }
+        return null;
+    }
+
+    @Nullable
+    private static PsiType getForeachVariableType(@NotNull XmlAttributeValue attributeValue) {
+        PsiElement parent = attributeValue.getParent();
+        if (!(parent instanceof XmlAttribute)) return null;
+        XmlAttribute attribute = (XmlAttribute) parent;
+        XmlTag tag = attribute.getParent();
+        if (tag == null || !"foreach".equals(tag.getName())) return null;
+
+        String attrName = attribute.getName();
+        if ("index".equals(attrName)) {
+            return PsiType.INT.getBoxedType(attributeValue.getManager(), attributeValue.getResolveScope());
+        }
+
+        if ("item".equals(attrName)) {
+            String collectionExpr = tag.getAttributeValue("collection");
+            if (collectionExpr != null) {
+                PsiElement resolvedCollection = resolveExpression(attributeValue, collectionExpr);
+                if (resolvedCollection != null) {
+                    PsiType collectionType = getType(resolvedCollection);
+                    return extractComponentType(collectionType, attributeValue.getProject());
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private static PsiType extractComponentType(@Nullable PsiType type, @NotNull Project project) {
+        if (type instanceof PsiArrayType) {
+            return ((PsiArrayType) type).getComponentType();
+        }
+        if (type instanceof PsiClassType) {
+            PsiClassType classType = (PsiClassType) type;
+            PsiClassType.ClassResolveResult result = classType.resolveGenerics();
+            PsiClass psiClass = result.getElement();
+            if (psiClass != null) {
+                JavaPsiFacade facade = JavaPsiFacade.getInstance(project);
+                GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+
+                // Handle Collection
+                PsiClass collectionClass = facade.findClass("java.util.Collection", scope);
+                if (collectionClass != null && (psiClass.isEquivalentTo(collectionClass) || psiClass.isInheritor(collectionClass, true))) {
+                    PsiSubstitutor substitutor = TypeConversionUtil.getSuperClassSubstitutor(collectionClass, psiClass, result.getSubstitutor());
+                    PsiType substituted = substitutor.substitute(collectionClass.getTypeParameters()[0]);
+                    if (substituted != null) return substituted;
+                }
+
+                // Handle Iterable
+                PsiClass iterableClass = facade.findClass("java.lang.Iterable", scope);
+                if (iterableClass != null && (psiClass.isEquivalentTo(iterableClass) || psiClass.isInheritor(iterableClass, true))) {
+                    PsiSubstitutor substitutor = TypeConversionUtil.getSuperClassSubstitutor(iterableClass, psiClass, result.getSubstitutor());
+                    PsiType substituted = substitutor.substitute(iterableClass.getTypeParameters()[0]);
+                    if (substituted != null) return substituted;
+                }
+
+                // Handle Map (item is value)
+                PsiClass mapClass = facade.findClass("java.util.Map", scope);
+                if (mapClass != null && (psiClass.isEquivalentTo(mapClass) || psiClass.isInheritor(mapClass, true))) {
+                    PsiSubstitutor substitutor = TypeConversionUtil.getSuperClassSubstitutor(mapClass, psiClass, result.getSubstitutor());
+                    PsiType substituted = substitutor.substitute(mapClass.getTypeParameters()[1]); // Value
+                    if (substituted != null) return substituted;
+                }
+            }
+        }
         return null;
     }
 

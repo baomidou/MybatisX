@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
+import com.baomidou.plugin.idea.mybatisx.util.OgnlUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.intellij.openapi.project.Project;
@@ -13,8 +14,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.JavaClassReferenceProvider;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlAttributeValue;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.CustomReferenceConverter;
 import com.intellij.util.xml.DomElement;
@@ -225,6 +229,10 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         @Nullable
         @Override
         public PsiElement resolve() {
+            PsiElement ognlElement = OgnlUtils.resolveExpression(myElement, text);
+            if (ognlElement != null) {
+                return ognlElement;
+            }
             return IdBasedTagConverter.this.fromString(text, context);
         }
 
@@ -253,7 +261,36 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
             for (IdDomElement ele : idDomElements) {
                 res.add(MapperUtils.getIdSignature(ele, contextMapper));
             }
+            // Add method parameters and foreach items
+            addOgnlVariants(res);
             return res;
+        }
+
+        private void addOgnlVariants(Set<String> res) {
+            // This is a bit simplified, but we want to add top-level names
+            // similar to what TestParamReferenceContributor does.
+            // We can reuse some logic from OgnlUtils or just implement a quick search here.
+            PsiElement current = myElement;
+            while (current != null) {
+                if (current instanceof XmlTag) {
+                    XmlTag tag = (XmlTag) current;
+                    if ("foreach".equals(tag.getName())) {
+                        String item = tag.getAttributeValue("item");
+                        if (item != null) res.add(item);
+                        String index = tag.getAttributeValue("index");
+                        if (index != null) res.add(index);
+                    }
+                }
+                current = current.getParent();
+            }
+            // Also add method parameters
+            PsiMethod method = OgnlUtils.getPsiMethod(myElement);
+            if (method != null) {
+                for (PsiParameter parameter : method.getParameterList().getParameters()) {
+                    res.add(parameter.getName());
+                    // Also handle @Param annotation if needed, but for variants, name is usually enough or handled by MybatisX
+                }
+            }
         }
 
     }

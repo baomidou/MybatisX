@@ -11,15 +11,19 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
+import com.intellij.psi.PsiClassType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.search.GlobalSearchScope;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,6 +50,9 @@ public class MapperMethodInspection extends MapperInspection {
     };
     public static final String MAP_KEY = "org.apache.ibatis.annotations.MapKey";
     public static final String MAP = "java.util.Map";
+    public static final String COLLECTION = "java.util.Collection";
+    public static final String LIST = "java.util.List";
+    public static final String SET = "java.util.Set";
     private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<String>() {
         {
             add("org.apache.ibatis.annotations.SelectProvider");
@@ -80,7 +87,7 @@ public class MapperMethodInspection extends MapperInspection {
 
         boolean found = true;
         ProblemDescriptor descriptor = null;
-        if (!ele.isPresent()) {
+        if (ele.isEmpty()) {
             found = false;
         }
         Select select = null;
@@ -98,9 +105,10 @@ public class MapperMethodInspection extends MapperInspection {
                 found = false;
             }
         }
+        PsiType returnType = method.getReturnType();
         Optional<PsiClass> target = AbstractStatementGenerator.getSelectResultType(method);
         if (found) {
-            if (!target.isPresent()) {
+            if (target.isEmpty()) {
                 found = false;
             }
         }
@@ -108,12 +116,12 @@ public class MapperMethodInspection extends MapperInspection {
         if (found) {
             final PsiClass targetClass = target.get();
             // 如果返回的是Map, 并且有@MapKey的注解
-            if (targetClass.isInterface() && MAP.equals(targetClass.getQualifiedName())) {
+            if (targetClass.isInterface() && MAP.equals(targetClass.getQualifiedName()) && isMapType(returnType)) {
                 Optional<PsiAnnotation> first = Stream.of(method.getAnnotations())
                     .filter(psiAnnotation -> Objects.equals(psiAnnotation.getQualifiedName(), MAP_KEY))
                     .findFirst();
                 // 如果找不到MapKey的注解,提示错误信息
-                if (!first.isPresent()) {
+                if (first.isEmpty()) {
                     PsiIdentifier ide = method.getNameIdentifier();
                     String descriptionTemplate = "@MapKey is required";
                     descriptor = manager.createProblemDescriptor(ide,
@@ -158,6 +166,28 @@ public class MapperMethodInspection extends MapperInspection {
             }
         }
         return Optional.ofNullable(descriptor);
+    }
+
+    private boolean isMapType(PsiType type) {
+        if (type instanceof PsiClassType) {
+            PsiClass psiClass = ((PsiClassType) type).resolve();
+            if (psiClass != null) {
+                String qName = psiClass.getQualifiedName();
+                if (MAP.equals(qName)) {
+                    return true;
+                }
+                // If it's a List/Collection, it's not a Map result type that needs @MapKey
+                if (qName != null && (qName.startsWith("java.util.List") || qName.startsWith("java.util.Collection") || qName.startsWith("java.util.Set"))) {
+                    return false;
+                }
+                // Check inheritance for Map
+                PsiClass mapClass = JavaPsiFacade.getInstance(psiClass.getProject()).findClass(MAP, GlobalSearchScope.allScope(psiClass.getProject()));
+                if (mapClass != null && psiClass.isInheritor(mapClass, true)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean equalsOrInheritor(PsiClass child, PsiClass parent) {
