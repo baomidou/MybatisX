@@ -90,19 +90,22 @@ public class EntityMappingResolverFactory {
             Map<String, TxField> resultMapMapping = defaultMappingResolver.findFields(mapperClass, entityClass).stream()
                 .collect(Collectors.toMap(TxField::getFieldName, v -> v, (l, r) -> l));
             // 处理字段上面没有注解的情况,
-            for (TxField field : entityMappingHolder.getFields()) {
-                TxField defaultField = resultMapMapping.get(field.getFieldName());
-                String columnName = findColumnName(field, defaultField);
-                field.setColumnName(columnName);
-                // 采用合并的方式设置主键, 默认识别的主键+resultMap的主键都标记为主键
-                if (defaultField != null) {
-                    final Boolean primaryKey = defaultField.getPrimaryKey();
-                    if (primaryKey) {
-                        field.setPrimaryKey(primaryKey);
-                    }
-                    // 处理jdbcType, 强制以 resultMap 为准
-                    if (defaultField.getJdbcType() != null) {
-                        field.setJdbcType(defaultField.getJdbcType());
+            List<TxField> fields = entityMappingHolder.getFields();
+            if (CollectionUtils.isNotEmpty(fields)) {
+                for (TxField field : fields) {
+                    TxField defaultField = resultMapMapping.get(field.getFieldName());
+                    String columnName = findColumnName(field, defaultField);
+                    field.setColumnName(columnName);
+                    // 采用合并的方式设置主键, 默认识别的主键+resultMap的主键都标记为主键
+                    if (defaultField != null) {
+                        final Boolean primaryKey = defaultField.getPrimaryKey();
+                        if (primaryKey) {
+                            field.setPrimaryKey(primaryKey);
+                        }
+                        // 处理jdbcType, 强制以 resultMap 为准
+                        if (defaultField.getJdbcType() != null) {
+                            field.setJdbcType(defaultField.getJdbcType());
+                        }
                     }
                 }
             }
