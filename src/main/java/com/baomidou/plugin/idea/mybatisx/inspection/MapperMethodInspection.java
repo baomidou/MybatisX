@@ -213,8 +213,10 @@ public class MapperMethodInspection extends MapperInspection {
                 return Optional.empty();
             }
             // issue https://gitee.com/baomidou/MybatisX/issues/I3IT80
-            final boolean isDefaultMethod = method.getModifierList().hasExplicitModifier(PsiModifier.DEFAULT);
-            if (isDefaultMethod) {
+            if (method.hasModifierProperty(PsiModifier.DEFAULT)
+                || method.hasModifierProperty(PsiModifier.STATIC)
+                || method.hasModifierProperty(PsiModifier.PRIVATE)
+                || method.getBody() != null) {
                 return Optional.empty();
             }
             return Optional.of(manager.createProblemDescriptor(ide, "Statement with id=\"#ref\" not defined in mapper xml",

@@ -8,6 +8,8 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
+import com.intellij.psi.PsiModifier;
+
 /**
  * The type Generate statement chooser.
  *
@@ -27,6 +29,12 @@ public class GenerateStatementChooser extends JavaFileIntentionChooser {
         }
         PsiMethod method = PsiTreeUtil.getParentOfType(element, PsiMethod.class);
         PsiClass clazz = PsiTreeUtil.getParentOfType(element, PsiClass.class);
+        if (method != null && (method.hasModifierProperty(PsiModifier.DEFAULT)
+            || method.hasModifierProperty(PsiModifier.STATIC)
+            || method.hasModifierProperty(PsiModifier.PRIVATE)
+            || method.getBody() != null)) {
+            return false;
+        }
         //  不应该判断当前模块是不是已经有了这个mapper. 因为无法判断
         // !isTargetPresentInXml(method) &&
         return null != method && null != clazz &&

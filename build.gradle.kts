@@ -71,6 +71,7 @@ dependencies {
         pluginVerifier()
         zipSigner()
         testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.Plugin.Java)
     }
     compileOnly(libs.intellij.structure.base) {
         exclude("org.jetbrains.kotlin")

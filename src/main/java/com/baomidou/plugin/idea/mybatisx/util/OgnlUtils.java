@@ -61,11 +61,9 @@ public class OgnlUtils {
 
         PsiElement foreachVar = resolveForeachVariable(contextElement, rootName);
         if (foreachVar != null) {
-            if (parts.length == 1) return foreachVar;
-            PsiType type = getType(foreachVar);
-            if (type == null) return null;
-            PsiElement current = resolveMemberInType(type, parts[1], contextElement.getProject());
-            for (int i = 2; i < parts.length; i++) {
+            PsiElement current = foreachVar;
+            for (int i = 1; i < parts.length; i++) {
+                if ("length".equals(parts[i]) && getType(current) instanceof PsiArrayType) continue;
                 current = resolveMemberInType(getType(current), parts[i], contextElement.getProject());
                 if (current == null) break;
             }
@@ -150,6 +148,7 @@ public class OgnlUtils {
                     if (field != null) {
                         PsiElement current = field;
                         for (int i = 1; i < parts.length; i++) {
+                            if ("length".equals(parts[i]) && getType(current) instanceof PsiArrayType) continue;
                             current = resolveMemberInType(getType(current), parts[i], project);
                             if (current == null) break;
                         }
@@ -159,9 +158,9 @@ public class OgnlUtils {
             }
 
             if (match) {
-                if (parts.length == 1) return psiParameter;
-                PsiElement current = resolveMemberInType(psiParameter.getType(), parts[1], project);
-                for (int i = 2; i < parts.length; i++) {
+                PsiElement current = psiParameter;
+                for (int i = 1; i < parts.length; i++) {
+                    if ("length".equals(parts[i]) && getType(current) instanceof PsiArrayType) continue;
                     current = resolveMemberInType(getType(current), parts[i], project);
                     if (current == null) break;
                 }

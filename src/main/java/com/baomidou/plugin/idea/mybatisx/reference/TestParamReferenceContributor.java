@@ -12,6 +12,7 @@ import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.psi.PsiArrayType;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiConstantEvaluationHelper;
 import com.intellij.psi.PsiElement;
@@ -324,6 +325,12 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
         }
 
         private void addMemberVariants(List<Object> variants, PsiType type, String prefix, Project project) {
+            if (type instanceof PsiArrayType) {
+                variants.add(LookupElementBuilder.create(prefix + "length")
+                    .withTypeText("int")
+                    .withIcon(PlatformIcons.FIELD_ICON));
+            }
+
             PsiClass psiClass = resolveClass(type);
             if (psiClass != null) {
                 Set<String> addedProperties = new HashSet<>();
@@ -339,7 +346,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                         variants.add(LookupElementBuilder.create(prefix + method.getName() + "()")
                             .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")
                             .withIcon(method.getIcon(0)));
-                        
+
                         // Also add as a property if it's a getter
                         String name = method.getName();
                         String propertyName = null;
@@ -348,7 +355,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                         } else if (name.startsWith("is") && name.length() > 2) {
                             propertyName = Introspector.decapitalize(name.substring(2));
                         }
-                        
+
                         if (propertyName != null && !addedProperties.contains(propertyName)) {
                             variants.add(LookupElementBuilder.create(prefix + propertyName)
                                 .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")
