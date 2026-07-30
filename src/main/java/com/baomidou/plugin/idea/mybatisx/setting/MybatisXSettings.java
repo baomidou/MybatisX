@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.setting;
 import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
 import com.google.common.base.Joiner;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.RoamingType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -22,7 +23,7 @@ import java.io.Serializable;
 @Getter
 @State(
     name = "MybatisXSettings",
-    storages = @Storage(value = "$APP_CONFIG$/mybatisx.xml"))
+    storages = @Storage(value = "mybatisx.xml",roamingType = RoamingType.DISABLED))
 public class MybatisXSettings implements PersistentStateComponent<MybatisXSettings>, Serializable {
 
     private static final Joiner joiner = Joiner.on(";");
