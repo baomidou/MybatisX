@@ -83,7 +83,7 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
      * @return the result appender factory
      */
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
-        ResultAppenderFactory appenderFactory = new InsertDuplicateBatchResultAppenderFactory(newAreaName) {
+        return new InsertDuplicateBatchResultAppenderFactory(newAreaName) {
             @Override
             public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
@@ -95,8 +95,6 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
                 return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
-
-        return appenderFactory;
     }
 
     /**
@@ -185,17 +183,14 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
     /**
      * 批量插入
      */
-    private static class InsertBatchSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record InsertBatchSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert batch suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public InsertBatchSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private InsertBatchSuffixOperator {
         }
 
         @Override
@@ -220,13 +215,13 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
                 .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
-            stringBuilder.append(" item=\"" + itemName + "\"");
+            stringBuilder.append(" item=\"").append(itemName).append("\"");
             stringBuilder.append(" separator=\",\">").append("\n");
             stringBuilder.append("(").append(fields).append(")").append("\n");
             stringBuilder.append("</foreach>").append("\n");
 
             final String valuesFields = mappingField.stream()
-                .map(item->item.getColumnName() + " = values(" + item.getColumnName() + ")")
+                .map(item -> item.getColumnName() + " = values(" + item.getColumnName() + ")")
                 .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
             stringBuilder.append(" on duplicate key update ").append(valuesFields).append("\n");
             return stringBuilder.toString();

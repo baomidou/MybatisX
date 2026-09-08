@@ -205,7 +205,7 @@ public class InsertOperator extends BaseOperatorManager {
                                       LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder();
-            mapperXml.append("insert into " + tableName).append("\n");
+            mapperXml.append("insert into ").append(tableName).append("\n");
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
                 String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 mapperXml.append(templateText);
@@ -228,17 +228,14 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private static class InsertAllSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record InsertAllSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert all suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public InsertAllSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private InsertAllSuffixOperator {
         }
 
         @Override
@@ -266,17 +263,14 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private static class InsertSelectiveSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record InsertSelectiveSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert selective suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public InsertSelectiveSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private InsertSelectiveSuffixOperator {
         }
 
         @Override
@@ -314,13 +308,10 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         private String selective(String paramName, String origin) {
-            String stringBuilder = "<if test=\"" + paramName + " != null" + "\">" +
+            return "<if test=\"" + paramName + " != null" + "\">" +
                 origin +
                 "," +
                 "</if>";
-            return stringBuilder;
         }
-
-
     }
 }
