@@ -36,7 +36,7 @@ public class MybatisXCollectors {
      * d,e,f,
      * g
      */
-    private static class MultiStringJoiner {
+    public static class MultiStringJoiner {
 
         private final CharSequence prefix;
         private final CharSequence suffix;
@@ -79,9 +79,6 @@ public class MybatisXCollectors {
 
         /**
          * 目前没有用合并的场景, 所以这里就不实现了
-         *
-         * @param str
-         * @return
          */
         public MultiStringJoiner merge(MultiStringJoiner str) {
             return this;
