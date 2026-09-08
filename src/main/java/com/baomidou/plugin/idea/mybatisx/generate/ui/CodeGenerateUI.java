@@ -165,7 +165,7 @@ public class CodeGenerateUI {
     private void initTemplates(GenerateConfig generateConfig,
                                String defaultsTemplatesName,
                                Map<String, ConfigSetting> templateSettingMap) {
-        if (templateSettingMap.keySet().isEmpty()) {
+        if (templateSettingMap.isEmpty()) {
             throw new RuntimeException("模板列表为空, 请加入模板");
         }
         // 使用上一次生成代码的模板名称

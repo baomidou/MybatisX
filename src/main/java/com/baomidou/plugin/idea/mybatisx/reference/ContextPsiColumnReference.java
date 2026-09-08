@@ -20,6 +20,7 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.containers.JBIterable;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,9 +41,15 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
      * -- GETTER --
      *  Gets resolver.
      *
-     * @return the resolver
+     *
+     * -- SETTER --
+     *  Sets resolver.
+     *
+     @return the resolver
+      * @param resolver the resolver
 
      */
+    @Setter
     @Getter
     protected PsiColumnReferenceSetResolver resolver;
     /**
@@ -50,9 +57,15 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
      * -- GETTER --
      *  Gets index.
      *
-     * @return the index
+     *
+     * -- SETTER --
+     *  Sets index.
+     *
+     @return the index
+      * @param index the index
 
      */
+    @Setter
     @Getter
     protected int index;
     private final PsiClass mapperClass;
@@ -139,21 +152,4 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
     }
 
 
-    /**
-     * Sets resolver.
-     *
-     * @param resolver the resolver
-     */
-    public void setResolver(PsiColumnReferenceSetResolver resolver) {
-        this.resolver = resolver;
-    }
-
-    /**
-     * Sets index.
-     *
-     * @param index the index
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
 }

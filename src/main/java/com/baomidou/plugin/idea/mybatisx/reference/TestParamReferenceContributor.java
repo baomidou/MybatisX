@@ -223,11 +223,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
         @Nullable
         private PsiMethod getPsiMethod() {
-            IdDomElement domElement = DomUtil.findDomElement(myElement, IdDomElement.class);
-            if (domElement == null) return null;
-            Object idValue = domElement.getId().getValue();
-            if (!(idValue instanceof PsiMethod)) return null;
-            return (PsiMethod) idValue;
+            return OgnlUtils.getPsiMethod(myElement);
         }
 
         @Override

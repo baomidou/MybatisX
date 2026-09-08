@@ -167,10 +167,6 @@ public class MybatisXTemplateSettings {
         }
 
         @Override
-        public void updateButton(@NotNull AnActionEvent e) {
-        }
-
-        @Override
         public @NotNull ActionUpdateThread getActionUpdateThread() {
             return super.getActionUpdateThread();
         }

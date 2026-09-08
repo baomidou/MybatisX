@@ -33,6 +33,7 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.CommonProcessors.CollectProcessor;
 import com.intellij.util.xml.DomService;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -53,6 +54,7 @@ import java.util.Set;
  * @since 2018 -07-30
  */
 
+@Setter
 @Getter
 public abstract class AbstractStatementGenerator {
     private static final Logger logger = LoggerFactory.getLogger(GenerateStatementIntention.class);
@@ -92,7 +94,12 @@ public abstract class AbstractStatementGenerator {
      * -- GETTER --
      * Gets patterns.
      *
-     * @return the patterns
+     *
+     * -- SETTER --
+     *  Sets patterns.
+     *
+     @return the patterns
+      * @param patterns the patterns
      */
     private Set<String> patterns;
 
@@ -269,14 +276,5 @@ public abstract class AbstractStatementGenerator {
      */
     @NotNull
     public abstract String getDisplayText();
-
-    /**
-     * Sets patterns.
-     *
-     * @param patterns the patterns
-     */
-    public void setPatterns(Set<String> patterns) {
-        this.patterns = patterns;
-    }
 
 }

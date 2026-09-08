@@ -2,10 +2,12 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The type Tx field.
  */
+@Setter
 @Getter
 public class TxField {
     /**
@@ -21,7 +23,12 @@ public class TxField {
      * -- GETTER --
      *  Gets tip name.
      *
-     * @return the tip name
+     *
+     * -- SETTER --
+     *  Sets tip name.
+     *
+     @return the tip name
+      * @param tipName the tip name
 
      */
     private String tipName;
@@ -30,7 +37,12 @@ public class TxField {
      * -- GETTER --
      *  Gets field name.
      *
-     * @return the field name
+     *
+     * -- SETTER --
+     *  Sets field name.
+     *
+     @return the field name
+      * @param fieldName the field name
 
      */
     private String fieldName;
@@ -40,7 +52,12 @@ public class TxField {
      * -- GETTER --
      *  Gets column name.
      *
-     * @return the column name
+     *
+     * -- SETTER --
+     *  Sets column name.
+     *
+     @return the column name
+      * @param columnName the column name
 
      */
     private String columnName;
@@ -49,7 +66,12 @@ public class TxField {
      * -- GETTER --
      *  Gets field type.
      *
-     * @return the field type
+     *
+     * -- SETTER --
+     *  Sets field type.
+     *
+     @return the field type
+      * @param fieldType the field type
 
      */
     private String fieldType;
@@ -58,51 +80,4 @@ public class TxField {
      */
     private String jdbcType;
 
-    /**
-     * Sets field type.
-     *
-     * @param fieldType the field type
-     */
-    public void setFieldType(final String fieldType) {
-        this.fieldType = fieldType;
-    }
-
-    /**
-     * Sets tip name.
-     *
-     * @param tipName the tip name
-     */
-    public void setTipName(final String tipName) {
-        this.tipName = tipName;
-    }
-
-    /**
-     * Sets field name.
-     *
-     * @param fieldName the field name
-     */
-    public void setFieldName(final String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    /**
-     * Sets column name.
-     *
-     * @param columnName the column name
-     */
-    public void setColumnName(final String columnName) {
-        this.columnName = columnName;
-    }
-
-    public void setJdbcType(String jdbcType) {
-        this.jdbcType = jdbcType;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public void setPrimaryKey(Boolean primaryKey) {
-        this.primaryKey = primaryKey;
-    }
 }

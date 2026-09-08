@@ -4,13 +4,21 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle.OracleG
 import com.intellij.database.model.DasTable;
 import com.intellij.database.model.DasTableKey;
 import com.intellij.database.util.DasUtil;
+import lombok.Setter;
 
 import java.util.Optional;
 
 /**
  * The type Das table adaptor.
  */
+@Setter
 public class DasTableAdaptor implements MxDasTable {
+    /**
+     * -- SETTER --
+     *  Sets das table.
+     *
+     * @param dasTable the das table
+     */
     private DasTable dasTable;
 
     /**
@@ -32,12 +40,4 @@ public class DasTableAdaptor implements MxDasTable {
         return DasUtil.getPrimaryKey(dasTable);
     }
 
-    /**
-     * Sets das table.
-     *
-     * @param dasTable the das table
-     */
-    public void setDasTable(DasTable dasTable) {
-        this.dasTable = dasTable;
-    }
 }

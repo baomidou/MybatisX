@@ -64,7 +64,7 @@ public class SmartJpaCompletionProvider {
         String prefix = CompletionUtil.findJavaIdentifierPrefix(parameters);
         // 按照 mybatisplus3 > mybatisplus2 > resultMap 的顺序查找映射关系
         final Optional<AreaOperateManager> operateManagerOptional = getAreaOperateManager(mapperClass, parameters.getEditor());
-        if (!operateManagerOptional.isPresent()) {
+        if (operateManagerOptional.isEmpty()) {
             log.info("不支持的区域操作管理器, prefix: {} ", prefix);
             return;
         }

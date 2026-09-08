@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,7 @@ import java.util.Set;
  *
  * @author yanglin
  */
+@Setter
 @Getter
 public abstract class AliasResolver {
 
@@ -24,7 +26,12 @@ public abstract class AliasResolver {
      * -- GETTER --
      *  Gets project.
      *
-     * @return the project
+     *
+     * -- SETTER --
+     *  Sets project.
+     *
+     @return the project
+      * @param project the project
 
      */
     protected Project project;
@@ -66,12 +73,4 @@ public abstract class AliasResolver {
     @NotNull
     public abstract Set<AliasDesc> getClassAliasDescriptions(@Nullable PsiElement element);
 
-    /**
-     * Sets project.
-     *
-     * @param project the project
-     */
-    public void setProject(Project project) {
-        this.project = project;
-    }
 }

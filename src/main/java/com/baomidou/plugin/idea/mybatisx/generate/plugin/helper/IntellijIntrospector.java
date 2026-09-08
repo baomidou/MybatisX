@@ -302,20 +302,10 @@ public class IntellijIntrospector {
 
     }
 
-    private Map<ActualTableName, List<IntrospectedColumn>> getColumns(TableConfiguration tc) throws SQLException {
-        boolean delimitIdentifiers = tc.isDelimitIdentifiers() || StringUtility.stringContainsSpace(tc.getCatalog()) || StringUtility.stringContainsSpace(tc.getSchema()) || StringUtility.stringContainsSpace(tc.getTableName());
-        String localCatalog;
-        String localSchema;
-        String localTableName;
-        if (delimitIdentifiers) {
-            localCatalog = tc.getCatalog();
-            localSchema = tc.getSchema();
-            localTableName = tc.getTableName();
-        } else {
-            localCatalog = tc.getCatalog();
-            localSchema = tc.getSchema();
-            localTableName = tc.getTableName();
-        }
+    private Map<ActualTableName, List<IntrospectedColumn>> getColumns(TableConfiguration tc) {
+        String localCatalog = tc.getCatalog();
+        String localSchema = tc.getSchema();
+        String localTableName = tc.getTableName();
 
         Map<ActualTableName, List<IntrospectedColumn>> answer = new HashMap<>();
         if (this.logger.isDebugEnabled()) {
@@ -323,26 +313,7 @@ public class IntellijIntrospector {
             this.logger.debug(Messages.getString("Tracing.1", fullTableName));
         }
 
-        boolean supportsIsAutoIncrement = false;
-        boolean supportsIsGeneratedColumn = false;
-        Iterator<IntellijColumnInfo> var9 = this.intellijTableInfo.getColumnInfos().iterator();
-
-        IntellijColumnInfo intellijColumnInfo;
-        while (var9.hasNext()) {
-            intellijColumnInfo = var9.next();
-            if (intellijColumnInfo.isAutoIncrement()) {
-                supportsIsAutoIncrement = true;
-            }
-
-            if (intellijColumnInfo.isGeneratedColumn()) {
-                supportsIsGeneratedColumn = true;
-            }
-        }
-
-        var9 = this.intellijTableInfo.getColumnInfos().iterator();
-
-        while (var9.hasNext()) {
-            intellijColumnInfo = (IntellijColumnInfo) var9.next();
+        for (IntellijColumnInfo intellijColumnInfo : this.intellijTableInfo.getColumnInfos()) {
             IntrospectedColumn introspectedColumn = ObjectFactory.createIntrospectedColumn(this.context);
             introspectedColumn.setTableAlias(tc.getAlias());
             introspectedColumn.setJdbcType(intellijColumnInfo.getDataType());
@@ -352,16 +323,10 @@ public class IntellijIntrospector {
             introspectedColumn.setScale(intellijColumnInfo.getDecimalDigits());
             introspectedColumn.setRemarks(intellijColumnInfo.getRemarks());
             introspectedColumn.setDefaultValue(intellijColumnInfo.getColumnDefaultValue());
-            if (supportsIsAutoIncrement) {
-                introspectedColumn.setAutoIncrement(intellijColumnInfo.isAutoIncrement());
-            }
-
-            if (supportsIsGeneratedColumn) {
-                introspectedColumn.setGeneratedColumn(intellijColumnInfo.isGeneratedColumn());
-            }
-
+            introspectedColumn.setAutoIncrement(intellijColumnInfo.isAutoIncrement());
+            introspectedColumn.setGeneratedColumn(intellijColumnInfo.isGeneratedColumn());
             ActualTableName atn = new ActualTableName(null, null, this.intellijTableInfo.getTableName());
-            List<IntrospectedColumn> columns = answer.computeIfAbsent(atn, k -> new ArrayList<>());
+            List<IntrospectedColumn> columns = answer.computeIfAbsent(atn, _ -> new ArrayList<>());
 
             columns.add(introspectedColumn);
             if (this.logger.isDebugEnabled()) {
@@ -373,17 +338,14 @@ public class IntellijIntrospector {
             ActualTableName inputAtn = new ActualTableName(tc.getCatalog(), tc.getSchema(), tc.getTableName());
             StringBuilder sb = new StringBuilder();
             boolean comma = false;
-
-            ActualTableName atn;
-            for (Iterator<ActualTableName> var18 = answer.keySet().iterator(); var18.hasNext(); sb.append(atn.toString())) {
-                atn = var18.next();
+            for (ActualTableName actualTableName : answer.keySet()) {
+                sb.append(actualTableName.toString());
                 if (comma) {
                     sb.append(',');
                 } else {
                     comma = true;
                 }
             }
-
             this.warnings.add(Messages.getString("Warning.25", inputAtn.toString(), sb.toString()));
         }
 

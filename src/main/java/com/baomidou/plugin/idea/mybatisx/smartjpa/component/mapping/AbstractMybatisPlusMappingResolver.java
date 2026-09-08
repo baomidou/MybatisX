@@ -83,7 +83,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         Optional<String> tableName = Optional.ofNullable(getAttributeValue(annotation, VALUE));
 
         // 获取 jpa 注解
-        if (!tableName.isPresent()) {
+        if (tableName.isEmpty()) {
             tableName = getTableNameByJpa(entityClass);
         }
         return tableName;

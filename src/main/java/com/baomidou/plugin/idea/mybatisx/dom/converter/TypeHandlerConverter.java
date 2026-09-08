@@ -53,7 +53,7 @@ public class TypeHandlerConverter extends ConverterAdaptor<PsiClass>
     private boolean checkIsTypeHandler(PsiClass psiClass) {
         Optional<PsiClass> typeHandlerClassOptional = JavaUtils.findClazz(psiClass.getProject(),
             ORG_APACHE_IBATIS_TYPE_TYPE_HANDLER);
-        if (!typeHandlerClassOptional.isPresent()) {
+        if (typeHandlerClassOptional.isEmpty()) {
             return true;
         }
         PsiClass typeHandlerCla = typeHandlerClassOptional.get();

@@ -2,9 +2,11 @@ package com.baomidou.plugin.idea.mybatisx.generate.plugin.helper;
 
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
 @Getter
 public class IntellijTableInfo {
     private String tableName;
@@ -17,27 +19,4 @@ public class IntellijTableInfo {
     public IntellijTableInfo() {
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public void setDatabaseType(String databaseType) {
-        this.databaseType = databaseType;
-    }
-
-    public void setColumnInfos(List<IntellijColumnInfo> columnInfos) {
-        this.columnInfos = columnInfos;
-    }
-
-    public void setPrimaryKeyColumns(List<IntellijColumnInfo> primaryKeyColumns) {
-        this.primaryKeyColumns = primaryKeyColumns;
-    }
-
-    public void setTableRemark(String tableRemark) {
-        this.tableRemark = tableRemark;
-    }
-
-    public void setTableType(String tableType) {
-        this.tableType = tableType;
-    }
 }
