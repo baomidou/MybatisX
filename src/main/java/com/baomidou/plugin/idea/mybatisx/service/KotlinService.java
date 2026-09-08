@@ -3,7 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.service;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Processor;
@@ -17,7 +16,7 @@ import java.util.Collection;
 public class KotlinService {
 
     public static KotlinService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, KotlinService.class);
+        return project.getService(KotlinService.class);
     }
 
     /**
