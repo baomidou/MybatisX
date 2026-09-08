@@ -185,17 +185,14 @@ public class MysqlInsertBatch implements CustomStatement {
     /**
      * 批量插入
      */
-    private static class InsertBatchSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record InsertBatchSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert batch suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public InsertBatchSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private InsertBatchSuffixOperator {
         }
 
         @Override
@@ -220,7 +217,7 @@ public class MysqlInsertBatch implements CustomStatement {
                 .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
 
             stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
-            stringBuilder.append(" item=\"" + itemName + "\"");
+            stringBuilder.append(" item=\"").append(itemName).append("\"");
             stringBuilder.append(" separator=\",\">").append("\n");
             stringBuilder.append("(").append(fields).append(")").append("\n");
             stringBuilder.append("</foreach>");

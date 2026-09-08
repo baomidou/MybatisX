@@ -186,17 +186,14 @@ public class MysqlUpdateSelective implements CustomStatement {
     /**
      * 可选更新
      */
-    private static class UpdateSelectiveSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record UpdateSelectiveSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert batch suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public UpdateSelectiveSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private UpdateSelectiveSuffixOperator {
         }
 
         @Override
