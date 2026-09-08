@@ -113,7 +113,7 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
         }
         DbPsiFacade dbPsiFacade = DbPsiFacade.getInstance(project);
         List<DbElement> dbElementList = getDbElements(tableName, dbPsiFacade);
-        return dbElementList.size() > 0 ? dbElementList.toArray() : PsiReference.EMPTY_ARRAY;
+        return !dbElementList.isEmpty() ? dbElementList.toArray() : PsiReference.EMPTY_ARRAY;
     }
 
     @NotNull

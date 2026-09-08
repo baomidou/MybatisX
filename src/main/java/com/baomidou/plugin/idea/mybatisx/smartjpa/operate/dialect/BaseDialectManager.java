@@ -69,7 +69,7 @@ public class BaseDialectManager implements AreaOperateManager {
     public List<String> getCompletionContent(final LinkedList<SyntaxAppender> splitList) {
         final List<String> results = new ArrayList<>();
         for (final AreaOperateManager typeManager : this.typeManagers) {
-            if (splitList.size() > 0) {
+            if (!splitList.isEmpty()) {
                 results.addAll(typeManager.getCompletionContent(splitList));
             }
         }
@@ -88,7 +88,7 @@ public class BaseDialectManager implements AreaOperateManager {
     @Override
     public List<TxParameter> getParameters(PsiClass entityClass,
                                            LinkedList<SyntaxAppender> jpaStringList) {
-        if (jpaStringList.size() == 0 || jpaStringList.getFirst().getType() != AppendTypeEnum.AREA) {
+        if (jpaStringList.isEmpty() || jpaStringList.getFirst().getType() != AppendTypeEnum.AREA) {
             return Collections.emptyList();
         }
         SyntaxAppender syntaxAppender = jpaStringList.peek();
@@ -104,7 +104,7 @@ public class BaseDialectManager implements AreaOperateManager {
 
     @Override
     public TypeDescriptor getReturnWrapper(String text, PsiClass entityClass, @NotNull LinkedList<SyntaxAppender> linkedList) {
-        if (linkedList.size() == 0 || linkedList.getFirst().getType() != AppendTypeEnum.AREA) {
+        if (linkedList.isEmpty() || linkedList.getFirst().getType() != AppendTypeEnum.AREA) {
             return null;
         }
         SyntaxAppender syntaxAppender = linkedList.peek();
@@ -131,7 +131,7 @@ public class BaseDialectManager implements AreaOperateManager {
                                   Generator mybatisXmlGenerator,
                                   ConditionFieldWrapper conditionFieldWrapper,
                                   List<TxField> resultFields) {
-        if (jpaList.size() == 0 || jpaList.getFirst().getType() != AppendTypeEnum.AREA) {
+        if (jpaList.isEmpty() || jpaList.getFirst().getType() != AppendTypeEnum.AREA) {
             return;
         }
         SyntaxAppender syntaxAppender = jpaList.peek();

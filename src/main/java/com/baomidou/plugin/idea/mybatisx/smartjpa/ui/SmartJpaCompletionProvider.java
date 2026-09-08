@@ -74,7 +74,7 @@ public class SmartJpaCompletionProvider {
 
         final LinkedList<SyntaxAppender> splitList = areaOperateManager.splitAppenderByText(prefix);
 
-        if (splitList.size() > 0) {
+        if (!splitList.isEmpty()) {
             final SyntaxAppender last = splitList.getLast();
             last.pollLast(splitList);
         }
@@ -86,7 +86,7 @@ public class SmartJpaCompletionProvider {
 
         // 获得提示列表
         List<String> appendList = null;
-        if (splitList.size() > 0) {
+        if (!splitList.isEmpty()) {
             appendList = areaOperateManager.getCompletionContent(splitList);
         } else {
             appendList = areaOperateManager.getCompletionContent();

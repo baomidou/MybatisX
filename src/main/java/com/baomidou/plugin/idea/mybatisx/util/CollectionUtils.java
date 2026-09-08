@@ -20,7 +20,7 @@ public final class CollectionUtils {
      * @return the boolean
      */
     public static boolean isEmpty(Collection<?> collection) {
-        return null == collection || 0 == collection.size();
+        return null == collection || collection.isEmpty();
     }
 
     /**
