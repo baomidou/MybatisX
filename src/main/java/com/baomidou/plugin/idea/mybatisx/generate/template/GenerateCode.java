@@ -106,7 +106,7 @@ public class GenerateCode {
         javaModelGeneratorConfiguration.setTargetProject(targetProject);
 
         String relativePackage = generateConfig.getRelativePackage();
-        if (null != relativePackage && !"".equals(relativePackage)) {
+        if (null != relativePackage && !relativePackage.isEmpty()) {
             relativePackage = "." + relativePackage;
         }
         javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + relativePackage);

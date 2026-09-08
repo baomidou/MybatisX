@@ -182,9 +182,7 @@ public class MapperMethodInspection extends MapperInspection {
                 }
                 // Check inheritance for Map
                 PsiClass mapClass = JavaPsiFacade.getInstance(psiClass.getProject()).findClass(MAP, GlobalSearchScope.allScope(psiClass.getProject()));
-                if (mapClass != null && psiClass.isInheritor(mapClass, true)) {
-                    return true;
-                }
+                return mapClass != null && psiClass.isInheritor(mapClass, true);
             }
         }
         return false;

@@ -200,9 +200,7 @@ public class MybatisXmlValidationAnnotator implements Annotator {
                 if (collectionClass != null && (collectionClass.isEquivalentTo(psiClass) || psiClass.isInheritor(collectionClass, true))) {
                     return true;
                 }
-                if (mapClass != null && (mapClass.isEquivalentTo(psiClass) || psiClass.isInheritor(mapClass, true))) {
-                    return true;
-                }
+                return mapClass != null && (mapClass.isEquivalentTo(psiClass) || psiClass.isInheritor(mapClass, true));
             }
         }
         return false;

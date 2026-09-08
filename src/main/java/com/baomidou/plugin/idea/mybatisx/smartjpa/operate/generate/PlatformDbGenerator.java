@@ -54,7 +54,7 @@ public class PlatformDbGenerator extends PlatformSimpleGenerator {
                 for (DasTable table : tables) {
                     String entityTableName = entityClass.getName().toLowerCase();
                     String tableName = table.getName();
-                    String guessTableName = tableName.replaceAll("_", "").toUpperCase();
+                    String guessTableName = tableName.replace("_", "").toUpperCase();
                     // 完全相等的情况下就不用候选了
                     if (guessTableName.equalsIgnoreCase(entityTableName)) {
                         // 第一版的猜测数据源，只做绝对相等的情况

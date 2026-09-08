@@ -89,7 +89,7 @@ public class SmartJpaAdvanceUI {
 
         allColumnRadioButton.addItemListener(e -> {
             final Object value = splitFieldSpiner.getValue();
-            Integer splitNumber = Integer.valueOf(value.toString());
+            int splitNumber = Integer.parseInt(value.toString());
             // splitNumber = 0 表示不换行
             if (splitNumber <= 0) {
                 splitNumber = 0;
@@ -109,7 +109,7 @@ public class SmartJpaAdvanceUI {
         asFieldRadioButton.addItemListener(e -> {
 
             final Object value = splitFieldSpiner.getValue();
-            Integer splitNumber = Integer.valueOf(value.toString());
+            int splitNumber = Integer.parseInt(value.toString());
             // splitNumber = 0 表示不换行
             if (splitNumber <= 0) {
                 splitNumber = 0;

@@ -24,10 +24,6 @@ public class TableSelectionCondition  {
             return false;
         }
 
-        if (psiElement instanceof DasTable) {
-            return true;
-        }
-
-        return false;
+        return psiElement instanceof DasTable;
     }
 }
