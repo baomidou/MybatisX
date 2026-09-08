@@ -32,7 +32,7 @@ public class CompositeAppender implements SyntaxAppender {
     /**
      * The Template resolver.
      */
-    TemplateResolver templateResolver = new TemplateResolver();
+    final TemplateResolver templateResolver = new TemplateResolver();
 
     /**
      * Instantiates a new Composite appender.

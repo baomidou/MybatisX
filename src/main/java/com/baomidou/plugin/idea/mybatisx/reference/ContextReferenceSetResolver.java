@@ -49,7 +49,7 @@ public abstract class ContextReferenceSetResolver<F extends PsiElement, K extend
     /**
      * The Texts.
      */
-    protected List<String> texts;
+    protected final List<String> texts;
 
     /**
      * Instantiates a new Context reference set resolver.

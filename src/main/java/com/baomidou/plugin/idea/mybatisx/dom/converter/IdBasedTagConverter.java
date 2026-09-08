@@ -112,7 +112,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         /**
          * The Context.
          */
-        protected ConvertContext context;
+        protected final ConvertContext context;
 
         /**
          * Instantiates a new Traverse strategy.

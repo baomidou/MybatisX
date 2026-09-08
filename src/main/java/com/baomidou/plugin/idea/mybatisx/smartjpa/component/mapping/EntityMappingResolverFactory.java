@@ -24,13 +24,13 @@ public class EntityMappingResolverFactory {
     /**
      * The Project.
      */
-    Project project;
+    final Project project;
 
 
     /**
      * The Entity mapping resolver list.
      */
-    List<EntityMappingResolver> entityMappingResolverList = new ArrayList<>();
+    final List<EntityMappingResolver> entityMappingResolverList = new ArrayList<>();
 
     /**
      * Instantiates a new Entity mapping resolver factory.

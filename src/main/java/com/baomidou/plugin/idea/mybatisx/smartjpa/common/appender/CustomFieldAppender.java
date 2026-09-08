@@ -32,7 +32,7 @@ public class CustomFieldAppender implements SyntaxAppender {
     /**
      * The Tip name.
      */
-    protected String tipName;
+    protected final String tipName;
     /**
      * The Field name.
      * -- GETTER --

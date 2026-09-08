@@ -43,11 +43,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class TablePreviewUI {
-    ListTableModel<TableUIInfo> model = new ListTableModel<>(
+    final ListTableModel<TableUIInfo> model = new ListTableModel<>(
         new MybaitsxTableColumnInfo("tableName", false),
         new MybaitsxTableColumnInfo("className", true)
     );
-    List<ClassNameStrategy> classNameStrategies = new ArrayList<>() {
+    final List<ClassNameStrategy> classNameStrategies = new ArrayList<>() {
         {
             add(new CamelStrategy());
             add(new SameAsTableNameStrategy());

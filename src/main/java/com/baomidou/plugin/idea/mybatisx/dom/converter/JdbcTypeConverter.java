@@ -34,7 +34,7 @@ import java.util.Optional;
 public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
     private static final String clazzName = "org.apache.ibatis.type.JdbcType";
-    JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
+    final JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
 
     @NotNull
     @Override

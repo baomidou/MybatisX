@@ -40,7 +40,7 @@ public class MybatisXmlGenerator implements Generator {
      * The constant RESULT_TYPE.
      */
     public static final String RESULT_TYPE = "resultType";
-    Set<String> allowedResultMapNames = new HashSet<>() {
+    final Set<String> allowedResultMapNames = new HashSet<>() {
         {
             add("BaseResultMap");
             add("BlobResultMap");
