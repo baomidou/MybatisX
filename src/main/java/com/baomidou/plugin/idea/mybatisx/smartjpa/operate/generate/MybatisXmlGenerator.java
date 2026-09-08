@@ -216,6 +216,6 @@ public class MybatisXmlGenerator implements Generator {
     }
 
     private boolean hasMapperXmlFiles(Collection<Mapper> mappers) {
-        return mappers.size() > 0;
+        return !mappers.isEmpty();
     }
 }

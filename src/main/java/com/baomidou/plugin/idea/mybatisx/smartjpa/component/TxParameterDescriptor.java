@@ -106,7 +106,7 @@ public class TxParameterDescriptor implements TypeDescriptor {
         List<String> collect = parameterList.stream()
             .flatMap(x -> x.getImportClass().stream())
             .collect(Collectors.toList());
-        if (collect.size() > 0 || parameterList.size() > 0) {
+        if (!collect.isEmpty() || !parameterList.isEmpty()) {
             collect.add("org.apache.ibatis.annotations.Param");
         }
         return collect;

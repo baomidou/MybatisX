@@ -68,7 +68,7 @@ public class CustomJoinAppender implements SyntaxAppender {
     @Override
     public Optional<SyntaxAppender> pollLast(LinkedList<SyntaxAppender> splitList) {
         final Optional<SyntaxAppender> syntaxAppender = Optional.of(splitList.pollLast());
-        if (syntaxAppender.isPresent() && splitList.size() > 0) {
+        if (syntaxAppender.isPresent() && !splitList.isEmpty()) {
             final SyntaxAppender last = splitList.getLast();
             return last.pollLast(splitList);
         }

@@ -76,7 +76,7 @@ public class XmlAndMapperIconProvider extends IconProvider {
         }
 
         Collection<Mapper> mappers = MapperUtils.findMappers(element.getProject(), mayMapperClass);
-        return mappers.size() > 0;
+        return !mappers.isEmpty();
     }
 
 

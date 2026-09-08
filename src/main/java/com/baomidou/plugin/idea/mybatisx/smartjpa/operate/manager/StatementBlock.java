@@ -153,7 +153,7 @@ public class StatementBlock {
         LinkedList<SyntaxAppender> syntaxAppenderList = new LinkedList<>();
         AreaSequence currentArea = AreaSequence.RESULT;
         // 找到一个合适的前缀
-        while (replaceStr.length() > 0) {
+        while (!replaceStr.isEmpty()) {
             PriorityQueue<SyntaxAppender> priorityQueue = new PriorityQueue<>(stringLengthComparator);
             if (currentArea.getSequence() <= AreaSequence.RESULT.getSequence()) {
                 resultAppenderFactory.findPriority(priorityQueue, syntaxAppenderList, replaceStr);

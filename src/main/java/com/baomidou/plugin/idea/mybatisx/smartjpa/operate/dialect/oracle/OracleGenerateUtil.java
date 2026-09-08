@@ -37,7 +37,7 @@ public class OracleGenerateUtil {
                     sequenceQueue.add(sequenceName);
                 }
             }
-            if (sequenceQueue.size() > 0) {
+            if (!sequenceQueue.isEmpty()) {
                 foundSequenceName = sequenceQueue.peek();
             }
 

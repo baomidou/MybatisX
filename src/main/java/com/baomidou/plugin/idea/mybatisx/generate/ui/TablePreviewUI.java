@@ -235,7 +235,7 @@ public class TablePreviewUI {
             return;
         }
         List<Module> chosenElements = dialog.getChosenElements();
-        if (chosenElements.size() == 0) {
+        if (chosenElements.isEmpty()) {
             return;
         }
         Module module = chosenElements.getFirst();

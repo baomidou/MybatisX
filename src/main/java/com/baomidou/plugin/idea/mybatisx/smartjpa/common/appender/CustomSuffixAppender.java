@@ -195,7 +195,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
                                   LinkedList<TxParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
-        if (collector.size() == 0) {
+        if (collector.isEmpty()) {
             log.info("这个后缀没有参数, suffix: {}", this.getText());
         }
 
@@ -303,7 +303,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
         List<TxParameter> txParameters = new ArrayList<>();
         for (SyntaxAppenderWrapper syntaxAppenderWrapper : syntaxAppenderWrapperLinkedList) {
             List<TxParameter> mxParameter = syntaxAppenderWrapper.getMxParameter(entityClass);
-            if (mxParameter.size() > 0) {
+            if (!mxParameter.isEmpty()) {
                 for (TxParameter txParameter : mxParameter) {
                     txParameters.addAll(getParameter(txParameter));
                 }

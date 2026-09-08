@@ -95,7 +95,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                 log.info("没找到合适的条件包装器, mapperClass: {}", mapperClass.getName());
                 return;
             }
-            generate(project, editor, statementElement, mapperClass, platformGenerator, parameterDescriptor, returnDescriptor, conditionFieldWrapperOptional);
+            generate(project, editor, statementElement, mapperClass, platformGenerator, parameterDescriptor, returnDescriptor, conditionFieldWrapperOptional.get());
         } catch (ProcessCanceledException e) {
             log.info("cancel info", e);
             throw e;
@@ -111,14 +111,10 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                           PlatformGenerator platformGenerator,
                           TypeDescriptor parameterDescriptor,
                           TypeDescriptor returnDescriptor,
-                          Optional<ConditionFieldWrapper> conditionFieldWrapperOptional) {
-        ConditionFieldWrapper conditionFieldWrapper = conditionFieldWrapperOptional.get();
+                          ConditionFieldWrapper conditionFieldWrapper) {
         // 找到 mapper.xml 的 Mapper 对象
         Optional<Mapper> firstMapper = MapperUtils.findFirstMapper(project, mapperClass);
-        if (firstMapper.isPresent()) {
-            Mapper mapper = firstMapper.get();
-            conditionFieldWrapper.setMapper(mapper);
-        }
+        firstMapper.ifPresent(conditionFieldWrapper::setMapper);
 
 
         MapperClassGenerateFactory mapperClassGenerateFactory =
@@ -189,7 +185,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
         Set<String> selectedFields = jpaAdvanceDialog.getSelectedFields();
         List<String> selectResultFields = null;
         List<String> resultFieldsFromDialog = jpaAdvanceDialog.getResultFields();
-        if (resultFieldsFromDialog.size() > 0) {
+        if (!resultFieldsFromDialog.isEmpty()) {
             selectResultFields = resultFieldsFromDialog;
         }
         if (selectResultFields == null) {
