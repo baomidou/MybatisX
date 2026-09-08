@@ -274,7 +274,6 @@ public final class MapperUtils {
      * @param element the element
      * @return the mapper
      */
-    @SuppressWarnings("unchecked")
     @NotNull
     @NonNls
     public static Mapper getMapper(@NotNull DomElement element) {

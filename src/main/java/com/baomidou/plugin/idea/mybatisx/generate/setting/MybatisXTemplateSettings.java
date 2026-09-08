@@ -4,6 +4,8 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateContext;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
 import com.intellij.debugger.JavaDebuggerBundle;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.AnActionButtonRunnable;
@@ -89,17 +91,14 @@ public class MybatisXTemplateSettings {
         GridConstraints gridConstraints = new GridConstraints();
         gridConstraints.setFill(GridConstraints.FILL_VERTICAL | GridConstraints.ALIGN_LEFT);
         gridConstraints.setHSizePolicy(GridConstraints.SIZEPOLICY_FIXED);
-        rootPanel.add(ToolbarDecorator.createDecorator(configTree).setAddAction(new AnActionButtonRunnable() {
-                    @Override
-                    public void run(AnActionButton anActionButton) {
+        rootPanel.add(ToolbarDecorator.createDecorator(configTree)
+                .setAddAction(e -> {
 
-                    }
-                }).setRemoveAction(new AnActionButtonRunnable() {
-                    @Override
-                    public void run(AnActionButton anActionButton) {
+                })
+                .setRemoveAction(e -> {
 
-                    }
-                }).addExtraAction(new CopyAction())
+                })
+                .addExtraAction((AnAction) (new CopyAction()))
                 .setPreferredSize(new Dimension(220, -1))
                 .createPanel(),
             gridConstraints);
@@ -158,7 +157,7 @@ public class MybatisXTemplateSettings {
         return true;
     }
 
-    private class CopyAction extends AnActionButton {
+    private static class CopyAction extends AnActionButton {
         CopyAction() {
             super(JavaDebuggerBundle.message("button.copy"),
                 JavaDebuggerBundle.message("user.renderers.configurable.button.description.copy"),
@@ -171,6 +170,11 @@ public class MybatisXTemplateSettings {
 
         @Override
         public void updateButton(@NotNull AnActionEvent e) {
+        }
+
+        @Override
+        public @NotNull ActionUpdateThread getActionUpdateThread() {
+            return super.getActionUpdateThread();
         }
     }
 

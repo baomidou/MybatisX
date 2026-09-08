@@ -85,7 +85,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                 logger.info("不支持的语法");
                 return;
             }
-            boolean isSelect = returnDescriptor.getImportList().size() != 0;
+            boolean isSelect = !returnDescriptor.getImportList().isEmpty();
 
             Optional<ConditionFieldWrapper> conditionFieldWrapperOptional = getConditionFieldWrapper(project,
                 platformGenerator.getDefaultDateWord(),
@@ -94,14 +94,15 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                 platformGenerator.getConditionFields(),
                 platformGenerator.getEntityClass(),
                 isSelect);
-            if (!conditionFieldWrapperOptional.isPresent()) {
+            if (conditionFieldWrapperOptional.isEmpty()) {
                 logger.info("没找到合适的条件包装器, mapperClass: {}", mapperClass.getName());
                 return;
             }
             generate(project, editor, statementElement, mapperClass, platformGenerator, parameterDescriptor, returnDescriptor, conditionFieldWrapperOptional);
         } catch (ProcessCanceledException e) {
             logger.info("cancel info", e);
-        }catch (RuntimeException e){
+            throw e;
+        } catch (RuntimeException e) {
             logger.info("生成JPA语句失败", e);
         }
     }

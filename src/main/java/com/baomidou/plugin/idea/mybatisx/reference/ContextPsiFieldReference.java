@@ -59,12 +59,11 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         resolver = ReferenceSetResolverFactory.createPsiFieldResolver(element);
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public PsiElement resolve() {
         Optional<PsiField> resolved = resolver.resolve(index);
-        if (!resolved.isPresent()) {
+        if (resolved.isEmpty()) {
             final Optional<PsiClass> targetClazz = getTargetClazz();
             return targetClazz.orElse(null);
         }
@@ -84,7 +83,6 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         return setterFields.toArray(new Object[0]);
     }
 
-    @SuppressWarnings("unchecked")
     private Optional<PsiClass> getTargetClazz() {
         if (getElement().getValue().contains(MybatisConstants.DOT_SEPARATOR)) {
             int ind = 0 == index ? 0 : index - 1;

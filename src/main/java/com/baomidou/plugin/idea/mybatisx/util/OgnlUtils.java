@@ -184,14 +184,13 @@ public class OgnlUtils {
     @Nullable
     private static PsiType getForeachVariableType(@NotNull XmlAttributeValue attributeValue) {
         PsiElement parent = attributeValue.getParent();
-        if (!(parent instanceof XmlAttribute)) return null;
-        XmlAttribute attribute = (XmlAttribute) parent;
+        if (!(parent instanceof XmlAttribute attribute)) return null;
         XmlTag tag = attribute.getParent();
         if (tag == null || !"foreach".equals(tag.getName())) return null;
 
         String attrName = attribute.getName();
         if ("index".equals(attrName)) {
-            return PsiType.INT.getBoxedType(attributeValue.getManager(), attributeValue.getResolveScope());
+            return PsiTypes.intType().getBoxedType(attributeValue.getManager(), attributeValue.getResolveScope());
         }
 
         if ("item".equals(attrName)) {
@@ -212,8 +211,7 @@ public class OgnlUtils {
         if (type instanceof PsiArrayType) {
             return ((PsiArrayType) type).getComponentType();
         }
-        if (type instanceof PsiClassType) {
-            PsiClassType classType = (PsiClassType) type;
+        if (type instanceof PsiClassType classType) {
             PsiClassType.ClassResolveResult result = classType.resolveGenerics();
             PsiClass psiClass = result.getElement();
             if (psiClass != null) {
