@@ -110,7 +110,6 @@ public class CustomJoinAppender implements SyntaxAppender {
 
     @Override
     public boolean checkAfter(SyntaxAppender secondAppender, AreaSequence areaSequence) {
-        boolean sequenceCheck = getAreaSequence().getSequence() == secondAppender.getAreaSequence().getSequence();
-        return sequenceCheck;
+        return getAreaSequence().getSequence() == secondAppender.getAreaSequence().getSequence();
     }
 }

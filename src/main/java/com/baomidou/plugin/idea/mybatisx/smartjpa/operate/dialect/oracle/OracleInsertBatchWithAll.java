@@ -62,19 +62,18 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
     @Override
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
-        ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {
+        return new InsertBatchResultAppenderFactory(newAreaName) {
             @Override
-            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+            public String getTemplateText(String tableName1, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator("BatchWithAll",
                     getSuffixOperator(mappingField),
                     AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
                 syntaxAppenderWrappers.add(new SyntaxAppenderWrapper(suffixOperator));
-                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
+                return super.getTemplateText(tableName1, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
-        return appenderFactory;
     }
 
     private static class InsertBatchResultAppenderFactory extends ResultAppenderFactory {
@@ -165,7 +164,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                     String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
                     // 第一版写死字段变更, 后续重构
                     // 变更主键生成规则为自定义函数
-                    if (sequenceName.isPresent() && dasTable != null) {
+                    if (sequenceName.isPresent()) {
                         DasTableKey primaryKey = dasTable.getPrimaryKey();
                         // 当前字段是主键, 使用自定义函数替换主键
                         if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
@@ -192,8 +191,5 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
             return stringBuilder.toString();
         }
-
     }
-
-
 }

@@ -326,7 +326,7 @@ public class IntellijIntrospector {
             introspectedColumn.setAutoIncrement(intellijColumnInfo.isAutoIncrement());
             introspectedColumn.setGeneratedColumn(intellijColumnInfo.isGeneratedColumn());
             ActualTableName atn = new ActualTableName(null, null, this.intellijTableInfo.getTableName());
-            List<IntrospectedColumn> columns = answer.computeIfAbsent(atn, _ -> new ArrayList<>());
+            List<IntrospectedColumn> columns = answer.computeIfAbsent(atn, k -> new ArrayList<>());
 
             columns.add(introspectedColumn);
             if (this.logger.isDebugEnabled()) {

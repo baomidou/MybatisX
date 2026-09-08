@@ -58,7 +58,7 @@ public class MapperRefactoringProvider implements RefactoringElementListenerProv
                     }
                 }
             }
-        } catch (IOException _) {
+        } catch (IOException ignored) {
         }
     }
 

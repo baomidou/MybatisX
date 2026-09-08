@@ -206,10 +206,9 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         if (txField != null) {
             String jdbcType = txField.getJdbcType();
             if (jdbcType != null) {
-                String stringBuilder = "#{" + name +
+                return "#{" + name +
                     ",jdbcType=" + jdbcType +
                     "}";
-                return stringBuilder;
             }
         }
         return JdbcTypeUtils.wrapperField(name, canonicalTypeText);
