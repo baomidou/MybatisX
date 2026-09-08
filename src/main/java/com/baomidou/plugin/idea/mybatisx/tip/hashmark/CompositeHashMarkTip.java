@@ -114,8 +114,7 @@ public class CompositeHashMarkTip {
             if (xmlElement != null) {
                 PsiElement current = xmlElement;
                 while (current != null && !current.equals(idDomElement.getXmlTag())) {
-                    if (current instanceof XmlTag) {
-                        XmlTag tag = (XmlTag) current;
+                    if (current instanceof XmlTag tag) {
                         if ("foreach".equals(tag.getName())) {
                             String item = tag.getAttributeValue("item");
                             if (!StringUtils.isEmpty(item)) {
@@ -304,10 +303,9 @@ public class CompositeHashMarkTip {
         IdDomElement domElement = DomUtil.findDomElement(myElement, IdDomElement.class);
         if (domElement != null) {
             Object value = domElement.getId().getValue();
-            if (!(value instanceof PsiMethod)) {
+            if (!(value instanceof PsiMethod psiMethod)) {
                 return null;
             }
-            PsiMethod psiMethod = (PsiMethod) value;
             PsiParameterList parameterList = psiMethod.getParameterList();
             if (parameterList.isEmpty()) {
                 return null;

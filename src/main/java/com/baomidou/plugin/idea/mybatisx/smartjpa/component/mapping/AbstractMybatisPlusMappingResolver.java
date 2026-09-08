@@ -134,8 +134,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
             } else {
                 // 递归查找，  通过父类找到entity
                 PsiElement resolve = referenceElement.resolve();
-                if (resolve instanceof PsiClass) {
-                    PsiClass extClass = (PsiClass) resolve;
+                if (resolve instanceof PsiClass extClass) {
                     return findEntity(extClass);
                 }
             }

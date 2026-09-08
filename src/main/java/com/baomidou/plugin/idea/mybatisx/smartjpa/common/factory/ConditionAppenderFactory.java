@@ -165,11 +165,10 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                 joinStack.push(templateText);
                 continue;
             }
-            if (appender instanceof CustomFieldAppender) {
+            if (appender instanceof CustomFieldAppender fieldAppender) {
                 if (!joinStack.empty()) {
                     templateText = joinStack.pop() + templateText;
                 }
-                CustomFieldAppender fieldAppender = (CustomFieldAppender) appender;
                 templateText = conditionFieldWrapper.wrapConditionText(fieldAppender.getFieldName(), templateText);
             }
             if (i > 0) {

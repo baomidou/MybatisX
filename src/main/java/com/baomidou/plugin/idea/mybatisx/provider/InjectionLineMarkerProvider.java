@@ -34,10 +34,9 @@ public class InjectionLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-        if (!(element instanceof PsiField)) {
+        if (!(element instanceof PsiField field)) {
             return;
         }
-        PsiField field = (PsiField) element;
         if (!isTargetField(field)) {
             return;
         }

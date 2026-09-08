@@ -35,8 +35,7 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> {
 
     @Override
     public void bindReference(GenericDomValue<PsiClass> genericValue, ConvertContext context, PsiElement newTarget) {
-        if (newTarget instanceof PsiClass) {
-            final PsiClass psiClass = (PsiClass) newTarget;
+        if (newTarget instanceof PsiClass psiClass) {
             final String qualifiedName = psiClass.getQualifiedName();
             genericValue.setStringValue(qualifiedName);
         }

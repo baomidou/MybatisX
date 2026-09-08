@@ -299,8 +299,7 @@ public class TablePreviewUI {
 
     private void selectClassNameStrategyByName(ClassNameStrategy classNameStrategy) {
         for (Component component : classNameStrategyPanel.getComponents()) {
-            if (component instanceof JRadioButton) {
-                JRadioButton radioButton = (JRadioButton) component;
+            if (component instanceof JRadioButton radioButton) {
                 if (radioButton.getText().equals(classNameStrategy.getText())) {
                     radioButton.setSelected(true);
                     break;
@@ -312,8 +311,7 @@ public class TablePreviewUI {
     private String findClassNameStrategy() {
         String name = null;
         for (Component component : classNameStrategyPanel.getComponents()) {
-            if (component instanceof JRadioButton) {
-                JRadioButton radioButton = (JRadioButton) component;
+            if (component instanceof JRadioButton radioButton) {
                 if (radioButton.isSelected()) {
                     name = radioButton.getText();
                     break;

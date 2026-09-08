@@ -272,8 +272,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
             // We can reuse some logic from OgnlUtils or just implement a quick search here.
             PsiElement current = myElement;
             while (current != null) {
-                if (current instanceof XmlTag) {
-                    XmlTag tag = (XmlTag) current;
+                if (current instanceof XmlTag tag) {
                     if ("foreach".equals(tag.getName())) {
                         String item = tag.getAttributeValue("item");
                         if (item != null) res.add(item);

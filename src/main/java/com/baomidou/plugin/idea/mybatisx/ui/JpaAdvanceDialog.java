@@ -51,8 +51,7 @@ public class JpaAdvanceDialog extends DialogWrapper {
         Set<String> strings = new HashSet<>();
         Component[] components = smartJpaAdvanceUI.getConditionPanel().getComponents();
         for (Component component : components) {
-            if (component instanceof JCheckBox) {
-                JCheckBox checkBox = (JCheckBox) component;
+            if (component instanceof JCheckBox checkBox) {
                 if (checkBox.isSelected()) {
                     strings.add(checkBox.getText());
                 }

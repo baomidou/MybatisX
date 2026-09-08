@@ -35,10 +35,9 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
             @Override
             public @NotNull
             PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
-                if (!(element instanceof XmlToken)) {
+                if (!(element instanceof XmlToken literalExpression)) {
                     return PsiReference.EMPTY_ARRAY;
                 }
-                XmlToken literalExpression = (XmlToken) element;
                 String value = literalExpression.getText();
 
                 if ((value != null && value.startsWith(SIMPLE_PREFIX_STR))) {

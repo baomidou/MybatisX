@@ -208,8 +208,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
 
             SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
             // 兼容insert 语句生成,后缀没有字段的情况
-            if (appender instanceof CustomFieldAppender) {
-                CustomFieldAppender field = (CustomFieldAppender) appender;
+            if (appender instanceof CustomFieldAppender field) {
                 fieldName = field.getFieldName();
                 columnName = field.getColumnName();
                 break;

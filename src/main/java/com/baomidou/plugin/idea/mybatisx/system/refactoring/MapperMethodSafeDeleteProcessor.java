@@ -27,10 +27,9 @@ public class MapperMethodSafeDeleteProcessor extends SafeDeleteProcessorDelegate
     @Override
     public boolean handlesElement(PsiElement element) {
         // 只处理方法重命名就好了
-        if (!(element instanceof PsiMethod)) {
+        if (!(element instanceof PsiMethod psiMethod)) {
             return false;
         }
-        PsiMethod psiMethod = (PsiMethod) element;
         final PsiClass containingClass = psiMethod.getContainingClass();
         if (containingClass == null) {
             return false;
