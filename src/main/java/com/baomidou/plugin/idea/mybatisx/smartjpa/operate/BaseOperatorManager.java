@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -132,7 +133,14 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
         compositeAppender.toTree(new LinkedList<>(jpaList), rootSyntaxWrapper);
         // 树形结构 根据区域转成map
         LinkedList<SyntaxAppenderWrapper> collector = rootSyntaxWrapper.getCollector();
-        Map<String, SyntaxAppenderWrapper> areaAppenderWrapperMap = collector.stream().collect(Collectors.toMap(k -> k.getAppender().getText(), v -> v));
+        Map<String, SyntaxAppenderWrapper> areaAppenderWrapperMap = new HashMap<>();
+        for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
+            String key = syntaxAppenderWrapper.getAppender().getText();
+            if (areaAppenderWrapperMap.containsKey(key)) {
+                continue;
+            }
+            areaAppenderWrapperMap.put(key, syntaxAppenderWrapper);
+        }
         // 根据区域工厂处理所有区域下的所有符号追加器
         List<SyntaxAppenderFactory> areaListByJpa = syntaxAppenderFactoryManager.findAreaListByJpa(jpaList);
         return areaListByJpa.stream().flatMap(appenderFactory -> {
