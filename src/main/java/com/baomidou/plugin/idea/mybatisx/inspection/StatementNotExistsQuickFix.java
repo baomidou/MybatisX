@@ -4,7 +4,10 @@ import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerat
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>
@@ -16,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class StatementNotExistsQuickFix extends GenericQuickFix {
 
-    private PsiMethod method;
+    @SafeFieldForPreview
+    private SmartPsiElementPointer<PsiMethod> method;
 
     /**
      * Instantiates a new Statement not exists quick fix.
@@ -24,7 +28,7 @@ public class StatementNotExistsQuickFix extends GenericQuickFix {
      * @param method the method
      */
     public StatementNotExistsQuickFix(@NotNull PsiMethod method) {
-        this.method = method;
+        this.method = SmartPointerManager.getInstance(method.getProject()).createSmartPsiElementPointer(method);
     }
 
     @NotNull
@@ -35,7 +39,7 @@ public class StatementNotExistsQuickFix extends GenericQuickFix {
 
     @Override
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-        AbstractStatementGenerator.applyGenerate(method, project);
+        AbstractStatementGenerator.applyGenerate(method.dereference(), project);
     }
 
     /**
@@ -43,9 +47,9 @@ public class StatementNotExistsQuickFix extends GenericQuickFix {
      *
      * @return the method
      */
-    @NotNull
+    @Nullable
     public PsiMethod getMethod() {
-        return method;
+        return method.dereference();
     }
 
     /**
@@ -54,7 +58,7 @@ public class StatementNotExistsQuickFix extends GenericQuickFix {
      * @param method the method
      */
     public void setMethod(@NotNull PsiMethod method) {
-        this.method = method;
+        this.method = SmartPointerManager.getInstance(method.getProject()).createSmartPsiElementPointer(method);
     }
 
 }

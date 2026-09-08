@@ -1,20 +1,4 @@
 <idea-plugin>
-    <extensions defaultExtensionNs="com.intellij">
-
-        <!-- 项目配置 -->
-        <!--<projectConfigurable groupId="mybatisx.settings" displayName="Mybatis Generator Setting"
-                             id="baomidou.MybatisGeneratorConfigurable"
-                             instance="com.baomidou.plugin.idea.mybatisx.setting.MybatisGeneratorConfigurable"/>
-        -->
-        <!--<projectService id="baomidou.PersistentConfig"
-                        serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.PersistentConfig"/>-->
-
-
-        <!-- 通过模板生成代码的项目配置 -->
-      <!--  <projectConfigurable groupId="mybatisx.settings" displayName="Templates"
-                             id="baomidou.MybatisTemplateGeneratorConfigurable"
-                             instance="com.baomidou.plugin.idea.mybatisx.generate.setting.MybatisTemplateGeneratorConfigurable"/>-->
-    </extensions>
 
     <actions>
 

@@ -10,6 +10,8 @@ import com.baomidou.plugin.idea.mybatisx.generate.util.DomainPlaceHolder;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.actionSystem.ActionToolbarPosition;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -185,7 +187,7 @@ public class CodeGenerateUI {
             final JRadioButton radioButton = (JRadioButton) radios.nextElement();
             radioButton.addItemListener(itemListener);
         }
-        if(StringUtils.isEmpty(selectedTemplateName)){
+        if (StringUtils.isEmpty(selectedTemplateName)) {
             log.info("默认选中模板为空");
             return;
         }
@@ -292,7 +294,7 @@ public class CodeGenerateUI {
                            GridConstraints gridConstraints) {
         templateExtraPanel.add(ToolbarDecorator.createDecorator(tableView)
             .setToolbarPosition(ActionToolbarPosition.LEFT)
-            .addExtraAction(new AnActionButton("Refresh Template", PlatformIcons.SYNCHRONIZE_ICON) {
+            .addExtraAction((AnAction) (new AnActionButton("Refresh Template", PlatformIcons.SYNCHRONIZE_ICON) {
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     AbstractButton selectedTemplateName = findSelectedTemplateName();
@@ -307,7 +309,11 @@ public class CodeGenerateUI {
                     refresh = true;
                 }
 
-            })
+                @Override
+                public @NotNull ActionUpdateThread getActionUpdateThread() {
+                    return super.getActionUpdateThread();
+                }
+            }))
             .disableAddAction()
             .disableUpDownActions()
             .setPreferredSize(new Dimension(860, 200))
@@ -318,7 +324,7 @@ public class CodeGenerateUI {
         // 使用上一次生成代码的模板
         String selectedTemplateName = templatesName;
         // 由于升级IDEA, 导致选择的模板在本地不存在, 清空默认选则
-        if(selectedTemplateName !=null && !templateSettingMap.containsKey(selectedTemplateName)){
+        if (selectedTemplateName != null && !templateSettingMap.containsKey(selectedTemplateName)) {
             selectedTemplateName = null;
         }
         // 如果是第一次生成代码, 使用模板列表的第一个模板
@@ -511,6 +517,7 @@ public class CodeGenerateUI {
             super(name);
             this.editable = editable;
         }
+
         public MybaitsxModuleInfo(String name, boolean editable, boolean moduleEditor) {
             super(name);
             this.editable = editable;

@@ -104,6 +104,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (ProcessCanceledException e) {
             logger.info("未知的取消原因", e);
+            throw e;
         } catch (PsiInvalidElementAccessException e) {
             logger.info("无法访问节点", e);
         } catch (Throwable e) {

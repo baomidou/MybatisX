@@ -50,7 +50,7 @@ public class IntellijIntrospector {
     }
 
     private void calculatePrimaryKey(FullyQualifiedTable table, IntrospectedTable introspectedTable) {
-        Map<Short, String> keyColumns = new TreeMap();
+        Map<Short, String> keyColumns = new TreeMap<>();
         List<IntellijColumnInfo> primaryKeyColumns = this.intellijTableInfo.getPrimaryKeyColumns();
         Iterator var5 = primaryKeyColumns.iterator();
 
@@ -106,10 +106,7 @@ public class IntellijIntrospector {
             }
         }
 
-        Iterator var9 = introspectedTable.getAllColumns().iterator();
-
-        while (var9.hasNext()) {
-            IntrospectedColumn ic = (IntrospectedColumn) var9.next();
+        for (IntrospectedColumn ic : introspectedTable.getAllColumns()) {
             if (JavaReservedWords.containsWord(ic.getJavaProperty())) {
                 this.warnings.add(Messages.getString("Warning.26", ic.getActualColumnName(), table.toString()));
             }
@@ -128,7 +125,7 @@ public class IntellijIntrospector {
             this.applyColumnOverrides(tc, columns);
             this.calculateIdentityColumns(tc, columns);
             List<IntrospectedTable> introspectedTables = this.calculateIntrospectedTables(tc, columns);
-            Iterator iter = introspectedTables.iterator();
+            Iterator<IntrospectedTable> iter = introspectedTables.iterator();
 
             while (true) {
                 while (iter.hasNext()) {
@@ -153,18 +150,16 @@ public class IntellijIntrospector {
     }
 
     private void removeIgnoredColumns(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) {
-        Iterator var3 = columns.entrySet().iterator();
 
-        while (var3.hasNext()) {
-            Entry<ActualTableName, List<IntrospectedColumn>> entry = (Entry) var3.next();
-            Iterator tableColumns = ((List) entry.getValue()).iterator();
+        for (Entry<ActualTableName, List<IntrospectedColumn>> actualTableNameListEntry : columns.entrySet()) {
+            Iterator<IntrospectedColumn> tableColumns = actualTableNameListEntry.getValue().iterator();
 
             while (tableColumns.hasNext()) {
-                IntrospectedColumn introspectedColumn = (IntrospectedColumn) tableColumns.next();
+                IntrospectedColumn introspectedColumn = tableColumns.next();
                 if (tc.isColumnIgnored(introspectedColumn.getActualColumnName())) {
                     tableColumns.remove();
                     if (this.logger.isDebugEnabled()) {
-                        this.logger.debug(Messages.getString("Tracing.3", introspectedColumn.getActualColumnName(), entry.getKey().toString()));
+                        this.logger.debug(Messages.getString("Tracing.3", introspectedColumn.getActualColumnName(), actualTableNameListEntry.getKey().toString()));
                     }
                 }
             }
@@ -182,14 +177,8 @@ public class IntellijIntrospector {
             replaceString = replaceString == null ? "" : replaceString;
         }
 
-        Iterator var6 = columns.entrySet().iterator();
-
-        while (var6.hasNext()) {
-            Entry<ActualTableName, List<IntrospectedColumn>> entry = (Entry) var6.next();
-            Iterator var8 = ((List) entry.getValue()).iterator();
-
-            while (var8.hasNext()) {
-                IntrospectedColumn introspectedColumn = (IntrospectedColumn) var8.next();
+        for (Entry<ActualTableName, List<IntrospectedColumn>> actualTableNameListEntry : columns.entrySet()) {
+            for (IntrospectedColumn introspectedColumn : actualTableNameListEntry.getValue()) {
                 String calculatedColumnName;
                 if (pattern == null) {
                     calculatedColumnName = introspectedColumn.getActualColumnName();
@@ -230,7 +219,7 @@ public class IntellijIntrospector {
                     if (warn) {
                         introspectedColumn.setFullyQualifiedJavaType(FullyQualifiedJavaType.getObjectInstance());
                         introspectedColumn.setJdbcTypeName("OTHER");
-                        String warning = Messages.getString("Warning.14", Integer.toString(introspectedColumn.getJdbcType()), entry.getKey().toString(), introspectedColumn.getActualColumnName());
+                        String warning = Messages.getString("Warning.14", Integer.toString(introspectedColumn.getJdbcType()), actualTableNameListEntry.getKey().toString(), introspectedColumn.getActualColumnName());
                         this.warnings.add(warning);
                     }
                 }
@@ -250,7 +239,7 @@ public class IntellijIntrospector {
     private void calculateIdentityColumns(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) {
         GeneratedKey gk = tc.getGeneratedKey();
         if (gk != null) {
-            Iterator var4 = columns.entrySet().iterator();
+            Iterator<Entry<ActualTableName, List<IntrospectedColumn>>> var4 = columns.entrySet().iterator();
 
             label35:
             while (var4.hasNext()) {
@@ -287,18 +276,14 @@ public class IntellijIntrospector {
     }
 
     private void applyColumnOverrides(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) {
-        Iterator var3 = columns.entrySet().iterator();
 
-        while (var3.hasNext()) {
-            Entry<ActualTableName, List<IntrospectedColumn>> entry = (Entry) var3.next();
-            Iterator var5 = ((List) entry.getValue()).iterator();
+        for (Entry<ActualTableName, List<IntrospectedColumn>> actualTableNameListEntry : columns.entrySet()) {
 
-            while (var5.hasNext()) {
-                IntrospectedColumn introspectedColumn = (IntrospectedColumn) var5.next();
+            for (IntrospectedColumn introspectedColumn : actualTableNameListEntry.getValue()) {
                 ColumnOverride columnOverride = tc.getColumnOverride(introspectedColumn.getActualColumnName());
                 if (columnOverride != null) {
                     if (this.logger.isDebugEnabled()) {
-                        this.logger.debug(Messages.getString("Tracing.4", introspectedColumn.getActualColumnName(), entry.getKey().toString()));
+                        this.logger.debug(Messages.getString("Tracing.4", introspectedColumn.getActualColumnName(), actualTableNameListEntry.getKey().toString()));
                     }
 
                     if (StringUtility.stringHasValue(columnOverride.getJavaProperty())) {
@@ -344,7 +329,7 @@ public class IntellijIntrospector {
             localTableName = tc.getTableName();
         }
 
-        Map<ActualTableName, List<IntrospectedColumn>> answer = new HashMap();
+        Map<ActualTableName, List<IntrospectedColumn>> answer = new HashMap<>();
         if (this.logger.isDebugEnabled()) {
             String fullTableName = StringUtility.composeFullyQualifiedTableName(localCatalog, localSchema, localTableName, '.');
             this.logger.debug(Messages.getString("Tracing.1", fullTableName));
@@ -352,11 +337,11 @@ public class IntellijIntrospector {
 
         boolean supportsIsAutoIncrement = false;
         boolean supportsIsGeneratedColumn = false;
-        Iterator var9 = this.intellijTableInfo.getColumnInfos().iterator();
+        Iterator<IntellijColumnInfo> var9 = this.intellijTableInfo.getColumnInfos().iterator();
 
         IntellijColumnInfo intellijColumnInfo;
         while (var9.hasNext()) {
-            intellijColumnInfo = (IntellijColumnInfo) var9.next();
+            intellijColumnInfo = var9.next();
             if (intellijColumnInfo.isAutoIncrement()) {
                 supportsIsAutoIncrement = true;
             }
@@ -388,11 +373,7 @@ public class IntellijIntrospector {
             }
 
             ActualTableName atn = new ActualTableName(null, null, this.intellijTableInfo.getTableName());
-            List<IntrospectedColumn> columns = answer.get(atn);
-            if (columns == null) {
-                columns = new ArrayList();
-                answer.put(atn, columns);
-            }
+            List<IntrospectedColumn> columns = answer.computeIfAbsent(atn, k -> new ArrayList<>());
 
             columns.add(introspectedColumn);
             if (this.logger.isDebugEnabled()) {
@@ -406,8 +387,8 @@ public class IntellijIntrospector {
             boolean comma = false;
 
             ActualTableName atn;
-            for (Iterator var18 = answer.keySet().iterator(); var18.hasNext(); sb.append(atn.toString())) {
-                atn = (ActualTableName) var18.next();
+            for (Iterator<ActualTableName> var18 = answer.keySet().iterator(); var18.hasNext(); sb.append(atn.toString())) {
+                atn = var18.next();
                 if (comma) {
                     sb.append(',');
                 } else {
@@ -423,18 +404,13 @@ public class IntellijIntrospector {
 
     private List<IntrospectedTable> calculateIntrospectedTables(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) {
         boolean delimitIdentifiers = tc.isDelimitIdentifiers() || StringUtility.stringContainsSpace(tc.getCatalog()) || StringUtility.stringContainsSpace(tc.getSchema()) || StringUtility.stringContainsSpace(tc.getTableName());
-        List<IntrospectedTable> answer = new ArrayList();
-        Iterator var5 = columns.entrySet().iterator();
+        List<IntrospectedTable> answer = new ArrayList<>();
 
-        while (var5.hasNext()) {
-            Entry<ActualTableName, List<IntrospectedColumn>> entry = (Entry) var5.next();
-            ActualTableName atn = entry.getKey();
+        for (Entry<ActualTableName, List<IntrospectedColumn>> actualTableNameListEntry : columns.entrySet()) {
+            ActualTableName atn = actualTableNameListEntry.getKey();
             FullyQualifiedTable table = new FullyQualifiedTable(StringUtility.stringHasValue(tc.getCatalog()) ? atn.getCatalog() : null, StringUtility.stringHasValue(tc.getSchema()) ? atn.getSchema() : null, atn.getTableName(), tc.getDomainObjectName(), tc.getAlias(), StringUtility.isTrue(tc.getProperty("ignoreQualifiersAtRuntime")), tc.getProperty("runtimeCatalog"), tc.getProperty("runtimeSchema"), tc.getProperty("runtimeTableName"), delimitIdentifiers, tc.getDomainObjectRenamingRule(), this.context);
             IntrospectedTable introspectedTable = ObjectFactory.createIntrospectedTable(tc, table, this.context);
-            Iterator var10 = ((List) entry.getValue()).iterator();
-
-            while (var10.hasNext()) {
-                IntrospectedColumn introspectedColumn = (IntrospectedColumn) var10.next();
+            for (IntrospectedColumn introspectedColumn : actualTableNameListEntry.getValue()) {
                 introspectedTable.addColumn(introspectedColumn);
             }
 

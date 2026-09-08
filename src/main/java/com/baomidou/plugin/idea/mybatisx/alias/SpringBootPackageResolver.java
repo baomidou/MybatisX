@@ -3,7 +3,6 @@ package com.baomidou.plugin.idea.mybatisx.alias;
 import com.baomidou.plugin.idea.mybatisx.util.IOUtils;
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
@@ -11,7 +10,7 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.spring.boot.model.SpringBootModelConfigFileContributor;
+import com.intellij.spring.boot.model.SpringBootConfigurationFileService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -38,11 +37,6 @@ import java.util.Set;
 public class SpringBootPackageResolver extends PackageAliasResolver {
 
     public static final String REGEX = ",; ";
-    /**
-     * spring boot 扩展点
-     */
-    public static final String SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR = "com.intellij.spring.boot.modelConfigFileContributor";
-    public static final String UTF_8 = "UTF-8";
     private static final String YML = "yml";
     private static final String YAML = "yaml";
     private static final String PROPERTIES = "properties";
@@ -68,23 +62,20 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
             return Collections.emptyList();
         }
         Set<String> pkgSet = new HashSet<>();
-        ExtensionPointName<SpringBootModelConfigFileContributor> objectExtensionPointName = ExtensionPointName.create(SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR);
-        List<SpringBootModelConfigFileContributor> extensionList = null;
+        SpringBootConfigurationFileService springBootConfigurationFileService;
         try {
-            extensionList = objectExtensionPointName.getExtensionList();
+            springBootConfigurationFileService = SpringBootConfigurationFileService.getInstance();
         } catch (IllegalArgumentException e) {
             if (springBootExtensionExists == null) {
                 springBootExtensionExists = false;
             }
             return Collections.emptyList();
         }
-        for (SpringBootModelConfigFileContributor extension : extensionList) {
-            Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
-            for (Module module : modulesOfType) {
-                List<VirtualFile> configurationFiles = extension.getConfigurationFiles(module, true);
-                for (VirtualFile configurationFile : configurationFiles) {
-                    readAliasesPackage(pkgSet, configurationFile);
-                }
+        Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
+        for (Module module : modulesOfType) {
+            List<VirtualFile> configurationFiles = springBootConfigurationFileService.findConfigFiles(module, true);
+            for (VirtualFile configurationFile : configurationFiles) {
+                readAliasesPackage(pkgSet, configurationFile);
             }
         }
 

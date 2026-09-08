@@ -114,7 +114,7 @@ public abstract class SpringStringUtils {
      * @see #hasText(CharSequence)
      */
     public static boolean hasLength(@Nullable CharSequence str) {
-        return (str != null && str.length() > 0);
+        return (str != null && !str.isEmpty());
     }
 
     /**
@@ -152,7 +152,7 @@ public abstract class SpringStringUtils {
      * @see Character#isWhitespace
      */
     public static boolean hasText(@Nullable CharSequence str) {
-        return (str != null && str.length() > 0 && containsText(str));
+        return (str != null && !str.isEmpty() && containsText(str));
     }
 
     /**
@@ -279,7 +279,7 @@ public abstract class SpringStringUtils {
         }
 
         StringBuilder sb = new StringBuilder(str);
-        while (sb.length() > 0 && Character.isWhitespace(sb.charAt(0))) {
+        while (!sb.isEmpty() && Character.isWhitespace(sb.charAt(0))) {
             sb.deleteCharAt(0);
         }
         return sb.toString();
@@ -298,7 +298,7 @@ public abstract class SpringStringUtils {
         }
 
         StringBuilder sb = new StringBuilder(str);
-        while (sb.length() > 0 && Character.isWhitespace(sb.charAt(sb.length() - 1))) {
+        while (!sb.isEmpty() && Character.isWhitespace(sb.charAt(sb.length() - 1))) {
             sb.deleteCharAt(sb.length() - 1);
         }
         return sb.toString();
@@ -317,7 +317,7 @@ public abstract class SpringStringUtils {
         }
 
         StringBuilder sb = new StringBuilder(str);
-        while (sb.length() > 0 && sb.charAt(0) == leadingCharacter) {
+        while (!sb.isEmpty() && sb.charAt(0) == leadingCharacter) {
             sb.deleteCharAt(0);
         }
         return sb.toString();
@@ -336,7 +336,7 @@ public abstract class SpringStringUtils {
         }
 
         StringBuilder sb = new StringBuilder(str);
-        while (sb.length() > 0 && sb.charAt(sb.length() - 1) == trailingCharacter) {
+        while (!sb.isEmpty() && sb.charAt(sb.length() - 1) == trailingCharacter) {
             sb.deleteCharAt(sb.length() - 1);
         }
         return sb.toString();
@@ -789,7 +789,7 @@ public abstract class SpringStringUtils {
         if (tokens.length == 1) {
             validateLocalePart(localeValue);
             Locale resolved = Locale.forLanguageTag(localeValue);
-            if (resolved.getLanguage().length() > 0) {
+            if (!resolved.getLanguage().isEmpty()) {
                 return resolved;
             }
         }
@@ -844,7 +844,7 @@ public abstract class SpringStringUtils {
             country = "";
         }
 
-        return (language.length() > 0 ? new Locale(language, country, variant) : null);
+        return (!language.isEmpty() ? Locale.of(language, country, variant) : null);
     }
 
     private static void validateLocalePart(String localePart) {
@@ -998,7 +998,7 @@ public abstract class SpringStringUtils {
             if (trimTokens) {
                 token = token.trim();
             }
-            if (!ignoreEmptyTokens || token.length() > 0) {
+            if (!ignoreEmptyTokens || !token.isEmpty()) {
                 tokens.add(token);
             }
         }
@@ -1061,7 +1061,7 @@ public abstract class SpringStringUtils {
                 result.add(deleteAny(str.substring(pos, delPos), charsToDelete));
                 pos = delPos + delimiter.length();
             }
-            if (str.length() > 0 && pos <= str.length()) {
+            if (!str.isEmpty() && pos <= str.length()) {
                 // Add rest of String, but not in case of empty input.
                 result.add(deleteAny(str.substring(pos), charsToDelete));
             }

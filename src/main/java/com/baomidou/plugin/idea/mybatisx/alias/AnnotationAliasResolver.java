@@ -38,8 +38,8 @@ public class AnnotationAliasResolver extends AliasResolver {
      * @param project the project
      * @return the instance
      */
-    public static final AnnotationAliasResolver getInstance(@NotNull Project project) {
-        return project.getComponent(AnnotationAliasResolver.class);
+    public static AnnotationAliasResolver getInstance(@NotNull Project project) {
+        return project.getService(AnnotationAliasResolver.class);
     }
 
     @NotNull
