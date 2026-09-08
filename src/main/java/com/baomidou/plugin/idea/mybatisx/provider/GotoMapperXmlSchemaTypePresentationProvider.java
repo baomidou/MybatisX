@@ -11,9 +11,6 @@ import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
-
 public class GotoMapperXmlSchemaTypePresentationProvider implements GotoTargetPresentationProvider {
     @Override
     public @Nullable TargetPresentation getTargetPresentation(@NotNull PsiElement element, boolean differentNames) {
