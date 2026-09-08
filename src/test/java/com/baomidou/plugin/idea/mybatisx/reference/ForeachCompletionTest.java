@@ -64,7 +64,7 @@ public class ForeachCompletionTest extends LightJavaCodeInsightFixtureTestCase {
                 "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
                 "<mapper namespace=\"com.baomidou.mybatis3.mapper.UserMapper\">\n" +
                 "    <select id=\"findUser\">\n" +
-                "        <bind name=\"pattern\" value=\"qu<caret>\" />\n" +
+                "        <bind name=\"pattern\" value=\"qu<caret>ery\" />\n" +
                 "    </select>\n" +
                 "</mapper>");
 

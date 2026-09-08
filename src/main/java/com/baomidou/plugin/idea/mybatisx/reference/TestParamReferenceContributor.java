@@ -99,7 +99,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                     char c = text.charAt(i);
                     // Check for closing quote
                     if ((c == '"' || c == '\'') && i == text.length() - 1) {
-                         break;
+                        break;
                     }
 
                     if (Character.isJavaIdentifierPart(c) || c == '.' || c == '@') {
@@ -109,13 +109,13 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                         sb.append(c);
                     } else if (c == '(') {
                         // Method start. If we have a pending token, register it.
-                         if (startCoords != -1) {
+                        if (startCoords != -1) {
                             String value = sb.toString();
                             // Mark as method call? resolve() will check next chars?
                             // No, resolve() is lazy. We scan here.
                             // If we encounter '(', the previous token is likely a method name.
                             // We can just add it as a reference, and the resolver will check context.
-                             addReference(element, references, value, startCoords);
+                            addReference(element, references, value, startCoords);
                             sb = new StringBuilder();
                             startCoords = -1;
                         }
@@ -147,9 +147,9 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
     private boolean isKeyword(String value) {
         return "and".equals(value) || "or".equals(value) || "null".equals(value) || "true".equals(value) || "false".equals(value)
-             || "not".equals(value) || "new".equals(value) || "instanceof".equals(value)
-             || "lt".equals(value) || "gt".equals(value) || "lte".equals(value) || "gte".equals(value)
-             || "eq".equals(value) || "neq".equals(value);
+            || "not".equals(value) || "new".equals(value) || "instanceof".equals(value)
+            || "lt".equals(value) || "gt".equals(value) || "lte".equals(value) || "gte".equals(value)
+            || "eq".equals(value) || "neq".equals(value);
     }
 
     private static class TestParamReference extends PsiReferenceBase<PsiElement> {
@@ -177,8 +177,8 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
             // Case 1: @Class@  (e.g. @java.lang.Math@)
             if (value.endsWith("@")) {
-                 String className = value.substring(1, value.length() - 1);
-                 return facade.findClass(className, scope);
+                String className = value.substring(1, value.length() - 1);
+                return facade.findClass(className, scope);
             }
 
             // Case 2: @Class@Member (e.g. @java.lang.Math@PI)
@@ -202,9 +202,9 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                     // Try method
                     PsiMethod[] methods = psiClass.findMethodsByName(memberName, true);
                     for (PsiMethod m : methods) {
-                         if (m.hasModifierProperty(PsiModifier.STATIC)) {
-                             return m;
-                         }
+                        if (m.hasModifierProperty(PsiModifier.STATIC)) {
+                            return m;
+                        }
                     }
                 }
             }
@@ -232,7 +232,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                 PsiType type = OgnlUtils.getType(target);
 
                 if (type != null) {
-                   return getMemberVariants(type, lookupPrefix, myElement.getProject());
+                    return getMemberVariants(type, lookupPrefix, myElement.getProject());
                 }
             }
             return new Object[0];
@@ -264,24 +264,24 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
             PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
 
             for (PsiParameter psiParameter : parameterList.getParameters()) {
-                 PsiAnnotation annotation = psiParameter.getAnnotation(com.baomidou.plugin.idea.mybatisx.annotation.Annotation.PARAM.getQualifiedName());
-                 if (annotation != null) {
-                     PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
-                     String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
-                     if (paramValue != null) {
+                PsiAnnotation annotation = psiParameter.getAnnotation(com.baomidou.plugin.idea.mybatisx.annotation.Annotation.PARAM.getQualifiedName());
+                if (annotation != null) {
+                    PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
+                    String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
+                    if (paramValue != null) {
                         variants.add(LookupElementBuilder.create(paramValue)
                             .withTypeText(psiParameter.getType().getPresentableText())
                             .withIcon(psiParameter.getIcon(0)));
-                     }
-                 } else {
-                     String name = psiParameter.getName();
-                     variants.add(LookupElementBuilder.create(name)
-                         .withTypeText(psiParameter.getType().getPresentableText())
-                         .withIcon(psiParameter.getIcon(0)));
-                     if (parameterList.getParametersCount() == 1) {
-                         addMemberVariants(variants, psiParameter.getType(), "", project);
-                     }
-                 }
+                    }
+                } else {
+                    String name = psiParameter.getName();
+                    variants.add(LookupElementBuilder.create(name)
+                        .withTypeText(psiParameter.getType().getPresentableText())
+                        .withIcon(psiParameter.getIcon(0)));
+                    if (parameterList.getParametersCount() == 1) {
+                        addMemberVariants(variants, psiParameter.getType(), "", project);
+                    }
+                }
             }
             addForeachVariants(variants);
             // Add keywords
@@ -290,7 +290,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
         }
 
         private void addKeywords(List<Object> variants) {
-            String[] keywords = { "and", "or", "null", "true", "false", "new", "not", "eq", "neq", "lt", "gt", "lte", "gte" };
+            String[] keywords = {"and", "or", "null", "true", "false", "new", "not", "eq", "neq", "lt", "gt", "lte", "gte"};
             for (String k : keywords) {
                 variants.add(LookupElementBuilder.create(k).bold());
             }

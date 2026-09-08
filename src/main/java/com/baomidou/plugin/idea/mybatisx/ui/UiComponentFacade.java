@@ -135,8 +135,8 @@ public final class UiComponentFacade {
      * @return the popup chooser builder
      */
     public PopupChooserBuilder<?> createListPopupBuilder(@NotNull String title,
-                                                      @Nullable final ListSelectionListener listener,
-                                                      @NotNull Object... objs) {
+                                                         @Nullable final ListSelectionListener listener,
+                                                         @NotNull Object... objs) {
         final JBList<Object> list = new JBList<>(objs);
         PopupChooserBuilder<?> builder = new PopupChooserBuilder<>(list);
         builder.setTitle(title);

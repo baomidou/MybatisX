@@ -29,7 +29,7 @@ public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> 
     }
 
     @Override
-    protected void checkDomElement(DomElement element, DomElementAnnotationHolder holder, DomHighlightingHelper helper) {
+    protected void checkDomElement(@NotNull DomElement element, @NotNull DomElementAnnotationHolder holder, @NotNull DomHighlightingHelper helper) {
         try {
             super.checkDomElement(element, holder, helper);
         } catch (Exception e) {

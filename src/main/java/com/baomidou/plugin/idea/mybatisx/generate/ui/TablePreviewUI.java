@@ -185,7 +185,7 @@ public class TablePreviewUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 TreeJavaClassChooserDialog treeJavaClassChooserDialog =
-                    new TreeJavaClassChooserDialog("Please Select a Parent Class", project, GlobalSearchScope.allScope(project),null,null);
+                    new TreeJavaClassChooserDialog("Please Select a Parent Class", project, GlobalSearchScope.allScope(project), null, null);
                 treeJavaClassChooserDialog.show();
                 PsiClass selectedClass = treeJavaClassChooserDialog.getSelected();
                 // 没有选择类
@@ -230,7 +230,7 @@ public class TablePreviewUI {
         ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
         dialog.setSingleSelectionMode();
         dialog.show();
-        if(dialog.getExitCode()!=ChooseModulesDialog.OK_EXIT_CODE){
+        if (dialog.getExitCode() != ChooseModulesDialog.OK_EXIT_CODE) {
             return;
         }
         List<Module> chosenElements = dialog.getChosenElements();
@@ -245,7 +245,7 @@ public class TablePreviewUI {
     private void chooseModulePath(Module module) {
         String moduleDirPath = null;
         final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
-        if(contentRoots.length>0){
+        if (contentRoots.length > 0) {
             moduleDirPath = contentRoots[0].getPath();
         }
         int childModuleIndex = indexFromChildModule(moduleDirPath);

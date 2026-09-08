@@ -48,6 +48,8 @@ public class TestParamReferenceTest extends LightJavaCodeInsightFixtureTestCase 
             "package com.baomidou.mybatis3.domain;\n" +
                 "public class User {\n" +
                 "    private String name;\n" +
+                "    public String getName() { return name; }\n" +
+                "    public void setName(String name) { this.name = name; }\n" +
                 "}\n");
 
         myFixture.configureByText("UserMapper.java",
@@ -113,7 +115,10 @@ public class TestParamReferenceTest extends LightJavaCodeInsightFixtureTestCase 
             "package com.baomidou.mybatis3.domain;\n" +
                 "public class User {\n" +
                 "    private String name;\n" +
+                "    private int age;\n" +
+                "    private String address;\n" +
                 "    public String getName() { return name; }\n" +
+                "    public void setName(String name) { this.name = name; }\n" +
                 "}\n");
 
         myFixture.configureByText("UserMapper.java",
@@ -130,7 +135,7 @@ public class TestParamReferenceTest extends LightJavaCodeInsightFixtureTestCase 
                 "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
                 "<mapper namespace=\"com.baomidou.mybatis3.mapper.UserMapper\">\n" +
                 "    <select id=\"findUser\">\n" +
-                "        <if test=\"user.getNa<caret>\">\n" +
+                "        <if test=\"user.getNa<caret>me() != null\">\n" +
                 "        </if>\n" +
                 "    </select>\n" +
                 "</mapper>");
@@ -140,6 +145,6 @@ public class TestParamReferenceTest extends LightJavaCodeInsightFixtureTestCase 
         assertNotNull(lookupElementStrings);
         // We expect it to FAIL initially if we check for "getName()"
         // Current behavior is likely "getName" without parentheses
-        assertContainsElements(lookupElementStrings, "getName()");
+        assertContainsElements(lookupElementStrings, "user.getName()");
     }
 }

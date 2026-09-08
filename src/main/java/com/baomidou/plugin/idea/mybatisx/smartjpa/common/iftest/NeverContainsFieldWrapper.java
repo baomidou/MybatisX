@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  */
 public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
     private final Project project;
-    private Mapper mapper;
     private final Map<String, TxField> txFieldMap;
+    private Mapper mapper;
 
     public NeverContainsFieldWrapper(Project project, List<TxField> allFields) {
         this.project = project;

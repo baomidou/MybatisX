@@ -25,9 +25,8 @@ public class GenerateConfig {
     /**
      * 界面恢复
      * -- GETTER --
-     *  需要生成mapper注解
+     * 需要生成mapper注解
      *
-
      */
     @Getter
     private String moduleName;

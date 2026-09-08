@@ -13,11 +13,7 @@ import com.intellij.openapi.project.Project;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,31 +25,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     public static final int DEFAULT_NEWLINE_VALUE = 3;
     private final Project project;
     private final Set<String> selectedWrapFields;
-    private String allFieldsStr;
-    /**
-     * -- SETTER --
-     *  Sets result map.
-     *
-     * @param resultMap the result map
-     */
-    @Setter
-    private String resultMap;
-    /**
-     * -- SETTER --
-     *  Sets result type.
-     *
-     * @param resultType the result type
-     */
-    @Setter
-    private boolean resultType;
-    /**
-     * -- SETTER --
-     *  Sets result type class.
-     *
-     * @param resultTypeClass the result type class
-     */
-    @Setter
-    private String resultTypeClass;
     private final List<String> resultFields;
     private final Map<String, TxField> txFieldMap;
     private final List<TxField> allFields;
@@ -61,6 +32,31 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
      * 默认字段的关键字：  oracle: SYSDATE, mysql: NOW()
      */
     private final String defaultDateWord;
+    private String allFieldsStr;
+    /**
+     * -- SETTER --
+     * Sets result map.
+     *
+     * @param resultMap the result map
+     */
+    @Setter
+    private String resultMap;
+    /**
+     * -- SETTER --
+     * Sets result type.
+     *
+     * @param resultType the result type
+     */
+    @Setter
+    private boolean resultType;
+    /**
+     * -- SETTER --
+     * Sets result type class.
+     *
+     * @param resultTypeClass the result type class
+     */
+    @Setter
+    private String resultTypeClass;
     @Setter
     private SmartJpaAdvanceUI.GeneratorEnum generatorType;
     private Mapper mapper;

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @author ls9527
  * @date 2024/11/23
  */
-public class TableSelectionCondition  {
+public class TableSelectionCondition {
     public boolean value(@NotNull DataContext dataContext) {
         Project project = dataContext.getData(CommonDataKeys.PROJECT);
         if (project == null) {

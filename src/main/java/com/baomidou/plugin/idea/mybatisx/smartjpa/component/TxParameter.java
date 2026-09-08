@@ -39,7 +39,7 @@ public class TxParameter {
     private AreaSequence areaSequence;
     /**
      * -- GETTER --
-     *  字段类型简称
+     * 字段类型简称
      *
      * @return type text
      */
@@ -47,7 +47,7 @@ public class TxParameter {
     private String typeText;
     /**
      * -- GETTER --
-     *  Gets canonical type text.
+     * Gets canonical type text.
      *
      * @return the canonical type text
      */
@@ -55,21 +55,21 @@ public class TxParameter {
     private String canonicalTypeText;
     /**
      * -- GETTER --
-     *  字段名称
-     *
-     *
+     * 字段名称
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets name.
+     * Sets name.
      *
-     @return name
-      * @param name the name
+     * @return name
+     * @param name the name
      */
     @Setter
     @Getter
     private String name;
     /**
      * -- GETTER --
-     *  Is param annotation boolean.
+     * Is param annotation boolean.
      *
      * @return the boolean
      */

@@ -35,9 +35,8 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
     private final java.util.List<JPanel> containerPanelList;
 
     private final Action previousAction;
-
-    private int page = 0;
     private final int lastPage = 1;
+    private int page = 0;
     private Project project;
     private List<DbTable> tableElements;
     private GenerateConfig generateConfig;

@@ -31,30 +31,28 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
     /**
      * The Resolver.
      * -- GETTER --
-     *  Gets resolver.
-     *
-     *
+     * Gets resolver.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets resolver.
+     * Sets resolver.
      *
-     @return the resolver
-      * @param resolver the resolver
-
+     * @return the resolver
+     * @param resolver the resolver
      */
     protected ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
 
     /**
      * The Index.
      * -- GETTER --
-     *  Gets index.
-     *
-     *
+     * Gets index.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets index.
+     * Sets index.
      *
-     @return the index
-      * @param index the index
-
+     * @return the index
+     * @param index the index
      */
     protected int index;
 

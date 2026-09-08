@@ -26,7 +26,7 @@ public abstract class AbstractElementFilter {
         if (!results.isEmpty()) {
             final List<XmlTag> xmlTags = results.stream().map(DomElement::getXmlTag).collect(Collectors.toList());
             NavigationGutterIconBuilder<PsiElement> builder =
-                NavigationGutterIconBuilder.create(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG,this.getClass()))
+                NavigationGutterIconBuilder.create(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG, this.getClass()))
                     .setAlignment(GutterIconRenderer.Alignment.CENTER)
                     .setTargets(xmlTags)
                     .setTooltipTitle("Navigation to target in mapper xml");

@@ -34,10 +34,9 @@ public class CustomSuffixAppender implements SyntaxAppender {
     /**
      * The Suffix operator.
      * -- GETTER --
-     *  Gets suffix operator.
+     * Gets suffix operator.
      *
      * @return the suffix operator
-
      */
     @Getter
     protected SuffixOperator suffixOperator;

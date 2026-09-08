@@ -6,6 +6,6 @@ import com.baomidou.mybatis3.domain.Blog;
 public interface BlogChildAMapper extends BlogParentMapper {
 
 
-
+    List<Blog> selectAllByAge(@Param("age") Integer age);
 
 }

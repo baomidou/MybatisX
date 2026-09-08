@@ -18,27 +18,27 @@ public class AliasDesc {
 
     /**
      * -- GETTER --
-     *  Gets clazz.
-     *
-     *
+     * Gets clazz.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets clazz.
+     * Sets clazz.
      *
-     @return the clazz
-      * @param clazz the clazz
+     * @return the clazz
+     * @param clazz the clazz
      */
     private PsiClass clazz;
 
     /**
      * -- GETTER --
-     *  Gets alias.
-     *
-     *
+     * Gets alias.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets alias.
+     * Sets alias.
      *
-     @return the alias
-      * @param alias the alias
+     * @return the alias
+     * @param alias the alias
      */
     private String alias;
 

@@ -21,58 +21,54 @@ public class TxField {
     /**
      * 提示名称
      * -- GETTER --
-     *  Gets tip name.
-     *
-     *
+     * Gets tip name.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets tip name.
+     * Sets tip name.
      *
-     @return the tip name
-      * @param tipName the tip name
-
+     * @return the tip name
+     * @param tipName the tip name
      */
     private String tipName;
     /**
      * 字段名称
      * -- GETTER --
-     *  Gets field name.
-     *
-     *
+     * Gets field name.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets field name.
+     * Sets field name.
      *
-     @return the field name
-      * @param fieldName the field name
-
+     * @return the field name
+     * @param fieldName the field name
      */
     private String fieldName;
 
     /**
      * 表的列名
      * -- GETTER --
-     *  Gets column name.
-     *
-     *
+     * Gets column name.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets column name.
+     * Sets column name.
      *
-     @return the column name
-      * @param columnName the column name
-
+     * @return the column name
+     * @param columnName the column name
      */
     private String columnName;
     /**
      * 字段类型
      * -- GETTER --
-     *  Gets field type.
-     *
-     *
+     * Gets field type.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets field type.
+     * Sets field type.
      *
-     @return the field type
-      * @param fieldType the field type
-
+     * @return the field type
+     * @param fieldType the field type
      */
     private String fieldType;
     /**

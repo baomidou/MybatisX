@@ -128,7 +128,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         if (firstMapper.isPresent()) {
             return Optional.of(mapperClass);
         }
-        log.info("当前类不是mapper接口, 不提示. class: " + mapperClass.getQualifiedName());
+        log.info("当前类不是mapper接口, 不提示. class: {}", mapperClass.getQualifiedName());
         Optional<PsiClass> psiMapper = getMapperIfHasAnnotation(mapperClass);
         if (psiMapper.isPresent()) {
             return psiMapper;

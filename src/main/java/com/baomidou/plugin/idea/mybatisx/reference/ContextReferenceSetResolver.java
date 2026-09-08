@@ -24,45 +24,40 @@ import java.util.Optional;
 public abstract class ContextReferenceSetResolver<F extends PsiElement, K extends PsiElement> {
 
     private static final Splitter SPLITTER = Splitter.on(MybatisConstants.DOT_SEPARATOR);
-
-    /**
-     * The Project.
-     * -- GETTER --
-     *  Gets project.
-     *
-     *
-     * -- SETTER --
-     *  Sets project.
-     *
-     @return the project
-      * @param project the project
-
-     */
-    @Setter
-    @Getter
-    protected Project project;
-
-    /**
-     * The Element.
-     * -- GETTER --
-     *  Gets element.
-     *
-     *
-     * -- SETTER --
-     *  Sets element.
-     *
-     @return the element
-      * @param element the element
-
-     */
-    @Setter
-    @Getter
-    protected F element;
-
     /**
      * The Texts.
      */
     protected final List<String> texts;
+    /**
+     * The Project.
+     * -- GETTER --
+     * Gets project.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets project.
+     *
+     * @return the project
+     * @param project the project
+     */
+    @Setter
+    @Getter
+    protected Project project;
+    /**
+     * The Element.
+     * -- GETTER --
+     * Gets element.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets element.
+     *
+     * @return the element
+     * @param element the element
+     */
+    @Setter
+    @Getter
+    protected F element;
 
     /**
      * Instantiates a new Context reference set resolver.

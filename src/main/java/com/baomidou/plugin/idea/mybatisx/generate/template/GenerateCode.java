@@ -146,10 +146,10 @@ public class GenerateCode {
         }
         DomainInfo domainInfo = buildDomainInfo(generateConfig, domainName);
         // 根据模板生成代码的插件
-        configExtraPlugin(extraDomainName, context, domainInfo, configSetting,generateConfig);
+        configExtraPlugin(extraDomainName, context, domainInfo, configSetting, generateConfig);
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
-        addIgnoreDupFieldsPlugin(context,generateConfig, project);
+        addIgnoreDupFieldsPlugin(context, generateConfig, project);
         config.addContext(context);
 
 
@@ -327,7 +327,7 @@ public class GenerateCode {
      */
     private static void addPluginConfiguration(Context context, GenerateConfig generateConfig) {
         //实体添加序列化
-        if (generateConfig.isNeedSerializable()){
+        if (generateConfig.isNeedSerializable()) {
             PluginConfiguration serializablePlugin = new PluginConfiguration();
             serializablePlugin.addProperty("type", SerializablePlugin.class.getName());
             serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());

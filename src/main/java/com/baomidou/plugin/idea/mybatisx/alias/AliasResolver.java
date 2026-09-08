@@ -24,15 +24,14 @@ public abstract class AliasResolver {
     /**
      * The Project.
      * -- GETTER --
-     *  Gets project.
-     *
-     *
+     * Gets project.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets project.
+     * Sets project.
      *
-     @return the project
-      * @param project the project
-
+     * @return the project
+     * @param project the project
      */
     protected Project project;
 

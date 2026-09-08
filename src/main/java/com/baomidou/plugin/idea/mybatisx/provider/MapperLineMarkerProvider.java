@@ -69,7 +69,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
             CommonProcessors.CollectProcessor<IdDomElement> processor = new CommonProcessors.CollectProcessor<>();
             JavaService instance = JavaService.getInstance(element.getProject());
-            if(instance!=null){
+            if (instance != null) {
                 instance.processMethod(((PsiMethod) element), processor);
             }
 

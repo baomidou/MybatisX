@@ -24,16 +24,15 @@ public class SmartJpaAdvanceUI {
     /**
      * The Condition panel.
      * -- GETTER --
-     *  Gets condition panel.
+     * Gets condition panel.
      *
      * @return the condition panel
-
      */
     @Getter
     public JPanel conditionPanel;
     /**
      * -- GETTER --
-     *  Gets root panel.
+     * Gets root panel.
      *
      * @return the root panel
      */
@@ -41,7 +40,7 @@ public class SmartJpaAdvanceUI {
     private JPanel rootPanel;
     /**
      * -- GETTER --
-     *  Gets check all condition field.
+     * Gets check all condition field.
      *
      * @return the check all condition field
      */
@@ -61,7 +60,7 @@ public class SmartJpaAdvanceUI {
     private List<TxField> allFields;
     /**
      * -- GETTER --
-     *  Is result type boolean.
+     * Is result type boolean.
      *
      * @return the boolean
      */

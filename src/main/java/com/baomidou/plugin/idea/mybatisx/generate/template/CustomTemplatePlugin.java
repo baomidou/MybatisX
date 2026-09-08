@@ -38,7 +38,7 @@ public class CustomTemplatePlugin extends PluginAdapter {
         CustomTemplateRoot rootObject = readRootObject(root);
 
         ModuleInfoGo moduleUIInfo = Objects.requireNonNull(rootObject).getModuleUIInfo();
-        if (moduleUIInfo.getEnable()==null|| !moduleUIInfo.getEnable()) {
+        if (moduleUIInfo.getEnable() == null || !moduleUIInfo.getEnable()) {
             log.info("模板文件未启用, modulePath: {}", moduleUIInfo.getModulePath());
             return Collections.emptyList();
 
@@ -72,7 +72,7 @@ public class CustomTemplatePlugin extends PluginAdapter {
                 rootObject = (CustomTemplateRoot) objectInputStream.readObject();
             }
         } catch (IOException | ClassNotFoundException e) {
-            log.error("Root Object Read Error",e);
+            log.error("Root Object Read Error", e);
         }
         return rootObject;
     }

@@ -30,10 +30,9 @@ public enum AreaSequence {
     /**
      * 优先级
      * -- GETTER --
-     *  Gets sequence.
+     * Gets sequence.
      *
      * @return the sequence
-
      */
     private final int sequence;
 
