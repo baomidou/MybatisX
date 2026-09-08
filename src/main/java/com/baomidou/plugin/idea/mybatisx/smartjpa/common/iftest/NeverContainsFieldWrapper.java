@@ -103,10 +103,9 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
         if (txField != null) {
             String jdbcType = txField.getJdbcType();
             if (jdbcType != null) {
-                String stringBuilder = "#{" + name +
+                return "#{" + name +
                     ",jdbcType=" + jdbcType +
                     "}";
-                return stringBuilder;
             }
         }
         // 默认jdbcType 映射方式

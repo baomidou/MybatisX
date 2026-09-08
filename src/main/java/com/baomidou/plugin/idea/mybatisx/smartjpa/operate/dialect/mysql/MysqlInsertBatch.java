@@ -83,7 +83,8 @@ public class MysqlInsertBatch implements CustomStatement {
      * @return the result appender factory
      */
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
-        ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {
+
+        return new InsertBatchResultAppenderFactory(newAreaName) {
             @Override
             public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
@@ -95,8 +96,6 @@ public class MysqlInsertBatch implements CustomStatement {
                 return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
-
-        return appenderFactory;
     }
 
     /**

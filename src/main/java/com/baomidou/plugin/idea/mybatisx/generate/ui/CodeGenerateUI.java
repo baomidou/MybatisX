@@ -199,7 +199,7 @@ public class CodeGenerateUI {
     }
 
     private ItemListener initItemListener(GenerateConfig generateConfig, String defaultsTemplatesName, Map<String, ConfigSetting> templateSettingMap) {
-        final ItemListener itemListener = new ItemListener() {
+        return new ItemListener() {
 
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -285,7 +285,6 @@ public class CodeGenerateUI {
                 return moduleUIInfoList;
             }
         };
-        return itemListener;
     }
 
     private void initPanel(Map<String, ConfigSetting> templateSettingMap,
