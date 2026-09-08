@@ -24,15 +24,15 @@ import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 /**
  * mapper的jpa方法提示
  */
+@Slf4j
 public class MapperMethodCompletionContributor extends CompletionContributor {
 
     /**
@@ -44,7 +44,6 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
      * The constant MAPPER.
      */
     public static final Key<PsiClass> MAPPER = Key.create("mapper.mapper");
-    private static final Logger logger = LoggerFactory.getLogger(MapperMethodCompletionContributor.class);
 
     private static boolean inCommentOrLiteral(CompletionParameters parameters) {
         HighlighterIterator iterator = ((EditorEx) parameters.getEditor()).getHighlighter().createIterator(parameters.getOffset());
@@ -93,25 +92,25 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
             }
         }
         if (!checkPosition(parameters)) {
-            logger.info("JPA 提示位置错误, 无法提示");
+            log.info("JPA 提示位置错误, 无法提示");
             return;
         }
 
-        logger.info("MapperMethodCompletionContributor.fillCompletionVariants start");
+        log.info("MapperMethodCompletionContributor.fillCompletionVariants start");
 
         try {
             SmartJpaCompletionProvider smartJpaCompletionProvider = new SmartJpaCompletionProvider();
             smartJpaCompletionProvider.addCompletion(parameters, result, mapperClass);
         } catch (ProcessCanceledException e) {
-            logger.info("未知的取消原因", e);
+            log.info("未知的取消原因", e);
             throw e;
         } catch (PsiInvalidElementAccessException e) {
-            logger.info("无法访问节点", e);
+            log.info("无法访问节点", e);
         } catch (Throwable e) {
-            logger.error("自动提示异常", e);
+            log.error("自动提示异常", e);
         }
 
-        logger.info("MapperMethodCompletionContributor.fillCompletionVariants end");
+        log.info("MapperMethodCompletionContributor.fillCompletionVariants end");
 
     }
 
@@ -130,7 +129,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
         if (firstMapper.isPresent()) {
             return Optional.of(mapperClass);
         }
-        logger.info("当前类不是mapper接口, 不提示. class: " + mapperClass.getQualifiedName());
+        log.info("当前类不是mapper接口, 不提示. class: " + mapperClass.getQualifiedName());
         Optional<PsiClass> psiMapper = getMapperIfHasAnnotation(mapperClass);
         if (psiMapper.isPresent()) {
             return psiMapper;
@@ -168,7 +167,7 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
     private boolean checkPosition(CompletionParameters parameters) {
         if (parameters.getCompletionType() != CompletionType.BASIC) {
-            logger.info("类型不是 BASIC");
+            log.info("类型不是 BASIC");
             return false;
         }
 
@@ -177,17 +176,17 @@ public class MapperMethodCompletionContributor extends CompletionContributor {
 
         PsiMethod currentMethod = PsiTreeUtil.getParentOfType(originalPosition, PsiMethod.class);
         if (currentMethod != null) {
-            logger.info("当前位置在方法体内部, 不提示");
+            log.info("当前位置在方法体内部, 不提示");
             return false;
         }
 
         PsiClass mapperClass = PsiTreeUtil.getParentOfType(originalPosition, PsiClass.class);
         if (mapperClass == null || !mapperClass.isInterface()) {
-            logger.info("当前类不是接口, 不提示");
+            log.info("当前类不是接口, 不提示");
             return false;
         }
         if (inCommentOrLiteral(parameters)) {
-            logger.info("注释区间不提示");
+            log.info("注释区间不提示");
             return false;
         }
         return true;

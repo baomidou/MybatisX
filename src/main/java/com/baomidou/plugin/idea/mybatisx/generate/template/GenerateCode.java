@@ -25,6 +25,7 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.ClassUtil;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.GeneratedKotlinFile;
@@ -44,8 +45,6 @@ import org.mybatis.generator.internal.NullProgressCallback;
 import org.mybatis.generator.plugins.EqualsHashCodePlugin;
 import org.mybatis.generator.plugins.SerializablePlugin;
 import org.mybatis.generator.plugins.ToStringPlugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,10 +66,10 @@ import java.util.stream.Collectors;
  *
  * @author ls9527
  */
+@Slf4j
 public class GenerateCode {
 
     public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true);
-    private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
 
     public static void generate(Project project,
                                 GenerateConfig generateConfig,
@@ -142,7 +141,7 @@ public class GenerateCode {
         context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
         final ConfigSetting configSetting = configSettingMap.get(generateConfig.getTemplatesName());
         if (configSetting == null) {
-            logger.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
+            log.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
             return;
         }
         DomainInfo domainInfo = buildDomainInfo(generateConfig, domainName);
@@ -297,7 +296,7 @@ public class GenerateCode {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(out)) {
             objectOutputStream.writeObject(serializable);
         } catch (IOException e) {
-            logger.error("序列化数据失败", e);
+            log.error("序列化数据失败", e);
             throw new RuntimeException("序列化数据失败");
         }
         byte[] encode = Base64.getEncoder().encode(out.toByteArray());

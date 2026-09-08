@@ -7,9 +7,8 @@ import com.intellij.ide.extensionResources.ExtensionsRootType;
 import com.intellij.ide.scratch.ScratchFileService;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.util.text.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,10 +16,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class DefaultSettingsConfig {
 
     public static final String TEMPLATES = "templates";
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSettingsConfig.class);
 
     private static File getPath(@NotNull String pathParam) throws IOException {
         @NotNull PluginId id = Objects.requireNonNull(PluginId.findId("com.baomidou.plugin.idea.mybatisx"));
@@ -54,7 +53,7 @@ public class DefaultSettingsConfig {
                 // 模板配置的元数据信息
                 File metaFile = new File(file, ".meta.xml");
                 if (!metaFile.exists()) {
-                    logger.error("元数据文件不存在,无法加载配置.  元数据信息: {}", metaFile.getAbsolutePath());
+                    log.error("元数据文件不存在,无法加载配置.  元数据信息: {}", metaFile.getAbsolutePath());
                     continue;
                 }
                 Map<String, TemplateSettingDTO> defaultTemplateSettingMapping = null;
@@ -62,7 +61,7 @@ public class DefaultSettingsConfig {
                 try (FileInputStream metaInputStream = new FileInputStream(metaFile)) {
                     defaultTemplateSettingMapping = XmlUtils.loadTemplatesByFile(metaInputStream);
                 } catch (IOException e) {
-                    logger.error("加载配置出错", e);
+                    log.error("加载配置出错", e);
                     continue;
                 }
 
@@ -76,7 +75,7 @@ public class DefaultSettingsConfig {
                 }
             }
         } catch (IOException e) {
-            logger.error("加载配置出错", e);
+            log.error("加载配置出错", e);
         }
         return map;
     }

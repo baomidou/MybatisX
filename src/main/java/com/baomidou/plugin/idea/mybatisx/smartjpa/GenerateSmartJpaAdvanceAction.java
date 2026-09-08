@@ -29,11 +29,9 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiTypeElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.rmi.AccessException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -43,9 +41,8 @@ import java.util.Set;
  *
  * @author ls9527
  */
+@Slf4j
 public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction implements IntentionAction {
-
-    private static final Logger logger = LoggerFactory.getLogger(GenerateSmartJpaAdvanceAction.class);
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
@@ -57,14 +54,14 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
             }
             PsiClass mapperClass = PsiTreeUtil.getParentOfType(statementElement, PsiClass.class);
             if (mapperClass == null) {
-                logger.info("未找到mapper类");
+                log.info("未找到mapper类");
                 return;
             }
             EntityMappingResolverFactory entityMappingResolverFactory = new EntityMappingResolverFactory(project);
             EntityMappingHolder entityMappingHolder = entityMappingResolverFactory.searchEntity(mapperClass);
             PsiClass entityClass = entityMappingHolder.getEntityClass();
             if (entityClass == null) {
-                logger.info("未找到实体类");
+                log.info("未找到实体类");
                 return;
             }
 
@@ -82,7 +79,7 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
             // 插入到编辑器
             TypeDescriptor returnDescriptor = platformGenerator.getReturn();
             if (returnDescriptor == null) {
-                logger.info("不支持的语法");
+                log.info("不支持的语法");
                 return;
             }
             boolean isSelect = !returnDescriptor.getImportList().isEmpty();
@@ -95,15 +92,15 @@ public class GenerateSmartJpaAdvanceAction extends PsiElementBaseIntentionAction
                 platformGenerator.getEntityClass(),
                 isSelect);
             if (conditionFieldWrapperOptional.isEmpty()) {
-                logger.info("没找到合适的条件包装器, mapperClass: {}", mapperClass.getName());
+                log.info("没找到合适的条件包装器, mapperClass: {}", mapperClass.getName());
                 return;
             }
             generate(project, editor, statementElement, mapperClass, platformGenerator, parameterDescriptor, returnDescriptor, conditionFieldWrapperOptional);
         } catch (ProcessCanceledException e) {
-            logger.info("cancel info", e);
+            log.info("cancel info", e);
             throw e;
         } catch (RuntimeException e) {
-            logger.info("生成JPA语句失败", e);
+            log.info("生成JPA语句失败", e);
         }
     }
 

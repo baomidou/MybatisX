@@ -12,17 +12,13 @@ import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,10 +27,10 @@ import java.util.stream.Stream;
 /**
  * The type Mybatis generator main action.
  */
+@Slf4j
 public class MybatisGeneratorMainAction extends AnAction {
 
     public static final String TITLE = "MybatisX Generate";
-    private static final Logger logger = LoggerFactory.getLogger(MybatisGeneratorMainAction.class);
 
     /**
      * 点击后打开插件主页面
@@ -49,7 +45,7 @@ public class MybatisGeneratorMainAction extends AnAction {
         Project project = e.getProject();
         PsiElement[] tableElements = e.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
         if (tableElements == null) {
-            logger.error("未选择表, 无法生成代码");
+            log.error("未选择表, 无法生成代码");
             return;
         }
         ClassGenerateDialogWrapper classGenerateDialogWrapper = new ClassGenerateDialogWrapper(project);
@@ -93,10 +89,10 @@ public class MybatisGeneratorMainAction extends AnAction {
                 }
             }
             VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
-            logger.info("全部代码生成成功, 文件内容已更新. config: {}", generateConfig);
+            log.info("全部代码生成成功, 文件内容已更新. config: {}", generateConfig);
             notify(project, generateConfig);
         } catch (Exception e) {
-            logger.error("生成代码出错", e);
+            log.error("生成代码出错", e);
         }
     }
 

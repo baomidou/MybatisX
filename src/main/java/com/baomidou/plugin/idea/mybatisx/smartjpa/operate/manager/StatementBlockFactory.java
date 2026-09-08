@@ -3,9 +3,8 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager;
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 符号追加器 工厂管理器
  */
+@Slf4j
 public class StatementBlockFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(StatementBlockFactory.class);
     private final List<StatementBlock> blockList = new ArrayList<>();
     private final Map<String, StatementBlock> appenderFactoryMap = new ConcurrentHashMap<>();
 

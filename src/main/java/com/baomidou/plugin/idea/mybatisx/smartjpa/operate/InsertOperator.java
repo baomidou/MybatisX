@@ -20,8 +20,7 @@ import com.baomidou.plugin.idea.mybatisx.util.MybatisXCollectors;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -32,10 +31,8 @@ import java.util.stream.Collectors;
 /**
  * The type Insert operator.
  */
+@Slf4j
 public class InsertOperator extends BaseOperatorManager {
-
-
-    private static final Logger logger = LoggerFactory.getLogger(InsertOperator.class);
 
 
     /**
