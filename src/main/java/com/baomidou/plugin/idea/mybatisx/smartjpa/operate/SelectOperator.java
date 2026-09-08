@@ -272,7 +272,7 @@ public class SelectOperator extends BaseOperatorManager {
     /**
      * 查询特定的结果追加工厂
      */
-    private class SelectResultAppenderFactory extends ResultAppenderFactory {
+    private static class SelectResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Select result appender factory.
@@ -323,7 +323,7 @@ public class SelectOperator extends BaseOperatorManager {
 
     }
 
-    private class SelectCustomAreaAppender extends CustomAreaAppender {
+    private static class SelectCustomAreaAppender extends CustomAreaAppender {
 
 
         /**
@@ -350,7 +350,7 @@ public class SelectOperator extends BaseOperatorManager {
         }
     }
 
-    private class SelectCompositeAppender extends CompositeAppender {
+    private static class SelectCompositeAppender extends CompositeAppender {
 
         /**
          * Instantiates a new Select composite appender.

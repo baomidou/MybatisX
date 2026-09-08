@@ -142,7 +142,7 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
     }
 
 
-    private class InsertDuplicateBatchResultAppenderFactory extends ResultAppenderFactory {
+    private static class InsertDuplicateBatchResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert batch result appender factory.
@@ -185,7 +185,7 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
     /**
      * 批量插入
      */
-    private class InsertBatchSuffixOperator implements SuffixOperator {
+    private static class InsertBatchSuffixOperator implements SuffixOperator {
 
         private final List<TxField> mappingField;
 

@@ -77,7 +77,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
         return appenderFactory;
     }
 
-    private class InsertBatchResultAppenderFactory extends ResultAppenderFactory {
+    private static class InsertBatchResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert batch result appender factory.

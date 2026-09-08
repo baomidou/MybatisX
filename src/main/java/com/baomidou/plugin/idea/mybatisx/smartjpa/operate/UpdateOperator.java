@@ -111,7 +111,7 @@ public class UpdateOperator extends BaseOperatorManager {
         mybatisXmlGenerator.generateUpdate(id, mapperXml);
     }
 
-    private class UpdateResultAppenderFactory extends ResultAppenderFactory {
+    private static class UpdateResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Update result appender factory.

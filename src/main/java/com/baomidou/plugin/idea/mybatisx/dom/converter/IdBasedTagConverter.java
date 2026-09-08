@@ -108,7 +108,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         return PsiClassConverter.createJavaClassReferenceProvider(value, null, new ValueReferenceProvider(context)).getReferencesByElement(element);
     }
 
-    private abstract class TraverseStrategy {
+    private abstract static class TraverseStrategy {
         /**
          * The Context.
          */

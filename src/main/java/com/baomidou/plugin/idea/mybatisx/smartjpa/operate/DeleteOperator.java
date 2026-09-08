@@ -102,7 +102,7 @@ public class DeleteOperator extends BaseOperatorManager {
         mybatisXmlGenerator.generateDelete(id, mapperXml);
     }
 
-    private class DeleteResultAppenderFactory extends ResultAppenderFactory {
+    private static class DeleteResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Delete result appender factory.
