@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
 import com.baomidou.plugin.idea.mybatisx.reference.ResultPropertyReferenceSet;
-import com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
