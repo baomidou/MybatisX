@@ -163,19 +163,15 @@ public class TablePreviewUI {
             }
         };
 
-        final ItemListener classNameChangeListener = new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                final Object source = e.getItem();
-                if (!(source instanceof JRadioButton)) {
-                    return;
-                }
-                JRadioButton radioButton = (JRadioButton) source;
-                if (!radioButton.isSelected()) {
-                    return;
-                }
-                refreshTableNames(findClassNameStrategy(), dbTables, ignorePrefix, ignoreSuffix);
+        final ItemListener classNameChangeListener = e -> {
+            final Object source = e.getItem();
+            if (!(source instanceof JRadioButton radioButton)) {
+                return;
             }
+            if (!radioButton.isSelected()) {
+                return;
+            }
+            refreshTableNames(findClassNameStrategy(), dbTables, ignorePrefix, ignoreSuffix);
         };
         camelRadioButton.addItemListener(classNameChangeListener);
         sameAsTablenameRadioButton.addItemListener(classNameChangeListener);

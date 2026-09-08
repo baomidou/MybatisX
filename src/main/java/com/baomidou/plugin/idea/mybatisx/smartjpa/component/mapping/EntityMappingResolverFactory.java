@@ -150,7 +150,7 @@ public class EntityMappingResolverFactory {
     @NotNull
     private String getUnderLineFromEntityClassName(String camelName) {
         String[] strings = org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase(camelName);
-        return Arrays.stream(strings).map(x -> com.baomidou.plugin.idea.mybatisx.util.StringUtils.lowerCaseFirstChar(x))
+        return Arrays.stream(strings).map(StringUtils::lowerCaseFirstChar)
             .collect(Collectors.joining("_"));
     }
 

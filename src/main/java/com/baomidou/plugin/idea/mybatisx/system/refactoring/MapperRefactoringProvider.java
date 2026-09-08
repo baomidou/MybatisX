@@ -36,12 +36,7 @@ public class MapperRefactoringProvider implements RefactoringElementListenerProv
             @Override
             public void elementRenamed(@NotNull final PsiElement newElement) {
                 if (newElement instanceof PsiClass) {
-                    ApplicationManager.getApplication().runWriteAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            renameMapperXml((PsiClass) element, (PsiClass) newElement);
-                        }
-                    });
+                    ApplicationManager.getApplication().runWriteAction(() -> renameMapperXml((PsiClass) element, (PsiClass) newElement));
                 }
             }
         };

@@ -129,9 +129,9 @@ public class UpdateOperator extends BaseOperatorManager {
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             String operatorXml = "update " + tableName + "\n set ";
 
-            return operatorXml + collector.stream().map(syntaxAppenderWrapper -> {
-                return syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-            }).collect(Collectors.joining());
+            return operatorXml + collector.stream()
+                .map(syntaxAppenderWrapper -> syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper))
+                .collect(Collectors.joining());
         }
 
         @Override

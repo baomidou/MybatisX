@@ -209,12 +209,7 @@ public abstract class AbstractStatementGenerator {
                     @Override
                     public void selected(int index) {
                         // 修复多模块生成标签, 修改xml内容不允许在用户线程操作的BUG
-                        WriteCommandAction.runWriteCommandAction(project, new Runnable() {
-                            @Override
-                            public void run() {
-                                setupTag(method, mappers.get(index), method.getProject());
-                            }
-                        });
+                        WriteCommandAction.runWriteCommandAction(project, () -> setupTag(method, mappers.get(index), method.getProject()));
 
                     }
 

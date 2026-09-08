@@ -106,7 +106,7 @@ public abstract class BaseOperatorManager implements AreaOperateManager {
     @Override
     public List<String> getCompletionContent() {
         Collection<StatementBlock> allBlock = syntaxAppenderFactoryManager.getAllBlock();
-        return allBlock.stream().map(x -> x.getResultAppenderFactory())
+        return allBlock.stream().map(StatementBlock::getResultAppenderFactory)
             .filter(Objects::nonNull)
             .flatMap(x -> x.getCompletionContent(new ArrayList<>()).stream())
             .collect(Collectors.toList());

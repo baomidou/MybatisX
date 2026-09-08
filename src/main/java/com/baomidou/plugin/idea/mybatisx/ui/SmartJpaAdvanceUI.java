@@ -86,9 +86,7 @@ public class SmartJpaAdvanceUI {
                 }
             }
         });
-        includeRadioButton.addItemListener(e -> {
-            includeAllResults(BASE_COLUMN_LIST);
-        });
+        includeRadioButton.addItemListener(e -> includeAllResults(BASE_COLUMN_LIST));
 
         allColumnRadioButton.addItemListener(e -> {
             final Object value = splitFieldSpiner.getValue();
@@ -140,12 +138,8 @@ public class SmartJpaAdvanceUI {
             resultType = true;
         });
 
-        radioCreateCustomClass.addItemListener(e -> {
-            resultExecutor = new CustomResultExecutor();
-        });
-        radioUseEntityClass.addItemListener(e -> {
-            resultExecutor = new CommonResultExecutor();
-        });
+        radioCreateCustomClass.addItemListener(e -> resultExecutor = new CustomResultExecutor());
+        radioUseEntityClass.addItemListener(e -> resultExecutor = new CommonResultExecutor());
 
         // 假装执行了选中 includeAllRadio的事件
         includeAllResults(BASE_COLUMN_LIST);
