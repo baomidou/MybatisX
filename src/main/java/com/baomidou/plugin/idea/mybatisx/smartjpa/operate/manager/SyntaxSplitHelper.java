@@ -37,7 +37,7 @@ class SyntaxSplitHelper {
         // 长度相等, 按照区域顺序排序
         int listComparor = o2.size() - o1.size();
         if (listComparor == 0 && o2.size() == 1 && o1.size() == 1) {
-            return o2.get(0).getText().length() - o1.get(0).getText().length();
+            return o2.getFirst().getText().length() - o1.getFirst().getText().length();
         }
         return listComparor;
     };

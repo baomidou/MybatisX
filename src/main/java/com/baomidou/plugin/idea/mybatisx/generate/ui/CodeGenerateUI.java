@@ -543,7 +543,7 @@ public class CodeGenerateUI {
 
             List<Module> chosenElements = dialog.getChosenElements();
             if (chosenElements.size() > 0) {
-                Module module = chosenElements.get(0);
+                Module module = chosenElements.getFirst();
                 String modulePath = findModulePath(module);
                 textField.setText(modulePath);
                 setValue(moduleUIInfo, modulePath);

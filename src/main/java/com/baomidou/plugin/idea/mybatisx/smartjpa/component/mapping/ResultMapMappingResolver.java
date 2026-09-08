@@ -204,7 +204,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
      */
     private Optional<ResultMap> findResultMap(List<ResultMap> resultMaps) {
         if (resultMaps.size() == 1) {
-            return Optional.ofNullable(resultMaps.get(0));
+            return Optional.ofNullable(resultMaps.getFirst());
         }
         // 字符串长度维度比较
         Map<String, ResultMap> allResultMaps = resultMaps.stream().

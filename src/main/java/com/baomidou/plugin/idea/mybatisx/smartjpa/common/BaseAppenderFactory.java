@@ -72,7 +72,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         if (splitList.size() == 0) {
             return SyntaxAppender.EMPTY;
         }
-        return splitList.get(splitList.size() - 1);
+        return splitList.getLast();
     }
 
     /**
