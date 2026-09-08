@@ -33,6 +33,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * General IO stream manipulation utilities.
@@ -625,11 +626,8 @@ public class IOUtils {
      * @since 2.4
      */
     public static byte[] toByteArray(URLConnection urlConn) throws IOException {
-        InputStream inputStream = urlConn.getInputStream();
-        try {
+        try (InputStream inputStream = urlConn.getInputStream()) {
             return org.apache.commons.io.IOUtils.toByteArray(inputStream);
-        } finally {
-            inputStream.close();
         }
     }
 
@@ -857,11 +855,8 @@ public class IOUtils {
      * @since 2.3
      */
     public static String toString(URL url, Charset encoding) throws IOException {
-        InputStream inputStream = url.openStream();
-        try {
+        try (InputStream inputStream = url.openStream()) {
             return toString(inputStream, encoding);
-        } finally {
-            inputStream.close();
         }
     }
 
@@ -989,7 +984,7 @@ public class IOUtils {
      */
     public static List<String> readLines(Reader input) throws IOException {
         BufferedReader reader = toBufferedReader(input);
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         String line = reader.readLine();
         while (line != null) {
             list.add(line);
@@ -2218,7 +2213,7 @@ public class IOUtils {
             line1 = br1.readLine();
             line2 = br2.readLine();
         }
-        return line1 == null ? line2 == null : line1.equals(line2);
+        return Objects.equals(line1, line2);
     }
 
     /**

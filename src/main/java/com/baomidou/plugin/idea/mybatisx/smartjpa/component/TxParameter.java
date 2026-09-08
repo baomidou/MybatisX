@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class TxParameter {
     public static final String JAVA_LANG = "java.lang";
-    private static final Set<String> primitiveType = new HashSet<String>() {
+    private static final Set<String> primitiveType = new HashSet<>() {
         {
             add("boolean");
             add("byte");

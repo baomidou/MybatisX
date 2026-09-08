@@ -43,7 +43,7 @@ public class CommonGenerator implements PlatformGenerator {
     private final String tableName;
     private final PsiClass entityClass;
     private final String text;
-    private final Set<String> notNeedsResult = new HashSet<String>() {
+    private final Set<String> notNeedsResult = new HashSet<>() {
         {
             add("update");
             add("insert");

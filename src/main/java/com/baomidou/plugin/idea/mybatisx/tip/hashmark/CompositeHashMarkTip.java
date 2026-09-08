@@ -53,7 +53,7 @@ public class CompositeHashMarkTip {
      */
     public static final String PARAM = "param";
     private static final Logger logger = LoggerFactory.getLogger(CompositeHashMarkTip.class);
-    private static final List<HashMarkTip> hashMarkTips = new ArrayList<HashMarkTip>() {
+    private static final List<HashMarkTip> hashMarkTips = new ArrayList<>() {
         {
             add(new JdbcTypeHashMarkTip());
             add(new TypeHandlerHashMarkTip());

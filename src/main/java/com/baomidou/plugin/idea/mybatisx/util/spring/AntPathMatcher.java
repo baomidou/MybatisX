@@ -83,8 +83,8 @@ public class AntPathMatcher implements PathMatcher {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{[^/]+?\\}");
 
     private static final char[] WILDCARD_CHARS = {'*', '?', '{'};
-    final Map<String, AntPathStringMatcher> stringMatcherCache = new ConcurrentHashMap<String, AntPathStringMatcher>(256);
-    private final Map<String, String[]> tokenizedPatternCache = new ConcurrentHashMap<String, String[]>(256);
+    final Map<String, AntPathStringMatcher> stringMatcherCache = new ConcurrentHashMap<>(256);
+    private final Map<String, String[]> tokenizedPatternCache = new ConcurrentHashMap<>(256);
     private String pathSeparator;
     private PathSeparatorPatternCache pathSeparatorPatternCache;
     private boolean caseSensitive = true;
@@ -495,7 +495,7 @@ public class AntPathMatcher implements PathMatcher {
 
     @Override
     public Map<String, String> extractUriTemplateVariables(String pattern, String path) {
-        Map<String, String> variables = new LinkedHashMap<String, String>();
+        Map<String, String> variables = new LinkedHashMap<>();
         boolean result = doMatch(pattern, path, true, variables);
         if (!result) {
             throw new IllegalStateException("Pattern \"" + pattern + "\" is not a match for \"" + path + "\"");
@@ -631,7 +631,7 @@ public class AntPathMatcher implements PathMatcher {
 
         private final Pattern pattern;
 
-        private final List<String> variableNames = new LinkedList<String>();
+        private final List<String> variableNames = new LinkedList<>();
 
         public AntPathStringMatcher(String pattern) {
             this(pattern, true);
