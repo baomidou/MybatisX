@@ -453,7 +453,7 @@ public class CodeGenerateUI {
     public void refreshGenerateConfig(GenerateConfig generateConfig) {
 
         List<ModuleInfoGo> moduleUIInfoList = IntStream.range(0, model.getRowCount())
-            .mapToObj(index -> model.getRowValue(index))
+            .mapToObj(model::getRowValue)
             .collect(Collectors.toList());
         generateConfig.setModuleUIInfoList(moduleUIInfoList);
         // 从1.4.7起改为基于模板生成, 所以不再需要那么多针对mapper的插件了

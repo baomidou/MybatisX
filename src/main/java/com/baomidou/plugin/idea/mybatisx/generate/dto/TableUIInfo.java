@@ -3,6 +3,7 @@ package com.baomidou.plugin.idea.mybatisx.generate.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Getter
 public class TableUIInfo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * 表名

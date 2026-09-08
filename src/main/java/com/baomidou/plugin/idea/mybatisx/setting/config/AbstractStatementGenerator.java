@@ -190,7 +190,7 @@ public abstract class AbstractStatementGenerator {
                 }
             }
         }
-        return CollectionUtils.isNotEmpty(result) ? result.toArray(new AbstractStatementGenerator[result.size()]) : ALL.toArray(new AbstractStatementGenerator[ALL.size()]);
+        return CollectionUtils.isNotEmpty(result) ? result.toArray(new AbstractStatementGenerator[0]) : ALL.toArray(new AbstractStatementGenerator[0]);
     }
 
     /**

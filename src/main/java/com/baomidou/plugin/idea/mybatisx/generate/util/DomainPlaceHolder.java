@@ -20,7 +20,7 @@ import java.util.Map;
 public class DomainPlaceHolder {
 
     public static String replace(String templateText, DomainInfo domainInfo) {
-        if (templateText == null || "".equals(templateText.trim())) {
+        if (templateText == null || templateText.trim().isEmpty()) {
             return templateText;
         }
         if (domainInfo == null) {

@@ -237,8 +237,7 @@ public class OgnlUtils {
                 PsiClass mapClass = facade.findClass("java.util.Map", scope);
                 if (mapClass != null && (psiClass.isEquivalentTo(mapClass) || psiClass.isInheritor(mapClass, true))) {
                     PsiSubstitutor substitutor = TypeConversionUtil.getSuperClassSubstitutor(mapClass, psiClass, result.getSubstitutor());
-                    PsiType substituted = substitutor.substitute(mapClass.getTypeParameters()[1]); // Value
-                    if (substituted != null) return substituted;
+                    return substitutor.substitute(mapClass.getTypeParameters()[1]);
                 }
             }
         }

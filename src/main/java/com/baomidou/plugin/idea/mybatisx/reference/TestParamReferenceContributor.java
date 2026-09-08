@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
-import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.util.OgnlUtils;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
@@ -31,7 +30,6 @@ import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -143,15 +141,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
     private void addReference(PsiElement element, List<PsiReference> references, String value, int startOffset) {
         if (isKeyword(value)) return;
-        if (value.matches("[\\d\\.]+")) return;
-
-        // Handle Static: @Class@
-        if (value.startsWith("@") && value.endsWith("@")) {
-             // Class reference
-             references.add(new TestParamReference(element, new TextRange(startOffset, startOffset + value.length()), value));
-             return;
-        }
-
+        if (value.matches("[\\d.]+")) return;
         references.add(new TestParamReference(element, new TextRange(startOffset, startOffset + value.length()), value));
     }
 
@@ -285,11 +275,9 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                      }
                  } else {
                      String name = psiParameter.getName();
-                     if (name != null) {
-                         variants.add(LookupElementBuilder.create(name)
-                             .withTypeText(psiParameter.getType().getPresentableText())
-                             .withIcon(psiParameter.getIcon(0)));
-                     }
+                     variants.add(LookupElementBuilder.create(name)
+                         .withTypeText(psiParameter.getType().getPresentableText())
+                         .withIcon(psiParameter.getIcon(0)));
                      if (parameterList.getParametersCount() == 1) {
                          addMemberVariants(variants, psiParameter.getType(), "", project);
                      }
