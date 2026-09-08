@@ -574,12 +574,10 @@ public class CodeGenerateUI {
                         return;
                     }
                     String s = defaultCellEditor.getCellEditorValue().toString();
-                    if (getName().equals("module path")) {
-                        moduleUIInfo.setModulePath(s);
-                    } else if (getName().equals("base path")) {
-                        moduleUIInfo.setBasePath(s);
-                    } else if (getName().equals("package name")) {
-                        moduleUIInfo.setPackageName(s);
+                    switch (getName()) {
+                        case "module path" -> moduleUIInfo.setModulePath(s);
+                        case "base path" -> moduleUIInfo.setBasePath(s);
+                        case "package name" -> moduleUIInfo.setPackageName(s);
                     }
                 }
 
@@ -602,30 +600,14 @@ public class CodeGenerateUI {
             if (item == null) {
                 return "";
             }
-            String value = null;
-            if (getName().equals("config name")) {
-                value = item.getConfigName();
-            } else if (getName().equals("module path")) {
-                value = DomainPlaceHolder.replace(item.getModulePath(), domainInfo);
-                // domain 配置不可以更改模块
-//                if (item.getConfigName().equals("domain")) {
-//                    value = domainInfo.getModulePath();
-//                }
-            } else if (getName().equals("base path")) {
-                value = DomainPlaceHolder.replace(item.getBasePath(), domainInfo);
-                // domain 配置不可以基础路径
-//                if (item.getConfigName().equals("domain")) {
-//                    value = domainInfo.getBasePath();
-//                }
-            } else if (getName().equals("package name")) {
-                value = DomainPlaceHolder.replace(item.getPackageName(), domainInfo);
-                // domain 配置不可以更改相对路径
-//                if (item.getConfigName().equals("domain")) {
-//                    value = domainInfo.getBasePackage() + "." + domainInfo.getRelativePackage();
-//                }
-            }
 
-            return value;
+            return switch (getName()) {
+                case "config name" -> item.getConfigName();
+                case "module path" -> DomainPlaceHolder.replace(item.getModulePath(), domainInfo);
+                case "base path" -> DomainPlaceHolder.replace(item.getBasePath(), domainInfo);
+                case "package name" -> DomainPlaceHolder.replace(item.getPackageName(), domainInfo);
+                default -> null;
+            };
         }
     }
 
