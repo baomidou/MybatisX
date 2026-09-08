@@ -8,11 +8,10 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.api.JavaFormatter;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.config.Context;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,11 +24,11 @@ import java.util.Map;
 /**
  * freemarker 模板格式化代码生成
  */
+@Slf4j
 public class FreeMakerFormatter implements JavaFormatter {
 
     public static final String TEMPLATE = "template";
     private static final String USER_NAME = "user.name";
-    private static final Logger logger = LoggerFactory.getLogger(FreeMakerFormatter.class);
     private final ClassInfo classInfo;
     protected Context context;
     private final CustomTemplateRoot rootObject;
@@ -76,14 +75,14 @@ public class FreeMakerFormatter implements JavaFormatter {
             map.putAll(rootObject.toMap());
             templateName.process(map, writer);
             final String templateContent = writer.toString();
-            logger.info("模板内容生成成功, pathname: {}", modulePath);
+            log.info("模板内容生成成功, pathname: {}", modulePath);
             return templateContent;
         } catch (IOException | TemplateException e) {
             StringWriter out = new StringWriter();
             try (PrintWriter stringWriter = new PrintWriter(out)) {
                 e.printStackTrace(stringWriter);
             }
-            logger.error("模板内容生成失败", e);
+            log.error("模板内容生成失败", e);
             return "填充模板出错," + out;
         }
     }

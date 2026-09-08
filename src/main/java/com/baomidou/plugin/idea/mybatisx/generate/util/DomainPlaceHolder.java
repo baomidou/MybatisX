@@ -5,8 +5,7 @@ import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -17,9 +16,8 @@ import java.util.Map;
  * @author : ls9527
  * @date : 2021/7/2
  */
+@Slf4j
 public class DomainPlaceHolder {
-
-    private static final Logger logger = LoggerFactory.getLogger(DomainPlaceHolder.class);
 
     public static String replace(String templateText, DomainInfo domainInfo) {
         if (templateText == null || "".equals(templateText.trim())) {
@@ -47,7 +45,7 @@ public class DomainPlaceHolder {
             templateName.process(map, writer);
             return writer.toString();
         } catch (Exception e) {
-            logger.error("动态参数替换错误", e);
+            log.error("动态参数替换错误", e);
             return templateText;
         }
     }

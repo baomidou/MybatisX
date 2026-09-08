@@ -26,10 +26,9 @@ import com.intellij.psi.javadoc.PsiDocTagValue;
 import com.intellij.psi.javadoc.PsiDocToken;
 import com.intellij.util.xml.DomUtil;
 import com.intellij.psi.xml.XmlTag;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +42,7 @@ import java.util.stream.Collectors;
  *
  * @author ls9527
  */
+@Slf4j
 public class CompositeHashMarkTip {
 
     public static final String DOT = ".";
@@ -52,7 +52,6 @@ public class CompositeHashMarkTip {
      * @param userName 用户名
      */
     public static final String PARAM = "param";
-    private static final Logger logger = LoggerFactory.getLogger(CompositeHashMarkTip.class);
     private static final List<HashMarkTip> hashMarkTips = new ArrayList<>() {
         {
             add(new JdbcTypeHashMarkTip());
@@ -86,11 +85,11 @@ public class CompositeHashMarkTip {
                                           @Nullable PsiElement xmlElement) {
         Optional<PsiMethod> methodOptional = JavaUtils.findMethod(project, idDomElement);
         if (!methodOptional.isPresent()) {
-            logger.info("the psiMethod is null");
+            log.info("the psiMethod is null");
             return;
         }
         PsiMethod psiMethod = methodOptional.get();
-        logger.info("CompletionContributor xml start");
+        log.info("CompletionContributor xml start");
         // 焦点前面的字段名称
         String fieldFrontOfCaret = wrappedText.substring(0, editorCaret);
 
@@ -164,7 +163,7 @@ public class CompositeHashMarkTip {
         }
 
 
-        logger.info("CompletionContributor xml end");
+        log.info("CompletionContributor xml end");
 
     }
 

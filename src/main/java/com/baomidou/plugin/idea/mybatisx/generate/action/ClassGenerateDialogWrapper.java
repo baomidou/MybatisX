@@ -13,9 +13,8 @@ import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,9 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class ClassGenerateDialogWrapper extends DialogWrapper {
-
-    private static final Logger logger = LoggerFactory.getLogger(ClassGenerateDialogWrapper.class);
 
     private final CodeGenerateUI codeGenerateUI = new CodeGenerateUI();
 

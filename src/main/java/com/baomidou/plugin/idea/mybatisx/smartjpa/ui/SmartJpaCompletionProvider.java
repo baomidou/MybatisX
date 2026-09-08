@@ -7,7 +7,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappin
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionUtil;
@@ -22,9 +21,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.sql.dialects.SqlLanguageDialect;
 import com.intellij.sql.psi.SqlPsiFacade;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,9 +35,9 @@ import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_MAPPER_METHOD_
 /**
  * The type Smart jpa completion provider.
  */
+@Slf4j
 public class SmartJpaCompletionProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionProvider.class);
     /**
      * 是否找到区域管理器
      */
@@ -67,7 +65,7 @@ public class SmartJpaCompletionProvider {
         // 按照 mybatisplus3 > mybatisplus2 > resultMap 的顺序查找映射关系
         final Optional<AreaOperateManager> operateManagerOptional = getAreaOperateManager(mapperClass, parameters.getEditor());
         if (!operateManagerOptional.isPresent()) {
-            logger.info("不支持的区域操作管理器, prefix: {} ", prefix);
+            log.info("不支持的区域操作管理器, prefix: {} ", prefix);
             return;
         }
         AreaOperateManager areaOperateManager = operateManagerOptional.get();
@@ -161,7 +159,7 @@ public class SmartJpaCompletionProvider {
         if (prefix.length() >= splitString.length()) {
             final String newFragmentPrefix = prefix.substring(splitString.length());
             completionResultSet = completionResultSet.withPrefixMatcher(newFragmentPrefix);
-            logger.info("getCompletionResultSet changed prefix: {}", completionResultSet.getPrefixMatcher().getPrefix());
+            log.info("getCompletionResultSet changed prefix: {}", completionResultSet.getPrefixMatcher().getPrefix());
         }
         return completionResultSet;
     }

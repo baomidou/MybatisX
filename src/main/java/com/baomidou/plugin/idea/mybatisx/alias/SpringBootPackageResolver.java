@@ -11,10 +11,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.spring.boot.model.SpringBootConfigurationFileService;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
@@ -34,13 +33,13 @@ import java.util.Set;
  *
  * @author ls9527
  */
+@Slf4j
 public class SpringBootPackageResolver extends PackageAliasResolver {
 
     public static final String REGEX = ",; ";
     private static final String YML = "yml";
     private static final String YAML = "yaml";
     private static final String PROPERTIES = "properties";
-    private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);
     /**
      * 静态存储, 就算启用了内置的 springboot 插件，还是要重启idea的。 所以可以静态存储
      */
@@ -95,7 +94,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                 // 首次读取, 可能存在 @变量@ 的场景, 在捕获异常后, 替换掉这种异常字符串, 然后再次读取别名
                 readClassesFromYaml(pkgSet, configurationFile.getName(), content);
             } catch (IOException e) {
-                logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
+                log.error("read alias exception, fileName: {}", configurationFile.getName(), e);
             } catch (ScannerException e) {
                 if (content != null) {
                     // 通过正则替换掉不符合 yml 格式的字符串, 再次尝试读取别名
@@ -104,7 +103,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                         readClassesFromYaml(pkgSet, configurationFile.getName(), contentReplaced);
                     } catch (ScannerException e2) {
                         // 存在 @变量@ 的情况, 暂时忽略这种情况
-                        logger.debug("yml parse fail, fileName: {}", configurationFile.getName(), e2);
+                        log.debug("yml parse fail, fileName: {}", configurationFile.getName(), e2);
                     }
                 }
             }
@@ -126,7 +125,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                 }
             }
         } catch (IOException e) {
-            logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
+            log.error("read alias exception, fileName: {}", configurationFile.getName(), e);
         }
     }
 
@@ -162,7 +161,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         } catch (Exception e) {
             // https://gitee.com/baomidou/MybatisX/issues/I58K0P  yaml.loadAll(content).next 会导致git流程的空指针
             // 错误的 yml 文件, 不予支持
-            logger.info("yml parse fail, fileName: {}", fileName, e);
+            log.info("yml parse fail, fileName: {}", fileName, e);
         }
     }
 

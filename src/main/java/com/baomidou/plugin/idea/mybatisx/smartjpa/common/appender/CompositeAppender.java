@@ -9,8 +9,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +22,9 @@ import java.util.stream.Collectors;
 /**
  * The type Composite appender.
  */
+@Slf4j
 public class CompositeAppender implements SyntaxAppender {
 
-    private static final Logger logger = LoggerFactory.getLogger(CompositeAppender.class);
     /**
      * The Appender list.
      */
@@ -128,7 +127,7 @@ public class CompositeAppender implements SyntaxAppender {
             return lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
 
         }
-        logger.info("组合字段操作: {}", appenderList.size());
+        log.info("组合字段操作: {}", appenderList.size());
         StringBuilder stringBuilder = new StringBuilder();
         for (SyntaxAppender appender : appenderList) {
             String templateText = appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);

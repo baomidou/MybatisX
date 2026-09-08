@@ -15,10 +15,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,9 +27,9 @@ import java.util.List;
 /**
  * The type Custom suffix appender.
  */
+@Slf4j
 public class CustomSuffixAppender implements SyntaxAppender {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomSuffixAppender.class);
     private final String tipName;
     /**
      * The Suffix operator.
@@ -197,7 +196,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         if (collector.size() == 0) {
-            logger.info("这个后缀没有参数, suffix: {}", this.getText());
+            log.info("这个后缀没有参数, suffix: {}", this.getText());
         }
 
         StringBuilder stringBuilder = new StringBuilder();
