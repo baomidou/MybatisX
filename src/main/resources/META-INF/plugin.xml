@@ -62,9 +62,6 @@
         <definitionsScopedSearch id="baomidou.MapperClassSearch"
                                  implementation="com.baomidou.plugin.idea.mybatisx.system.definitionsearch.MapperClassSearch"/>
         <!-- 与搜索配套的跳转 -->
-<!--        <gotoTargetRendererProvider order="first"-->
-<!--                                    implementation="com.baomidou.plugin.idea.mybatisx.provider.GotoMapperXmlSchemaTypeRendererProvider"/>-->
-
         <gotoTargetPresentationProvider
             order="first"
             implementation="com.baomidou.plugin.idea.mybatisx.provider.GotoMapperXmlSchemaTypePresentationProvider"/>

@@ -52,19 +52,14 @@ public class IntellijIntrospector {
     private void calculatePrimaryKey(FullyQualifiedTable table, IntrospectedTable introspectedTable) {
         Map<Short, String> keyColumns = new TreeMap<>();
         List<IntellijColumnInfo> primaryKeyColumns = this.intellijTableInfo.getPrimaryKeyColumns();
-        Iterator var5 = primaryKeyColumns.iterator();
 
-        while (var5.hasNext()) {
-            IntellijColumnInfo primaryKeyColumn = (IntellijColumnInfo) var5.next();
+        for (IntellijColumnInfo primaryKeyColumn : primaryKeyColumns) {
             String columnName = primaryKeyColumn.getName();
             short keySeq = primaryKeyColumn.getKeySeq();
             keyColumns.put(keySeq, columnName);
         }
 
-        var5 = keyColumns.values().iterator();
-
-        while (var5.hasNext()) {
-            String columnName = (String) var5.next();
+        for (String columnName : keyColumns.values()) {
             introspectedTable.addPrimaryKeyColumn(columnName);
         }
 
@@ -74,31 +69,26 @@ public class IntellijIntrospector {
         if (rs != null) {
             try {
                 rs.close();
-            } catch (SQLException var3) {
+            } catch (SQLException ignored) {
             }
         }
 
     }
 
     private void reportIntrospectionWarnings(IntrospectedTable introspectedTable, TableConfiguration tableConfiguration, FullyQualifiedTable table) {
-        Iterator var4 = tableConfiguration.getColumnOverrides().iterator();
 
-        while (var4.hasNext()) {
-            ColumnOverride columnOverride = (ColumnOverride) var4.next();
-            if (!introspectedTable.getColumn(columnOverride.getColumnName()).isPresent()) {
+        for (ColumnOverride columnOverride : tableConfiguration.getColumnOverrides()) {
+            if (introspectedTable.getColumn(columnOverride.getColumnName()).isEmpty()) {
                 this.warnings.add(Messages.getString("Warning.3", columnOverride.getColumnName(), table.toString()));
             }
         }
 
-        var4 = tableConfiguration.getIgnoredColumnsInError().iterator();
-
-        while (var4.hasNext()) {
-            String string = (String) var4.next();
+        for (String string : tableConfiguration.getIgnoredColumnsInError()) {
             this.warnings.add(Messages.getString("Warning.4", string, table.toString()));
         }
 
         GeneratedKey generatedKey = tableConfiguration.getGeneratedKey();
-        if (generatedKey != null && !introspectedTable.getColumn(generatedKey.getColumn()).isPresent()) {
+        if (generatedKey != null && introspectedTable.getColumn(generatedKey.getColumn()).isEmpty()) {
             if (generatedKey.isIdentity()) {
                 this.warnings.add(Messages.getString("Warning.5", generatedKey.getColumn(), table.toString()));
             } else {
@@ -127,25 +117,23 @@ public class IntellijIntrospector {
             List<IntrospectedTable> introspectedTables = this.calculateIntrospectedTables(tc, columns);
             Iterator<IntrospectedTable> iter = introspectedTables.iterator();
 
-            while (true) {
-                while (iter.hasNext()) {
-                    IntrospectedTable introspectedTable = (IntrospectedTable) iter.next();
-                    String warning;
-                    if (!introspectedTable.hasAnyColumns()) {
-                        warning = Messages.getString("Warning.1", introspectedTable.getFullyQualifiedTable().toString());
-                        this.warnings.add(warning);
-                        iter.remove();
-                    } else if (!introspectedTable.hasPrimaryKeyColumns() && !introspectedTable.hasBaseColumns()) {
-                        warning = Messages.getString("Warning.18", introspectedTable.getFullyQualifiedTable().toString());
-                        this.warnings.add(warning);
-                        iter.remove();
-                    } else {
-                        this.reportIntrospectionWarnings(introspectedTable, tc, introspectedTable.getFullyQualifiedTable());
-                    }
+            while (iter.hasNext()) {
+                IntrospectedTable introspectedTable = iter.next();
+                String warning;
+                if (!introspectedTable.hasAnyColumns()) {
+                    warning = Messages.getString("Warning.1", introspectedTable.getFullyQualifiedTable().toString());
+                    this.warnings.add(warning);
+                    iter.remove();
+                } else if (!introspectedTable.hasPrimaryKeyColumns() && !introspectedTable.hasBaseColumns()) {
+                    warning = Messages.getString("Warning.18", introspectedTable.getFullyQualifiedTable().toString());
+                    this.warnings.add(warning);
+                    iter.remove();
+                } else {
+                    this.reportIntrospectionWarnings(introspectedTable, tc, introspectedTable.getFullyQualifiedTable());
                 }
-
-                return introspectedTables;
             }
+
+            return introspectedTables;
         }
     }
 
@@ -243,8 +231,8 @@ public class IntellijIntrospector {
 
             label35:
             while (var4.hasNext()) {
-                Entry<ActualTableName, List<IntrospectedColumn>> entry = (Entry) var4.next();
-                Iterator var6 = ((List) entry.getValue()).iterator();
+                Entry<ActualTableName, List<IntrospectedColumn>> entry = var4.next();
+                Iterator<IntrospectedColumn> var6 = entry.getValue().iterator();
 
                 while (true) {
                     while (true) {
@@ -254,7 +242,7 @@ public class IntellijIntrospector {
                                 continue label35;
                             }
 
-                            introspectedColumn = (IntrospectedColumn) var6.next();
+                            introspectedColumn = var6.next();
                         } while (!this.isMatchedColumn(introspectedColumn, gk));
 
                         if (!gk.isIdentity() && !gk.isJdbcStandard()) {
