@@ -37,10 +37,9 @@ public class CustomFieldAppender implements SyntaxAppender {
     /**
      * The Field name.
      * -- GETTER --
-     *  Gets field name.
+     * Gets field name.
      *
      * @return the field name
-
      */
     @Getter
     protected String fieldName;
@@ -51,7 +50,7 @@ public class CustomFieldAppender implements SyntaxAppender {
     protected String columnName;
     /**
      * -- SETTER --
-     *  Sets area sequence.
+     * Sets area sequence.
      *
      * @param areaSequence the area sequence
      */

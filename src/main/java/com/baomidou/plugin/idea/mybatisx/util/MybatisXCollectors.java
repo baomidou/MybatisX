@@ -40,11 +40,12 @@ public class MybatisXCollectors {
 
         private final CharSequence prefix;
         private final CharSequence suffix;
-        int currentIndex = 0;
         private final String delimiter;
         private final String newLine;
         private final int step;
         private final StringBuilder stringBuilder = new StringBuilder();
+        int currentIndex = 0;
+
         /**
          * @param delimiter 分隔符
          * @param newLine   换行标识

@@ -14,9 +14,9 @@
         id,age,content,title,money
     </sql>
     <delete id="deleteById">
-        delete from t_blog
-        where
-        id = #{id,jdbcType=NUMERIC}
+        delete
+        from t_blog
+        where id = #{id,jdbcType=NUMERIC}
     </delete>
 
 </mapper>

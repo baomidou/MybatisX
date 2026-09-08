@@ -6,11 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWr
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.CountOperator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.DeleteOperator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.InsertOperator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.SelectOperator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.UpdateOperator;
+import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.*;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.Generator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;

@@ -14,7 +14,6 @@ import java.util.PriorityQueue;
  */
 class SyntaxSplitHelper {
 
-    private final List<StatementBlock> statementBlockList;
     /**
      * The String length comparator.
      */
@@ -28,7 +27,6 @@ class SyntaxSplitHelper {
         }
         return compare;
     };
-
     /**
      * The Syntax appender comparator.
      */
@@ -41,6 +39,7 @@ class SyntaxSplitHelper {
         }
         return listComparor;
     };
+    private final List<StatementBlock> statementBlockList;
 
     /**
      * Instantiates a new Syntax split helper.

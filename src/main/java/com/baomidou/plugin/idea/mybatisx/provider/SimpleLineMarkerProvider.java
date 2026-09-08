@@ -23,7 +23,7 @@ import java.util.Optional;
  * @author yanglin
  */
 public abstract class SimpleLineMarkerProvider<F extends PsiElement, T extends PsiElement> extends RelatedItemLineMarkerProvider {
-    protected static final NotNullFunction<PsiElement,Collection<? extends PsiElement>> DEFAULT_PSI_CONVERTOR =
+    protected static final NotNullFunction<PsiElement, Collection<? extends PsiElement>> DEFAULT_PSI_CONVERTOR =
         ContainerUtil::createMaybeSingletonList;
     protected static final NotNullFunction<PsiElement, Collection<? extends GotoRelatedItem>> PSI_GOTO_RELATED_ITEM_PROVIDER =
         dom -> List.of(new GotoRelatedItem(dom, InspectionsBundle.message("xml.goto.group")));
@@ -37,7 +37,7 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T extends P
         Optional<? extends T[]> processResult = apply((F) element);
         if (processResult.isPresent()) {
             T[] arrays = processResult.get();
-            NavigationGutterIconBuilder<T> navigationGutterIconBuilder =NavigationGutterIconBuilder.create(getIcon(),DEFAULT_PSI_CONVERTOR,PSI_GOTO_RELATED_ITEM_PROVIDER);
+            NavigationGutterIconBuilder<T> navigationGutterIconBuilder = NavigationGutterIconBuilder.create(getIcon(), DEFAULT_PSI_CONVERTOR, PSI_GOTO_RELATED_ITEM_PROVIDER);
             if (arrays.length > 0) {
                 navigationGutterIconBuilder.setTooltipTitle(getTooltip(arrays[0], element));
             }

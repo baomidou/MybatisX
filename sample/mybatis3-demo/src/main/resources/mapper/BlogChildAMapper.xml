@@ -29,7 +29,13 @@
         where
         age = #{age,jdbcType=NUMERIC}
     </select>
-
+    <select id="selectAllByAge" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_blog
+        where
+        age = #{age,jdbcType=NUMERIC}
+    </select>
 
 
 </mapper>

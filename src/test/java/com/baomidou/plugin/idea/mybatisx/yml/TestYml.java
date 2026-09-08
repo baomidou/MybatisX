@@ -3,22 +3,13 @@ package com.baomidou.plugin.idea.mybatisx.yml;
 import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.composer.Composer;
 import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.ScalarNode;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.parser.ParserImpl;
-import org.yaml.snakeyaml.reader.StreamReader;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
 public class TestYml extends TestCase {
 

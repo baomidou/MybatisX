@@ -59,7 +59,7 @@ public class BeanAliasResolver extends PackageAliasResolver {
         try {
             instance = SpringModelUtils.getInstance();
         } catch (Throwable e) {
-            log.warn("获取SpringManager异常, 无法通过bean定义别名",e);
+            log.warn("获取SpringManager异常, 无法通过bean定义别名", e);
             return Collections.emptyList();
         }
         Set<String> packages = new HashSet<>();

@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
-import com.baomidou.plugin.idea.mybatisx.util.IOUtils;
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.fileTypes.FileType;
@@ -12,6 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.spring.boot.model.SpringBootConfigurationFileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;
@@ -19,6 +19,7 @@ import org.yaml.snakeyaml.scanner.ScannerException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -90,7 +91,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
             // 读取 yml 文件内容
             String content = null;
             try (InputStream inputStream = configurationFile.getInputStream()) {
-                content = IOUtils.toString(inputStream);
+                content = IOUtils.toString(inputStream, Charset.defaultCharset());
                 // 首次读取, 可能存在 @变量@ 的场景, 在捕获异常后, 替换掉这种异常字符串, 然后再次读取别名
                 readClassesFromYaml(pkgSet, configurationFile.getName(), content);
             } catch (IOException e) {

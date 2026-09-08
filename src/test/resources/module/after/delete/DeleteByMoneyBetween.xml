@@ -14,9 +14,9 @@
         id,age,content,title,money
     </sql>
     <delete id="deleteByMoneyBetween">
-        delete from t_blog
-        where
-        money between #{beginMoney,jdbcType=DECIMAL} and #{endMoney,jdbcType=DECIMAL}
+        delete
+        from t_blog
+        where money between #{beginMoney,jdbcType=DECIMAL} and #{endMoney,jdbcType=DECIMAL}
     </delete>
 
 </mapper>

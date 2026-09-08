@@ -30,8 +30,8 @@ public class FreeMakerFormatter implements JavaFormatter {
     public static final String TEMPLATE = "template";
     private static final String USER_NAME = "user.name";
     private final ClassInfo classInfo;
-    protected Context context;
     private final CustomTemplateRoot rootObject;
+    protected Context context;
 
     public FreeMakerFormatter(CustomTemplateRoot rootObject, ClassInfo classInfo) {
         this.rootObject = rootObject;

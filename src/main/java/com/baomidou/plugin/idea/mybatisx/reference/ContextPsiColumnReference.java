@@ -36,18 +36,18 @@ import java.util.Optional;
  */
 public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValue> {
 
+    private final PsiClass mapperClass;
     /**
      * The Resolver.
      * -- GETTER --
-     *  Gets resolver.
-     *
-     *
+     * Gets resolver.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets resolver.
+     * Sets resolver.
      *
-     @return the resolver
-      * @param resolver the resolver
-
+     * @return the resolver
+     * @param resolver the resolver
      */
     @Setter
     @Getter
@@ -55,20 +55,18 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
     /**
      * The Index.
      * -- GETTER --
-     *  Gets index.
-     *
-     *
+     * Gets index.
+     * <p>
+     * <p>
      * -- SETTER --
-     *  Sets index.
+     * Sets index.
      *
-     @return the index
-      * @param index the index
-
+     * @return the index
+     * @param index the index
      */
     @Setter
     @Getter
     protected int index;
-    private final PsiClass mapperClass;
 
     /**
      * Instantiates a new Context psi field reference.
@@ -140,9 +138,9 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
                     JBIterable<? extends DasColumn> columns = DasUtil.getColumns(dasTable);
                     for (DasColumn column : columns) {
 
-                    if (column instanceof DbElement) {
-                        dbElementList.add((DbElement) column);
-                    }
+                        if (column instanceof DbElement) {
+                            dbElementList.add((DbElement) column);
+                        }
                     }
                     return dbElementList;
                 }

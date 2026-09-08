@@ -20,17 +20,15 @@ import java.util.stream.Collectors;
  * 默认按照 mybatis-plus3 > mybatis-plus2 > xml(resultMap 最短的标签)
  */
 public class EntityMappingResolverFactory {
-    private final ResultMapMappingResolver defaultMappingResolver;
     /**
      * The Project.
      */
     final Project project;
-
-
     /**
      * The Entity mapping resolver list.
      */
     final List<EntityMappingResolver> entityMappingResolverList = new ArrayList<>();
+    private final ResultMapMappingResolver defaultMappingResolver;
 
     /**
      * Instantiates a new Entity mapping resolver factory.

@@ -59,6 +59,7 @@ public class CodeGenerateUI {
         new MybaitsxModuleInfo("base path", true),
         new MybaitsxModuleInfo("package name", true)
     );
+    private final ButtonGroup templateButtonGroup = new ButtonGroup();
     @Getter
     private JPanel rootPanel;
     private JCheckBox commentCheckBox;
@@ -77,7 +78,6 @@ public class CodeGenerateUI {
     private JCheckBox needsModelCheckBox;
     private JCheckBox serializableCheckBox;
     private JCheckBox needJdbcTypeCheckBox;
-    private final ButtonGroup templateButtonGroup = new ButtonGroup();
     private Project project;
     private DomainInfo domainInfo;
     private String selectedTemplateName;

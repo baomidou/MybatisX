@@ -15,7 +15,7 @@ import java.util.Optional;
 public class DasTableAdaptor implements MxDasTable {
     /**
      * -- SETTER --
-     *  Sets das table.
+     * Sets das table.
      *
      * @param dasTable the das table
      */

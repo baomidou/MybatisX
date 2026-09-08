@@ -90,7 +90,7 @@ public class AntPathMatcher implements PathMatcher {
     private PathSeparatorPatternCache pathSeparatorPatternCache;
     /**
      * -- SETTER --
-     *  Specify whether to perform pattern matching in a case-sensitive fashion.
+     * Specify whether to perform pattern matching in a case-sensitive fashion.
      * <p>Default is
      * . Switch this to
      * for case-insensitive matching.
@@ -100,7 +100,7 @@ public class AntPathMatcher implements PathMatcher {
     private boolean caseSensitive = true;
     /**
      * -- SETTER --
-     *  Specify whether to trim tokenized paths and patterns.
+     * Specify whether to trim tokenized paths and patterns.
      * <p>Default is
      * .
      */

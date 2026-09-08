@@ -12,19 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GotoMapperXmlSchemaTypePresentationProvider implements GotoTargetPresentationProvider {
-    @Override
-    public @Nullable TargetPresentation getTargetPresentation(@NotNull PsiElement element, boolean differentNames) {
-        if (element instanceof XmlTagImpl xmlTag) {
-            if (MapperUtils.isElementWithinMybatisFile(element)) {
-                return TargetPresentation
-                    .builder(getPresentableTest(xmlTag))
-                    .containerText(getContainerText(xmlTag))
-                    .presentation();
-            }
-        }
-        return null;
-    }
-
     private static String getPresentableTest(XmlTagImpl element) {
         XmlAttribute attr = element.getAttribute("id", XmlUtil.XML_SCHEMA_URI);
         attr = attr == null ? element.getAttribute("id") : attr;
@@ -48,5 +35,18 @@ public class GotoMapperXmlSchemaTypePresentationProvider implements GotoTargetPr
             databaseId = "";
         }
         return databaseId;
+    }
+
+    @Override
+    public @Nullable TargetPresentation getTargetPresentation(@NotNull PsiElement element, boolean differentNames) {
+        if (element instanceof XmlTagImpl xmlTag) {
+            if (MapperUtils.isElementWithinMybatisFile(element)) {
+                return TargetPresentation
+                    .builder(getPresentableTest(xmlTag))
+                    .containerText(getContainerText(xmlTag))
+                    .presentation();
+            }
+        }
+        return null;
     }
 }

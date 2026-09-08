@@ -25,7 +25,7 @@ import java.util.Optional;
 public class PropertyConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
     @Override
-    public String getErrorMessage(@Nullable String property,@NotNull ConvertContext context) {
+    public String getErrorMessage(@Nullable String property, @NotNull ConvertContext context) {
         return "property (" + property + ") can not found setter method";
     }
 

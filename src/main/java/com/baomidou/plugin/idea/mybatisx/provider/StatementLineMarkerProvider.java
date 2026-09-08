@@ -112,7 +112,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
     @NotNull
     @Override
     public Icon getIcon() {
-        return  IconLoader.getIcon(IMAGES_STATEMENT_SVG,this.getClass());
+        return IconLoader.getIcon(IMAGES_STATEMENT_SVG, this.getClass());
     }
 
 

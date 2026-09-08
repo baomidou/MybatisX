@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 public class GenerateStatementIntention extends GenericIntention {
 
 
-
     /**
      * Instantiates a new Generate statement intention.
      */

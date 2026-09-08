@@ -14,10 +14,10 @@
         id,age,content,title,money
     </sql>
     <delete id="deleteByMoneyBeforeAndMoneyAfter">
-        delete from t_blog
-        where
-        money <![CDATA[  < ]]> #{money}
-        AND money > #{oldMoney}
+        delete
+        from t_blog
+        where money <![CDATA[  < ]]> #{money}
+          AND money > #{oldMoney}
     </delete>
 
 </mapper>
