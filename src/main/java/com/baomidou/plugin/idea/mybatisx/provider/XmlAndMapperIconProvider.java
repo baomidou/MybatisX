@@ -68,10 +68,9 @@ public class XmlAndMapperIconProvider extends IconProvider {
         if (!language.isKindOf(JavaLanguage.INSTANCE)) {
             return false;
         }
-        if (!(element instanceof PsiClass)) {
+        if (!(element instanceof PsiClass mayMapperClass)) {
             return false;
         }
-        PsiClass mayMapperClass = (PsiClass) element;
         if (!mayMapperClass.isInterface()) {
             return false;
         }

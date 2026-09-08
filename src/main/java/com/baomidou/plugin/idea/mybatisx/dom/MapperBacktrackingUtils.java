@@ -95,9 +95,8 @@ public final class MapperBacktrackingUtils {
         DomElement currentElement = domElement;
         PsiClass currentClass = null;
         while (true) {
-            if (currentElement instanceof Association) {
+            if (currentElement instanceof Association association) {
                 boolean foundClass = false;
-                Association association = (Association) currentElement;
                 PsiClass javaType = association.getJavaType().getValue();
                 if (javaType != null) {
                     currentClass = javaType;
@@ -125,9 +124,8 @@ public final class MapperBacktrackingUtils {
                 if (foundClass) {
                     break;
                 }
-            } else if (currentElement instanceof Collection) {
+            } else if (currentElement instanceof Collection collection) {
                 boolean foundClass = false;
-                Collection collection = (Collection) currentElement;
                 GenericAttributeValue<PsiClass> type = collection.getOfType();
                 if (type.getValue() != null) {
                     currentClass = type.getValue();
@@ -157,8 +155,7 @@ public final class MapperBacktrackingUtils {
                 if (foundClass) {
                     break;
                 }
-            } else if (currentElement instanceof ResultMap) {
-                ResultMap association = (ResultMap) currentElement;
+            } else if (currentElement instanceof ResultMap association) {
                 GenericAttributeValue<PsiClass> type = association.getType();
                 currentClass = type.getValue();
             }

@@ -121,15 +121,13 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
     @NotNull
     public String getTooltip(PsiElement element, @NotNull PsiElement target) {
         String text = null;
-        if (element instanceof PsiMethod) {
-            PsiMethod psiMethod = (PsiMethod) element;
+        if (element instanceof PsiMethod psiMethod) {
             PsiClass containingClass = psiMethod.getContainingClass();
             if (containingClass != null) {
                 text = containingClass.getName() + "#" + psiMethod.getName();
             }
         }
-        if (text == null && element instanceof PsiClass) {
-            PsiClass psiClass = (PsiClass) element;
+        if (text == null && element instanceof PsiClass psiClass) {
             text = psiClass.getQualifiedName();
         }
         if (text == null) {

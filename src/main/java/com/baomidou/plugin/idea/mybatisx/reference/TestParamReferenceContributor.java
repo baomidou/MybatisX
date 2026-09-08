@@ -259,8 +259,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
         private void addForeachVariants(List<Object> variants) {
             PsiElement current = myElement;
             while (current != null) {
-                if (current instanceof XmlTag) {
-                    XmlTag tag = (XmlTag) current;
+                if (current instanceof XmlTag tag) {
                     if ("foreach".equals(tag.getName())) {
                         String item = tag.getAttributeValue("item");
                         if (item != null) {
@@ -339,7 +338,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                         variants.add(LookupElementBuilder.create(prefix + method.getName() + "()")
                             .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")
                             .withIcon(method.getIcon(0)));
-                        
+
                         // Also add as a property if it's a getter
                         String name = method.getName();
                         String propertyName = null;
@@ -348,7 +347,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                         } else if (name.startsWith("is") && name.length() > 2) {
                             propertyName = Introspector.decapitalize(name.substring(2));
                         }
-                        
+
                         if (propertyName != null && !addedProperties.contains(propertyName)) {
                             variants.add(LookupElementBuilder.create(prefix + propertyName)
                                 .withTypeText(method.getReturnType() != null ? method.getReturnType().getPresentableText() : "")

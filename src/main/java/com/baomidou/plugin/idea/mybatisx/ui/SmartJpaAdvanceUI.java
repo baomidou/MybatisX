@@ -80,8 +80,7 @@ public class SmartJpaAdvanceUI {
             JCheckBox mainCheck = (JCheckBox) e.getSource();
             Component[] components = conditionPanel.getComponents();
             for (Component component : components) {
-                if (component instanceof JCheckBox) {
-                    JCheckBox itemCheckBox = (JCheckBox) component;
+                if (component instanceof JCheckBox itemCheckBox) {
                     itemCheckBox.setSelected(mainCheck.isSelected());
                 }
             }

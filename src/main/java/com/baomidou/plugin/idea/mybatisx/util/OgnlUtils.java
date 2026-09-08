@@ -81,8 +81,7 @@ public class OgnlUtils {
     private static PsiElement resolveForeachVariable(@NotNull PsiElement context, @NotNull String name) {
         PsiElement current = context;
         while (current != null) {
-            if (current instanceof XmlTag) {
-                XmlTag tag = (XmlTag) current;
+            if (current instanceof XmlTag tag) {
                 if ("foreach".equals(tag.getName())) {
                     String item = tag.getAttributeValue("item");
                     if (name.equals(item)) {

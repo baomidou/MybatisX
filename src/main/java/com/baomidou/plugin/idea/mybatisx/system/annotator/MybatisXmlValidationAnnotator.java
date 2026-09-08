@@ -38,10 +38,9 @@ public class MybatisXmlValidationAnnotator implements Annotator {
 
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-        if (!(element instanceof XmlAttributeValue)) {
+        if (!(element instanceof XmlAttributeValue attributeValue)) {
             return;
         }
-        XmlAttributeValue attributeValue = (XmlAttributeValue) element;
 
         if (TEST_PATTERN.accepts(element)) {
             validateBooleanExpression(attributeValue, holder);
