@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class IntellijMyBatisGenerator {
@@ -56,17 +57,9 @@ public class IntellijMyBatisGenerator {
             throw new IllegalArgumentException(Messages.getString("RuntimeError.2"));
         } else {
             this.configuration = configuration;
-            if (shellCallback == null) {
-                this.shellCallback = new DefaultShellCallback(false);
-            } else {
-                this.shellCallback = shellCallback;
-            }
+            this.shellCallback = Objects.requireNonNullElseGet(shellCallback, () -> new DefaultShellCallback(false));
 
-            if (warnings == null) {
-                this.warnings = new ArrayList<>();
-            } else {
-                this.warnings = warnings;
-            }
+            this.warnings = Objects.requireNonNullElseGet(warnings, ArrayList::new);
 
             this.configuration.validate();
         }
