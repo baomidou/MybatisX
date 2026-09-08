@@ -54,7 +54,7 @@ import java.util.stream.IntStream;
 @Slf4j
 public class CodeGenerateUI {
     public static final String DOMAIN = "domain";
-    ListTableModel<ModuleInfoGo> model = new ListTableModel<>(
+    final ListTableModel<ModuleInfoGo> model = new ListTableModel<>(
         new MybaitsxModuleInfo("config name", false),
         new MybaitsxModuleInfo("module path", true, true),
         new MybaitsxModuleInfo("base path", true),

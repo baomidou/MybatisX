@@ -36,8 +36,8 @@ public class XmlUtils {
 
 
     static class SAXDemoHandel extends DefaultHandler {
-        Stack<Object> objects = new Stack<>();
-        Map<String, TemplateSettingDTO> map = new HashMap<>();
+        final Stack<Object> objects = new Stack<>();
+        final Map<String, TemplateSettingDTO> map = new HashMap<>();
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

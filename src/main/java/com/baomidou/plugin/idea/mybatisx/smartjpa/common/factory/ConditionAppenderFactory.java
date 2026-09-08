@@ -38,7 +38,7 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
     /**
      * The Syntax appender array list.
      */
-    List<SyntaxAppender> syntaxAppenderArrayList;
+    final List<SyntaxAppender> syntaxAppenderArrayList;
 
     /**
      * Instantiates a new Condition appender factory.

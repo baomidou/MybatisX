@@ -17,7 +17,7 @@ public class MapperLocator {
     /**
      * The constant dfltLocateStrategy.
      */
-    public static LocateStrategy dfltLocateStrategy = new PackageLocateStrategy();
+    public static final LocateStrategy dfltLocateStrategy = new PackageLocateStrategy();
 
     /**
      * Gets instance.

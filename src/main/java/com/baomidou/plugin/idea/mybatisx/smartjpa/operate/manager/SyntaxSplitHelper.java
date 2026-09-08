@@ -19,7 +19,7 @@ class SyntaxSplitHelper {
      * The String length comparator.
      */
 // 文本长度优先排序, 其次按照区域顺序排序
-    Comparator<SyntaxAppender> stringLengthComparator = (o1, o2) ->
+    final Comparator<SyntaxAppender> stringLengthComparator = (o1, o2) ->
     {
         // 长度相等, 按照区域顺序排序
         int compare = o2.getText().length() - o1.getText().length();
@@ -32,7 +32,7 @@ class SyntaxSplitHelper {
     /**
      * The Syntax appender comparator.
      */
-    Comparator<LinkedList<SyntaxAppender>> syntaxAppenderComparator = (o1, o2) ->
+    final Comparator<LinkedList<SyntaxAppender>> syntaxAppenderComparator = (o1, o2) ->
     {
         // 长度相等, 按照区域顺序排序
         int listComparor = o2.size() - o1.size();
