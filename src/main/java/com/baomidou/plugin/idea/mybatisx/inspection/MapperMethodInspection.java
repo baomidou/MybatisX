@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  */
 public class MapperMethodInspection extends MapperInspection {
 
-    public static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<String>() {
+    public static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<>() {
         {
             // mp3
             add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
@@ -53,7 +53,7 @@ public class MapperMethodInspection extends MapperInspection {
     public static final String COLLECTION = "java.util.Collection";
     public static final String LIST = "java.util.List";
     public static final String SET = "java.util.Set";
-    private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<String>() {
+    private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<>() {
         {
             add("org.apache.ibatis.annotations.SelectProvider");
             add("org.apache.ibatis.annotations.UpdateProvider");

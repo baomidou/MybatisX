@@ -257,7 +257,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         private Set<String> setupGlobalIdSignature() {
             Mapper contextMapper = MapperUtils.getMapper(context.getInvocationElement());
             Collection<? extends IdDomElement> idDomElements = selectStrategy(context).getValue();
-            Set<String> res = new HashSet<String>(idDomElements.size());
+            Set<String> res = new HashSet<>(idDomElements.size());
             for (IdDomElement ele : idDomElements) {
                 res.add(MapperUtils.getIdSignature(ele, contextMapper));
             }

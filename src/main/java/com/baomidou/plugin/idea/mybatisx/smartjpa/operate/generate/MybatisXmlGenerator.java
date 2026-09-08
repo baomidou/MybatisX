@@ -41,7 +41,7 @@ public class MybatisXmlGenerator implements Generator {
      */
     public static final String RESULT_TYPE = "resultType";
     private static final Logger logger = LoggerFactory.getLogger(MybatisXmlGenerator.class);
-    Set<String> allowedResultMapNames = new HashSet<String>() {
+    Set<String> allowedResultMapNames = new HashSet<>() {
         {
             add("BaseResultMap");
             add("BlobResultMap");

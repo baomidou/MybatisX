@@ -29,7 +29,7 @@ import java.util.Set;
 @Slf4j
 public class BeanAliasResolver extends PackageAliasResolver {
 
-    private static final List<String> MAPPER_ALIAS_PACKAGE_CLASSES = new ArrayList<String>() {
+    private static final List<String> MAPPER_ALIAS_PACKAGE_CLASSES = new ArrayList<>() {
         {
             // default
             add("org.mybatis.spring.SqlSessionFactoryBean");

@@ -47,7 +47,7 @@ public class TablePreviewUI {
         new MybaitsxTableColumnInfo("tableName", false),
         new MybaitsxTableColumnInfo("className", true)
     );
-    List<ClassNameStrategy> classNameStrategies = new ArrayList<ClassNameStrategy>() {
+    List<ClassNameStrategy> classNameStrategies = new ArrayList<>() {
         {
             add(new CamelStrategy());
             add(new SameAsTableNameStrategy());
