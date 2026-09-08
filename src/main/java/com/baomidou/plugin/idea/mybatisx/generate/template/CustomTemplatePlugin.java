@@ -72,7 +72,7 @@ public class CustomTemplatePlugin extends PluginAdapter {
                 rootObject = (CustomTemplateRoot) objectInputStream.readObject();
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("Root Object Read Error",e);
         }
         return rootObject;
     }
