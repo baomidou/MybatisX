@@ -208,7 +208,7 @@ public class MapperMethodInspection extends MapperInspection {
             }
         }
         JavaService instance = JavaService.getInstance(method.getProject());
-        if (!instance.findStatement(method).isPresent() && null != ide) {
+        if (instance.findStatement(method).isEmpty() && null != ide) {
             if (isMybatisPlusMethod(method)) {
                 return Optional.empty();
             }

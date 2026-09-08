@@ -3,9 +3,11 @@ package com.baomidou.plugin.idea.mybatisx.generate.dto;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.openapi.ui.Messages;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
 public class GenerateConfig {
 
     /**
@@ -140,104 +142,11 @@ public class GenerateConfig {
     @Getter
     private String classNameStrategy;
 
-    public void setTableUIInfoList(List<TableUIInfo> tableUIInfoList) {
-        this.tableUIInfoList = tableUIInfoList;
-    }
-
-    public void setExtraClassSuffix(String extraClassSuffix) {
-        this.extraClassSuffix = extraClassSuffix;
-    }
-
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
-    }
-
-
-    public void setTemplatesName(String templatesName) {
-        this.templatesName = templatesName;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    public void setNeedsComment(boolean needsComment) {
-        this.needsComment = needsComment;
-    }
 
     public Boolean isNeedsModel() {
         return needsModel;
     }
 
-    public void setNeedsModel(Boolean needsModel) {
-        this.needsModel = needsModel;
-    }
-
-    public void setNeedSerializable(boolean needSerializable) {
-        this.needSerializable = needSerializable;
-    }
-
-    public void setNeedJdbcType(boolean needJdbcType) {
-        this.needJdbcType = needJdbcType;
-    }
-
-    public void setAnnotationType(String annotationType) {
-        this.annotationType = annotationType;
-    }
-
-    public void setUseActualColumns(boolean useActualColumns) {
-        this.useActualColumns = useActualColumns;
-    }
-
-    public void setBasePackage(String basePackage) {
-        this.basePackage = basePackage;
-    }
-
-    public void setRelativePackage(String relativePackage) {
-        this.relativePackage = relativePackage;
-    }
-
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    public void setModulePath(String modulePath) {
-        this.modulePath = modulePath;
-    }
-
-    public void setModuleUIInfoList(List<ModuleInfoGo> moduleUIInfoList) {
-        this.moduleUIInfoList = moduleUIInfoList;
-    }
-
-    public void setNeedToStringHashcodeEquals(boolean needToStringHashcodeEquals) {
-        this.needToStringHashcodeEquals = needToStringHashcodeEquals;
-    }
-
-
-    public void setUseLombokPlugin(boolean useLombokPlugin) {
-        this.useLombokPlugin = useLombokPlugin;
-    }
-
-    public void setJsr310Support(boolean jsr310Support) {
-        this.jsr310Support = jsr310Support;
-    }
-
-
-    public void setSuperClass(String superClass) {
-        this.superClass = superClass;
-    }
-
-    public void setUseActualColumnAnnotationInject(boolean useActualColumnAnnotationInject) {
-        this.useActualColumnAnnotationInject = useActualColumnAnnotationInject;
-    }
-
-    public void setIgnoreTablePrefix(String ignoreTablePrefix) {
-        this.ignoreTablePrefix = ignoreTablePrefix;
-    }
-
-    public void setIgnoreTableSuffix(String ignoreTableSuffix) {
-        this.ignoreTableSuffix = ignoreTableSuffix;
-    }
 
     @Override
     public String toString() {
@@ -265,14 +174,6 @@ public class GenerateConfig {
             '}';
     }
 
-    public void setIgnoreFieldPrefix(String ignoreFieldPrefix) {
-        this.ignoreFieldPrefix = ignoreFieldPrefix;
-    }
-
-    public void setIgnoreFieldSuffix(String ignoreFieldSuffix) {
-        this.ignoreFieldSuffix = ignoreFieldSuffix;
-    }
-
     public boolean checkGenerate() {
         if (StringUtils.isEmpty(moduleName)) {
             Messages.showErrorDialog("moduleName must not be empty", "Generate Info");
@@ -285,7 +186,4 @@ public class GenerateConfig {
         return true;
     }
 
-    public void setClassNameStrategy(String classNameStrategy) {
-        this.classNameStrategy = classNameStrategy;
-    }
 }

@@ -10,6 +10,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisAnnota
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.generate.MybatisXmlGenerator;
 import com.baomidou.plugin.idea.mybatisx.ui.SmartJpaAdvanceUI;
 import com.intellij.openapi.project.Project;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -29,8 +30,29 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     private final Project project;
     private final Set<String> selectedWrapFields;
     private String allFieldsStr;
+    /**
+     * -- SETTER --
+     *  Sets result map.
+     *
+     * @param resultMap the result map
+     */
+    @Setter
     private String resultMap;
+    /**
+     * -- SETTER --
+     *  Sets result type.
+     *
+     * @param resultType the result type
+     */
+    @Setter
     private boolean resultType;
+    /**
+     * -- SETTER --
+     *  Sets result type class.
+     *
+     * @param resultTypeClass the result type class
+     */
+    @Setter
     private String resultTypeClass;
     private final List<String> resultFields;
     private final Map<String, TxField> txFieldMap;
@@ -39,8 +61,10 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
      * 默认字段的关键字：  oracle: SYSDATE, mysql: NOW()
      */
     private final String defaultDateWord;
+    @Setter
     private SmartJpaAdvanceUI.GeneratorEnum generatorType;
     private Mapper mapper;
+    @Setter
     private List<String> defaultDateList;
     private int newLine;
 
@@ -117,27 +141,9 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
         return resultType ? null : resultMap;
     }
 
-    /**
-     * Sets result map.
-     *
-     * @param resultMap the result map
-     */
-    public void setResultMap(String resultMap) {
-        this.resultMap = resultMap;
-    }
-
     @Override
     public String getResultType() {
         return resultTypeClass;
-    }
-
-    /**
-     * Sets result type.
-     *
-     * @param resultType the result type
-     */
-    public void setResultType(boolean resultType) {
-        this.resultType = resultType;
     }
 
     @Override
@@ -154,19 +160,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
             return new MybatisXmlGenerator(mapperClassGenerateFactory, mapper, project);
         }
         return new EmptyGenerator();
-    }
-
-    /**
-     * Sets result type class.
-     *
-     * @param resultTypeClass the result type class
-     */
-    public void setResultTypeClass(String resultTypeClass) {
-        this.resultTypeClass = resultTypeClass;
-    }
-
-    public void setGeneratorType(SmartJpaAdvanceUI.GeneratorEnum generatorType) {
-        this.generatorType = generatorType;
     }
 
     @Override
@@ -194,10 +187,6 @@ public class ConditionIfTestWrapper implements ConditionFieldWrapper {
     @Override
     public List<String> getDefaultDateList() {
         return defaultDateList;
-    }
-
-    public void setDefaultDateList(List<String> defaultDateList) {
-        this.defaultDateList = defaultDateList;
     }
 
     @Override

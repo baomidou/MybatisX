@@ -14,6 +14,7 @@ import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -48,6 +49,13 @@ public class CustomFieldAppender implements SyntaxAppender {
      */
     @Getter
     protected String columnName;
+    /**
+     * -- SETTER --
+     *  Sets area sequence.
+     *
+     * @param areaSequence the area sequence
+     */
+    @Setter
     private AreaSequence areaSequence;
 
     /**
@@ -66,15 +74,6 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public AreaSequence getAreaSequence() {
         return areaSequence;
-    }
-
-    /**
-     * Sets area sequence.
-     *
-     * @param areaSequence the area sequence
-     */
-    public void setAreaSequence(AreaSequence areaSequence) {
-        this.areaSequence = areaSequence;
     }
 
     @Override

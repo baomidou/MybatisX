@@ -6,6 +6,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TypeDescriptor;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Comparator;
@@ -23,36 +24,60 @@ public class StatementBlock {
      * -- GETTER --
      *  Gets tag name.
      *
-     * @return the tag name
+     *
+     * -- SETTER --
+     *  Sets tag name.
+     *
+     @return the tag name
+      * @param tagName the tag name
 
      */
+    @Setter
     private String tagName;
     /**
      * 结果集区域
      * -- GETTER --
      *  Gets result appender factory.
      *
-     * @return the result appender factory
+     *
+     * -- SETTER --
+     *  Sets result appender factory.
+     *
+     @return the result appender factory
+      * @param resultAppenderFactory the result appender factory
 
      */
+    @Setter
     private SyntaxAppenderFactory resultAppenderFactory;
     /**
      * 条件区域
      * -- GETTER --
      *  Gets condition appender factory.
      *
-     * @return the condition appender factory
+     *
+     * -- SETTER --
+     *  Sets condition appender factory.
+     *
+     @return the condition appender factory
+      * @param conditionAppenderFactory the condition appender factory
 
      */
+    @Setter
     private SyntaxAppenderFactory conditionAppenderFactory;
     /**
      * 排序区域
      * -- GETTER --
      *  Gets sort appender factory.
      *
-     * @return the sort appender factory
+     *
+     * -- SETTER --
+     *  Sets sort appender factory.
+     *
+     @return the sort appender factory
+      * @param sortAppenderFactory the sort appender factory
 
      */
+    @Setter
     private SyntaxAppenderFactory sortAppenderFactory;
     /**
      * 返回值类型
@@ -63,42 +88,6 @@ public class StatementBlock {
 
      */
     private TypeDescriptor returnDescriptor;
-
-    /**
-     * Sets result appender factory.
-     *
-     * @param resultAppenderFactory the result appender factory
-     */
-    public void setResultAppenderFactory(SyntaxAppenderFactory resultAppenderFactory) {
-        this.resultAppenderFactory = resultAppenderFactory;
-    }
-
-    /**
-     * Sets condition appender factory.
-     *
-     * @param conditionAppenderFactory the condition appender factory
-     */
-    public void setConditionAppenderFactory(SyntaxAppenderFactory conditionAppenderFactory) {
-        this.conditionAppenderFactory = conditionAppenderFactory;
-    }
-
-    /**
-     * Sets sort appender factory.
-     *
-     * @param sortAppenderFactory the sort appender factory
-     */
-    public void setSortAppenderFactory(SyntaxAppenderFactory sortAppenderFactory) {
-        this.sortAppenderFactory = sortAppenderFactory;
-    }
-
-    /**
-     * Sets tag name.
-     *
-     * @param tagName the tag name
-     */
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
 
 
     /**

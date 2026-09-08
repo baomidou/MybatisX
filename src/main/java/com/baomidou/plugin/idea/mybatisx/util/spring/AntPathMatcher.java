@@ -18,6 +18,7 @@ package com.baomidou.plugin.idea.mybatisx.util.spring;
 
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -87,7 +88,23 @@ public class AntPathMatcher implements PathMatcher {
     private final Map<String, String[]> tokenizedPatternCache = new ConcurrentHashMap<>(256);
     private String pathSeparator;
     private PathSeparatorPatternCache pathSeparatorPatternCache;
+    /**
+     * -- SETTER --
+     *  Specify whether to perform pattern matching in a case-sensitive fashion.
+     * <p>Default is
+     * . Switch this to
+     * for case-insensitive matching.
+     *
+     */
+    @Setter
     private boolean caseSensitive = true;
+    /**
+     * -- SETTER --
+     *  Specify whether to trim tokenized paths and patterns.
+     * <p>Default is
+     * .
+     */
+    @Setter
     private boolean trimTokens = false;
     private volatile Boolean cachePatterns;
 
@@ -125,24 +142,6 @@ public class AntPathMatcher implements PathMatcher {
     public void setPathSeparator(String pathSeparator) {
         this.pathSeparator = (pathSeparator != null ? pathSeparator : DEFAULT_PATH_SEPARATOR);
         this.pathSeparatorPatternCache = new PathSeparatorPatternCache(this.pathSeparator);
-    }
-
-    /**
-     * Specify whether to perform pattern matching in a case-sensitive fashion.
-     * <p>Default is {@code true}. Switch this to {@code false} for case-insensitive matching.
-     *
-     * @since 4.2
-     */
-    public void setCaseSensitive(boolean caseSensitive) {
-        this.caseSensitive = caseSensitive;
-    }
-
-    /**
-     * Specify whether to trim tokenized paths and patterns.
-     * <p>Default is {@code false}.
-     */
-    public void setTrimTokens(boolean trimTokens) {
-        this.trimTokens = trimTokens;
     }
 
     /**

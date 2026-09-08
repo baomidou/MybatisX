@@ -84,7 +84,7 @@ public class CompositeHashMarkTip {
                                           int editorCaret,
                                           @Nullable PsiElement xmlElement) {
         Optional<PsiMethod> methodOptional = JavaUtils.findMethod(project, idDomElement);
-        if (!methodOptional.isPresent()) {
+        if (methodOptional.isEmpty()) {
             log.info("the psiMethod is null");
             return;
         }

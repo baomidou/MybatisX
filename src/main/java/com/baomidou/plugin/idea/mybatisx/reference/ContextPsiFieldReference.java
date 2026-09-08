@@ -12,6 +12,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.xml.XmlAttributeValue;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,7 @@ import java.util.Optional;
  *
  * @author yanglin
  */
+@Setter
 @Getter
 public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue> {
 
@@ -31,7 +33,12 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
      * -- GETTER --
      *  Gets resolver.
      *
-     * @return the resolver
+     *
+     * -- SETTER --
+     *  Sets resolver.
+     *
+     @return the resolver
+      * @param resolver the resolver
 
      */
     protected ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
@@ -41,7 +48,12 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
      * -- GETTER --
      *  Gets index.
      *
-     * @return the index
+     *
+     * -- SETTER --
+     *  Sets index.
+     *
+     @return the index
+      * @param index the index
 
      */
     protected int index;
@@ -74,7 +86,7 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
     @Override
     public Object[] getVariants() {
         Optional<PsiClass> clazz = getTargetClazz();
-        if (!clazz.isPresent()) {
+        if (clazz.isEmpty()) {
             return PsiReference.EMPTY_ARRAY;
         }
         final PsiClass psiClass = clazz.get();
@@ -96,21 +108,4 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         return Optional.empty();
     }
 
-    /**
-     * Sets resolver.
-     *
-     * @param resolver the resolver
-     */
-    public void setResolver(ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver) {
-        this.resolver = resolver;
-    }
-
-    /**
-     * Sets index.
-     *
-     * @param index the index
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
 }

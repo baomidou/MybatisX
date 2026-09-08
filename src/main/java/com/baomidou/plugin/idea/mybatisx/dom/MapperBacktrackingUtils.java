@@ -142,8 +142,9 @@ public final class MapperBacktrackingUtils {
                                 if (genericClassOfListByField.isPresent()) {
                                     String fieldTypeClassName = genericClassOfListByField.get();
                                     Optional<PsiClass> fieldClassOptional = JavaUtils.findClazz(project, fieldTypeClassName);
-                                    if (foundClass = fieldClassOptional.isPresent()) {
+                                    if (fieldClassOptional.isPresent()) {
                                         currentClass = fieldClassOptional.get();
+                                        foundClass = true;
                                     }
                                 }
                             }
@@ -190,7 +191,7 @@ public final class MapperBacktrackingUtils {
      */
     public static boolean isWithinSameTag(@NotNull DomElement domElement, XmlAttributeValue xmlElement) {
         XmlTag xmlTag = PsiTreeUtil.getParentOfType(xmlElement, XmlTag.class);
-        return xmlTag!=null && domElement.getXmlTag() != null && domElement.getXmlTag().equals(xmlTag);
+        return xmlTag != null && domElement.getXmlTag() != null && domElement.getXmlTag().equals(xmlTag);
     }
 
     public static Optional<PsiClass> getEntityClass(XmlAttributeValue attributeValue) {

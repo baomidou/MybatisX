@@ -10,6 +10,7 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -56,8 +57,14 @@ public class TxParameter {
      * -- GETTER --
      *  字段名称
      *
-     * @return name
+     *
+     * -- SETTER --
+     *  Sets name.
+     *
+     @return name
+      * @param name the name
      */
+    @Setter
     @Getter
     private String name;
     /**
@@ -192,15 +199,6 @@ public class TxParameter {
             true,
             Collections.singletonList(entityClass.getQualifiedName())
         );
-    }
-
-    /**
-     * Sets name.
-     *
-     * @param name the name
-     */
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public String getItemContent(String item) {

@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -8,6 +9,7 @@ import java.io.Serializable;
  * @author :ls9527
  * @date : 2021/6/30
  */
+@Setter
 @Getter
 public class TableUIInfo implements Serializable {
 
@@ -29,11 +31,4 @@ public class TableUIInfo implements Serializable {
     public TableUIInfo() {
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
 }
