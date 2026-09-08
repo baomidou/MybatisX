@@ -168,7 +168,7 @@ public class SmartJpaCompletionProvider {
     private LookupElement buildLookupElement(final String str,
                                              InsertHandler<LookupElement> insertHandler) {
         return LookupElementBuilder.create(str)
-            .withIcon(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG))
+            .withIcon(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG,this.getClass()))
             .bold()
             .withInsertHandler(insertHandler);
 

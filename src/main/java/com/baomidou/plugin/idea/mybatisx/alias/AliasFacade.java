@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
@@ -49,8 +48,8 @@ public class AliasFacade {
      * @param project the project
      * @return the instance
      */
-    public static final AliasFacade getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, AliasFacade.class);
+    public static AliasFacade getInstance(@NotNull Project project) {
+        return project.getService(AliasFacade.class);
     }
 
     private void initResolvers() {
@@ -59,7 +58,7 @@ public class AliasFacade {
             this.registerResolver(AliasResolverFactory.createBeanResolver(project));
             // support springboot alias
             this.registerResolver(AliasResolverFactory.createSpringBootResolver(project));
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
         }
         this.registerResolver(AliasResolverFactory.createSingleAliasResolver(project));
         this.registerResolver(AliasResolverFactory.createConfigPackageResolver(project));
@@ -86,7 +85,7 @@ public class AliasFacade {
         }
         for (AliasResolver resolver : resolvers) {
             for (AliasDesc desc : resolver.getClassAliasDescriptions(element)) {
-                if (desc!=null && desc.getAlias().equalsIgnoreCase(fullName)) {
+                if (desc != null && desc.getAlias().equalsIgnoreCase(fullName)) {
                     return Optional.of(desc.getClazz());
                 }
             }

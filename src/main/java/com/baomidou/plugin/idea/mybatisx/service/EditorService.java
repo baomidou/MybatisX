@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.service;
 
 import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.formatting.FormatTextRanges;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -21,11 +20,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class EditorService {
 
-    private final Project project;
-
     private final FileEditorManager fileEditorManager;
-
-    private CodeFormatterFacade codeFormatterFacade;
 
     /**
      * Instantiates a new Editor service.
@@ -33,7 +28,6 @@ public class EditorService {
      * @param project the project
      */
     public EditorService(Project project) {
-        this.project = project;
         this.fileEditorManager = FileEditorManager.getInstance(project);
     }
 
@@ -44,7 +38,7 @@ public class EditorService {
      * @return the instance
      */
     public static EditorService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, EditorService.class);
+        return project.getService(EditorService.class);
     }
 
     /**
@@ -56,7 +50,7 @@ public class EditorService {
     public void format(@NotNull PsiFile file, @NotNull PsiElement element) {
         CodeStyleSettingsManager instance = CodeStyleSettingsManager.getInstance(element.getProject());
         CodeStyleSettings settings = instance.getMainProjectCodeStyle();
-        this.codeFormatterFacade = new CodeFormatterFacade(settings, element.getLanguage());
+        CodeFormatterFacade codeFormatterFacade = new CodeFormatterFacade(settings, element.getLanguage());
         codeFormatterFacade.processText(file, new FormatTextRanges(element.getTextRange(), true), true);
     }
 
@@ -74,5 +68,4 @@ public class EditorService {
             editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
         }
     }
-
 }

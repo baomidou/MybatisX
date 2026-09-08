@@ -6,7 +6,6 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Insert;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Update;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -113,7 +112,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
     @NotNull
     @Override
     public Icon getIcon() {
-        return  IconLoader.getIcon(IMAGES_STATEMENT_SVG);
+        return  IconLoader.getIcon(IMAGES_STATEMENT_SVG,this.getClass());
     }
 
 
