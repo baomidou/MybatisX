@@ -204,7 +204,7 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
             String itemName = "item";
             // 追加列名
             final String columns = mappingField.stream()
-                .map(field -> field.getColumnName())
+                .map(TxField::getColumnName)
                 .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
             stringBuilder.append("(").append(columns).append(")").append("\n");
             // values 连接符

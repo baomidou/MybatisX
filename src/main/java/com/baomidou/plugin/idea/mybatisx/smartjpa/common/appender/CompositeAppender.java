@@ -51,7 +51,7 @@ public class CompositeAppender implements SyntaxAppender {
 
     @Override
     public String getText() {
-        return this.appenderList.stream().map(x -> x.getText()).collect(Collectors.joining());
+        return this.appenderList.stream().map(SyntaxAppender::getText).collect(Collectors.joining());
     }
 
     /**

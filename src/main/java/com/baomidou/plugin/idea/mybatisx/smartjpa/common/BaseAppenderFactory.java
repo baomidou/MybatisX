@@ -98,7 +98,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         if (!isValid(splitList, appendTypes)) {
             return Optional.empty();
         }
-        String resultStr = appendTypes.stream().map(x -> x.getText()).collect(Collectors.joining());
+        String resultStr = appendTypes.stream().map(SyntaxAppender::getText).collect(Collectors.joining());
         return Optional.of(resultStr);
     }
 
