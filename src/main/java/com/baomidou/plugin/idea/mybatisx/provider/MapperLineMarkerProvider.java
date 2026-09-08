@@ -48,7 +48,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
     /**
      * PsiClass过滤器
      */
-    private class PsiClassAbstractElementFilter extends AbstractElementFilter {
+    private static class PsiClassAbstractElementFilter extends AbstractElementFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
@@ -63,7 +63,7 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
     /**
      * PsiMethod 过滤器
      */
-    private class PsiMethodAbstractElementFilter extends AbstractElementFilter {
+    private static class PsiMethodAbstractElementFilter extends AbstractElementFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {

@@ -144,7 +144,7 @@ public class MysqlUpdateSelective implements CustomStatement {
     }
 
 
-    private class UpdateSelectiveResultAppenderFactory extends ResultAppenderFactory {
+    private static class UpdateSelectiveResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert batch result appender factory.
@@ -186,7 +186,7 @@ public class MysqlUpdateSelective implements CustomStatement {
     /**
      * 可选更新
      */
-    private class UpdateSelectiveSuffixOperator implements SuffixOperator {
+    private static class UpdateSelectiveSuffixOperator implements SuffixOperator {
 
         private final List<TxField> mappingField;
 

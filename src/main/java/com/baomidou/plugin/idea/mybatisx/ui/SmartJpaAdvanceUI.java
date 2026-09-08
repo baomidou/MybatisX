@@ -236,7 +236,7 @@ public class SmartJpaAdvanceUI {
         MYBATIS_ANNOTATION,
     }
 
-    private abstract class ResultExecutor {
+    private abstract static class ResultExecutor {
 
         protected abstract String getResultMap();
 
@@ -246,7 +246,7 @@ public class SmartJpaAdvanceUI {
 
     }
 
-    private class CommonResultExecutor extends ResultExecutor {
+    private static class CommonResultExecutor extends ResultExecutor {
         @Override
         public String getResultMap() {
             return BASE_RESULT_MAP;

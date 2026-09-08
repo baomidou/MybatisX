@@ -53,7 +53,7 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
         });
     }
 
-    private class HashMarkReference extends PsiReferenceBase<PsiElement> {
+    private static class HashMarkReference extends PsiReferenceBase<PsiElement> {
 
         private final CompositeHashMarkTip compositeHashMarkTip;
 

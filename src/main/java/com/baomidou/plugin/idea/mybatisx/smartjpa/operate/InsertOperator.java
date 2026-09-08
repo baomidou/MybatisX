@@ -188,7 +188,7 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private class InsertResultAppenderFactory extends ResultAppenderFactory {
+    private static class InsertResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert result appender factory.
@@ -228,7 +228,7 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private class InsertAllSuffixOperator implements SuffixOperator {
+    private static class InsertAllSuffixOperator implements SuffixOperator {
 
         private final List<TxField> mappingField;
 
@@ -266,7 +266,7 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private class InsertSelectiveSuffixOperator implements SuffixOperator {
+    private static class InsertSelectiveSuffixOperator implements SuffixOperator {
 
         private final List<TxField> mappingField;
 
