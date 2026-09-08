@@ -90,7 +90,7 @@ public abstract class AbstractStatementGenerator {
     };
     /**
      * -- GETTER --
-     *  Gets patterns.
+     * Gets patterns.
      *
      * @return the patterns
      */
@@ -149,19 +149,19 @@ public abstract class AbstractStatementGenerator {
         }
         try {
             final AbstractStatementGenerator[] generators = getGenerators(method);
-        if (1 == generators.length) {
-            generators[0].execute(method, method.getProject());
-        } else {
-            BaseListPopupStep<AbstractStatementGenerator> step = new BaseListPopupStep<AbstractStatementGenerator>("[ Statement type for method: " + method.getName() + "]", generators) {
-                @Override
-                public PopupStep onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
-                    return this.doFinalStep(() -> WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method, project)));
-                }
-            };
-            JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
-        }
+            if (1 == generators.length) {
+                generators[0].execute(method, method.getProject());
+            } else {
+                BaseListPopupStep<AbstractStatementGenerator> step = new BaseListPopupStep<>("[ Statement type for method: " + method.getName() + "]", generators) {
+                    @Override
+                    public @Nullable PopupStep<?> onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
+                        return this.doFinalStep(() -> WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method, project)));
+                    }
+                };
+                JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
+            }
         } catch (RuntimeException e) {
-            logger.error("生成xml文件声明失败",e);
+            logger.error("生成xml文件声明失败", e);
         }
     }
 
@@ -228,7 +228,7 @@ public abstract class AbstractStatementGenerator {
 
     private void setupTag(PsiMethod method, Mapper mapper, Project project) {
         XmlFile containingFile = DomService.getInstance().getContainingFile(mapper);
-        if(containingFile.getFileType().isReadOnly()){
+        if (containingFile.getFileType().isReadOnly()) {
             Messages.showErrorDialog("xml filetype must not be readonly", "Generate Info");
             return;
         }

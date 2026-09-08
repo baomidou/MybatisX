@@ -19,7 +19,7 @@ public final class CollectionUtils {
      * @param collection the collection
      * @return the boolean
      */
-    public static boolean isEmpty(Collection collection) {
+    public static boolean isEmpty(Collection<?> collection) {
         return null == collection || 0 == collection.size();
     }
 
@@ -29,7 +29,7 @@ public final class CollectionUtils {
      * @param collection the collection
      * @return the boolean
      */
-    public static boolean isNotEmpty(Collection collection) {
+    public static boolean isNotEmpty(Collection<?> collection) {
         return !isEmpty(collection);
     }
 

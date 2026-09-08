@@ -67,7 +67,7 @@ public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> impleme
     @Override
     public XmlAttributeValue fromString(@Nullable @NonNls String s, ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
-        return ctxElement instanceof GenericAttributeValue ? ((GenericAttributeValue) ctxElement).getXmlAttributeValue() : null;
+        return ctxElement instanceof GenericAttributeValue ? ((GenericAttributeValue<?>) ctxElement).getXmlAttributeValue() : null;
     }
 
 }

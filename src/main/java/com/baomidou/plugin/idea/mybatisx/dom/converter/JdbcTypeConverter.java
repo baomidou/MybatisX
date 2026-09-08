@@ -50,8 +50,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
     @Override
     public XmlAttributeValue fromString(@Nullable @NonNls String s, ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
-        if (ctxElement instanceof GenericAttributeValue) {
-            GenericAttributeValue genericAttributeValue = (GenericAttributeValue) ctxElement;
+        if (ctxElement instanceof GenericAttributeValue<?> genericAttributeValue) {
             return genericAttributeValue.getXmlAttributeValue();
         }
         return null;
@@ -89,7 +88,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     }
 
-    private class JdbcTypePsiReferenceBase extends PsiReferenceBase {
+    private class JdbcTypePsiReferenceBase extends PsiReferenceBase<XmlAttributeValue> {
 
         private final ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
         private final int index;
@@ -118,7 +117,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
             }
             // 找不到JdbcType类则始终不缓存
             Optional<PsiClass> classOptional = findJdbcTypeClass(project);
-            if (!classOptional.isPresent()) {
+            if (classOptional.isEmpty()) {
                 return PsiReference.EMPTY_ARRAY;
             }
             PsiClass psiClass = classOptional.get();
@@ -154,15 +153,14 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
                 return Optional.empty();
             }
             Optional<PsiClass> jdbcTypeOptional = findJdbcTypeClass(project);
-            if (!jdbcTypeOptional.isPresent()) {
+            if (jdbcTypeOptional.isEmpty()) {
                 return Optional.empty();
             }
             PsiClass psiClass = jdbcTypeOptional.get();
             String paramText = firstText.toUpperCase();
             PsiField foundField = null;
             for (PsiField enumField : psiClass.getAllFields()) {
-                if (enumField.getName() != null
-                    && enumField.getName().equalsIgnoreCase(paramText)) {
+                if (enumField.getName().equalsIgnoreCase(paramText)) {
                     if (enumField.getType().getCanonicalText().equalsIgnoreCase(psiClass.getQualifiedName())) {
                         foundField = enumField;
                         break;

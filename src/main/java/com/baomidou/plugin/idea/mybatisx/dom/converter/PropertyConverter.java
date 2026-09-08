@@ -26,7 +26,7 @@ import java.util.Optional;
 public class PropertyConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
     @Override
-    public String getErrorMessage(@Nullable String property, ConvertContext context) {
+    public String getErrorMessage(@Nullable String property,@NotNull ConvertContext context) {
         return "property (" + property + ") can not found setter method";
     }
 
@@ -44,8 +44,8 @@ public class PropertyConverter extends ConverterAdaptor<XmlAttributeValue> imple
     @Override
     public XmlAttributeValue fromString(@Nullable @NonNls String firstText, ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
-        if (ctxElement instanceof GenericAttributeValue) {
-            final XmlAttributeValue xmlAttributeValue = ((GenericAttributeValue) ctxElement).getXmlAttributeValue();
+        if (ctxElement instanceof GenericAttributeValue<?> attributeValue) {
+            final XmlAttributeValue xmlAttributeValue = attributeValue.getXmlAttributeValue();
             PropertySetterFind propertySetterFind = new PropertySetterFind();
             final Optional<PsiField> startElement = propertySetterFind.getStartElement(firstText, xmlAttributeValue);
             if (startElement.isPresent()) {

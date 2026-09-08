@@ -169,8 +169,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     private Object findAliasPackage(Object config) {
         Object typeAliasesPackage = null;
         if (config != null) {
-            if (config instanceof Map) {
-                Map mapConfig = (Map) config;
+            if (config instanceof Map<?, ?> mapConfig) {
                 typeAliasesPackage = mapConfig.get("type-aliases-package");
                 if (typeAliasesPackage == null) {
                     typeAliasesPackage = mapConfig.get("typeAliasesPackage");
@@ -183,8 +182,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     @Nullable
     private Object findConfig(Object object) {
         Object config = null;
-        if (object instanceof Map) {
-            Map jsonObject = (Map) object;
+        if (object instanceof Map<?, ?> jsonObject) {
             config = jsonObject.get("mybatis");
             if (config == null) {
                 config = jsonObject.get("mybatis-plus");
@@ -195,6 +193,4 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         }
         return config;
     }
-
-
 }
