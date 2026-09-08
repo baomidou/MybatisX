@@ -88,7 +88,7 @@ public class BaseDialectManager implements AreaOperateManager {
     @Override
     public List<TxParameter> getParameters(PsiClass entityClass,
                                            LinkedList<SyntaxAppender> jpaStringList) {
-        if (jpaStringList.size() == 0 || jpaStringList.get(0).getType() != AppendTypeEnum.AREA) {
+        if (jpaStringList.size() == 0 || jpaStringList.getFirst().getType() != AppendTypeEnum.AREA) {
             return Collections.emptyList();
         }
         SyntaxAppender syntaxAppender = jpaStringList.peek();
@@ -104,7 +104,7 @@ public class BaseDialectManager implements AreaOperateManager {
 
     @Override
     public TypeDescriptor getReturnWrapper(String text, PsiClass entityClass, @NotNull LinkedList<SyntaxAppender> linkedList) {
-        if (linkedList.size() == 0 || linkedList.get(0).getType() != AppendTypeEnum.AREA) {
+        if (linkedList.size() == 0 || linkedList.getFirst().getType() != AppendTypeEnum.AREA) {
             return null;
         }
         SyntaxAppender syntaxAppender = linkedList.peek();
@@ -131,7 +131,7 @@ public class BaseDialectManager implements AreaOperateManager {
                                   Generator mybatisXmlGenerator,
                                   ConditionFieldWrapper conditionFieldWrapper,
                                   List<TxField> resultFields) {
-        if (jpaList.size() == 0 || jpaList.get(0).getType() != AppendTypeEnum.AREA) {
+        if (jpaList.size() == 0 || jpaList.getFirst().getType() != AppendTypeEnum.AREA) {
             return;
         }
         SyntaxAppender syntaxAppender = jpaList.peek();

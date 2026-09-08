@@ -238,7 +238,7 @@ public class TablePreviewUI {
         if (chosenElements.size() == 0) {
             return;
         }
-        Module module = chosenElements.get(0);
+        Module module = chosenElements.getFirst();
         chooseModulePath(module);
         moduleName = module.getName();
     }

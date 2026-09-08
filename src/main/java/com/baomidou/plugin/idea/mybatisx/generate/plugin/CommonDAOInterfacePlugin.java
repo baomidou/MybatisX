@@ -96,7 +96,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
         if (introspectedTable.getPrimaryKeyColumns().size() > 1) {
             primaryKeyTypeJavaType = new FullyQualifiedJavaType(targetPackage + "." + domainObjectName + "Key");
         } else if (introspectedTable.hasPrimaryKeyColumns()) {
-            primaryKeyTypeJavaType = introspectedTable.getPrimaryKeyColumns().get(0).getFullyQualifiedJavaType();
+            primaryKeyTypeJavaType = introspectedTable.getPrimaryKeyColumns().getFirst().getFullyQualifiedJavaType();
         } else {
             primaryKeyTypeJavaType = baseModelJavaType;
         }

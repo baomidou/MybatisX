@@ -339,7 +339,7 @@ public class GenerateCode {
          */
         PluginConfiguration daoEntityAnnotationPlugin = new PluginConfiguration();
         daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
-        String domainObjectName = context.getTableConfigurations().get(0).getDomainObjectName();
+        String domainObjectName = context.getTableConfigurations().getFirst().getDomainObjectName();
         String targetPackage = context.getJavaModelGeneratorConfiguration().getTargetPackage();
         daoEntityAnnotationPlugin.addProperty("domainName", targetPackage + "." + domainObjectName);
         context.addPluginConfiguration(daoEntityAnnotationPlugin);
