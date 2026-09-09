@@ -1,8 +1,10 @@
 package com.baomidou.plugin.idea.mybatisx.generate.util;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import freemarker.cache.StringTemplateLoader;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +30,7 @@ public class DomainPlaceHolder {
         }
         try {
             String defaultTemplateName = "default";
-            freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_22);
-            // 设置模板加载器
-            StringTemplateLoader templateLoader = new StringTemplateLoader();
-            templateLoader.putTemplate(defaultTemplateName, templateText);
-            cfg.setTemplateLoader(templateLoader);
-
-            cfg.setDefaultEncoding(domainInfo.getEncoding());
-            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+            Configuration cfg = createCfg(templateText, domainInfo, defaultTemplateName);
 
             Template templateName = cfg.getTemplate(defaultTemplateName);
             Writer writer = new StringWriter();
@@ -48,5 +43,18 @@ public class DomainPlaceHolder {
             log.error("动态参数替换错误", e);
             return templateText;
         }
+    }
+
+    @NonNull
+    private static Configuration createCfg(String templateText, DomainInfo domainInfo, String defaultTemplateName) {
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
+        // 设置模板加载器
+        StringTemplateLoader templateLoader = new StringTemplateLoader();
+        templateLoader.putTemplate(defaultTemplateName, templateText);
+        cfg.setTemplateLoader(templateLoader);
+
+        cfg.setDefaultEncoding(domainInfo.getEncoding());
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        return cfg;
     }
 }

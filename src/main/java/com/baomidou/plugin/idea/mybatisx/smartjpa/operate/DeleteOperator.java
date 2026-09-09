@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
@@ -35,7 +35,7 @@ public class DeleteOperator extends BaseOperatorManager {
      * @param mappingField the mapping field
      */
     public DeleteOperator(final List<TxField> mappingField) {
-        super.setOperatorNameList(AbstractStatementGenerator.DELETE_GENERATOR.getPatterns());
+        super.setOperatorNameList(StatementGenerators.DELETE_GENERATOR.getPatterns());
         this.init(mappingField);
     }
 

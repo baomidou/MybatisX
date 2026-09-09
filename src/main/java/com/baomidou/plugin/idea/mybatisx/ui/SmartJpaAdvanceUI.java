@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.ui;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -116,19 +117,7 @@ public class SmartJpaAdvanceUI {
 
             StringJoiner stringJoiner = new StringJoiner(",");
             for (int i = 0; i < allFields.size(); i++) {
-                final TxField txField = allFields.get(i);
-                String columnName = null;
-                // 没有驼峰命名, 就不需要 as
-                if (txField.getColumnName().equals(txField.getFieldName())) {
-                    columnName = txField.getColumnName();
-                } else {
-                    // column as field
-                    columnName = txField.getColumnName() + " as " + txField.getFieldName();
-                }
-
-                if (splitNumber > 0 && i > 0 && i % splitNumber == 0) {
-                    columnName = "\n" + columnName;
-                }
+                String columnName = getColumnName(i, splitNumber);
                 stringJoiner.add(columnName);
             }
 
@@ -143,6 +132,24 @@ public class SmartJpaAdvanceUI {
         includeAllResults(BASE_COLUMN_LIST);
 
         splitFieldSpiner.setValue(3);
+    }
+
+    @NonNull
+    private String getColumnName(int i, int splitNumber) {
+        final TxField txField = allFields.get(i);
+        String columnName;
+        // 没有驼峰命名, 就不需要 as
+        if (txField.getColumnName().equals(txField.getFieldName())) {
+            columnName = txField.getColumnName();
+        } else {
+            // column as field
+            columnName = txField.getColumnName() + " as " + txField.getFieldName();
+        }
+
+        if (splitNumber > 0 && i > 0 && i % splitNumber == 0) {
+            columnName = "\n" + columnName;
+        }
+        return columnName;
     }
 
     @Nullable

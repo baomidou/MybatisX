@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
@@ -25,7 +26,7 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> {
      */
     @Nullable
     @Override
-    public PsiClass fromString(@Nullable @NonNls String id, ConvertContext context) {
+    public PsiClass fromString(@Nullable @NonNls String id, @NonNull ConvertContext context) {
         if (StringUtils.isEmpty(id)) {
             return null;
         }

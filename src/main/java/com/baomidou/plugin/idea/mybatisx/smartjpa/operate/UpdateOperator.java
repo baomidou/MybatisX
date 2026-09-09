@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
@@ -38,7 +38,7 @@ public class UpdateOperator extends BaseOperatorManager {
      * @param entityClass
      */
     public UpdateOperator(final List<TxField> mappingField, PsiClass entityClass) {
-        final Set<String> patterns = AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns();
+        final Set<String> patterns = StatementGenerators.UPDATE_GENERATOR.getPatterns();
         this.init(mappingField, entityClass, patterns);
         patterns.forEach(this::addOperatorName);
     }

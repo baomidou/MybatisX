@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
@@ -136,13 +137,13 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
          * @param tableName    the table name
          * @param mappingField the mapping field
          */
-        public InsertBatchSuffixOperator(String tableName, List<TxField> mappingField) {
+        public InsertBatchSuffixOperator(String tableName, @NotNull List<TxField> mappingField) {
             this.tableName = tableName;
             this.mappingField = mappingField;
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
             StringBuilder stringBuilder = new StringBuilder();

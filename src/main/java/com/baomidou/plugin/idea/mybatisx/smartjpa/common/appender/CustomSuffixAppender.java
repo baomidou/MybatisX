@@ -199,7 +199,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        String fieldName = null;
+//        String fieldName = null;
         String columnName = null;
         int i = 0;
         for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
@@ -207,7 +207,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
             SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
             // 兼容insert 语句生成,后缀没有字段的情况
             if (appender instanceof CustomFieldAppender field) {
-                fieldName = field.getFieldName();
+//                fieldName = field.getFieldName();
                 columnName = field.getColumnName();
                 break;
             }
@@ -317,6 +317,4 @@ public class CustomSuffixAppender implements SyntaxAppender {
         }
         return mxParameterFinder.getParameter(txParameter);
     }
-
-
 }

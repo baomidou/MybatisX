@@ -90,9 +90,11 @@ public class BaseDialectManager implements AreaOperateManager {
         SyntaxAppender syntaxAppender = jpaStringList.peek();
 
         final List<TxParameter> results = new ArrayList<>();
-        for (final AreaOperateManager typeManager : this.typeManagers) {
-            if (typeManager.support(syntaxAppender.getText())) {
-                results.addAll(typeManager.getParameters(entityClass, jpaStringList));
+        if (syntaxAppender != null) {
+            for (final AreaOperateManager typeManager : this.typeManagers) {
+                if (typeManager.support(syntaxAppender.getText())) {
+                    results.addAll(typeManager.getParameters(entityClass, jpaStringList));
+                }
             }
         }
         return results;
@@ -105,9 +107,11 @@ public class BaseDialectManager implements AreaOperateManager {
         }
         SyntaxAppender syntaxAppender = linkedList.peek();
 
-        for (AreaOperateManager typeManager : this.typeManagers) {
-            if (typeManager.support(syntaxAppender.getText())) {
-                return typeManager.getReturnWrapper(syntaxAppender.getText(), entityClass, linkedList);
+        if (syntaxAppender != null) {
+            for (AreaOperateManager typeManager : this.typeManagers) {
+                if (typeManager.support(syntaxAppender.getText())) {
+                    return typeManager.getReturnWrapper(syntaxAppender.getText(), entityClass, linkedList);
+                }
             }
         }
         return null;
@@ -132,20 +136,20 @@ public class BaseDialectManager implements AreaOperateManager {
         }
         SyntaxAppender syntaxAppender = jpaList.peek();
 
-        for (AreaOperateManager typeManager : this.typeManagers) {
-            if (typeManager.support(syntaxAppender.getText())) {
-                typeManager.generateMapperXml(id,
-                    jpaList,
-                    entityClass,
-                    psiMethod,
-                    tableNameByEntityName,
-                    mybatisXmlGenerator,
-                    conditionFieldWrapper,
-                    resultFields);
-                break;
+        if (syntaxAppender != null) {
+            for (AreaOperateManager typeManager : this.typeManagers) {
+                if (typeManager.support(syntaxAppender.getText())) {
+                    typeManager.generateMapperXml(id,
+                        jpaList,
+                        entityClass,
+                        psiMethod,
+                        tableNameByEntityName,
+                        mybatisXmlGenerator,
+                        conditionFieldWrapper,
+                        resultFields);
+                    break;
+                }
             }
         }
     }
-
-
 }

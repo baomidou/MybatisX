@@ -44,6 +44,7 @@ dependencies {
 // https://mvnrepository.com/artifact/commons-lang/commons-lang
     implementation("org.apache.commons:commons-lang3:3.20.0")
 
+    implementation("org.jetbrains:annotations:26.1.0")
 
     testImplementation("junit:junit:4.13.1")
     testImplementation("commons-io:commons-io:2.22.0")
@@ -60,13 +61,6 @@ dependencies {
         zipSigner()
         testFramework(TestFrameworkType.Platform)
     }
-//    compileOnly(libs.intellij.structure.base) {
-//        exclude("org.jetbrains.kotlin")
-//    }
-//    compileOnly(libs.intellij.structure.intellij) {
-//        exclude("org.jetbrains.kotlin")
-//        exclude("org.jetbrains.kotlinx")
-//    }
 }
 
 tasks.withType<JavaCompile> {

@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.alias.AliasClassReference;
 import com.baomidou.plugin.idea.mybatisx.alias.AliasFacade;
 import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
@@ -29,7 +30,7 @@ public class AliasConverter extends ConverterAdaptor<PsiClass> implements Custom
 
     @Nullable
     @Override
-    public PsiClass fromString(@Nullable @NonNls String s, ConvertContext context) {
+    public PsiClass fromString(@Nullable @NonNls String s, @NonNull ConvertContext context) {
         if (StringUtil.isEmptyOrSpaces(s)) {
             return null;
         }
@@ -47,13 +48,13 @@ public class AliasConverter extends ConverterAdaptor<PsiClass> implements Custom
 
     @Nullable
     @Override
-    public String toString(@Nullable PsiClass psiClass, ConvertContext context) {
+    public String toString(@Nullable PsiClass psiClass, @NotNull ConvertContext context) {
         return delegate.toString(psiClass, context);
     }
 
-    @NotNull
+
     @Override
-    public PsiReference[] createReferences(GenericDomValue<PsiClass> value, PsiElement element, ConvertContext context) {
+    public PsiReference @NotNull [] createReferences(GenericDomValue<PsiClass> value, PsiElement element, ConvertContext context) {
         if (notAlias((XmlAttributeValue) element)) {
             return delegate.createReferences(value, element, context);
         } else {

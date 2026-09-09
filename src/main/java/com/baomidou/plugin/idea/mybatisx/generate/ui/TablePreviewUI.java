@@ -248,13 +248,15 @@ public class TablePreviewUI {
         if (contentRoots.length > 0) {
             moduleDirPath = contentRoots[0].getPath();
         }
-        int childModuleIndex = indexFromChildModule(moduleDirPath);
-        if (hasChildModule(childModuleIndex)) {
-            Optional<String> pathFromModule = getPathFromModule(module);
-            if (pathFromModule.isPresent()) {
-                moduleDirPath = pathFromModule.get();
-            } else {
-                moduleDirPath = moduleDirPath.substring(0, childModuleIndex);
+        if (moduleDirPath!=null) {
+            int childModuleIndex = indexFromChildModule(moduleDirPath);
+            if (hasChildModule(childModuleIndex)) {
+                Optional<String> pathFromModule = getPathFromModule(module);
+                if (pathFromModule.isPresent()) {
+                    moduleDirPath = pathFromModule.get();
+                } else {
+                    moduleDirPath = moduleDirPath.substring(0, childModuleIndex);
+                }
             }
         }
 
@@ -266,6 +268,9 @@ public class TablePreviewUI {
     }
 
     private int indexFromChildModule(String moduleDirPath) {
+        if (moduleDirPath == null) {
+            return -1;
+        }
         return moduleDirPath.indexOf(".idea");
     }
 
@@ -273,7 +278,7 @@ public class TablePreviewUI {
         // 兼容gradle获取子模块
         VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
         if (contentRoots.length == 1) {
-            return Optional.ofNullable(contentRoots[0].getPath());
+            return Optional.of(contentRoots[0].getPath());
         }
         return Optional.empty();
     }

@@ -55,7 +55,7 @@ public class BeanAliasResolver extends PackageAliasResolver {
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
         // 兼容低版本获取不到 ServiceManager 报错的场景。 直接忽略
-        SpringModelUtils instance = null;
+        SpringModelUtils instance;
         try {
             instance = SpringModelUtils.getInstance();
         } catch (Throwable e) {

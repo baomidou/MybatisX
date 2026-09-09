@@ -151,7 +151,7 @@ public class CustomAreaAppender implements SyntaxAppender {
 
     @Override
     public Optional<SyntaxAppender> pollLast(LinkedList<SyntaxAppender> splitList) {
-        final Optional<SyntaxAppender> syntaxAppender = Optional.of(splitList.pollLast());
+        final Optional<SyntaxAppender> syntaxAppender = Optional.ofNullable(splitList.pollLast());
         if (syntaxAppender.isPresent() && !splitList.isEmpty()) {
             final SyntaxAppender last = splitList.getLast();
             return last.pollLast(splitList);

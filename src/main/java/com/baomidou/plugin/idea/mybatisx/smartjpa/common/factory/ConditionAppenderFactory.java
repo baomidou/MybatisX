@@ -31,7 +31,7 @@ import java.util.Stack;
  * 条件追加区
  * <p>
  * jpa 条件规范:
- * https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation
+ * <a href="https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation">jpa.query-methods.query-creation</a>
  */
 @Slf4j
 public class ConditionAppenderFactory extends BaseAppenderFactory {

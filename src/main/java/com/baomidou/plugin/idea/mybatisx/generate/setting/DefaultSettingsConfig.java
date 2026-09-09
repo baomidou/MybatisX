@@ -62,7 +62,7 @@ public class DefaultSettingsConfig {
                     log.error("元数据文件不存在,无法加载配置.  元数据信息: {}", metaFile.getAbsolutePath());
                     continue;
                 }
-                Map<String, TemplateSettingDTO> defaultTemplateSettingMapping = null;
+                Map<String, TemplateSettingDTO> defaultTemplateSettingMapping;
 
                 try (FileInputStream metaInputStream = new FileInputStream(metaFile)) {
                     defaultTemplateSettingMapping = XmlUtils.loadTemplatesByFile(metaInputStream);

@@ -34,13 +34,11 @@ public class MybatisGeneratorMainAction extends AnAction {
 
     /**
      * 点击后打开插件主页面
-     *
-     * @param e
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        /**
-         * 代码生成
+        /*
+          代码生成
          */
         Project project = e.getProject();
         PsiElement[] tableElements = e.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
@@ -101,39 +99,4 @@ public class MybatisGeneratorMainAction extends AnAction {
             TITLE,
             generateConfig.getModuleName() + " generate finished");
     }
-
-
-//    @Override
-//    public void update(@NotNull AnActionEvent e) {
-//        Boolean visible = null;
-//        PsiElement[] psiElements = e.getData(LangDataKeys.PSI_ELEMENT_ARRAY);
-//        if (psiElements == null || psiElements.length == 0) {
-//            visible = false;
-//        }
-//        boolean existsDbTools = PluginExistsUtils.existsDbTools();
-//        if (!existsDbTools) {
-//            visible = false;
-//        }
-//        if (visible == null) {
-//            if (!Stream.of(psiElements).allMatch(item -> CheckMatch.checkAssignableFrom(item.getClass()))) {
-//                visible = false;
-//            }
-//        }
-//        // 未安装Database Tools插件时，不展示菜单
-//        if (visible != null) {
-//            e.getPresentation().setEnabledAndVisible(visible);
-//        }
-//
-//    }
-
-//    private static class CheckMatch {
-//        public static boolean checkAssignableFrom(Class<? extends PsiElement> aClass) {
-//            try {
-//                return DbTable.class.isAssignableFrom(aClass);
-//            } catch (Exception e) {
-//                return false;
-//            }
-//        }
-//    }
-
 }
