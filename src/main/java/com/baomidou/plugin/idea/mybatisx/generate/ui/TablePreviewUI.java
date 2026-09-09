@@ -227,7 +227,7 @@ public class TablePreviewUI {
 
     private void chooseModule(Project project) {
         Module[] modules = ModuleManager.getInstance(project).getModules();
-        ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
+        ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose single module");
         dialog.setSingleSelectionMode();
         dialog.show();
         if (dialog.getExitCode() != ChooseModulesDialog.OK_EXIT_CODE) {
