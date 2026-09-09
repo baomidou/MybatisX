@@ -34,7 +34,7 @@ public class MysqlManager extends BaseDialectManager {
         this.registerManagers(new CountOperator(mappingField, entityClass));
 
         // 批量插入
-        this.registerManagers(new InsertOperator(mappingField) {
+        this.registerManagers(new InsertOperator(mappingField, false) {
             @Override
             protected void initCustomArea(String areaName, List<TxField> mappingField) {
                 super.initCustomArea(areaName, mappingField);
@@ -46,7 +46,7 @@ public class MysqlManager extends BaseDialectManager {
 
         });
         // 批量插入,重复则更新
-        this.registerManagers(new InsertOperator(mappingField) {
+        this.registerManagers(new InsertOperator(mappingField, true) {
             @Override
             protected void initCustomArea(String areaName, List<TxField> mappingField) {
                 super.initCustomArea(areaName, mappingField);
