@@ -40,14 +40,15 @@ public class OgnlUtils {
      */
     @Nullable
     public static PsiElement resolveOgnlSpecialProperty(@Nullable PsiType type, String name, Project project) {
-        if (type == null) return null;
+        if (type == null || name == null || name.isEmpty()) {
+            return null;
+        }
 
         if ("size".equals(name) || "isEmpty".equals(name)) {
             PsiClass col = JavaPsiFacade.getInstance(project).findClass("java.util.Collection", GlobalSearchScope.allScope(project));
             PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
-
-            boolean isCol = col != null && (type instanceof PsiArrayType || (type instanceof PsiClassType && ((PsiClassType) type).resolve() != null && ((PsiClassType) type).resolve().isInheritor(col, true)));
-            boolean isMap = map != null && type instanceof PsiClassType && ((PsiClassType) type).resolve() != null && ((PsiClassType) type).resolve().isInheritor(map, true);
+            boolean isCol = col != null && (type instanceof PsiArrayType || isInheritor(type, col));
+            boolean isMap = isInheritor(type, map);
 
             if (isCol || isMap) {
                 return resolveMethodInType(type, "size".equals(name) ? "size" : "isEmpty", project);
@@ -55,11 +56,24 @@ public class OgnlUtils {
         }
         if ("keys".equals(name) || "values".equals(name) || "entrySet".equals(name)) {
             PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
-            if (map != null && type instanceof PsiClassType && ((PsiClassType) type).resolve() != null && ((PsiClassType) type).resolve().isInheritor(map, true)) {
+            if (isInheritor(type, map)) {
                 return resolveMethodInType(type, name, project);
             }
         }
         return null;
+    }
+
+    private static boolean isInheritor(@NotNull PsiType type, PsiClass clazz) {
+        if (clazz == null) {
+            return false;
+        }
+        if (type instanceof PsiClassType classType) {
+            PsiClass resolve = classType.resolve();
+            if (resolve != null) {
+                return resolve.isInheritor(clazz, true);
+            }
+        }
+        return false;
     }
 
     /**

@@ -110,7 +110,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
         }
         ResultMap foundResultMap = null;
         for (ResultMap resultMap : resultMaps) {
-            if (resultMap.getId().getStringValue().equals(stringValue)) {
+            if (Objects.equals(resultMap.getId().getStringValue(), stringValue)) {
                 foundResultMap = resultMap;
                 break;
             }

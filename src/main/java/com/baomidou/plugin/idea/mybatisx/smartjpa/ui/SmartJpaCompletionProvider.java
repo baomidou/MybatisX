@@ -54,9 +54,7 @@ public class SmartJpaCompletionProvider {
      * @param result      the result
      * @param mapperClass the mapper class
      */
-    public void addCompletion(@NotNull final CompletionParameters parameters,
-                              @NotNull final CompletionResultSet result,
-                              PsiClass mapperClass) {
+    public void addCompletion(@NotNull final CompletionParameters parameters, @NotNull final CompletionResultSet result, PsiClass mapperClass) {
         PsiElement originalPosition = parameters.getOriginalPosition();
         assert originalPosition != null;
 
@@ -85,7 +83,7 @@ public class SmartJpaCompletionProvider {
         completionResultSet = this.getCompletionResultSet(completionResultSet, prefix, splitString);
 
         // 获得提示列表
-        List<String> appendList = null;
+        List<String> appendList;
         if (!splitList.isEmpty()) {
             appendList = areaOperateManager.getCompletionContent(splitList);
         } else {
@@ -100,8 +98,6 @@ public class SmartJpaCompletionProvider {
             .collect(Collectors.toList());
         // 添加到提示
         completionResultSet.addAllElements(lookupElementList);
-
-
     }
 
     /**
@@ -122,8 +118,7 @@ public class SmartJpaCompletionProvider {
         PsiClass entityClass = entityMappingHolder.getEntityClass();
 
         if (entityClass == null) {
-            foundAreaOperateManager = false;
-            editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
+            editor.putUserData(FOUND_OPERATOR_MANAGER, false);
             return Optional.empty();
         }
         // 第一次初始化
@@ -142,9 +137,8 @@ public class SmartJpaCompletionProvider {
             entityClass,
             null,
             null);
-        foundAreaOperateManager = true;
 
-        editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
+        editor.putUserData(FOUND_OPERATOR_MANAGER, true);
         editor.putUserData(OPERATOR_MANAGER, areaOperateManager);
 
         return Optional.of(areaOperateManager);
@@ -165,13 +159,10 @@ public class SmartJpaCompletionProvider {
     }
 
 
-    private LookupElement buildLookupElement(final String str,
-                                             InsertHandler<LookupElement> insertHandler) {
+    private LookupElement buildLookupElement(final String str, InsertHandler<LookupElement> insertHandler) {
         return LookupElementBuilder.create(str)
             .withIcon(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG, this.getClass()))
             .bold()
             .withInsertHandler(insertHandler);
-
     }
-
 }

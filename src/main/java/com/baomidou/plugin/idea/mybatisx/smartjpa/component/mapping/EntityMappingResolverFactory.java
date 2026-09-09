@@ -98,7 +98,7 @@ public class EntityMappingResolverFactory {
                     if (defaultField != null) {
                         final Boolean primaryKey = defaultField.getPrimaryKey();
                         if (primaryKey) {
-                            field.setPrimaryKey(primaryKey);
+                            field.setPrimaryKey(true);
                         }
                         // 处理jdbcType, 强制以 resultMap 为准
                         if (defaultField.getJdbcType() != null) {

@@ -71,7 +71,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
      * Gets table field annotation.
      *
      * @param field the field
-     * @return the table field annotation
+     * @return the table field annotation,if not has annotation should be entity property name.
      */
     @NotNull
     protected abstract String getTableFieldAnnotation(@NotNull PsiField field);

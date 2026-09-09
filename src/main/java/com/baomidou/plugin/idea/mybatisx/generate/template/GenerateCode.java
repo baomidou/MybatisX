@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
@@ -101,15 +102,7 @@ public class GenerateCode {
         context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, encoding);
         context.addProperty(PropertyRegistry.CONTEXT_JAVA_FORMATTER, CustomJavaFormatter.class.getName());
 
-        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
-        String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();
-        javaModelGeneratorConfiguration.setTargetProject(targetProject);
-
-        String relativePackage = generateConfig.getRelativePackage();
-        if (null != relativePackage && !relativePackage.isEmpty()) {
-            relativePackage = "." + relativePackage;
-        }
-        javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + relativePackage);
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = createJavaModelGeneratorConfiguration(generateConfig);
 
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
@@ -165,6 +158,20 @@ public class GenerateCode {
             true,
             classLoaderList,
             intellijTableInfo);
+    }
+
+    @NonNull
+    private static JavaModelGeneratorConfiguration createJavaModelGeneratorConfiguration(GenerateConfig generateConfig) {
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
+        String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();
+        javaModelGeneratorConfiguration.setTargetProject(targetProject);
+
+        String relativePackage = generateConfig.getRelativePackage();
+        if (null != relativePackage && !relativePackage.isEmpty()) {
+            relativePackage = "." + relativePackage;
+        }
+        javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + relativePackage);
+        return javaModelGeneratorConfiguration;
     }
 
     private static void addIgnoreDupFieldsPlugin(Context context, GenerateConfig generateConfig, Project project) {
@@ -333,8 +340,8 @@ public class GenerateCode {
             serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
             context.addPluginConfiguration(serializablePlugin);
         }
-        /**
-         * jpa 支持插件, 内置必选
+        /*
+          jpa 支持插件, 内置必选
          */
         PluginConfiguration daoEntityAnnotationPlugin = new PluginConfiguration();
         daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());

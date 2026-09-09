@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -26,7 +27,7 @@ public class TypeHandlerConverter extends ConverterAdaptor<PsiClass>
     final PsiClassConverter psiClassConverter = new PsiClassConverter();
 
     @Override
-    public String getErrorMessage(@Nullable String classStr, ConvertContext context) {
+    public String getErrorMessage(@Nullable String classStr, @NotNull ConvertContext context) {
         final PsiClass psiClass = psiClassConverter.fromString(classStr, context);
         if (psiClass != null && checkIsTypeHandler(psiClass)) {
             return "the class is not a TypeHandler, class: " + classStr + " ";
@@ -36,7 +37,7 @@ public class TypeHandlerConverter extends ConverterAdaptor<PsiClass>
 
     @Nullable
     @Override
-    public PsiClass fromString(@Nullable String classStr, ConvertContext context) {
+    public PsiClass fromString(@Nullable String classStr, @NonNull ConvertContext context) {
         final PsiClass psiClass = psiClassConverter.fromString(classStr, context);
         if (psiClass != null && checkIsTypeHandler(psiClass)) {
             return null;
@@ -44,9 +45,9 @@ public class TypeHandlerConverter extends ConverterAdaptor<PsiClass>
         return psiClassConverter.fromString(classStr, context);
     }
 
-    @NotNull
+
     @Override
-    public PsiReference[] createReferences(GenericDomValue<PsiClass> value, PsiElement element, ConvertContext context) {
+    public PsiReference @NotNull [] createReferences(GenericDomValue<PsiClass> value, PsiElement element, ConvertContext context) {
         return psiClassConverter.createReferences(value, element, context);
     }
 

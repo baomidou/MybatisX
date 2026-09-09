@@ -70,7 +70,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
         PsiReferenceProvider provider = new PsiReferenceProvider() {
             @Override
-            public @NotNull PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+            public  PsiReference @NotNull[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
                 if (!(element instanceof XmlAttributeValue)) {
                     return PsiReference.EMPTY_ARRAY;
                 }

@@ -135,6 +135,7 @@ public final class JavaUtils {
         if (StringUtils.isBlank(clazzName) && StringUtils.isBlank(methodName)) {
             return Optional.empty();
         }
+        assert clazzName != null;
         Optional<PsiClass> clazz = findClazz(project, clazzName);
         if (clazz.isPresent()) {
             PsiMethod[] methods = clazz.get().findMethodsByName(methodName, true);
@@ -155,6 +156,7 @@ public final class JavaUtils {
         if (StringUtils.isBlank(clazzName) && StringUtils.isBlank(methodName)) {
             return Optional.empty();
         }
+        assert clazzName != null;
         Optional<PsiClass[]> classes = findClasses(project, clazzName);
         if (classes.isPresent()) {
 

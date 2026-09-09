@@ -62,7 +62,7 @@ public class StatementBlockFactory {
     public List<SyntaxAppenderFactory> findAreaListByJpa(LinkedList<SyntaxAppender> jpaList) {
         List<SyntaxAppenderFactory> appenderFactories = new ArrayList<>();
         SyntaxAppender peek = jpaList.peek();
-
+        assert peek != null;
         StatementBlock statementBlock = appenderFactoryMap.get(peek.getText());
         appenderFactories.add(statementBlock.getResultAppenderFactory());
         if (statementBlock.getConditionAppenderFactory() != null) {

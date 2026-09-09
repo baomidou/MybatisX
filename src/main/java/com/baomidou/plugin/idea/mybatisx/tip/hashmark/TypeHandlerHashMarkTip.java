@@ -35,19 +35,26 @@ public class TypeHandlerHashMarkTip implements HashMarkTip {
      */
     @Override
     public void tipValue(CompletionResultSet completionResultSet, Mapper mapper) {
+        if (mapper.getXmlTag() == null) {
+            return;
+        }
         Project project = mapper.getXmlTag().getProject();
         Optional<PsiClass> typeHandlerOptional = JavaUtils.findClazz(project, ORG_APACHE_IBATIS_TYPE_TYPE_HANDLER);
-        if (typeHandlerOptional.isPresent()) {
-            PsiClass typeHandler = typeHandlerOptional.get();
-            Query<PsiClass> search = ClassInheritorsSearch.search(typeHandler, true);
-            Collection<PsiClass> all = search.findAll();
-            for (PsiClass typeHandlerImplClass : all) {
-                // 抽象类型不提示
-                if (typeHandlerImplClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
-                    continue;
-                }
-                completionResultSet.addElement(LookupElementBuilder.create(typeHandlerImplClass.getQualifiedName()));
+        if (typeHandlerOptional.isEmpty()) {
+            return;
+        }
+        PsiClass typeHandler = typeHandlerOptional.get();
+        Query<PsiClass> search = ClassInheritorsSearch.search(typeHandler, true);
+        Collection<PsiClass> all = search.findAll();
+        for (PsiClass typeHandlerImplClass : all) {
+            // 抽象类型不提示
+            if (typeHandlerImplClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
+                continue;
             }
+            if (typeHandlerImplClass.getQualifiedName() == null) {
+                continue;
+            }
+            completionResultSet.addElement(LookupElementBuilder.create(typeHandlerImplClass.getQualifiedName()));
         }
     }
 }

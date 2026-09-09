@@ -65,9 +65,7 @@ public class Importer {
      * @param containingFile     the containing file
      * @param document           the document
      */
-    public void addImportToFile(PsiDocumentManager psiDocumentManager,
-                                PsiJavaFile containingFile,
-                                Document document) {
+    public void addImportToFile(PsiDocumentManager psiDocumentManager, PsiJavaFile containingFile, Document document) {
         if (!newImportList.isEmpty()) {
             newImportList.removeIf(u -> u == null || u.startsWith("java.lang"));
         }

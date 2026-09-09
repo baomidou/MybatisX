@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.reference.ContextReferenceSetResolver;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
@@ -36,9 +37,9 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
     private static final String clazzName = "org.apache.ibatis.type.JdbcType";
     final JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
 
-    @NotNull
+
     @Override
-    public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
+    public PsiReference @NotNull [] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         final String stringValue = value.getStringValue();
         if (stringValue == null) {
             return PsiReference.EMPTY_ARRAY;
@@ -48,7 +49,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String s, ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String s, @NonNull ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
         if (ctxElement instanceof GenericAttributeValue<?> genericAttributeValue) {
             return genericAttributeValue.getXmlAttributeValue();
@@ -107,9 +108,8 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
         }
 
 
-        @NotNull
         @Override
-        public Object[] getVariants() {
+        public Object @NotNull [] getVariants() {
             Project project = resolver.getProject();
             Object[] objects = jdbcTypeVariantHolder.getVariants();
             if (objects != null) {

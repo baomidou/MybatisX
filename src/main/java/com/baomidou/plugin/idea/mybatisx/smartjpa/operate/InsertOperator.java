@@ -1,7 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import androidx.annotation.NonNull;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
@@ -51,7 +52,7 @@ public class InsertOperator extends BaseOperatorManager {
      * @param supportDuplicate duplicate replace mode,exclude "insertAll","insertSelective"
      */
     public InsertOperator(final List<TxField> mappingField, boolean supportDuplicate) {
-        Set<String> patterns = AbstractStatementGenerator.INSERT_GENERATOR.getPatterns();
+        Set<String> patterns = StatementGenerators.INSERT_GENERATOR.getPatterns();
         this.init(mappingField, patterns, supportDuplicate);
     }
 
@@ -252,7 +253,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             TxParameter parameter = parameters.poll();
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
@@ -287,7 +288,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()

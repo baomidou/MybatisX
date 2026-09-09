@@ -73,7 +73,7 @@ public class CompositeHashMarkTip {
      * Add element for psi parameter.
      * <p>
      * 提示的内容参考:
-     * see https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#select
+     * see <a href="https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#select">sqlmap-xml.html#select</a>
      *
      * @param wrappedText
      * @param editorCaret

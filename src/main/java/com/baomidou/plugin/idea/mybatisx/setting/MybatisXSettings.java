@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.google.common.base.Joiner;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -49,16 +49,16 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
         MybatisXSettings service = ApplicationManager.getApplication().getService(MybatisXSettings.class);
         // 配置的默认值
         if (service.insertGenerator == null) {
-            service.insertGenerator = joiner.join(AbstractStatementGenerator.INSERT_GENERATOR.getPatterns());
+            service.insertGenerator = joiner.join(StatementGenerators.INSERT_GENERATOR.getPatterns());
         }
         if (service.updateGenerator == null) {
-            service.updateGenerator = joiner.join(AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns());
+            service.updateGenerator = joiner.join(StatementGenerators.UPDATE_GENERATOR.getPatterns());
         }
         if (service.deleteGenerator == null) {
-            service.deleteGenerator = joiner.join(AbstractStatementGenerator.DELETE_GENERATOR.getPatterns());
+            service.deleteGenerator = joiner.join(StatementGenerators.DELETE_GENERATOR.getPatterns());
         }
         if (service.selectGenerator == null) {
-            service.selectGenerator = joiner.join(AbstractStatementGenerator.SELECT_GENERATOR.getPatterns());
+            service.selectGenerator = joiner.join(StatementGenerators.SELECT_GENERATOR.getPatterns());
         }
         if (service.mapperIcon == null) {
             service.mapperIcon = MapperIcon.BIRD.name();

@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
@@ -54,10 +55,10 @@ import java.util.stream.IntStream;
 public class CodeGenerateUI {
     public static final String DOMAIN = "domain";
     final ListTableModel<ModuleInfoGo> model = new ListTableModel<>(
-        new MybaitsxModuleInfo("config name", false),
-        new MybaitsxModuleInfo("module path", true, true),
-        new MybaitsxModuleInfo("base path", true),
-        new MybaitsxModuleInfo("package name", true)
+        new MyBaitsXModuleInfo("config name", false),
+        new MyBaitsXModuleInfo("module path", true, true),
+        new MyBaitsXModuleInfo("base path", true),
+        new MyBaitsXModuleInfo("package name", true)
     );
     private final ButtonGroup templateButtonGroup = new ButtonGroup();
     @Getter
@@ -104,12 +105,12 @@ public class CodeGenerateUI {
         }
         // 是否实现Serializable接口
         if (generateConfig.isNeedSerializable()) {
-            serializableCheckBox.setSelected(generateConfig.isNeedSerializable());
+            serializableCheckBox.setSelected(true);
         }
 
         // 是否实现生成jdbcType
         if (generateConfig.isNeedJdbcType()) {
-            needJdbcTypeCheckBox.setSelected(generateConfig.isNeedJdbcType());
+            needJdbcTypeCheckBox.setSelected(true);
         }
 
         // 需要生成 toString/hashcode/equals
@@ -270,16 +271,7 @@ public class CodeGenerateUI {
                 List<ModuleInfoGo> moduleUIInfoList = new ArrayList<>(list.size());
                 // 添加列的内容
                 for (TemplateSettingDTO templateSettingDTO : list) {
-                    ModuleInfoGo item = new ModuleInfoGo();
-                    item.setConfigName(templateSettingDTO.getConfigName());
-                    // 默认使用实体模块的模块路径
-                    item.setModulePath(modulePath);
-                    item.setBasePath(templateSettingDTO.getBasePath());
-                    item.setFileName(templateSettingDTO.getFileName());
-                    item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
-                    item.setPackageName(templateSettingDTO.getPackageName());
-                    item.setEncoding(templateSettingDTO.getEncoding());
-                    item.setConfigFileName(templateSettingDTO.getConfigFile());
+                    ModuleInfoGo item = createItem(modulePath, templateSettingDTO);
                     moduleUIInfoList.add(item);
                 }
                 return moduleUIInfoList;
@@ -309,7 +301,7 @@ public class CodeGenerateUI {
 
                 @Override
                 public @NotNull ActionUpdateThread getActionUpdateThread() {
-                    return super.getActionUpdateThread();
+                    return ActionUpdateThread.EDT;
                 }
             }))
             .disableAddAction()
@@ -377,27 +369,29 @@ public class CodeGenerateUI {
             }
             // domain 域特殊处理, 不可更改
             if (DOMAIN.equals(item.getConfigName())) {
-                ModuleInfoGo itemX = new ModuleInfoGo();
-                itemX.setModulePath(domainInfo.getModulePath());
-                itemX.setBasePath(domainInfo.getBasePath());
-                itemX.setEncoding(domainInfo.getEncoding());
-                itemX.setFileName(domainInfo.getFileName());
-                itemX.setPackageName(domainInfo.getBasePackage() + "." + domainInfo.getRelativePackage());
-                itemX.setFileNameWithSuffix(domainInfo.getFileName() + ".java");
-                itemX.setConfigFileName(item.getConfigFileName());
-                itemX.setConfigName(DOMAIN);
-                item = itemX;
+                item = createItemX(item);
             }
             model.addRow(item);
         }
 
     }
 
+    @NonNull
+    private ModuleInfoGo createItemX(ModuleInfoGo item) {
+        ModuleInfoGo itemX = new ModuleInfoGo();
+        itemX.setModulePath(domainInfo.getModulePath());
+        itemX.setBasePath(domainInfo.getBasePath());
+        itemX.setEncoding(domainInfo.getEncoding());
+        itemX.setFileName(domainInfo.getFileName());
+        itemX.setPackageName(domainInfo.getBasePackage() + "." + domainInfo.getRelativePackage());
+        itemX.setFileNameWithSuffix(domainInfo.getFileName() + ".java");
+        itemX.setConfigFileName(item.getConfigFileName());
+        itemX.setConfigName(DOMAIN);
+        return itemX;
+    }
+
     /**
      * 初始化默认的模块选择表格
-     *
-     * @param list
-     * @param modulePath
      */
     private void initSelectedModuleTable(List<TemplateSettingDTO> list, String modulePath) {
         if (CollectionUtils.isEmpty(list)) {
@@ -412,25 +406,29 @@ public class CodeGenerateUI {
         List<ModuleInfoGo> moduleInfoGoList = new ArrayList<>();
         // 添加列的内容
         for (TemplateSettingDTO templateSettingDTO : list) {
-            ModuleInfoGo item = new ModuleInfoGo();
-            item.setConfigName(templateSettingDTO.getConfigName());
-            // 默认使用实体模块的模块路径
-            item.setModulePath(modulePath);
-            item.setBasePath(templateSettingDTO.getBasePath());
-            item.setFileName(templateSettingDTO.getFileName());
-            item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
-            item.setPackageName(templateSettingDTO.getPackageName());
-            item.setEncoding(templateSettingDTO.getEncoding());
-            item.setConfigFileName(templateSettingDTO.getConfigFile());
+            ModuleInfoGo item = createItem(modulePath, templateSettingDTO);
             moduleInfoGoList.add(item);
         }
         initMemoryModuleTable(moduleInfoGoList);
     }
 
+    @NonNull
+    private static ModuleInfoGo createItem(String modulePath, TemplateSettingDTO templateSettingDTO) {
+        ModuleInfoGo item = new ModuleInfoGo();
+        item.setConfigName(templateSettingDTO.getConfigName());
+        // 默认使用实体模块的模块路径
+        item.setModulePath(modulePath);
+        item.setBasePath(templateSettingDTO.getBasePath());
+        item.setFileName(templateSettingDTO.getFileName());
+        item.setFileNameWithSuffix(templateSettingDTO.getFileName() + templateSettingDTO.getSuffix());
+        item.setPackageName(templateSettingDTO.getPackageName());
+        item.setEncoding(templateSettingDTO.getEncoding());
+        item.setConfigFileName(templateSettingDTO.getConfigFile());
+        return item;
+    }
+
     /**
      * 选择注解类型
-     *
-     * @param annotationType
      */
     private void selectAnnotation(String annotationType) {
         if (annotationType == null) {
@@ -506,17 +504,17 @@ public class CodeGenerateUI {
         return annotationTypeName;
     }
 
-    private class MybaitsxModuleInfo extends ColumnInfo<ModuleInfoGo, String> {
+    private class MyBaitsXModuleInfo extends ColumnInfo<ModuleInfoGo, String> {
 
         private final boolean editable;
         private boolean moduleEditor;
 
-        public MybaitsxModuleInfo(String name, boolean editable) {
+        public MyBaitsXModuleInfo(String name, boolean editable) {
             super(name);
             this.editable = editable;
         }
 
-        public MybaitsxModuleInfo(String name, boolean editable, boolean moduleEditor) {
+        public MyBaitsXModuleInfo(String name, boolean editable, boolean moduleEditor) {
             super(name);
             this.editable = editable;
             this.moduleEditor = moduleEditor;
@@ -572,7 +570,8 @@ public class CodeGenerateUI {
                         return;
                     }
                     String s = defaultCellEditor.getCellEditorValue().toString();
-                    switch (getName()) {
+                    String columnName = getName().toLowerCase();
+                    switch (columnName) {
                         case "module path" -> moduleUIInfo.setModulePath(s);
                         case "base path" -> moduleUIInfo.setBasePath(s);
                         case "package name" -> moduleUIInfo.setPackageName(s);
@@ -589,7 +588,10 @@ public class CodeGenerateUI {
 
         private String findModulePath(Module module) {
             VirtualFile contentRoots = module.getModuleFile();
-            return contentRoots.getPath();
+            if (contentRoots != null) {
+                return contentRoots.getPath();
+            }
+            return "";
         }
 
         @Nullable
@@ -598,8 +600,9 @@ public class CodeGenerateUI {
             if (item == null) {
                 return "";
             }
+            String columnName = getName().toLowerCase();
 
-            return switch (getName()) {
+            return switch (columnName) {
                 case "config name" -> item.getConfigName();
                 case "module path" -> DomainPlaceHolder.replace(item.getModulePath(), domainInfo);
                 case "base path" -> DomainPlaceHolder.replace(item.getBasePath(), domainInfo);
