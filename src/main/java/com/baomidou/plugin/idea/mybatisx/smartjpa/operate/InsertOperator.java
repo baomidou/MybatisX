@@ -41,24 +41,37 @@ public class InsertOperator extends BaseOperatorManager {
      * @param mappingField the mapping field
      */
     public InsertOperator(final List<TxField> mappingField) {
+        this(mappingField, false);
+    }
+
+    /**
+     * Instantiates a new Insert operator.
+     *
+     * @param mappingField     the mapping field
+     * @param supportDuplicate duplicate replace mode,exclude "insertAll","insertSelective"
+     */
+    public InsertOperator(final List<TxField> mappingField, boolean supportDuplicate) {
         Set<String> patterns = AbstractStatementGenerator.INSERT_GENERATOR.getPatterns();
-        this.init(mappingField, patterns);
+        this.init(mappingField, patterns, supportDuplicate);
     }
 
     /**
      * Init.
      *
-     * @param mappingField the mapping field
-     * @param patterns     the patterns
+     * @param mappingField     the mapping field
+     * @param patterns         the patterns
+     * @param supportDuplicate
      */
-    public void init(final List<TxField> mappingField, Set<String> patterns) {
+    public void init(final List<TxField> mappingField, Set<String> patterns, boolean supportDuplicate) {
         for (final String areaName : patterns) {
-            // insertSelective
-            this.initInsertSelectiveAppender(areaName, mappingField);
-            // insertOne
-            this.initInsertAllAppender(areaName, mappingField);
-            // insertBatch
+            if (!supportDuplicate) {
+                // insertSelective
+                this.initInsertSelectiveAppender(areaName, mappingField);
+                // insertOne
+                this.initInsertAllAppender(areaName, mappingField);
+                // insertBatch
 //            this.initInsertBatch(areaName, mappingField);
+            }
 
             this.initCustomArea(areaName, mappingField);
         }
