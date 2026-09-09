@@ -83,7 +83,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
             return;
         }
         if (!new File(domainInfo.getModulePath()).exists()) {
-            Messages.showMessageDialog("modulePath is not a legal path", "Generate File", Messages.getWarningIcon());
+            Messages.showMessageDialog("ModulePath is not a legal path", "Generate File", Messages.getWarningIcon());
             return;
         }
         page = page + 1;
