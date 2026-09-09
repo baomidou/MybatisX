@@ -46,11 +46,6 @@ import java.util.stream.Collectors;
 public class CompositeHashMarkTip {
 
     public static final String DOT = ".";
-    /**
-     * 方法上面的注释名称, 例如
-     *
-     * @param userName 用户名
-     */
     public static final String PARAM = "param";
     private static final List<HashMarkTip> hashMarkTips = new ArrayList<>() {
         {
