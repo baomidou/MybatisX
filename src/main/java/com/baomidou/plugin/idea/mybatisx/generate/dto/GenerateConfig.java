@@ -175,11 +175,11 @@ public class GenerateConfig {
 
     public boolean checkGenerate() {
         if (StringUtils.isEmpty(moduleName)) {
-            Messages.showErrorDialog("moduleName must not be empty", "Generate Info");
+            Messages.showErrorDialog("ModuleName must not be empty", "Generate Info");
             return false;
         }
         if (StringUtils.isEmpty(templatesName)) {
-            Messages.showErrorDialog("templatesName must not be empty", "Generate Info");
+            Messages.showErrorDialog("TemplatesName must not be empty", "Generate Info");
             return false;
         }
         return true;

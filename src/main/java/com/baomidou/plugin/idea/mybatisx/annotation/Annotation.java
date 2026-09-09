@@ -155,8 +155,7 @@ public class Annotation implements Cloneable {
     private Optional<String> getSingleValue() {
         try {
             String value = Iterables.getOnlyElement(attributePairs.keySet());
-            String builder = "(" + attributePairs.get(value).toString() +
-                ")";
+            String builder = "(" + attributePairs.get(value).toString() + ")";
             return Optional.of(builder);
         } catch (Exception e) {
             return Optional.empty();
