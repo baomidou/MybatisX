@@ -5,9 +5,13 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.util.xml.ConvertContext;
+import com.intellij.util.xml.CustomReferenceConverter;
 import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.PsiClassConverter;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -16,7 +20,10 @@ import java.util.Optional;
  * 加入命名空间检查, 当mapper.xml和mapper.class不匹配时,
  * 对mapper.xml的namespace标签标记红色下划线
  */
-public class NamespaceConverter extends ConverterAdaptor<PsiClass> {
+public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements CustomReferenceConverter<PsiClass> {
+
+    private final PsiClassConverter delegate = new PsiClassConverter();
+
     /**
      * 转换成类
      *
@@ -40,5 +47,14 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> {
             final String qualifiedName = psiClass.getQualifiedName();
             genericValue.setStringValue(qualifiedName);
         }
+    }
+
+    /**
+     * namespace 输入时的类名提示
+     */
+    @NotNull
+    @Override
+    public PsiReference[] createReferences(GenericDomValue<PsiClass> value, PsiElement element, ConvertContext context) {
+        return delegate.createReferences(value, element, context);
     }
 }
