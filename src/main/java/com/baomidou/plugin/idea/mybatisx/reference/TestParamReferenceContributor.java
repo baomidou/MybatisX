@@ -70,7 +70,7 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
         PsiReferenceProvider provider = new PsiReferenceProvider() {
             @Override
-            public  PsiReference @NotNull[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+            public PsiReference @NotNull [] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
                 if (!(element instanceof XmlAttributeValue)) {
                     return PsiReference.EMPTY_ARRAY;
                 }
@@ -307,7 +307,8 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
             if (psiClass != null) {
                 Set<String> addedProperties = new HashSet<>();
                 for (PsiField field : psiClass.getAllFields()) {
-                    variants.add(LookupElementBuilder.create(prefix + field.getName())
+                    variants.add(LookupElementBuilder.create(field.getName())
+                        .withPresentableText(prefix + field.getName())
                         .withTypeText(field.getType().getPresentableText())
                         .withIcon(field.getIcon(0)));
                     addedProperties.add(field.getName());
