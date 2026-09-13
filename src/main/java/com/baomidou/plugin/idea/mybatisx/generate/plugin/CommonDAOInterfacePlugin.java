@@ -27,7 +27,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
     private static final FullyQualifiedJavaType PARAM_ANNOTATION_TYPE = new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param");
     private static final FullyQualifiedJavaType LIST_TYPE = FullyQualifiedJavaType.getNewListInstance();
     private static final FullyQualifiedJavaType SERIALIZEBLE_TYPE = new FullyQualifiedJavaType("java.io.Serializable");
-    private final List<Method> methods = new ArrayList();
+    private final List<Method> methods = new ArrayList<>();
     private ShellCallback shellCallback = null;
 
     public CommonDAOInterfacePlugin() {
@@ -40,7 +40,7 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
         JavaFormatter javaFormatter = this.context.getJavaFormatter();
         String daoTargetDir = this.context.getJavaClientGeneratorConfiguration().getTargetProject();
         String daoTargetPackage = this.context.getJavaClientGeneratorConfiguration().getTargetPackage();
-        List<GeneratedJavaFile> mapperJavaFiles = new ArrayList();
+        List<GeneratedJavaFile> mapperJavaFiles = new ArrayList<>();
         String javaFileEncoding = this.context.getProperty("javaFileEncoding");
         Interface mapperInterface = new Interface(daoTargetPackage + ".MyBatisBaseDao");
         if (StringUtility.stringHasValue(daoTargetPackage)) {

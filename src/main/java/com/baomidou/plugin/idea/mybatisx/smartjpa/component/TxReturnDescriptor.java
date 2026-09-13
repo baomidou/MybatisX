@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.component;
 
 import com.intellij.psi.PsiClass;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

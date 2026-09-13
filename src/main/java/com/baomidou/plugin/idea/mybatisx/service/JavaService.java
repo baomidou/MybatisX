@@ -131,7 +131,6 @@ public class JavaService implements Serializable {
      * @param clazz     the clazz
      * @param processor the processor
      */
-    @SuppressWarnings("unchecked")
     public void processClass(@NotNull PsiClass clazz, @NotNull Processor<Mapper> processor) {
         String ns = clazz.getQualifiedName();
         for (Mapper mapper : MapperUtils.findMappers(clazz.getProject())) {

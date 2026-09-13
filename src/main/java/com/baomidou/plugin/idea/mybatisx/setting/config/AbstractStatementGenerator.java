@@ -26,6 +26,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypes;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
@@ -116,10 +117,9 @@ public abstract class AbstractStatementGenerator {
         }
         PsiType returnType = method.getReturnType();
         // 是基本类型, 并且不是 void
-        if (returnType instanceof PsiPrimitiveType && !PsiType.VOID.equals(returnType)) {
+        if (returnType instanceof PsiPrimitiveType && !PsiTypes.voidType().equals(returnType)) {
             return JavaUtils.findClazz(method.getProject(), Objects.requireNonNull(((PsiPrimitiveType) returnType).getBoxedTypeName()));
-        } else if (returnType instanceof PsiClassReferenceType) {
-            PsiClassReferenceType type = (PsiClassReferenceType) returnType;
+        } else if (returnType instanceof PsiClassReferenceType type) {
             if (type.hasParameters()) {
                 PsiType[] parameters = type.getParameters();
                 // 处理是 List 的返回结果, 将List<T> 的泛型拿出来

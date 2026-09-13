@@ -1,6 +1,1 @@
-<idea-plugin>
-    <extensions defaultExtensionNs="com.intellij.spring.boot">
-
-    </extensions>
-
-</idea-plugin>
+<idea-plugin/>

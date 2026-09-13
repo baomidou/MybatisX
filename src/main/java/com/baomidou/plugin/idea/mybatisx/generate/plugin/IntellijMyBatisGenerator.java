@@ -43,13 +43,13 @@ public class IntellijMyBatisGenerator {
     private final Configuration configuration;
     private final ShellCallback shellCallback;
     @Getter
-    private final List<GeneratedJavaFile> generatedJavaFiles = new ArrayList();
+    private final List<GeneratedJavaFile> generatedJavaFiles = new ArrayList<>();
     @Getter
-    private final List<GeneratedXmlFile> generatedXmlFiles = new ArrayList();
+    private final List<GeneratedXmlFile> generatedXmlFiles = new ArrayList<>();
     @Getter
-    private final List<GeneratedKotlinFile> generatedKotlinFiles = new ArrayList();
+    private final List<GeneratedKotlinFile> generatedKotlinFiles = new ArrayList<>();
     private final List<String> warnings;
-    private final Set<String> projects = new HashSet();
+    private final Set<String> projects = new HashSet<>();
 
     public IntellijMyBatisGenerator(Configuration configuration, ShellCallback shellCallback, List<String> warnings) throws InvalidConfigurationException {
         if (configuration == null) {

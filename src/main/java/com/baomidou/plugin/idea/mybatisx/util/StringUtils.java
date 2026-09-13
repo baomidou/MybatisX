@@ -96,7 +96,7 @@ public class StringUtils {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         } else {
             char[] c = str.toCharArray();
-            List<String> list = new ArrayList();
+            List<String> list = new ArrayList<>();
             int tokenStart = 0;
             int currentType = Character.getType(c[tokenStart]);
 
@@ -119,7 +119,7 @@ public class StringUtils {
             }
 
             list.add(new String(c, tokenStart, c.length - tokenStart));
-            return list.toArray(new String[list.size()]);
+            return list.toArray(new String[0]);
         }
     }
 

@@ -1,3 +1,11 @@
+pluginManagement{
+    repositories {
+        mavenLocal()
+        maven { url = uri("https://maven.aliyun.com/repository/public/") }
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = "MybatisX"
 pluginManagement {
     repositories {
@@ -8,5 +16,5 @@ pluginManagement {
     }
 }
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
