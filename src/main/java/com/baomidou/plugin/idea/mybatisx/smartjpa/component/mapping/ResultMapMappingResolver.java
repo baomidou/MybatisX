@@ -110,7 +110,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
         }
         ResultMap foundResultMap = null;
         for (ResultMap resultMap : resultMaps) {
-            if (resultMap.getId().getStringValue().equals(stringValue)) {
+            if (Objects.equals(resultMap.getId().getStringValue(), stringValue)) {
                 foundResultMap = resultMap;
                 break;
             }
@@ -204,7 +204,7 @@ public class ResultMapMappingResolver extends JpaMappingResolver implements Enti
      */
     private Optional<ResultMap> findResultMap(List<ResultMap> resultMaps) {
         if (resultMaps.size() == 1) {
-            return Optional.ofNullable(resultMaps.get(0));
+            return Optional.ofNullable(resultMaps.getFirst());
         }
         // 字符串长度维度比较
         Map<String, ResultMap> allResultMaps = resultMaps.stream().

@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
@@ -25,6 +26,7 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.ClassUtil;
 import com.softwareloop.mybatis.generator.plugins.LombokPlugin;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.GeneratedKotlinFile;
@@ -44,8 +46,6 @@ import org.mybatis.generator.internal.NullProgressCallback;
 import org.mybatis.generator.plugins.EqualsHashCodePlugin;
 import org.mybatis.generator.plugins.SerializablePlugin;
 import org.mybatis.generator.plugins.ToStringPlugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,10 +67,10 @@ import java.util.stream.Collectors;
  *
  * @author ls9527
  */
+@Slf4j
 public class GenerateCode {
 
     public static final MergeJavaCallBack SHELL_CALLBACK = new MergeJavaCallBack(true);
-    private static final Logger logger = LoggerFactory.getLogger(GenerateCode.class);
 
     public static void generate(Project project,
                                 GenerateConfig generateConfig,
@@ -102,15 +102,7 @@ public class GenerateCode {
         context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, encoding);
         context.addProperty(PropertyRegistry.CONTEXT_JAVA_FORMATTER, CustomJavaFormatter.class.getName());
 
-        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
-        String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();
-        javaModelGeneratorConfiguration.setTargetProject(targetProject);
-
-        String relativePackage = generateConfig.getRelativePackage();
-        if (null != relativePackage && !"".equals(relativePackage)) {
-            relativePackage = "." + relativePackage;
-        }
-        javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + relativePackage);
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = createJavaModelGeneratorConfiguration(generateConfig);
 
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
@@ -142,15 +134,15 @@ public class GenerateCode {
         context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
         final ConfigSetting configSetting = configSettingMap.get(generateConfig.getTemplatesName());
         if (configSetting == null) {
-            logger.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
+            log.error("未选择模板组名称, templatesName: {}", generateConfig.getTemplatesName());
             return;
         }
         DomainInfo domainInfo = buildDomainInfo(generateConfig, domainName);
         // 根据模板生成代码的插件
-        configExtraPlugin(extraDomainName, context, domainInfo, configSetting,generateConfig);
+        configExtraPlugin(extraDomainName, context, domainInfo, configSetting, generateConfig);
         // 界面配置的扩展插件
         addPluginConfiguration(context, generateConfig);
-        addIgnoreDupFieldsPlugin(context,generateConfig, project);
+        addIgnoreDupFieldsPlugin(context, generateConfig, project);
         config.addContext(context);
 
 
@@ -166,6 +158,20 @@ public class GenerateCode {
             true,
             classLoaderList,
             intellijTableInfo);
+    }
+
+    @NonNull
+    private static JavaModelGeneratorConfiguration createJavaModelGeneratorConfiguration(GenerateConfig generateConfig) {
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
+        String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();
+        javaModelGeneratorConfiguration.setTargetProject(targetProject);
+
+        String relativePackage = generateConfig.getRelativePackage();
+        if (null != relativePackage && !relativePackage.isEmpty()) {
+            relativePackage = "." + relativePackage;
+        }
+        javaModelGeneratorConfiguration.setTargetPackage(generateConfig.getBasePackage() + relativePackage);
+        return javaModelGeneratorConfiguration;
     }
 
     private static void addIgnoreDupFieldsPlugin(Context context, GenerateConfig generateConfig, Project project) {
@@ -297,7 +303,7 @@ public class GenerateCode {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(out)) {
             objectOutputStream.writeObject(serializable);
         } catch (IOException e) {
-            logger.error("序列化数据失败", e);
+            log.error("序列化数据失败", e);
             throw new RuntimeException("序列化数据失败");
         }
         byte[] encode = Base64.getEncoder().encode(out.toByteArray());
@@ -328,18 +334,18 @@ public class GenerateCode {
      */
     private static void addPluginConfiguration(Context context, GenerateConfig generateConfig) {
         //实体添加序列化
-        if (generateConfig.isNeedSerializable()){
+        if (generateConfig.isNeedSerializable()) {
             PluginConfiguration serializablePlugin = new PluginConfiguration();
             serializablePlugin.addProperty("type", SerializablePlugin.class.getName());
             serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
             context.addPluginConfiguration(serializablePlugin);
         }
-        /**
-         * jpa 支持插件, 内置必选
+        /*
+          jpa 支持插件, 内置必选
          */
         PluginConfiguration daoEntityAnnotationPlugin = new PluginConfiguration();
         daoEntityAnnotationPlugin.setConfigurationType(DaoEntityAnnotationInterfacePlugin.class.getName());
-        String domainObjectName = context.getTableConfigurations().get(0).getDomainObjectName();
+        String domainObjectName = context.getTableConfigurations().getFirst().getDomainObjectName();
         String targetPackage = context.getJavaModelGeneratorConfiguration().getTargetPackage();
         daoEntityAnnotationPlugin.addProperty("domainName", targetPackage + "." + domainObjectName);
         context.addPluginConfiguration(daoEntityAnnotationPlugin);

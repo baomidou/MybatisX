@@ -51,8 +51,7 @@ public class JpaAdvanceDialog extends DialogWrapper {
         Set<String> strings = new HashSet<>();
         Component[] components = smartJpaAdvanceUI.getConditionPanel().getComponents();
         for (Component component : components) {
-            if (component instanceof JCheckBox) {
-                JCheckBox checkBox = (JCheckBox) component;
+            if (component instanceof JCheckBox checkBox) {
                 if (checkBox.isSelected()) {
                     strings.add(checkBox.getText());
                 }
@@ -79,7 +78,7 @@ public class JpaAdvanceDialog extends DialogWrapper {
      * @param entityClass     the entity class
      */
     public void initFields(List<String> conditionFields, List<String> resultFields, List<TxField> allFields, PsiClass entityClass) {
-        if (conditionFields.size() > 0) {
+        if (!conditionFields.isEmpty()) {
             JPanel conditionPanel = smartJpaAdvanceUI.getConditionPanel();
             // 默认 5 列
             int columns = 5;

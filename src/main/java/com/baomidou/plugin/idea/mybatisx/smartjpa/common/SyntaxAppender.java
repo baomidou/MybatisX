@@ -125,7 +125,7 @@ public interface SyntaxAppender {
     default void findPriority(PriorityQueue<SyntaxAppender> priorityQueue, String splitStr) {
         // 后缀, 组合
         final String syntaxText = getText();
-        if (syntaxText.length() > 0 && splitStr.startsWith(syntaxText)) {
+        if (!syntaxText.isEmpty() && splitStr.startsWith(syntaxText)) {
             priorityQueue.add(this);
         }
     }

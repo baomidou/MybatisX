@@ -1,16 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.inspection;
 
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.source.xml.XmlFileImpl;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.highlighting.BasicDomElementsInspection;
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder;
 import com.intellij.util.xml.highlighting.DomHighlightingHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -20,8 +18,8 @@ import org.slf4j.LoggerFactory;
  * @author yanglin
  * @since 2018 -07-30
  */
+@Slf4j
 public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> {
-    private static final Logger logger = LoggerFactory.getLogger(MapperXmlInspection.class);
 
     /**
      * Instantiates a new Mapper xml inspection.
@@ -31,11 +29,11 @@ public class MapperXmlInspection extends BasicDomElementsInspection<DomElement> 
     }
 
     @Override
-    protected void checkDomElement(DomElement element, DomElementAnnotationHolder holder, DomHighlightingHelper helper) {
+    protected void checkDomElement(@NotNull DomElement element, @NotNull DomElementAnnotationHolder holder, @NotNull DomHighlightingHelper helper) {
         try {
             super.checkDomElement(element, holder, helper);
         } catch (Exception e) {
-            logger.error("checkDomElement error:{}", e.getMessage());
+            log.error("checkDomElement error:{}", e.getMessage());
         }
     }
 

@@ -1,7 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import androidx.annotation.NonNull;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
@@ -20,8 +21,7 @@ import com.baomidou.plugin.idea.mybatisx.util.MybatisXCollectors;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -32,10 +32,8 @@ import java.util.stream.Collectors;
 /**
  * The type Insert operator.
  */
+@Slf4j
 public class InsertOperator extends BaseOperatorManager {
-
-
-    private static final Logger logger = LoggerFactory.getLogger(InsertOperator.class);
 
 
     /**
@@ -44,24 +42,37 @@ public class InsertOperator extends BaseOperatorManager {
      * @param mappingField the mapping field
      */
     public InsertOperator(final List<TxField> mappingField) {
-        Set<String> patterns = AbstractStatementGenerator.INSERT_GENERATOR.getPatterns();
-        this.init(mappingField, patterns);
+        this(mappingField, false);
+    }
+
+    /**
+     * Instantiates a new Insert operator.
+     *
+     * @param mappingField     the mapping field
+     * @param supportDuplicate duplicate replace mode,exclude "insertAll","insertSelective"
+     */
+    public InsertOperator(final List<TxField> mappingField, boolean supportDuplicate) {
+        Set<String> patterns = StatementGenerators.INSERT_GENERATOR.getPatterns();
+        this.init(mappingField, patterns, supportDuplicate);
     }
 
     /**
      * Init.
      *
-     * @param mappingField the mapping field
-     * @param patterns     the patterns
+     * @param mappingField     the mapping field
+     * @param patterns         the patterns
+     * @param supportDuplicate
      */
-    public void init(final List<TxField> mappingField, Set<String> patterns) {
+    public void init(final List<TxField> mappingField, Set<String> patterns, boolean supportDuplicate) {
         for (final String areaName : patterns) {
-            // insertSelective
-            this.initInsertSelectiveAppender(areaName, mappingField);
-            // insertOne
-            this.initInsertAllAppender(areaName, mappingField);
-            // insertBatch
+            if (!supportDuplicate) {
+                // insertSelective
+                this.initInsertSelectiveAppender(areaName, mappingField);
+                // insertOne
+                this.initInsertAllAppender(areaName, mappingField);
+                // insertBatch
 //            this.initInsertBatch(areaName, mappingField);
+            }
 
             this.initCustomArea(areaName, mappingField);
         }
@@ -191,7 +202,7 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private class InsertResultAppenderFactory extends ResultAppenderFactory {
+    private static class InsertResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert result appender factory.
@@ -208,7 +219,7 @@ public class InsertOperator extends BaseOperatorManager {
                                       LinkedList<TxParameter> parameters,
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder();
-            mapperXml.append("insert into " + tableName).append("\n");
+            mapperXml.append("insert into ").append(tableName).append("\n");
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
                 String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
                 mapperXml.append(templateText);
@@ -231,21 +242,18 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private class InsertAllSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record InsertAllSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert all suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public InsertAllSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private InsertAllSuffixOperator {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             TxParameter parameter = parameters.poll();
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
@@ -269,21 +277,18 @@ public class InsertOperator extends BaseOperatorManager {
 
     }
 
-    private class InsertSelectiveSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record InsertSelectiveSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert selective suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public InsertSelectiveSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private InsertSelectiveSuffixOperator {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()
@@ -317,13 +322,10 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         private String selective(String paramName, String origin) {
-            String stringBuilder = "<if test=\"" + paramName + " != null" + "\">" +
+            return "<if test=\"" + paramName + " != null" + "\">" +
                 origin +
                 "," +
                 "</if>";
-            return stringBuilder;
         }
-
-
     }
 }

@@ -1,12 +1,12 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * The type In parameter changer.
  */
+@Slf4j
 public class InParameterChanger implements MxParameterChanger {
-    private static final Logger logger = LoggerFactory.getLogger(InParameterChanger.class);
 
     @Override
     public List<TxParameter> getParameter(TxParameter txParameter) {
@@ -25,10 +25,10 @@ public class InParameterChanger implements MxParameterChanger {
     }
 
     @Override
-    public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+    public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
         final TxParameter parameter = parameters.poll();
         if (parameter == null) {
-            logger.info("parameter is null, can not getTemplateText");
+            log.info("parameter is null, can not getTemplateText");
             return "";
         }
         final String collectionName = parameter.getName();

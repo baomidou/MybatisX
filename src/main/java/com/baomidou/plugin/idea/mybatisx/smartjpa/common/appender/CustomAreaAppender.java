@@ -12,7 +12,11 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +28,7 @@ public class CustomAreaAppender implements SyntaxAppender {
     private final AreaSequence areaSequence;
     /**
      * -- GETTER --
-     *  Gets syntax appender factory.
+     * Gets syntax appender factory.
      *
      * @return the syntax appender factory
      */
@@ -32,7 +36,7 @@ public class CustomAreaAppender implements SyntaxAppender {
     private final SyntaxAppenderFactory syntaxAppenderFactory;
     /**
      * -- GETTER --
-     *  Gets child area sequence.
+     * Gets child area sequence.
      *
      * @return the child area sequence
      */
@@ -147,8 +151,8 @@ public class CustomAreaAppender implements SyntaxAppender {
 
     @Override
     public Optional<SyntaxAppender> pollLast(LinkedList<SyntaxAppender> splitList) {
-        final Optional<SyntaxAppender> syntaxAppender = Optional.of(splitList.pollLast());
-        if (syntaxAppender.isPresent() && splitList.size() > 0) {
+        final Optional<SyntaxAppender> syntaxAppender = Optional.ofNullable(splitList.pollLast());
+        if (syntaxAppender.isPresent() && !splitList.isEmpty()) {
             final SyntaxAppender last = splitList.getLast();
             return last.pollLast(splitList);
         }

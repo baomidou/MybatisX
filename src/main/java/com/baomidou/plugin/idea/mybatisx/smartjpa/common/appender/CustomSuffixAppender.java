@@ -15,10 +15,9 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,17 +27,16 @@ import java.util.List;
 /**
  * The type Custom suffix appender.
  */
+@Slf4j
 public class CustomSuffixAppender implements SyntaxAppender {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomSuffixAppender.class);
     private final String tipName;
     /**
      * The Suffix operator.
      * -- GETTER --
-     *  Gets suffix operator.
+     * Gets suffix operator.
      *
      * @return the suffix operator
-
      */
     @Getter
     protected SuffixOperator suffixOperator;
@@ -196,21 +194,20 @@ public class CustomSuffixAppender implements SyntaxAppender {
                                   LinkedList<TxParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
-        if (collector.size() == 0) {
-            logger.info("这个后缀没有参数, suffix: {}", this.getText());
+        if (collector.isEmpty()) {
+            log.info("这个后缀没有参数, suffix: {}", this.getText());
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        String fieldName = null;
+//        String fieldName = null;
         String columnName = null;
         int i = 0;
         for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
 
             SyntaxAppender appender = syntaxAppenderWrapper.getAppender();
             // 兼容insert 语句生成,后缀没有字段的情况
-            if (appender instanceof CustomFieldAppender) {
-                CustomFieldAppender field = (CustomFieldAppender) appender;
-                fieldName = field.getFieldName();
+            if (appender instanceof CustomFieldAppender field) {
+//                fieldName = field.getFieldName();
                 columnName = field.getColumnName();
                 break;
             }
@@ -305,7 +302,7 @@ public class CustomSuffixAppender implements SyntaxAppender {
         List<TxParameter> txParameters = new ArrayList<>();
         for (SyntaxAppenderWrapper syntaxAppenderWrapper : syntaxAppenderWrapperLinkedList) {
             List<TxParameter> mxParameter = syntaxAppenderWrapper.getMxParameter(entityClass);
-            if (mxParameter.size() > 0) {
+            if (!mxParameter.isEmpty()) {
                 for (TxParameter txParameter : mxParameter) {
                     txParameters.addAll(getParameter(txParameter));
                 }
@@ -320,6 +317,4 @@ public class CustomSuffixAppender implements SyntaxAppender {
         }
         return mxParameterFinder.getParameter(txParameter);
     }
-
-
 }

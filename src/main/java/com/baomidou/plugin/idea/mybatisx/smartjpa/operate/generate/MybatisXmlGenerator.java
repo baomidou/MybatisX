@@ -11,9 +11,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
  * 第一版在这里预留一个形式
  * 后续可以加入:  springjpa提示, 生成mybatis注解
  */
+@Slf4j
 public class MybatisXmlGenerator implements Generator {
 
     /**
@@ -40,8 +40,7 @@ public class MybatisXmlGenerator implements Generator {
      * The constant RESULT_TYPE.
      */
     public static final String RESULT_TYPE = "resultType";
-    private static final Logger logger = LoggerFactory.getLogger(MybatisXmlGenerator.class);
-    Set<String> allowedResultMapNames = new HashSet<String>() {
+    final Set<String> allowedResultMapNames = new HashSet<>() {
         {
             add("BaseResultMap");
             add("BlobResultMap");
@@ -217,6 +216,6 @@ public class MybatisXmlGenerator implements Generator {
     }
 
     private boolean hasMapperXmlFiles(Collection<Mapper> mappers) {
-        return mappers.size() > 0;
+        return !mappers.isEmpty();
     }
 }

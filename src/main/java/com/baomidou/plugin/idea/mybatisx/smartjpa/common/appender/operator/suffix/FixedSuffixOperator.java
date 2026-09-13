@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
@@ -40,7 +41,7 @@ public class FixedSuffixOperator implements SuffixOperator {
      */
     @Override
     public String getTemplateText(String fieldName,
-                                  LinkedList<TxParameter> parameters,
+                                  @NonNull LinkedList<TxParameter> parameters,
                                   ConditionFieldWrapper conditionFieldWrapper) {
         return mappingField.stream()
             .filter(field -> field.getColumnName().equals(fieldName))

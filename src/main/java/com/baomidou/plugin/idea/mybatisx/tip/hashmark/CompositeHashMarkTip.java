@@ -24,12 +24,11 @@ import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocTagValue;
 import com.intellij.psi.javadoc.PsiDocToken;
-import com.intellij.util.xml.DomUtil;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.DomUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,17 +42,12 @@ import java.util.stream.Collectors;
  *
  * @author ls9527
  */
+@Slf4j
 public class CompositeHashMarkTip {
 
     public static final String DOT = ".";
-    /**
-     * 方法上面的注释名称, 例如
-     *
-     * @param userName 用户名
-     */
     public static final String PARAM = "param";
-    private static final Logger logger = LoggerFactory.getLogger(CompositeHashMarkTip.class);
-    private static final List<HashMarkTip> hashMarkTips = new ArrayList<HashMarkTip>() {
+    private static final List<HashMarkTip> hashMarkTips = new ArrayList<>() {
         {
             add(new JdbcTypeHashMarkTip());
             add(new TypeHandlerHashMarkTip());
@@ -74,7 +68,7 @@ public class CompositeHashMarkTip {
      * Add element for psi parameter.
      * <p>
      * 提示的内容参考:
-     * see https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#select
+     * see <a href="https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#select">sqlmap-xml.html#select</a>
      *
      * @param wrappedText
      * @param editorCaret
@@ -85,12 +79,12 @@ public class CompositeHashMarkTip {
                                           int editorCaret,
                                           @Nullable PsiElement xmlElement) {
         Optional<PsiMethod> methodOptional = JavaUtils.findMethod(project, idDomElement);
-        if (!methodOptional.isPresent()) {
-            logger.info("the psiMethod is null");
+        if (methodOptional.isEmpty()) {
+            log.info("the psiMethod is null");
             return;
         }
         PsiMethod psiMethod = methodOptional.get();
-        logger.info("CompletionContributor xml start");
+        log.info("CompletionContributor xml start");
         // 焦点前面的字段名称
         String fieldFrontOfCaret = wrappedText.substring(0, editorCaret);
 
@@ -114,8 +108,7 @@ public class CompositeHashMarkTip {
             if (xmlElement != null) {
                 PsiElement current = xmlElement;
                 while (current != null && !current.equals(idDomElement.getXmlTag())) {
-                    if (current instanceof XmlTag) {
-                        XmlTag tag = (XmlTag) current;
+                    if (current instanceof XmlTag tag) {
                         if ("foreach".equals(tag.getName())) {
                             String item = tag.getAttributeValue("item");
                             if (!StringUtils.isEmpty(item)) {
@@ -165,7 +158,7 @@ public class CompositeHashMarkTip {
         }
 
 
-        logger.info("CompletionContributor xml end");
+        log.info("CompletionContributor xml end");
 
     }
 
@@ -304,10 +297,9 @@ public class CompositeHashMarkTip {
         IdDomElement domElement = DomUtil.findDomElement(myElement, IdDomElement.class);
         if (domElement != null) {
             Object value = domElement.getId().getValue();
-            if (!(value instanceof PsiMethod)) {
+            if (!(value instanceof PsiMethod psiMethod)) {
                 return null;
             }
-            PsiMethod psiMethod = (PsiMethod) value;
             PsiParameterList parameterList = psiMethod.getParameterList();
             if (parameterList.isEmpty()) {
                 return null;

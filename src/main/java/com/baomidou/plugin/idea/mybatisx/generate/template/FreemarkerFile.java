@@ -20,11 +20,6 @@ public class FreemarkerFile extends GeneratedJavaFile {
     }
 
     @Override
-    public String getFormattedContent() {
-        return super.getFormattedContent();
-    }
-
-    @Override
     public String getTargetPackage() {
         return packageName;
     }

@@ -4,10 +4,9 @@ import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,8 +18,8 @@ import java.util.Set;
  *
  * @author yanglin
  */
+@Slf4j
 public class InnerAliasResolver extends AliasResolver {
-    private static final Logger logger = LoggerFactory.getLogger(InnerAliasResolver.class);
     private volatile Set<AliasDesc> innerAliasDescs = null;
 
     /**
@@ -62,7 +61,7 @@ public class InnerAliasResolver extends AliasResolver {
             AliasDesc aliasDesc = AliasDesc.create(psiClass, alias);
             aliasDescs.add(aliasDesc);
         } else {
-            logger.error("无法找到别名映射, class: {}, alias: {}", clazz, alias);
+            log.error("无法找到别名映射, class: {}, alias: {}", clazz, alias);
         }
 
     }

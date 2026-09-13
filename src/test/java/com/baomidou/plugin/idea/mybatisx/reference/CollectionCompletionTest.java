@@ -37,23 +37,23 @@ public class CollectionCompletionTest extends LightJavaCodeInsightFixtureTestCas
         myFixture.completeBasic();
         List<String> lookupElementStrings = myFixture.getLookupElementStrings();
         assertNotNull(lookupElementStrings);
-        
+
         // Print all variants to seeing what we get
         System.out.println("Variants: " + lookupElementStrings);
 
         // We expect "size" (property) and "size()" (method) to be present currently
         boolean hasSizeProperty = lookupElementStrings.contains("users.size");
         boolean hasSizeMethod = lookupElementStrings.contains("users.size()");
-        
+
         // Note: lookup strings usually contain the full text that will be inserted.
-        // If the contributor adds "size", it matches "users.size"? 
+        // If the contributor adds "size", it matches "users.size"?
         // Wait, the contributor code adds: variants.add(LookupElementBuilder.create(prefix + "size")...
         // prefix is "users." (if scanned correctly).
-        // Let's verify what prefix is used. 
+        // Let's verify what prefix is used.
         // TestParamReferenceContributor:359: String prefix = value.substring(0, lastDot);
         // If value is "users.", then prefix is "users".
         // So added element is "users.size".
-        
+
         assertTrue("Should contain size property", hasSizeProperty);
         assertTrue("Should contain size() method", hasSizeMethod);
     }

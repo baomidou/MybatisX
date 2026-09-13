@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.reference.ResultPropertyReferenceSet;
-import com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
@@ -26,13 +26,13 @@ import java.util.Optional;
 public class PropertyConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
     @Override
-    public String getErrorMessage(@Nullable String property, ConvertContext context) {
+    public String getErrorMessage(@Nullable String property, @NotNull ConvertContext context) {
         return "property (" + property + ") can not found setter method";
     }
 
-    @NotNull
+
     @Override
-    public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
+    public PsiReference @NotNull [] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         final String fieldName = value.getStringValue();
         if (fieldName == null) {
             return PsiReference.EMPTY_ARRAY;
@@ -42,10 +42,10 @@ public class PropertyConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String firstText, ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String firstText, @NonNull ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
-        if (ctxElement instanceof GenericAttributeValue) {
-            final XmlAttributeValue xmlAttributeValue = ((GenericAttributeValue) ctxElement).getXmlAttributeValue();
+        if (ctxElement instanceof GenericAttributeValue<?> attributeValue) {
+            final XmlAttributeValue xmlAttributeValue = attributeValue.getXmlAttributeValue();
             PropertySetterFind propertySetterFind = new PropertySetterFind();
             final Optional<PsiField> startElement = propertySetterFind.getStartElement(firstText, xmlAttributeValue);
             if (startElement.isPresent()) {

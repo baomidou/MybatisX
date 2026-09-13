@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
@@ -62,34 +63,32 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
          *
          * @param mappingField the mapping field
          */
-        public InsertBatchSuffixOperator(List<TxField> mappingField) {
+        public InsertBatchSuffixOperator(@NotNull List<TxField> mappingField) {
             this.mappingField = mappingField;
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+            if (parameters.isEmpty()) {
+                throw new GenerateException("oracle insertBatch 生成失败, parameters为空");
+            }
+            final TxParameter collection = parameters.poll();
+            final String collectionName = collection.getName();
             Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
-            StringBuilder stringBuilder = new StringBuilder();
-            String itemName = "item";
-            // 追加列名
+            // build columns
             final String columns = mappingField.stream()
                 .map(TxField::getColumnName)
                 .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
-            stringBuilder.append("(").append(columns).append(")").append("\n");
-            // values 连接符
-            stringBuilder.append("(").append("\n");
-            final TxParameter collection = parameters.poll();
-            if (collection == null) {
-                throw new GenerateException("oracle insertBatch 生成失败, 无法获取集合名称");
-            }
-            final String collectionName = collection.getName();
+
+            // build field placeholder
+            String itemName = "item";
             final String fields = mappingField.stream()
                 .map(field -> {
                     String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
                     // 第一版写死字段变更, 后续重构
                     // 变更主键生成规则为自定义函数
-                    if (sequenceName.isPresent() && dasTable != null) {
+                    if (sequenceName.isPresent()) {
                         DasTableKey primaryKey = dasTable.getPrimaryKey();
                         // 当前字段是主键, 使用自定义函数替换主键
                         if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
@@ -104,14 +103,8 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
                 })
                 .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
 
-            stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
-            stringBuilder.append(" item=\"").append(itemName).append("\"");
-            stringBuilder.append(" separator=\"union all\">").append("\n");
-            stringBuilder.append("select").append("\n");
-            stringBuilder.append(fields).append("\n").append("from dual").append("\n");
-            stringBuilder.append("</foreach>").append("\n");
-            stringBuilder.append(")");
-            return stringBuilder.toString();
+            return "(%s)\n(\n<foreach collection=\"%s\" item=\"%s\" separator=\"union all\">\nselect\n%s\nfrom dual\n</foreach>\n)"
+                .formatted(columns, collectionName, itemName, fields);
         }
 
     }

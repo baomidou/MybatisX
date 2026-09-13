@@ -19,6 +19,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.containers.JBIterable;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,33 +35,40 @@ public class PsiColumnReferenceSetResolver {
 
 
     private static final Splitter SPLITTER = Splitter.on(MybatisConstants.DOT_SEPARATOR);
-
-    /**
-     * The Project.
-     * -- GETTER --
-     *  Gets project.
-     *
-     * @return the project
-
-     */
-    @Getter
-    protected Project project;
-
-    /**
-     * The Element.
-     * -- GETTER --
-     *  Gets element.
-     *
-     * @return the element
-
-     */
-    @Getter
-    protected XmlAttributeValue element;
-
     /**
      * The Texts.
      */
-    protected List<String> texts;
+    protected final List<String> texts;
+    /**
+     * The Project.
+     * -- GETTER --
+     * Gets project.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets project.
+     *
+     * @return the project
+     * @param project the project
+     */
+    @Setter
+    @Getter
+    protected Project project;
+    /**
+     * The Element.
+     * -- GETTER --
+     * Gets element.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets element.
+     *
+     * @return the element
+     * @param element the element
+     */
+    @Setter
+    @Getter
+    protected XmlAttributeValue element;
 
     /**
      * Instantiates a new Context reference set resolver.
@@ -93,24 +101,6 @@ public class PsiColumnReferenceSetResolver {
     }
 
 
-    /**
-     * Sets element.
-     *
-     * @param element the element
-     */
-    public void setElement(XmlAttributeValue element) {
-        this.element = element;
-    }
-
-    /**
-     * Sets project.
-     *
-     * @param project the project
-     */
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
     @NotNull
     public String getText() {
         return getElement().getValue();
@@ -119,7 +109,7 @@ public class PsiColumnReferenceSetResolver {
 
     public Optional<DasTable> getStartElement(@Nullable String firstText) {
         Optional<PsiClass> clazz = MapperBacktrackingUtils.getEntityClass(getElement());
-        if (!clazz.isPresent()) {
+        if (clazz.isEmpty()) {
             return Optional.empty();
         }
         PsiClass entityClass = clazz.get();

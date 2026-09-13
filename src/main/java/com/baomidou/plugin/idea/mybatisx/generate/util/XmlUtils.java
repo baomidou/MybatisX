@@ -36,8 +36,8 @@ public class XmlUtils {
 
 
     static class SAXDemoHandel extends DefaultHandler {
-        Stack<Object> objects = new Stack<>();
-        Map<String, TemplateSettingDTO> map = new HashMap<>();
+        final Stack<Object> objects = new Stack<>();
+        final Map<String, TemplateSettingDTO> map = new HashMap<>();
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -48,20 +48,14 @@ public class XmlUtils {
                 TemplateSettingDTO peek = (TemplateSettingDTO) objects.peek();
                 String name = attributes.getValue("name");
                 String value = attributes.getValue("value");
-                if (name.equals("configName")) {
-                    peek.setConfigName(value);
-                } else if (name.equals("configFile")) {
-                    peek.setConfigFile(value);
-                } else if (name.equals("fileName")) {
-                    peek.setFileName(value);
-                } else if (name.equals("suffix")) {
-                    peek.setSuffix(value);
-                } else if (name.equals("packageName")) {
-                    peek.setPackageName(value);
-                } else if (name.equals("encoding")) {
-                    peek.setEncoding(value);
-                } else if (name.equals("basePath")) {
-                    peek.setBasePath(value);
+                switch (name) {
+                    case "configName" -> peek.setConfigName(value);
+                    case "configFile" -> peek.setConfigFile(value);
+                    case "fileName" -> peek.setFileName(value);
+                    case "suffix" -> peek.setSuffix(value);
+                    case "packageName" -> peek.setPackageName(value);
+                    case "encoding" -> peek.setEncoding(value);
+                    case "basePath" -> peek.setBasePath(value);
                 }
             }
         }

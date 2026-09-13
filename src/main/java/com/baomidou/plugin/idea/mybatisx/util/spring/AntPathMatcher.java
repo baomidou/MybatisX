@@ -18,6 +18,7 @@ package com.baomidou.plugin.idea.mybatisx.util.spring;
 
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -83,11 +84,27 @@ public class AntPathMatcher implements PathMatcher {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{[^/]+?\\}");
 
     private static final char[] WILDCARD_CHARS = {'*', '?', '{'};
-    final Map<String, AntPathStringMatcher> stringMatcherCache = new ConcurrentHashMap<String, AntPathStringMatcher>(256);
-    private final Map<String, String[]> tokenizedPatternCache = new ConcurrentHashMap<String, String[]>(256);
+    final Map<String, AntPathStringMatcher> stringMatcherCache = new ConcurrentHashMap<>(256);
+    private final Map<String, String[]> tokenizedPatternCache = new ConcurrentHashMap<>(256);
     private String pathSeparator;
     private PathSeparatorPatternCache pathSeparatorPatternCache;
+    /**
+     * -- SETTER --
+     * Specify whether to perform pattern matching in a case-sensitive fashion.
+     * <p>Default is
+     * . Switch this to
+     * for case-insensitive matching.
+     *
+     */
+    @Setter
     private boolean caseSensitive = true;
+    /**
+     * -- SETTER --
+     * Specify whether to trim tokenized paths and patterns.
+     * <p>Default is
+     * .
+     */
+    @Setter
     private boolean trimTokens = false;
     private volatile Boolean cachePatterns;
 
@@ -125,24 +142,6 @@ public class AntPathMatcher implements PathMatcher {
     public void setPathSeparator(String pathSeparator) {
         this.pathSeparator = (pathSeparator != null ? pathSeparator : DEFAULT_PATH_SEPARATOR);
         this.pathSeparatorPatternCache = new PathSeparatorPatternCache(this.pathSeparator);
-    }
-
-    /**
-     * Specify whether to perform pattern matching in a case-sensitive fashion.
-     * <p>Default is {@code true}. Switch this to {@code false} for case-insensitive matching.
-     *
-     * @since 4.2
-     */
-    public void setCaseSensitive(boolean caseSensitive) {
-        this.caseSensitive = caseSensitive;
-    }
-
-    /**
-     * Specify whether to trim tokenized paths and patterns.
-     * <p>Default is {@code false}.
-     */
-    public void setTrimTokens(boolean trimTokens) {
-        this.trimTokens = trimTokens;
     }
 
     /**
@@ -327,7 +326,7 @@ public class AntPathMatcher implements PathMatcher {
                 pos += skipped;
                 skipped = skipSegment(path, pos, pattDir);
                 if (skipped < pattDir.length()) {
-                    return (skipped > 0 || (pattDir.length() > 0 && isWildcardChar(pattDir.charAt(0))));
+                    return (skipped > 0 || (!pattDir.isEmpty() && isWildcardChar(pattDir.charAt(0))));
                 }
                 pos += skipped;
             }
@@ -381,7 +380,7 @@ public class AntPathMatcher implements PathMatcher {
     protected String[] tokenizePattern(String pattern) {
         String[] tokenized = null;
         Boolean cachePatterns = this.cachePatterns;
-        if (cachePatterns == null || cachePatterns.booleanValue()) {
+        if (cachePatterns == null || cachePatterns) {
             tokenized = this.tokenizedPatternCache.get(pattern);
         }
         if (tokenized == null) {
@@ -393,7 +392,7 @@ public class AntPathMatcher implements PathMatcher {
                 deactivatePatternCache();
                 return tokenized;
             }
-            if (cachePatterns == null || cachePatterns.booleanValue()) {
+            if (cachePatterns == null || cachePatterns) {
                 this.tokenizedPatternCache.put(pattern, tokenized);
             }
         }
@@ -438,7 +437,7 @@ public class AntPathMatcher implements PathMatcher {
     protected AntPathStringMatcher getStringMatcher(String pattern) {
         AntPathStringMatcher matcher = null;
         Boolean cachePatterns = this.cachePatterns;
-        if (cachePatterns == null || cachePatterns.booleanValue()) {
+        if (cachePatterns == null || cachePatterns) {
             matcher = this.stringMatcherCache.get(pattern);
         }
         if (matcher == null) {
@@ -450,7 +449,7 @@ public class AntPathMatcher implements PathMatcher {
                 deactivatePatternCache();
                 return matcher;
             }
-            if (cachePatterns == null || cachePatterns.booleanValue()) {
+            if (cachePatterns == null || cachePatterns) {
                 this.stringMatcherCache.put(pattern, matcher);
             }
         }
@@ -495,7 +494,7 @@ public class AntPathMatcher implements PathMatcher {
 
     @Override
     public Map<String, String> extractUriTemplateVariables(String pattern, String path) {
-        Map<String, String> variables = new LinkedHashMap<String, String>();
+        Map<String, String> variables = new LinkedHashMap<>();
         boolean result = doMatch(pattern, path, true, variables);
         if (!result) {
             throw new IllegalStateException("Pattern \"" + pattern + "\" is not a match for \"" + path + "\"");
@@ -573,8 +572,8 @@ public class AntPathMatcher implements PathMatcher {
         int dotPos2 = pattern2.indexOf('.');
         String file2 = (dotPos2 == -1 ? pattern2 : pattern2.substring(0, dotPos2));
         String ext2 = (dotPos2 == -1 ? "" : pattern2.substring(dotPos2));
-        boolean ext1All = (ext1.equals(".*") || ext1.equals(""));
-        boolean ext2All = (ext2.equals(".*") || ext2.equals(""));
+        boolean ext1All = (ext1.equals(".*") || ext1.isEmpty());
+        boolean ext2All = (ext2.equals(".*") || ext2.isEmpty());
         if (!ext1All && !ext2All) {
             throw new IllegalArgumentException("Cannot combine patterns: " + pattern1 + " vs " + pattern2);
         }
@@ -631,7 +630,7 @@ public class AntPathMatcher implements PathMatcher {
 
         private final Pattern pattern;
 
-        private final List<String> variableNames = new LinkedList<String>();
+        private final List<String> variableNames = new LinkedList<>();
 
         public AntPathStringMatcher(String pattern) {
             this(pattern, true);

@@ -58,12 +58,7 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
         // insertBatch
         ResultAppenderFactory appenderFactory = getResultAppenderFactory(mappingField, newAreaName);
         // insert + Batch
-        final SyntaxAppender batchAppender =
-            CustomAreaAppender.createCustomAreaAppender(newAreaName,
-                ResultAppenderFactory.RESULT,
-                AreaSequence.AREA,
-                AreaSequence.RESULT,
-                appenderFactory);
+        final SyntaxAppender batchAppender = CustomAreaAppender.createCustomAreaAppender(newAreaName, ResultAppenderFactory.RESULT, AreaSequence.AREA, AreaSequence.RESULT, appenderFactory);
         appenderFactory.registerAppender(batchAppender);
 
         StatementBlock statementBlock = new StatementBlock();
@@ -83,20 +78,16 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
      * @return the result appender factory
      */
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
-        ResultAppenderFactory appenderFactory = new InsertDuplicateBatchResultAppenderFactory(newAreaName) {
+        return new InsertDuplicateBatchResultAppenderFactory(newAreaName) {
             @Override
             public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
-                SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator(batchName(),
-                    getSuffixOperator(mappingField),
-                    AreaSequence.RESULT);
+                SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator(batchName(), getSuffixOperator(mappingField), AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
                 syntaxAppenderWrappers.add(new SyntaxAppenderWrapper(suffixOperator));
                 return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
-
-        return appenderFactory;
     }
 
     /**
@@ -142,7 +133,7 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
     }
 
 
-    private class InsertDuplicateBatchResultAppenderFactory extends ResultAppenderFactory {
+    private static class InsertDuplicateBatchResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert batch result appender factory.
@@ -154,10 +145,7 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
         }
 
         @Override
-        public String getTemplateText(String tableName,
-                                      PsiClass entityClass,
-                                      LinkedList<TxParameter> parameters,
-                                      LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder mapperXml = new StringBuilder("insert into " + tableName);
             for (SyntaxAppenderWrapper syntaxAppenderWrapper : collector) {
                 String templateText = syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
@@ -185,52 +173,69 @@ public class MysqlInsertDuplicateBatch implements CustomStatement {
     /**
      * 批量插入
      */
-    private class InsertBatchSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record InsertBatchSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert batch suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public InsertBatchSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private InsertBatchSuffixOperator {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String itemName = "item";
-            // 追加列名
-            final String columns = mappingField.stream()
-                .map(field -> field.getColumnName())
-                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
-            stringBuilder.append("(").append(columns).append(")").append("\n");
-            // values 连接符
-            stringBuilder.append("values").append("\n");
+        public String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+            if (parameters.isEmpty()) {
+                throw new IllegalArgumentException("Parameters list cannot be null or empty");
+            }
+
             final TxParameter collection = parameters.poll();
             final String collectionName = collection.getName();
-            final String fields = mappingField.stream()
-                .map(field -> {
-                    String fieldValue = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
-                    fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
-                    return fieldValue;
-                })
-                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
 
-            stringBuilder.append("<foreach collection=\"").append(collectionName).append("\"");
-            stringBuilder.append(" item=\"" + itemName + "\"");
-            stringBuilder.append(" separator=\",\">").append("\n");
-            stringBuilder.append("(").append(fields).append(")").append("\n");
-            stringBuilder.append("</foreach>").append("\n");
+            // 追加列名
+            final String columns = buildColumnClause(conditionFieldWrapper);
+            String valuesPlaceholder = buildValuesPlaceholder(conditionFieldWrapper, collectionName);
+            String updatePlaceholder = buildUpdatePlaceholder(conditionFieldWrapper);
 
-            final String valuesFields = mappingField.stream()
-                .map(item->item.getColumnName() + " = values(" + item.getColumnName() + ")")
-                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
-            stringBuilder.append(" on duplicate key update ").append(valuesFields).append("\n");
-            return stringBuilder.toString();
+            return "(%s)\nvalues\n%s%s"
+                .formatted(columns, valuesPlaceholder, updatePlaceholder);
         }
 
+        private String buildUpdatePlaceholder(ConditionFieldWrapper conditionFieldWrapper) {
+            final String valuesFields = mappingField.stream()
+                .map(item -> "%s = values(%s)".formatted(item.getColumnName(), item.getColumnName()))
+                .collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
+            return " on duplicate key update %s\n".formatted(valuesFields);
+        }
+
+        /**
+         * 构建 VALUES 占位符（包含 foreach 循环）
+         */
+        private String buildValuesPlaceholder(ConditionFieldWrapper conditionFieldWrapper, String collectionName) {
+            String itemName = "item";
+            String fieldPlaceholders = buildFieldPlaceholders(conditionFieldWrapper, itemName);
+
+            return "<foreach collection=\"%s\" item=\"%s\" separator=\",\">\n(%s)\n</foreach>\n"
+                .formatted(collectionName, itemName, fieldPlaceholders);
+        }
+
+        /**
+         * 构建字段值占位符
+         */
+        private String buildFieldPlaceholders(ConditionFieldWrapper conditionFieldWrapper, String itemName) {
+            return mappingField.stream().map(field -> {
+                String fieldPath = itemName + "." + field.getFieldName();
+                String fieldValue = JdbcTypeUtils.wrapperField(fieldPath, field.getFieldType());
+                fieldValue = conditionFieldWrapper.wrapDefaultDateIfNecessary(field.getColumnName(), fieldValue);
+                return fieldValue;
+            }).collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
+        }
+
+        /**
+         * 构建列名子句
+         */
+        private String buildColumnClause(ConditionFieldWrapper conditionFieldWrapper) {
+            return mappingField.stream().map(TxField::getColumnName).collect(MybatisXCollectors.joining(",", conditionFieldWrapper.getNewline()));
+        }
     }
 }

@@ -27,10 +27,9 @@ public class MapperMethodSafeDeleteProcessor extends SafeDeleteProcessorDelegate
     @Override
     public boolean handlesElement(PsiElement element) {
         // 只处理方法重命名就好了
-        if (!(element instanceof PsiMethod)) {
+        if (!(element instanceof PsiMethod psiMethod)) {
             return false;
         }
-        PsiMethod psiMethod = (PsiMethod) element;
         final PsiClass containingClass = psiMethod.getContainingClass();
         if (containingClass == null) {
             return false;
@@ -51,7 +50,7 @@ public class MapperMethodSafeDeleteProcessor extends SafeDeleteProcessorDelegate
 
 
     @Override
-    public void prepareForDeletion(PsiElement element) throws IncorrectOperationException {
+    public void prepareForDeletion(@NotNull PsiElement element) throws IncorrectOperationException {
         PsiMethod psiMethod = (PsiMethod) element;
         final XmlTag tag = MapperUtils.findTag(psiMethod.getProject(), psiMethod);
         if (tag != null) {
@@ -60,16 +59,15 @@ public class MapperMethodSafeDeleteProcessor extends SafeDeleteProcessorDelegate
     }
 
 
-
+    @Nullable
     @Override
-    public @Nullable
-    Collection<String> findConflicts(@NotNull PsiElement element, @NotNull PsiElement[] allElementsToDelete) {
+    public Collection<String> findConflicts(@NotNull PsiElement element, PsiElement @NotNull [] allElementsToDelete) {
         return null;
     }
 
+    @Nullable
     @Override
-    public @Nullable
-    UsageInfo[] preprocessUsages(Project project, UsageInfo[] usages) {
+    public UsageInfo[] preprocessUsages(@NotNull Project project, UsageInfo @NotNull [] usages) {
         return usages;
     }
 

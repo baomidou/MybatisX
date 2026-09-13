@@ -1,12 +1,14 @@
 package com.baomidou.plugin.idea.mybatisx.jpa;
 
 import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.IdeaTestUtil;
 import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
 import com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,17 @@ import java.util.Optional;
  */
 public abstract class BaseJpaTest extends JavaCodeInsightFixtureTestCase {
 
+    public void setUp() throws Exception {
+        super.setUp();
+        // 添加 src/test/resources 目录
+        VfsRootAccess.allowRootAccess(
+            getTestRootDisposable(),
+            "D:/IdeaProjects/MybatisX/src/test/resources"
+        );
+        // 或者更通用地使用相对路径：
+        // VfsRootAccess.allowRootAccess(getTestRootDisposable(),
+        //     Paths.get("src/test/resources").toAbsolutePath().toString());
+    }
 
     public static final String MYBATIS_X_GENERATE_MYBATIS_SQL = "[MybatisX] Generate Mybatis Sql";
 

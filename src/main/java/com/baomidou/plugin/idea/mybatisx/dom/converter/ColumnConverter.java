@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.reference.ResultColumnReferenceSet;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.PluginExistsUtils;
@@ -31,9 +32,9 @@ public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> impleme
 
     public static final String NAMESPACE = "namespace";
 
-    @NotNull
+
     @Override
-    public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
+    public PsiReference @NotNull [] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         String stringValue = value.getStringValue();
         if (stringValue == null) {
             return PsiReference.EMPTY_ARRAY;
@@ -65,9 +66,9 @@ public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> impleme
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String s, ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String s, @NonNull ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
-        return ctxElement instanceof GenericAttributeValue ? ((GenericAttributeValue) ctxElement).getXmlAttributeValue() : null;
+        return ctxElement instanceof GenericAttributeValue ? ((GenericAttributeValue<?>) ctxElement).getXmlAttributeValue() : null;
     }
 
 }

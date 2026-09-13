@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CompositeAppender;
@@ -38,7 +38,7 @@ public class UpdateOperator extends BaseOperatorManager {
      * @param entityClass
      */
     public UpdateOperator(final List<TxField> mappingField, PsiClass entityClass) {
-        final Set<String> patterns = AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns();
+        final Set<String> patterns = StatementGenerators.UPDATE_GENERATOR.getPatterns();
         this.init(mappingField, entityClass, patterns);
         patterns.forEach(this::addOperatorName);
     }
@@ -111,7 +111,7 @@ public class UpdateOperator extends BaseOperatorManager {
         mybatisXmlGenerator.generateUpdate(id, mapperXml);
     }
 
-    private class UpdateResultAppenderFactory extends ResultAppenderFactory {
+    private static class UpdateResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Update result appender factory.
@@ -129,9 +129,9 @@ public class UpdateOperator extends BaseOperatorManager {
                                       LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
             String operatorXml = "update " + tableName + "\n set ";
 
-            return operatorXml + collector.stream().map(syntaxAppenderWrapper -> {
-                return syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-            }).collect(Collectors.joining());
+            return operatorXml + collector.stream()
+                .map(syntaxAppenderWrapper -> syntaxAppenderWrapper.getAppender().getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper))
+                .collect(Collectors.joining());
         }
 
         @Override

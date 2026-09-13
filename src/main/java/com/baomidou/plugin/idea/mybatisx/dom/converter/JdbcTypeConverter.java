@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.reference.ContextReferenceSetResolver;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
@@ -34,11 +35,11 @@ import java.util.Optional;
 public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> implements CustomReferenceConverter<XmlAttributeValue> {
 
     private static final String clazzName = "org.apache.ibatis.type.JdbcType";
-    JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
+    final JdbcTypeVariantHolder jdbcTypeVariantHolder = new JdbcTypeVariantHolder();
 
-    @NotNull
+
     @Override
-    public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
+    public PsiReference @NotNull [] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         final String stringValue = value.getStringValue();
         if (stringValue == null) {
             return PsiReference.EMPTY_ARRAY;
@@ -48,10 +49,9 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String s, ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String s, @NonNull ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
-        if (ctxElement instanceof GenericAttributeValue) {
-            GenericAttributeValue genericAttributeValue = (GenericAttributeValue) ctxElement;
+        if (ctxElement instanceof GenericAttributeValue<?> genericAttributeValue) {
             return genericAttributeValue.getXmlAttributeValue();
         }
         return null;
@@ -89,7 +89,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     }
 
-    private class JdbcTypePsiReferenceBase extends PsiReferenceBase {
+    private class JdbcTypePsiReferenceBase extends PsiReferenceBase<XmlAttributeValue> {
 
         private final ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
         private final int index;
@@ -108,9 +108,8 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
         }
 
 
-        @NotNull
         @Override
-        public Object[] getVariants() {
+        public Object @NotNull [] getVariants() {
             Project project = resolver.getProject();
             Object[] objects = jdbcTypeVariantHolder.getVariants();
             if (objects != null) {
@@ -118,7 +117,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
             }
             // 找不到JdbcType类则始终不缓存
             Optional<PsiClass> classOptional = findJdbcTypeClass(project);
-            if (!classOptional.isPresent()) {
+            if (classOptional.isEmpty()) {
                 return PsiReference.EMPTY_ARRAY;
             }
             PsiClass psiClass = classOptional.get();
@@ -154,15 +153,14 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
                 return Optional.empty();
             }
             Optional<PsiClass> jdbcTypeOptional = findJdbcTypeClass(project);
-            if (!jdbcTypeOptional.isPresent()) {
+            if (jdbcTypeOptional.isEmpty()) {
                 return Optional.empty();
             }
             PsiClass psiClass = jdbcTypeOptional.get();
             String paramText = firstText.toUpperCase();
             PsiField foundField = null;
             for (PsiField enumField : psiClass.getAllFields()) {
-                if (enumField.getName() != null
-                    && enumField.getName().equalsIgnoreCase(paramText)) {
+                if (enumField.getName().equalsIgnoreCase(paramText)) {
                     if (enumField.getType().getCanonicalText().equalsIgnoreCase(psiClass.getQualifiedName())) {
                         foundField = enumField;
                         break;

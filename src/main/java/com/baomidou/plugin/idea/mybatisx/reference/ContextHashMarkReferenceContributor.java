@@ -33,12 +33,10 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(EL_VAR_COMMENT, new PsiReferenceProvider() {
             @Override
-            public @NotNull
-            PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
-                if (!(element instanceof XmlToken)) {
+            public PsiReference @NotNull [] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+                if (!(element instanceof XmlToken literalExpression)) {
                     return PsiReference.EMPTY_ARRAY;
                 }
-                XmlToken literalExpression = (XmlToken) element;
                 String value = literalExpression.getText();
 
                 if ((value != null && value.startsWith(SIMPLE_PREFIX_STR))) {
@@ -54,7 +52,7 @@ public class ContextHashMarkReferenceContributor extends PsiReferenceContributor
         });
     }
 
-    private class HashMarkReference extends PsiReferenceBase<PsiElement> {
+    private static class HashMarkReference extends PsiReferenceBase<PsiElement> {
 
         private final CompositeHashMarkTip compositeHashMarkTip;
 

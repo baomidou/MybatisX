@@ -33,7 +33,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -43,11 +42,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class TablePreviewUI {
-    ListTableModel<TableUIInfo> model = new ListTableModel<>(
+    final ListTableModel<TableUIInfo> model = new ListTableModel<>(
         new MybaitsxTableColumnInfo("tableName", false),
         new MybaitsxTableColumnInfo("className", true)
     );
-    List<ClassNameStrategy> classNameStrategies = new ArrayList<ClassNameStrategy>() {
+    final List<ClassNameStrategy> classNameStrategies = new ArrayList<>() {
         {
             add(new CamelStrategy());
             add(new SameAsTableNameStrategy());
@@ -163,19 +162,15 @@ public class TablePreviewUI {
             }
         };
 
-        final ItemListener classNameChangeListener = new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                final Object source = e.getItem();
-                if (!(source instanceof JRadioButton)) {
-                    return;
-                }
-                JRadioButton radioButton = (JRadioButton) source;
-                if (!radioButton.isSelected()) {
-                    return;
-                }
-                refreshTableNames(findClassNameStrategy(), dbTables, ignorePrefix, ignoreSuffix);
+        final ItemListener classNameChangeListener = e -> {
+            final Object source = e.getItem();
+            if (!(source instanceof JRadioButton radioButton)) {
+                return;
             }
+            if (!radioButton.isSelected()) {
+                return;
+            }
+            refreshTableNames(findClassNameStrategy(), dbTables, ignorePrefix, ignoreSuffix);
         };
         camelRadioButton.addItemListener(classNameChangeListener);
         sameAsTablenameRadioButton.addItemListener(classNameChangeListener);
@@ -190,7 +185,7 @@ public class TablePreviewUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 TreeJavaClassChooserDialog treeJavaClassChooserDialog =
-                    new TreeJavaClassChooserDialog("Please Select a Parent Class", project, GlobalSearchScope.allScope(project),null,null);
+                    new TreeJavaClassChooserDialog("Please Select a Parent Class", project, GlobalSearchScope.allScope(project), null, null);
                 treeJavaClassChooserDialog.show();
                 PsiClass selectedClass = treeJavaClassChooserDialog.getSelected();
                 // 没有选择类
@@ -232,17 +227,17 @@ public class TablePreviewUI {
 
     private void chooseModule(Project project) {
         Module[] modules = ModuleManager.getInstance(project).getModules();
-        ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose Single Module");
+        ChooseModulesDialog dialog = new ChooseModulesDialog(project, Arrays.asList(modules), "Choose Module", "Choose single module");
         dialog.setSingleSelectionMode();
         dialog.show();
-        if(dialog.getExitCode()!=ChooseModulesDialog.OK_EXIT_CODE){
+        if (dialog.getExitCode() != ChooseModulesDialog.OK_EXIT_CODE) {
             return;
         }
         List<Module> chosenElements = dialog.getChosenElements();
-        if (chosenElements.size() == 0) {
+        if (chosenElements.isEmpty()) {
             return;
         }
-        Module module = chosenElements.get(0);
+        Module module = chosenElements.getFirst();
         chooseModulePath(module);
         moduleName = module.getName();
     }
@@ -250,16 +245,18 @@ public class TablePreviewUI {
     private void chooseModulePath(Module module) {
         String moduleDirPath = null;
         final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
-        if(contentRoots.length>0){
+        if (contentRoots.length > 0) {
             moduleDirPath = contentRoots[0].getPath();
         }
-        int childModuleIndex = indexFromChildModule(moduleDirPath);
-        if (hasChildModule(childModuleIndex)) {
-            Optional<String> pathFromModule = getPathFromModule(module);
-            if (pathFromModule.isPresent()) {
-                moduleDirPath = pathFromModule.get();
-            } else {
-                moduleDirPath = moduleDirPath.substring(0, childModuleIndex);
+        if (moduleDirPath!=null) {
+            int childModuleIndex = indexFromChildModule(moduleDirPath);
+            if (hasChildModule(childModuleIndex)) {
+                Optional<String> pathFromModule = getPathFromModule(module);
+                if (pathFromModule.isPresent()) {
+                    moduleDirPath = pathFromModule.get();
+                } else {
+                    moduleDirPath = moduleDirPath.substring(0, childModuleIndex);
+                }
             }
         }
 
@@ -271,6 +268,9 @@ public class TablePreviewUI {
     }
 
     private int indexFromChildModule(String moduleDirPath) {
+        if (moduleDirPath == null) {
+            return -1;
+        }
         return moduleDirPath.indexOf(".idea");
     }
 
@@ -278,7 +278,7 @@ public class TablePreviewUI {
         // 兼容gradle获取子模块
         VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
         if (contentRoots.length == 1) {
-            return Optional.ofNullable(contentRoots[0].getPath());
+            return Optional.of(contentRoots[0].getPath());
         }
         return Optional.empty();
     }
@@ -303,8 +303,7 @@ public class TablePreviewUI {
 
     private void selectClassNameStrategyByName(ClassNameStrategy classNameStrategy) {
         for (Component component : classNameStrategyPanel.getComponents()) {
-            if (component instanceof JRadioButton) {
-                JRadioButton radioButton = (JRadioButton) component;
+            if (component instanceof JRadioButton radioButton) {
                 if (radioButton.getText().equals(classNameStrategy.getText())) {
                     radioButton.setSelected(true);
                     break;
@@ -316,8 +315,7 @@ public class TablePreviewUI {
     private String findClassNameStrategy() {
         String name = null;
         for (Component component : classNameStrategyPanel.getComponents()) {
-            if (component instanceof JRadioButton) {
-                JRadioButton radioButton = (JRadioButton) component;
+            if (component instanceof JRadioButton radioButton) {
                 if (radioButton.isSelected()) {
                     name = radioButton.getText();
                     break;

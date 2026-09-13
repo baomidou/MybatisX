@@ -56,29 +56,31 @@ public abstract class JpaMappingResolver {
     public static Optional<PsiClass> findEntityClassByMapperClass(PsiClass mapperClass) {
         JavaPsiFacade instance = JavaPsiFacade.getInstance(mapperClass.getProject());
         PsiReferenceList extendsList = mapperClass.getExtendsList();
-        if (extendsList != null) {
-            @NotNull PsiJavaCodeReferenceElement[] referenceElements = extendsList.getReferenceElements();
-            for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
-                PsiReferenceParameterList parameterList = referenceElement.getParameterList();
-                if (parameterList != null) {
-                    @NotNull PsiType[] typeArguments = parameterList.getTypeArguments();
-                    if (typeArguments != null) {
-                        for (PsiType type : typeArguments) {
-                            String canonicalText = type.getCanonicalText();
-                            // 当存在多个类型的时候, 排除主键类型.  java开头的包
-                            if (!canonicalText.startsWith("java")
-                                && !StringUtils.isEmpty(canonicalText)) {
-                                PsiClass entityClass = instance.findClass(canonicalText, mapperClass.getResolveScope());
-                                if (entityClass != null) {
-                                    PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
-                                    if (annotation != null) {
-                                        return Optional.of(entityClass);
-                                    }
-                                }
-                            }
-                        }
-                    }
+        if (extendsList == null) {
+            return Optional.empty();
+        }
+        @NotNull PsiJavaCodeReferenceElement[] referenceElements = extendsList.getReferenceElements();
+        for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
+            PsiReferenceParameterList parameterList = referenceElement.getParameterList();
+            if (parameterList == null) {
+                continue;
+            }
+            @NotNull PsiType[] typeArguments = parameterList.getTypeArguments();
+            for (PsiType type : typeArguments) {
+                String canonicalText = type.getCanonicalText();
+                // 当存在多个类型的时候, 排除主键类型.  java开头的包
+                if (StringUtils.isEmpty(canonicalText) || canonicalText.startsWith("java")) {
+                    continue;
                 }
+                PsiClass entityClass = instance.findClass(canonicalText, mapperClass.getResolveScope());
+                if (entityClass == null) {
+                    continue;
+                }
+                PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
+                if (annotation == null) {
+                    continue;
+                }
+                return Optional.of(entityClass);
             }
         }
         return Optional.empty();
@@ -90,14 +92,15 @@ public abstract class JpaMappingResolver {
         }
         String tableName = null;
         PsiAnnotation annotation = entityClass.getAnnotation(JAVAX_PERSISTENCE_TABLE);
-        if (annotation != null) {
-            PsiAnnotationMemberValue originTable = annotation.findAttributeValue(TABLE_NAME);
-            PsiLiteralExpression expression = (PsiLiteralExpression) originTable;
-            if (expression == null || expression.getValue() == null) {
-                return Optional.empty();
-            }
-            tableName = expression.getValue().toString();
+        if (annotation == null) {
+            return Optional.empty();
         }
+        PsiAnnotationMemberValue originTable = annotation.findAttributeValue(TABLE_NAME);
+        PsiLiteralExpression expression = (PsiLiteralExpression) originTable;
+        if (expression == null || expression.getValue() == null) {
+            return Optional.empty();
+        }
+        tableName = expression.getValue().toString();
         return Optional.ofNullable(tableName);
     }
 
@@ -113,7 +116,6 @@ public abstract class JpaMappingResolver {
         PsiAnnotation annotation = field.getAnnotation(JAVAX_PERSISTENCE_COLUMN);
         if (annotation != null) {
             PsiAnnotationMemberValue originFieldAnnotation = annotation.findAttributeValue(COLUMN_NAME);
-
             PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(field.getProject()).getConstantEvaluationHelper();
             if (originFieldAnnotation != null) {
                 Object value = constantEvaluationHelper.computeConstantExpression(originFieldAnnotation);
@@ -132,7 +134,8 @@ public abstract class JpaMappingResolver {
     @NotNull
     private String getUnderLineName(String camelName) {
         String[] strings = org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase(camelName);
-        return Arrays.stream(strings).map(StringUtils::lowerCaseFirstChar)
+        return Arrays.stream(strings)
+            .map(StringUtils::lowerCaseFirstChar)
             .collect(Collectors.joining("_"));
     }
 

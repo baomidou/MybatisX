@@ -2,13 +2,12 @@ package com.baomidou.plugin.idea.mybatisx.generate.template;
 
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -23,10 +22,10 @@ import java.util.Objects;
 /**
  * 自定义模板填充插件
  */
+@Slf4j
 public class CustomTemplatePlugin extends PluginAdapter {
 
     public static final String ROOT = "root";
-    private static final Logger logger = LoggerFactory.getLogger(CustomTemplatePlugin.class);
 
     @Override
     public boolean validate(List<String> warnings) {
@@ -39,8 +38,8 @@ public class CustomTemplatePlugin extends PluginAdapter {
         CustomTemplateRoot rootObject = readRootObject(root);
 
         ModuleInfoGo moduleUIInfo = Objects.requireNonNull(rootObject).getModuleUIInfo();
-        if (moduleUIInfo.getEnable()==null|| !moduleUIInfo.getEnable()) {
-            logger.info("模板文件未启用, modulePath: {}", moduleUIInfo.getModulePath());
+        if (moduleUIInfo.getEnable() == null || !moduleUIInfo.getEnable()) {
+            log.info("模板文件未启用, modulePath: {}", moduleUIInfo.getModulePath());
             return Collections.emptyList();
 
         }
@@ -48,7 +47,7 @@ public class CustomTemplatePlugin extends PluginAdapter {
         final File file = new File(modulePath);
         if (!file.exists()) {
             final boolean created = file.mkdirs();
-            logger.info("模块目录不存在,已创建目录. modulePath: {},created:{}", file.getAbsolutePath(), created);
+            log.info("模块目录不存在,已创建目录. modulePath: {},created:{}", file.getAbsolutePath(), created);
         }
         TopLevelClass topLevelClass = new TopLevelClass(moduleUIInfo.getFileName());
         FreeMakerFormatter javaFormatter = new FreeMakerFormatter(rootObject, ClassInfo.build(introspectedTable));
@@ -60,7 +59,7 @@ public class CustomTemplatePlugin extends PluginAdapter {
             moduleUIInfo.getEncoding(),
             moduleUIInfo.getFileNameWithSuffix(),
             moduleUIInfo.getPackageName());
-        logger.info("模板文件构建完成, modulePath: {}", modulePath);
+        log.info("模板文件构建完成, modulePath: {}", modulePath);
         return Collections.singletonList(generatedJavaFile);
     }
 
@@ -73,7 +72,7 @@ public class CustomTemplatePlugin extends PluginAdapter {
                 rootObject = (CustomTemplateRoot) objectInputStream.readObject();
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("Root Object Read Error", e);
         }
         return rootObject;
     }

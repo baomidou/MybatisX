@@ -36,15 +36,16 @@ public class MybatisXCollectors {
      * d,e,f,
      * g
      */
-    private static class MultiStringJoiner {
+    public static class MultiStringJoiner {
 
         private final CharSequence prefix;
         private final CharSequence suffix;
-        int currentIndex = 0;
         private final String delimiter;
         private final String newLine;
         private final int step;
         private final StringBuilder stringBuilder = new StringBuilder();
+        int currentIndex = 0;
+
         /**
          * @param delimiter 分隔符
          * @param newLine   换行标识
@@ -79,9 +80,6 @@ public class MybatisXCollectors {
 
         /**
          * 目前没有用合并的场景, 所以这里就不实现了
-         *
-         * @param str
-         * @return
          */
         public MultiStringJoiner merge(MultiStringJoiner str) {
             return this;

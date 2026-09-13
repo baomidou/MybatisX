@@ -35,24 +35,13 @@ public class JavaTypeResolverJsr310Impl extends JavaTypeResolverDefaultImpl {
     }
 
     private FullyQualifiedJavaType calcNumeric(IntrospectedColumn column, FullyQualifiedJavaType defaultType) {
-        FullyQualifiedJavaType answer = defaultType;
-        switch (column.getJdbcType()) {
-            case TINYINT:
-            case SMALLINT:
-                answer = new FullyQualifiedJavaType(Integer.class.getName());
-                break;
-            case NUMERIC:
-            case DECIMAL:
-                answer = this.calculateBigDecimalReplacement(column, defaultType);
-                break;
-            case BIT:
-                answer = this.calculateBitReplacement(column, defaultType);
-                break;
-            case BOOLEAN:
-                answer = new FullyQualifiedJavaType(Boolean.class.getName());
-                break;
-        }
-        return answer;
+        return switch (column.getJdbcType()) {
+            case TINYINT, SMALLINT -> new FullyQualifiedJavaType(Integer.class.getName());
+            case NUMERIC, DECIMAL -> this.calculateBigDecimalReplacement(column, defaultType);
+            case BIT -> this.calculateBitReplacement(column, defaultType);
+            case BOOLEAN -> new FullyQualifiedJavaType(Boolean.class.getName());
+            default -> defaultType;
+        };
     }
 
     @Override
@@ -66,18 +55,12 @@ public class JavaTypeResolverJsr310Impl extends JavaTypeResolverDefaultImpl {
     }
 
     private FullyQualifiedJavaType calcDate(IntrospectedColumn column, FullyQualifiedJavaType defaultType) {
-        FullyQualifiedJavaType answer = defaultType;
-        switch (column.getJdbcType()) {
-            case DATE:
-                answer = new FullyQualifiedJavaType(LocalDate.class.getName());
-                break;
-            case TIME:
-                answer = new FullyQualifiedJavaType(LocalTime.class.getName());
-                break;
-            case TIMESTAMP:
-                answer = new FullyQualifiedJavaType(LocalDateTime.class.getName());
-        }
-        return answer;
+        return switch (column.getJdbcType()) {
+            case DATE -> new FullyQualifiedJavaType(LocalDate.class.getName());
+            case TIME -> new FullyQualifiedJavaType(LocalTime.class.getName());
+            case TIMESTAMP -> new FullyQualifiedJavaType(LocalDateTime.class.getName());
+            default -> defaultType;
+        };
     }
 
 

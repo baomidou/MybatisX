@@ -29,7 +29,7 @@ import java.util.Set;
 @Slf4j
 public class BeanAliasResolver extends PackageAliasResolver {
 
-    private static final List<String> MAPPER_ALIAS_PACKAGE_CLASSES = new ArrayList<String>() {
+    private static final List<String> MAPPER_ALIAS_PACKAGE_CLASSES = new ArrayList<>() {
         {
             // default
             add("org.mybatis.spring.SqlSessionFactoryBean");
@@ -55,11 +55,11 @@ public class BeanAliasResolver extends PackageAliasResolver {
     @Override
     public Collection<String> getPackages(@Nullable PsiElement element) {
         // 兼容低版本获取不到 ServiceManager 报错的场景。 直接忽略
-        SpringModelUtils instance = null;
+        SpringModelUtils instance;
         try {
             instance = SpringModelUtils.getInstance();
         } catch (Throwable e) {
-            log.warn("获取SpringManager异常, 无法通过bean定义别名",e);
+            log.warn("获取SpringManager异常, 无法通过bean定义别名", e);
             return Collections.emptyList();
         }
         Set<String> packages = new HashSet<>();

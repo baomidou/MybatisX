@@ -33,9 +33,7 @@
       ]]>
     </change-notes>
 
-    <!--    <idea-version since-build="243" />-->
-    <!--    <depends>com.intellij.modules.java</depends>-->
-    <depends>com.intellij.java</depends>
+    <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.modules.xml</depends>
     <depends optional="true" config-file="database.xml">com.intellij.database</depends>
     <!-- support aliases -->
@@ -62,9 +60,6 @@
         <definitionsScopedSearch id="baomidou.MapperClassSearch"
                                  implementation="com.baomidou.plugin.idea.mybatisx.system.definitionsearch.MapperClassSearch"/>
         <!-- 与搜索配套的跳转 -->
-<!--        <gotoTargetRendererProvider order="first"-->
-<!--                                    implementation="com.baomidou.plugin.idea.mybatisx.provider.GotoMapperXmlSchemaTypeRendererProvider"/>-->
-
         <gotoTargetPresentationProvider
             order="first"
             implementation="com.baomidou.plugin.idea.mybatisx.provider.GotoMapperXmlSchemaTypePresentationProvider"/>
@@ -140,23 +135,28 @@
         <!--提示动作 start-->
         <!-- 生成参数注解 @Param -->
         <intentionAction id="baomidou.GenerateParamAnnotationIntention">
+            <language>JAVA</language>
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateParamAnnotationIntention</className>
         </intentionAction>
         <!-- 通过方法名生成对应的 查询语句 -->
         <intentionAction id="baomidou.GenerateStatementIntention">
+            <language>JAVA</language>
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateStatementIntention</className>
         </intentionAction>
         <!-- 生成mybatis mapper.xml文件 -->
         <intentionAction order="first" id="baomidou.GenerateMapperIntention">
+            <language>XML</language>
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperIntention</className>
         </intentionAction>
 
         <!-- 根据jpa名字生成方法和xml文件内容 -->
         <intentionAction id="baomidou.GenerateMapperMethodSmartJpaAction">
+            <language>JAVA</language>
             <className>com.baomidou.plugin.idea.mybatisx.smartjpa.GenerateSmartJpaAction</className>
         </intentionAction>
 
         <intentionAction id="baomidou.GenerateMapperMethodSmartAdvanceJpaAction">
+            <language>JAVA</language>
             <className>com.baomidou.plugin.idea.mybatisx.smartjpa.GenerateSmartJpaAdvanceAction</className>
         </intentionAction>
         <!--提示动作 end-->
@@ -168,10 +168,12 @@
 
         <!-- mapper.xml文件 #{} 区域的引用跳转 -->
         <psi.referenceContributor id="hashMarkerReferenceContributor"
-                                  implementation="com.baomidou.plugin.idea.mybatisx.reference.ContextHashMarkReferenceContributor"/>
+                                  implementation="com.baomidou.plugin.idea.mybatisx.reference.ContextHashMarkReferenceContributor"
+                                  language="XML"/>
         <!-- mapper.xml文件 <if test> <when test> 区域的引用跳转 -->
         <psi.referenceContributor id="testParamReferenceContributor"
-                                  implementation="com.baomidou.plugin.idea.mybatisx.reference.TestParamReferenceContributor"/>
+                                  implementation="com.baomidou.plugin.idea.mybatisx.reference.TestParamReferenceContributor"
+                                  language="XML"/>
 
         <!-- mapper.xml文件 <if test> OGNL 高亮 -->
         <annotator language="XML"

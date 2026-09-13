@@ -3,12 +3,10 @@ package com.baomidou.plugin.idea.mybatisx.dom;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Association;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Collection;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ParameterMap;
-import com.baomidou.plugin.idea.mybatisx.dom.model.Result;
 import com.baomidou.plugin.idea.mybatisx.dom.model.ResultMap;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiType;
@@ -95,9 +93,8 @@ public final class MapperBacktrackingUtils {
         DomElement currentElement = domElement;
         PsiClass currentClass = null;
         while (true) {
-            if (currentElement instanceof Association) {
+            if (currentElement instanceof Association association) {
                 boolean foundClass = false;
-                Association association = (Association) currentElement;
                 PsiClass javaType = association.getJavaType().getValue();
                 if (javaType != null) {
                     currentClass = javaType;
@@ -125,9 +122,8 @@ public final class MapperBacktrackingUtils {
                 if (foundClass) {
                     break;
                 }
-            } else if (currentElement instanceof Collection) {
+            } else if (currentElement instanceof Collection collection) {
                 boolean foundClass = false;
-                Collection collection = (Collection) currentElement;
                 GenericAttributeValue<PsiClass> type = collection.getOfType();
                 if (type.getValue() != null) {
                     currentClass = type.getValue();
@@ -146,8 +142,9 @@ public final class MapperBacktrackingUtils {
                                 if (genericClassOfListByField.isPresent()) {
                                     String fieldTypeClassName = genericClassOfListByField.get();
                                     Optional<PsiClass> fieldClassOptional = JavaUtils.findClazz(project, fieldTypeClassName);
-                                    if (foundClass = fieldClassOptional.isPresent()) {
+                                    if (fieldClassOptional.isPresent()) {
                                         currentClass = fieldClassOptional.get();
+                                        foundClass = true;
                                     }
                                 }
                             }
@@ -157,8 +154,7 @@ public final class MapperBacktrackingUtils {
                 if (foundClass) {
                     break;
                 }
-            } else if (currentElement instanceof ResultMap) {
-                ResultMap association = (ResultMap) currentElement;
+            } else if (currentElement instanceof ResultMap association) {
                 GenericAttributeValue<PsiClass> type = association.getType();
                 currentClass = type.getValue();
             }
@@ -195,7 +191,7 @@ public final class MapperBacktrackingUtils {
      */
     public static boolean isWithinSameTag(@NotNull DomElement domElement, XmlAttributeValue xmlElement) {
         XmlTag xmlTag = PsiTreeUtil.getParentOfType(xmlElement, XmlTag.class);
-        return xmlTag!=null && domElement.getXmlTag() != null && domElement.getXmlTag().equals(xmlTag);
+        return xmlTag != null && domElement.getXmlTag() != null && domElement.getXmlTag().equals(xmlTag);
     }
 
     public static Optional<PsiClass> getEntityClass(XmlAttributeValue attributeValue) {

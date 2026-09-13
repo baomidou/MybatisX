@@ -30,7 +30,7 @@ public class TemplateResolver {
                                   LinkedList<TxParameter> parameters,
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
-        SyntaxAppender syntaxAppender = null;
+        SyntaxAppender syntaxAppender;
         if (current.size() == 1) {
             syntaxAppender = current.poll();
         } else if (current.size() > 1) {

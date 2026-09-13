@@ -71,7 +71,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
      * Gets table field annotation.
      *
      * @param field the field
-     * @return the table field annotation
+     * @return the table field annotation,if not has annotation should be entity property name.
      */
     @NotNull
     protected abstract String getTableFieldAnnotation(@NotNull PsiField field);
@@ -83,7 +83,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
         Optional<String> tableName = Optional.ofNullable(getAttributeValue(annotation, VALUE));
 
         // 获取 jpa 注解
-        if (!tableName.isPresent()) {
+        if (tableName.isEmpty()) {
             tableName = getTableNameByJpa(entityClass);
         }
         return tableName;
@@ -134,8 +134,7 @@ public abstract class AbstractMybatisPlusMappingResolver extends JpaMappingResol
             } else {
                 // 递归查找，  通过父类找到entity
                 PsiElement resolve = referenceElement.resolve();
-                if (resolve instanceof PsiClass) {
-                    PsiClass extClass = (PsiClass) resolve;
+                if (resolve instanceof PsiClass extClass) {
                     return findEntity(extClass);
                 }
             }

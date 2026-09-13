@@ -38,10 +38,9 @@ public class MybatisXmlValidationAnnotator implements Annotator {
 
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-        if (!(element instanceof XmlAttributeValue)) {
+        if (!(element instanceof XmlAttributeValue attributeValue)) {
             return;
         }
-        XmlAttributeValue attributeValue = (XmlAttributeValue) element;
 
         if (TEST_PATTERN.accepts(element)) {
             validateBooleanExpression(attributeValue, holder);
@@ -53,7 +52,7 @@ public class MybatisXmlValidationAnnotator implements Annotator {
     private void validateBooleanExpression(XmlAttributeValue attributeValue, AnnotationHolder holder) {
         String text = attributeValue.getValue(); // Gets value without quotes usually, relying on getBytes? No, getValue is string.
         // XmlAttributeValue.getValue() returns unquoted value.
-        if (text == null || text.trim().isEmpty()) return;
+        if (text.trim().isEmpty()) return;
 
         // 0. Pre-processing: remove strings for syntax checks
         String noStr = text.replaceAll("(['\"])(?:\\\\.|[^\\\\])*?\\1", "");
@@ -91,14 +90,16 @@ public class MybatisXmlValidationAnnotator implements Annotator {
 
         // Try to resolve the text as a path
         PsiElement resolved = OgnlUtils.resolveExpression(attributeValue, text);
-        if (resolved != null) {
-            PsiType type = OgnlUtils.getType(resolved);
-            if (type != null && !isBooleanType(type)) {
-                holder.newAnnotation(HighlightSeverity.ERROR, "Expression must verify boolean (found: " + type.getPresentableText() + ")")
-                    .range(attributeValue)
-                    .create();
-            }
+        if (resolved == null) {
+            return;
         }
+        PsiType type = OgnlUtils.getType(resolved);
+        if (type == null || isBooleanType(type)) {
+            return;
+        }
+        holder.newAnnotation(HighlightSeverity.ERROR, "Expression must verify boolean (found: " + type.getPresentableText() + ")")
+            .range(attributeValue)
+            .create();
     }
 
     // List of OGNL keywords that can validly appear adjacent to other tokens as operators
@@ -126,8 +127,8 @@ public class MybatisXmlValidationAnnotator implements Annotator {
             // If right is not an operator, it's missing an operator.
             // e.g. "size() and" -> right="and" (OK).
 
-            boolean leftIsOp = false;
-            if (left.matches("[\\w]+")) {
+            boolean leftIsOp;
+            if (left.matches("\\w+")) {
                 leftIsOp = OGNL_KEYWORDS.contains(left);
             } else {
                 // left is ")" or "]"
@@ -168,14 +169,16 @@ public class MybatisXmlValidationAnnotator implements Annotator {
         if (text == null || text.trim().isEmpty()) return;
 
         PsiElement resolved = OgnlUtils.resolveExpression(attributeValue, text);
-        if (resolved != null) {
-            PsiType type = OgnlUtils.getType(resolved);
-            if (type != null && !isCollectionOrArray(type, attributeValue.getProject())) {
-                holder.newAnnotation(HighlightSeverity.ERROR, "Expression must be Collection or Array (found: " + type.getPresentableText() + ")")
-                    .range(attributeValue)
-                    .create();
-            }
+        if (resolved == null) {
+            return;
         }
+        PsiType type = OgnlUtils.getType(resolved);
+        if (type == null || isCollectionOrArray(type, attributeValue.getProject())) {
+            return;
+        }
+        holder.newAnnotation(HighlightSeverity.ERROR, "Expression must be Collection or Array (found: " + type.getPresentableText() + ")")
+            .range(attributeValue)
+            .create();
     }
 
     private boolean containsBooleanOperators(String text) {
@@ -201,9 +204,7 @@ public class MybatisXmlValidationAnnotator implements Annotator {
                 if (collectionClass != null && (collectionClass.isEquivalentTo(psiClass) || psiClass.isInheritor(collectionClass, true))) {
                     return true;
                 }
-                if (mapClass != null && (mapClass.isEquivalentTo(psiClass) || psiClass.isInheritor(mapClass, true))) {
-                    return true;
-                }
+                return mapClass != null && (mapClass.isEquivalentTo(psiClass) || psiClass.isInheritor(mapClass, true));
             }
         }
         return false;

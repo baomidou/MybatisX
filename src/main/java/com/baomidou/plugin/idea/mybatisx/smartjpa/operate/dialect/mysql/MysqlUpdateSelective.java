@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
@@ -144,7 +145,7 @@ public class MysqlUpdateSelective implements CustomStatement {
     }
 
 
-    private class UpdateSelectiveResultAppenderFactory extends ResultAppenderFactory {
+    private static class UpdateSelectiveResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert batch result appender factory.
@@ -186,21 +187,18 @@ public class MysqlUpdateSelective implements CustomStatement {
     /**
      * 可选更新
      */
-    private class UpdateSelectiveSuffixOperator implements SuffixOperator {
-
-        private final List<TxField> mappingField;
+    private record UpdateSelectiveSuffixOperator(List<TxField> mappingField) implements SuffixOperator {
 
         /**
          * Instantiates a new Insert batch suffix operator.
          *
          * @param mappingField the mapping field
          */
-        public UpdateSelectiveSuffixOperator(List<TxField> mappingField) {
-            this.mappingField = mappingField;
+        private UpdateSelectiveSuffixOperator {
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<set>").append("\n");
             final TxParameter parameter = parameters.poll();

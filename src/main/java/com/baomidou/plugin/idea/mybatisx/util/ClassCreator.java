@@ -6,6 +6,9 @@ import com.intellij.codeInsight.actions.ReformatCodeRunOptions;
 import com.intellij.codeInsight.actions.TextRangeType;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
@@ -16,6 +19,7 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.util.IncorrectOperationException;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -25,11 +29,11 @@ import java.util.Set;
 /**
  * 创建类, 可能有更便捷的方式创建实体类. 有待优化
  */
+@Slf4j
 public class ClassCreator {
     public void createFromAllowedFields(Set<String> allowFields, PsiClass entityClass, String dtoName) {
         PsiDirectory directory = entityClass.getContainingFile().getParent();
         if (directory == null) {
-
             return;
         }
         String stringBuilder = defineClass(allowFields, entityClass, dtoName);
@@ -50,7 +54,17 @@ public class ClassCreator {
                 ReformatCodeRunOptions currentRunOptions = provider.getLastRunOptions(file);
 
                 currentRunOptions.setProcessingScope(TextRangeType.WHOLE_FILE);
-                new FileInEditorProcessor(file, null, currentRunOptions).processCode();
+
+                Editor editor = FileEditorManager.getInstance(file.getProject()).openTextEditor(
+                    new OpenFileDescriptor(file.getProject(), virtualFile), false
+                );
+
+                if (editor == null) {
+                    log.error("Failed to get Editor");
+                    return;
+                }
+
+                new FileInEditorProcessor(file, editor, currentRunOptions).processCode();
 
             } catch (PsiInvalidElementAccessException | IOException | IncorrectOperationException ignored) {
             }

@@ -9,8 +9,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +22,9 @@ import java.util.stream.Collectors;
 /**
  * The type Composite appender.
  */
+@Slf4j
 public class CompositeAppender implements SyntaxAppender {
 
-    private static final Logger logger = LoggerFactory.getLogger(CompositeAppender.class);
     /**
      * The Appender list.
      */
@@ -33,7 +32,7 @@ public class CompositeAppender implements SyntaxAppender {
     /**
      * The Template resolver.
      */
-    TemplateResolver templateResolver = new TemplateResolver();
+    final TemplateResolver templateResolver = new TemplateResolver();
 
     /**
      * Instantiates a new Composite appender.
@@ -46,18 +45,17 @@ public class CompositeAppender implements SyntaxAppender {
 
     @Override
     public AreaSequence getAreaSequence() {
-        return appenderList.peek().getAreaSequence();
+        SyntaxAppender peek = appenderList.peek();
+        return peek == null ? null : peek.getAreaSequence();
     }
 
     @Override
     public String getText() {
-        return this.appenderList.stream().map(x -> x.getText()).collect(Collectors.joining());
+        return this.appenderList.stream().map(SyntaxAppender::getText).collect(Collectors.joining());
     }
 
     /**
      * 返回最后一个的类型
-     *
-     * @return
      */
     @Override
     public AppendTypeEnum getType() {
@@ -113,22 +111,30 @@ public class CompositeAppender implements SyntaxAppender {
                                   LinkedList<SyntaxAppenderWrapper> collector,
                                   ConditionFieldWrapper conditionFieldWrapper) {
 
-        // 第一个是 and, or
-        if (appenderList.peek().getType() == AppendTypeEnum.JOIN
-            || appenderList.peek().getType() == AppendTypeEnum.AREA) {
-            SyntaxAppender lastAppender = appenderList.poll();
-            // 先执行 连接符的获取模板文本, 然后把后续的内容拼接起来
-            String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-            return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector, conditionFieldWrapper);
+        SyntaxAppender firstSyntax = appenderList.peek();
+        if (firstSyntax != null) {
+            // 第一个是 and, or
+            if (firstSyntax.getType() == AppendTypeEnum.JOIN || firstSyntax.getType() == AppendTypeEnum.AREA) {
+                SyntaxAppender lastAppender = appenderList.poll();
+                // peek 不为空则 poll 也不为空
+                assert lastAppender != null;
+                // 先执行 连接符的获取模板文本, 然后把后续的内容拼接起来
+                String joinTemplateText = lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
+                return joinTemplateText + templateResolver.getTemplateText(appenderList, tableName, entityClass, parameters, collector, conditionFieldWrapper);
+            }
         }
         // 最后一个是后缀
-        if (appenderList.peekLast().getType() == AppendTypeEnum.SUFFIX) {
-            SyntaxAppender lastAppender = appenderList.pollLast();
-            // 由后缀去处理前面所有的内容
-            return lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
-
+        SyntaxAppender lastSyntax = appenderList.peekLast();
+        if (lastSyntax != null) {
+            if (lastSyntax.getType() == AppendTypeEnum.SUFFIX) {
+                SyntaxAppender lastAppender = appenderList.pollLast();
+                // peekLast 不为空则 pollLast 也不为空
+                assert lastAppender != null;
+                // 由后缀去处理前面所有的内容
+                return lastAppender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
+            }
         }
-        logger.info("组合字段操作: {}", appenderList.size());
+        log.info("组合字段操作: {}", appenderList.size());
         StringBuilder stringBuilder = new StringBuilder();
         for (SyntaxAppender appender : appenderList) {
             String templateText = appender.getTemplateText(tableName, entityClass, parameters, collector, conditionFieldWrapper);
@@ -155,9 +161,7 @@ public class CompositeAppender implements SyntaxAppender {
 
     @Override
     public String toString() {
-        return "CompositeAppender{" +
-            "appenders=" + appenderList +
-            ", templateResolver=" + templateResolver +
-            '}';
+        return "CompositeAppender{appenders=%s, templateResolver=%s}"
+            .formatted(appenderList, templateResolver);
     }
 }

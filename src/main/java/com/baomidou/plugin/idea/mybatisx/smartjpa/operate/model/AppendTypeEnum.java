@@ -41,7 +41,7 @@ public enum AppendTypeEnum {
 
     /**
      * -- GETTER --
-     *  Gets allowed after list.
+     * Gets allowed after list.
      *
      * @return the allowed after list
      */

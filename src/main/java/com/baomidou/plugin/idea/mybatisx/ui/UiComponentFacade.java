@@ -16,9 +16,6 @@ import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * The type Ui component facade.
  *
@@ -138,8 +135,8 @@ public final class UiComponentFacade {
      * @return the popup chooser builder
      */
     public PopupChooserBuilder<?> createListPopupBuilder(@NotNull String title,
-                                                      @Nullable final ListSelectionListener listener,
-                                                      @NotNull Object... objs) {
+                                                         @Nullable final ListSelectionListener listener,
+                                                         @NotNull Object... objs) {
         final JBList<Object> list = new JBList<>(objs);
         PopupChooserBuilder<?> builder = new PopupChooserBuilder<>(list);
         builder.setTitle(title);

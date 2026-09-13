@@ -8,14 +8,12 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.AnActionButton;
-import com.intellij.ui.AnActionButtonRunnable;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.util.PlatformIcons;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -29,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class MybatisXTemplateSettings {
-    private static final Logger logger = LoggerFactory.getLogger(MybatisXTemplateSettings.class);
     private JTextField packageNameTextField;
     private JTextField fieldNameTextField;
     @Getter
@@ -169,12 +167,8 @@ public class MybatisXTemplateSettings {
         }
 
         @Override
-        public void updateButton(@NotNull AnActionEvent e) {
-        }
-
-        @Override
         public @NotNull ActionUpdateThread getActionUpdateThread() {
-            return super.getActionUpdateThread();
+            return ActionUpdateThread.EDT;
         }
     }
 
@@ -192,7 +186,7 @@ public class MybatisXTemplateSettings {
                 return;
             }
             if (oldLeadSelectionPath.getPathCount() != 3) {
-                logger.info("路径错误, 无法映射正确的配置");
+                log.info("路径错误, 无法映射正确的配置");
                 return;
             }
             final String templatesName = oldLeadSelectionPath.getParentPath().getLastPathComponent().toString();
@@ -203,7 +197,7 @@ public class MybatisXTemplateSettings {
             ConfigSetting configSetting = templateSettingMap.get(templatesName);
             if (configSetting == null) {
                 // 没有找到配置
-                logger.info("没有找到配置,templatesName: {}", templatesName);
+                log.info("没有找到配置,templatesName: {}", templatesName);
                 return;
             }
             for (TemplateSettingDTO templateSettingDTO : configSetting.getTemplateSettingDTOList()) {

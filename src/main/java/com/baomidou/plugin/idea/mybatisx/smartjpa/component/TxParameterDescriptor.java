@@ -5,7 +5,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.exp.JpaGenerateException;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ public class TxParameterDescriptor implements TypeDescriptor {
     /**
      * The Parameter list.
      */
-    List<TxParameter> parameterList = new ArrayList<>();
+    private final List<TxParameter> parameterList;
 
     /**
      * Instantiates a new Tx parameter descriptor.
@@ -106,7 +105,7 @@ public class TxParameterDescriptor implements TypeDescriptor {
         List<String> collect = parameterList.stream()
             .flatMap(x -> x.getImportClass().stream())
             .collect(Collectors.toList());
-        if (collect.size() > 0 || parameterList.size() > 0) {
+        if (!collect.isEmpty() || !parameterList.isEmpty()) {
             collect.add("org.apache.ibatis.annotations.Param");
         }
         return collect;

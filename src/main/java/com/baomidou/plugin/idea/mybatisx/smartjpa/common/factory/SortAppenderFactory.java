@@ -91,7 +91,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         return AreaSequence.SORT;
     }
 
-    private class SortCustomAreaAppender extends CustomAreaAppender {
+    private static class SortCustomAreaAppender extends CustomAreaAppender {
 
         public SortCustomAreaAppender(String area, String areaType, AreaSequence areaSequence, AreaSequence childAreaSequence, SyntaxAppenderFactory syntaxAppenderFactory) {
             super(area, areaType, areaSequence, childAreaSequence, syntaxAppenderFactory);
@@ -110,7 +110,7 @@ public class SortAppenderFactory extends BaseAppenderFactory {
         }
     }
 
-    private class SortCustomFieldAppender extends CustomFieldAppender {
+    private static class SortCustomFieldAppender extends CustomFieldAppender {
 
         /**
          * Instantiates a new Sort custom field appender.

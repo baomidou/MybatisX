@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
@@ -32,7 +33,7 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
      */
     @Nullable
     @Override
-    public PsiClass fromString(@Nullable @NonNls String id, ConvertContext context) {
+    public PsiClass fromString(@Nullable @NonNls String id, @NonNull ConvertContext context) {
         if (StringUtils.isEmpty(id)) {
             return null;
         }
@@ -42,8 +43,7 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
 
     @Override
     public void bindReference(GenericDomValue<PsiClass> genericValue, ConvertContext context, PsiElement newTarget) {
-        if (newTarget instanceof PsiClass) {
-            final PsiClass psiClass = (PsiClass) newTarget;
+        if (newTarget instanceof PsiClass psiClass) {
             final String qualifiedName = psiClass.getQualifiedName();
             genericValue.setStringValue(qualifiedName);
         }

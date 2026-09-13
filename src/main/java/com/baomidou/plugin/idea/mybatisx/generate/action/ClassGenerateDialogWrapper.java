@@ -13,9 +13,9 @@ import com.intellij.database.psi.DbTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,9 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class ClassGenerateDialogWrapper extends DialogWrapper {
-
-    private static final Logger logger = LoggerFactory.getLogger(ClassGenerateDialogWrapper.class);
 
     private final CodeGenerateUI codeGenerateUI = new CodeGenerateUI();
 
@@ -37,9 +36,8 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
     private final java.util.List<JPanel> containerPanelList;
 
     private final Action previousAction;
-
-    private int page = 0;
     private final int lastPage = 1;
+    private int page = 0;
     private Project project;
     private List<DbTable> tableElements;
     private GenerateConfig generateConfig;
@@ -85,7 +83,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
             return;
         }
         if (!new File(domainInfo.getModulePath()).exists()) {
-            Messages.showMessageDialog("modulePath is not a legal path", "Generate File", Messages.getWarningIcon());
+            Messages.showMessageDialog("ModulePath is not a legal path", "Generate File", Messages.getWarningIcon());
             return;
         }
         page = page + 1;
@@ -122,7 +120,7 @@ public class ClassGenerateDialogWrapper extends DialogWrapper {
     }
 
     @Override
-    protected Action[] createActions() {
+    protected Action @NotNull [] createActions() {
         return new Action[]{previousAction, getOKAction(), getCancelAction()};
     }
 

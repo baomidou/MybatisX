@@ -20,17 +20,15 @@ import java.util.stream.Collectors;
  * 默认按照 mybatis-plus3 > mybatis-plus2 > xml(resultMap 最短的标签)
  */
 public class EntityMappingResolverFactory {
-    private final ResultMapMappingResolver defaultMappingResolver;
     /**
      * The Project.
      */
-    Project project;
-
-
+    final Project project;
     /**
      * The Entity mapping resolver list.
      */
-    List<EntityMappingResolver> entityMappingResolverList = new ArrayList<>();
+    final List<EntityMappingResolver> entityMappingResolverList = new ArrayList<>();
+    private final ResultMapMappingResolver defaultMappingResolver;
 
     /**
      * Instantiates a new Entity mapping resolver factory.
@@ -100,7 +98,7 @@ public class EntityMappingResolverFactory {
                     if (defaultField != null) {
                         final Boolean primaryKey = defaultField.getPrimaryKey();
                         if (primaryKey) {
-                            field.setPrimaryKey(primaryKey);
+                            field.setPrimaryKey(true);
                         }
                         // 处理jdbcType, 强制以 resultMap 为准
                         if (defaultField.getJdbcType() != null) {
@@ -150,7 +148,7 @@ public class EntityMappingResolverFactory {
     @NotNull
     private String getUnderLineFromEntityClassName(String camelName) {
         String[] strings = org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase(camelName);
-        return Arrays.stream(strings).map(x -> com.baomidou.plugin.idea.mybatisx.util.StringUtils.lowerCaseFirstChar(x))
+        return Arrays.stream(strings).map(StringUtils::lowerCaseFirstChar)
             .collect(Collectors.joining("_"));
     }
 

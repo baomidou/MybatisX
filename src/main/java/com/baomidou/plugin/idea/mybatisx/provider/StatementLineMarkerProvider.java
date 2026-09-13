@@ -6,7 +6,6 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Insert;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Update;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -113,7 +112,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
     @NotNull
     @Override
     public Icon getIcon() {
-        return  IconLoader.getIcon(IMAGES_STATEMENT_SVG);
+        return IconLoader.getIcon(IMAGES_STATEMENT_SVG, this.getClass());
     }
 
 
@@ -121,15 +120,13 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
     @NotNull
     public String getTooltip(PsiElement element, @NotNull PsiElement target) {
         String text = null;
-        if (element instanceof PsiMethod) {
-            PsiMethod psiMethod = (PsiMethod) element;
+        if (element instanceof PsiMethod psiMethod) {
             PsiClass containingClass = psiMethod.getContainingClass();
             if (containingClass != null) {
                 text = containingClass.getName() + "#" + psiMethod.getName();
             }
         }
-        if (text == null && element instanceof PsiClass) {
-            PsiClass psiClass = (PsiClass) element;
+        if (text == null && element instanceof PsiClass psiClass) {
             text = psiClass.getQualifiedName();
         }
         if (text == null) {

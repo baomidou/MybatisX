@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suff
 
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 
@@ -18,5 +19,5 @@ public interface SuffixOperator {
      * @param conditionFieldWrapper
      * @return the template text
      */
-    String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper);
+    String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper);
 }
