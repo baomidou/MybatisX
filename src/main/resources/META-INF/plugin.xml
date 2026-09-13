@@ -171,9 +171,6 @@
         <!-- 应用服务, 必须放在主文件,否则 XmlAndMapperIconProvider 会加载不到-->
         <applicationService id="baomidou.MybatisSetting"
                             serviceImplementation="com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings"/>
-        <!-- 使用 Alt+Delete 删除方法时, 也删掉对应的标签 -->
-        <refactoring.safeDeleteProcessor id="MapperMethodSafeDeleteProcessor"
-            implementation="com.baomidou.plugin.idea.mybatisx.system.refactoring.MapperMethodSafeDeleteProcessor"/>
     </extensions>
 
 </idea-plugin>
