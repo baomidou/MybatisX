@@ -20,10 +20,9 @@ public class SyntaxAppenderWrapper {
     /**
      * 为了扩展符号追加器的内容的集合
      * -- GETTER --
-     *  Gets collector.
+     * Gets collector.
      *
      * @return the collector
-
      */
     @Getter
     private final LinkedList<SyntaxAppenderWrapper> collector;

@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
@@ -17,7 +16,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -34,10 +33,9 @@ public class InjectionLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-        if (!(element instanceof PsiField)) {
+        if (!(element instanceof PsiField field)) {
             return;
         }
-        PsiField field = (PsiField) element;
         if (!isTargetField(field)) {
             return;
         }
@@ -48,18 +46,18 @@ public class InjectionLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
 
         Optional<PsiClass> clazz = JavaUtils.findClazz(element.getProject(), type.getCanonicalText());
-        if (!clazz.isPresent()) {
+        if (clazz.isEmpty()) {
             return;
         }
 
         PsiClass psiClass = clazz.get();
         Optional<Mapper> mapper = MapperUtils.findFirstMapper(element.getProject(), psiClass);
-        if (!mapper.isPresent()) {
+        if (mapper.isEmpty()) {
             return;
         }
 
         NavigationGutterIconBuilder<PsiElement> builder =
-            NavigationGutterIconBuilder.create(IconLoader.getIcon(IMAGES_STATEMENT_SVG))
+            NavigationGutterIconBuilder.create(IconLoader.getIcon(IMAGES_STATEMENT_SVG, this.getClass()))
                 .setAlignment(GutterIconRenderer.Alignment.CENTER)
                 .setTarget(psiClass)
                 .setTooltipTitle("Data access object found - " + psiClass.getQualifiedName());
@@ -73,8 +71,12 @@ public class InjectionLineMarkerProvider extends RelatedItemLineMarkerProvider {
         Optional<PsiAnnotation> resourceAnno = JavaUtils.getPsiAnnotation(field, Annotation.RESOURCE);
         if (resourceAnno.isPresent()) {
             PsiAnnotationMemberValue nameValue = resourceAnno.get().findAttributeValue("name");
-            String name = nameValue.getText().replaceAll("\"", "");
-            return StringUtils.isBlank(name) || name.equals(field.getName());
+            if (nameValue == null) {
+                return true;
+            } else {
+                String name = nameValue.getText().replace("\"", "");
+                return StringUtils.isBlank(name) || name.equals(field.getName());
+            }
         }
         return false;
     }

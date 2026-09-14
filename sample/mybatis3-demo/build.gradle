@@ -16,21 +16,20 @@ repositories {
 
 
 dependencies {
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.2.RELEASE'
-    implementation group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.0'
+    implementation "org.springframework.boot:spring-boot-starter:2.3.2.RELEASE"
+    implementation "com.baomidou:mybatis-plus-boot-starter:3.3.0"
     // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api
-    implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.2.RELEASE'
-    testImplementation group: 'junit', name: 'junit', version: '4.10'
-    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+    implementation "javax.persistence:javax.persistence-api:2.2"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:2.3.2.RELEASE"
+    testImplementation "junit:junit:4.10"
+    testImplementation "com.h2database:h2:1.4.200"
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    implementation "org.projectlombok:lombok:1.18.8"
 
 }
 
 
-
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
 }
 

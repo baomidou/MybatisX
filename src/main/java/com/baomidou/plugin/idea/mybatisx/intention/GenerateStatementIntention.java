@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
 import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
-import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomFieldAppender;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -10,8 +9,6 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The type Generate statement intention.
@@ -19,7 +16,6 @@ import org.slf4j.LoggerFactory;
  * @author yanglin
  */
 public class GenerateStatementIntention extends GenericIntention {
-
 
 
     /**

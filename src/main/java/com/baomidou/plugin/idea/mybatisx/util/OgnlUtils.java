@@ -3,13 +3,28 @@ package com.baomidou.plugin.idea.mybatisx.util;
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiAnnotation;
+import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.psi.PsiArrayType;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiConstantEvaluationHelper;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
+import com.intellij.psi.PsiParameterList;
+import com.intellij.psi.PsiSubstitutor;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypes;
+import com.intellij.psi.PsiVariable;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.xml.DomUtil;
+import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
-import com.intellij.psi.util.TypeConversionUtil;
+import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,14 +40,15 @@ public class OgnlUtils {
      */
     @Nullable
     public static PsiElement resolveOgnlSpecialProperty(@Nullable PsiType type, String name, Project project) {
-        if (type == null) return null;
+        if (type == null || name == null || name.isEmpty()) {
+            return null;
+        }
 
         if ("size".equals(name) || "isEmpty".equals(name)) {
             PsiClass col = JavaPsiFacade.getInstance(project).findClass("java.util.Collection", GlobalSearchScope.allScope(project));
             PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
-
-            boolean isCol = col != null && (type instanceof PsiArrayType || (type instanceof PsiClassType && ((PsiClassType) type).resolve() != null && ((PsiClassType) type).resolve().isInheritor(col, true)));
-            boolean isMap = map != null && type instanceof PsiClassType && ((PsiClassType) type).resolve() != null && ((PsiClassType) type).resolve().isInheritor(map, true);
+            boolean isCol = col != null && (type instanceof PsiArrayType || isInheritor(type, col));
+            boolean isMap = isInheritor(type, map);
 
             if (isCol || isMap) {
                 return resolveMethodInType(type, "size".equals(name) ? "size" : "isEmpty", project);
@@ -40,17 +56,31 @@ public class OgnlUtils {
         }
         if ("keys".equals(name) || "values".equals(name) || "entrySet".equals(name)) {
             PsiClass map = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
-            if (map != null && type instanceof PsiClassType && ((PsiClassType) type).resolve() != null && ((PsiClassType) type).resolve().isInheritor(map, true)) {
+            if (isInheritor(type, map)) {
                 return resolveMethodInType(type, name, project);
             }
         }
         return null;
     }
 
+    private static boolean isInheritor(@NotNull PsiType type, PsiClass clazz) {
+        if (clazz == null) {
+            return false;
+        }
+        if (type instanceof PsiClassType classType) {
+            PsiClass resolve = classType.resolve();
+            if (resolve != null) {
+                return resolve.isInheritor(clazz, true);
+            }
+        }
+        return false;
+    }
+
     /**
      * Resolves a path expression starting from a given method context.
+     *
      * @param contextElement The XML element context (to find the mapper method).
-     * @param expression The expression path (e.g. "user.name").
+     * @param expression     The expression path (e.g. "user.name").
      * @return The resolved PsiElement (Field or Method), or null if not found.
      */
     @Nullable
@@ -79,8 +109,7 @@ public class OgnlUtils {
     private static PsiElement resolveForeachVariable(@NotNull PsiElement context, @NotNull String name) {
         PsiElement current = context;
         while (current != null) {
-            if (current instanceof XmlTag) {
-                XmlTag tag = (XmlTag) current;
+            if (current instanceof XmlTag tag) {
                 if ("foreach".equals(tag.getName())) {
                     String item = tag.getAttributeValue("item");
                     if (name.equals(item)) {
@@ -183,14 +212,13 @@ public class OgnlUtils {
     @Nullable
     private static PsiType getForeachVariableType(@NotNull XmlAttributeValue attributeValue) {
         PsiElement parent = attributeValue.getParent();
-        if (!(parent instanceof XmlAttribute)) return null;
-        XmlAttribute attribute = (XmlAttribute) parent;
+        if (!(parent instanceof XmlAttribute attribute)) return null;
         XmlTag tag = attribute.getParent();
         if (tag == null || !"foreach".equals(tag.getName())) return null;
 
         String attrName = attribute.getName();
         if ("index".equals(attrName)) {
-            return PsiType.INT.getBoxedType(attributeValue.getManager(), attributeValue.getResolveScope());
+            return PsiTypes.intType().getBoxedType(attributeValue.getManager(), attributeValue.getResolveScope());
         }
 
         if ("item".equals(attrName)) {
@@ -211,8 +239,7 @@ public class OgnlUtils {
         if (type instanceof PsiArrayType) {
             return ((PsiArrayType) type).getComponentType();
         }
-        if (type instanceof PsiClassType) {
-            PsiClassType classType = (PsiClassType) type;
+        if (type instanceof PsiClassType classType) {
             PsiClassType.ClassResolveResult result = classType.resolveGenerics();
             PsiClass psiClass = result.getElement();
             if (psiClass != null) {
@@ -239,8 +266,7 @@ public class OgnlUtils {
                 PsiClass mapClass = facade.findClass("java.util.Map", scope);
                 if (mapClass != null && (psiClass.isEquivalentTo(mapClass) || psiClass.isInheritor(mapClass, true))) {
                     PsiSubstitutor substitutor = TypeConversionUtil.getSuperClassSubstitutor(mapClass, psiClass, result.getSubstitutor());
-                    PsiType substituted = substitutor.substitute(mapClass.getTypeParameters()[1]); // Value
-                    if (substituted != null) return substituted;
+                    return substitutor.substitute(mapClass.getTypeParameters()[1]);
                 }
             }
         }

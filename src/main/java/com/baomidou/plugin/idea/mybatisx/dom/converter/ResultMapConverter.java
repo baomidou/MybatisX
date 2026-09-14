@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
 /**
  * The type Result map converter.
@@ -22,6 +24,9 @@ public class ResultMapConverter extends IdBasedTagConverter {
     @NotNull
     @Override
     public Collection<? extends IdDomElement> getComparisons(@Nullable Mapper mapper, ConvertContext context) {
+        if (mapper==null){
+            return Collections.emptyList();
+        }
         DomElement invocationElement = context.getInvocationElement();
         if (isContextElementOfResultMap(mapper, invocationElement)) {
             return doFilterResultMapItself(mapper, (ResultMap) invocationElement.getParent());
@@ -36,7 +41,6 @@ public class ResultMapConverter extends IdBasedTagConverter {
     }
 
     private Collection<? extends IdDomElement> doFilterResultMapItself(Mapper mapper, final ResultMap resultMap) {
-        return Collections2.filter(mapper.getResultMaps(), input -> !MapperUtils.getId(input).equals(MapperUtils.getId(resultMap)));
+        return Collections2.filter(mapper.getResultMaps(), input -> !Objects.equals(MapperUtils.getId(input), MapperUtils.getId(resultMap)));
     }
-
 }

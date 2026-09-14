@@ -1,9 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.alias;
 
-import com.baomidou.plugin.idea.mybatisx.util.IOUtils;
 import com.baomidou.plugin.idea.mybatisx.util.SpringStringUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
-import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
@@ -11,16 +9,17 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.spring.boot.model.SpringBootModelConfigFileContributor;
+import com.intellij.spring.boot.model.SpringBootConfigurationFileService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,18 +34,13 @@ import java.util.Set;
  *
  * @author ls9527
  */
+@Slf4j
 public class SpringBootPackageResolver extends PackageAliasResolver {
 
     public static final String REGEX = ",; ";
-    /**
-     * spring boot 扩展点
-     */
-    public static final String SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR = "com.intellij.spring.boot.modelConfigFileContributor";
-    public static final String UTF_8 = "UTF-8";
     private static final String YML = "yml";
     private static final String YAML = "yaml";
     private static final String PROPERTIES = "properties";
-    private static final Logger logger = LoggerFactory.getLogger(SpringBootPackageResolver.class);
     /**
      * 静态存储, 就算启用了内置的 springboot 插件，还是要重启idea的。 所以可以静态存储
      */
@@ -68,23 +62,20 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
             return Collections.emptyList();
         }
         Set<String> pkgSet = new HashSet<>();
-        ExtensionPointName<SpringBootModelConfigFileContributor> objectExtensionPointName = ExtensionPointName.create(SPRING_BOOT_MODEL_CONFIG_FILE_CONTRIBUTOR);
-        List<SpringBootModelConfigFileContributor> extensionList = null;
+        SpringBootConfigurationFileService springBootConfigurationFileService;
         try {
-            extensionList = objectExtensionPointName.getExtensionList();
+            springBootConfigurationFileService = SpringBootConfigurationFileService.getInstance();
         } catch (IllegalArgumentException e) {
             if (springBootExtensionExists == null) {
                 springBootExtensionExists = false;
             }
             return Collections.emptyList();
         }
-        for (SpringBootModelConfigFileContributor extension : extensionList) {
-            Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
-            for (Module module : modulesOfType) {
-                List<VirtualFile> configurationFiles = extension.getConfigurationFiles(module, true);
-                for (VirtualFile configurationFile : configurationFiles) {
-                    readAliasesPackage(pkgSet, configurationFile);
-                }
+        Collection<Module> modulesOfType = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
+        for (Module module : modulesOfType) {
+            List<VirtualFile> configurationFiles = springBootConfigurationFileService.findConfigFiles(module, true);
+            for (VirtualFile configurationFile : configurationFiles) {
+                readAliasesPackage(pkgSet, configurationFile);
             }
         }
 
@@ -100,11 +91,11 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
             // 读取 yml 文件内容
             String content = null;
             try (InputStream inputStream = configurationFile.getInputStream()) {
-                content = IOUtils.toString(inputStream);
+                content = IOUtils.toString(inputStream, Charset.defaultCharset());
                 // 首次读取, 可能存在 @变量@ 的场景, 在捕获异常后, 替换掉这种异常字符串, 然后再次读取别名
                 readClassesFromYaml(pkgSet, configurationFile.getName(), content);
             } catch (IOException e) {
-                logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
+                log.error("read alias exception, fileName: {}", configurationFile.getName(), e);
             } catch (ScannerException e) {
                 if (content != null) {
                     // 通过正则替换掉不符合 yml 格式的字符串, 再次尝试读取别名
@@ -113,7 +104,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                         readClassesFromYaml(pkgSet, configurationFile.getName(), contentReplaced);
                     } catch (ScannerException e2) {
                         // 存在 @变量@ 的情况, 暂时忽略这种情况
-                        logger.debug("yml parse fail, fileName: {}", configurationFile.getName(), e2);
+                        log.debug("yml parse fail, fileName: {}", configurationFile.getName(), e2);
                     }
                 }
             }
@@ -135,7 +126,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
                 }
             }
         } catch (IOException e) {
-            logger.error("read alias exception, fileName: {}", configurationFile.getName(), e);
+            log.error("read alias exception, fileName: {}", configurationFile.getName(), e);
         }
     }
 
@@ -171,15 +162,14 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         } catch (Exception e) {
             // https://gitee.com/baomidou/MybatisX/issues/I58K0P  yaml.loadAll(content).next 会导致git流程的空指针
             // 错误的 yml 文件, 不予支持
-            logger.info("yml parse fail, fileName: {}", fileName, e);
+            log.info("yml parse fail, fileName: {}", fileName, e);
         }
     }
 
     private Object findAliasPackage(Object config) {
         Object typeAliasesPackage = null;
         if (config != null) {
-            if (config instanceof Map) {
-                Map mapConfig = (Map) config;
+            if (config instanceof Map<?, ?> mapConfig) {
                 typeAliasesPackage = mapConfig.get("type-aliases-package");
                 if (typeAliasesPackage == null) {
                     typeAliasesPackage = mapConfig.get("typeAliasesPackage");
@@ -192,8 +182,7 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
     @Nullable
     private Object findConfig(Object object) {
         Object config = null;
-        if (object instanceof Map) {
-            Map jsonObject = (Map) object;
+        if (object instanceof Map<?, ?> jsonObject) {
             config = jsonObject.get("mybatis");
             if (config == null) {
                 config = jsonObject.get("mybatis-plus");
@@ -204,6 +193,4 @@ public class SpringBootPackageResolver extends PackageAliasResolver {
         }
         return config;
     }
-
-
 }

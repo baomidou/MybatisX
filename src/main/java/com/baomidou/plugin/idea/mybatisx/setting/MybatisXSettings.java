@@ -1,14 +1,15 @@
 package com.baomidou.plugin.idea.mybatisx.setting;
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.google.common.base.Joiner;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.RoamingType;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,10 +21,11 @@ import java.io.Serializable;
  *
  * @author yanglin
  */
+@Setter
 @Getter
 @State(
     name = "MybatisXSettings",
-    storages = @Storage(value = "mybatisx.xml",roamingType = RoamingType.DISABLED))
+    storages = @Storage(value = "mybatisx.xml", roamingType = RoamingType.DISABLED))
 public class MybatisXSettings implements PersistentStateComponent<MybatisXSettings>, Serializable {
 
     private static final Joiner joiner = Joiner.on(";");
@@ -44,19 +46,19 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
      * @return the instance
      */
     public static MybatisXSettings getInstance() {
-        MybatisXSettings service = ServiceManager.getService(MybatisXSettings.class);
+        MybatisXSettings service = ApplicationManager.getApplication().getService(MybatisXSettings.class);
         // 配置的默认值
         if (service.insertGenerator == null) {
-            service.insertGenerator = joiner.join(AbstractStatementGenerator.INSERT_GENERATOR.getPatterns());
+            service.insertGenerator = joiner.join(StatementGenerators.INSERT_GENERATOR.getPatterns());
         }
         if (service.updateGenerator == null) {
-            service.updateGenerator = joiner.join(AbstractStatementGenerator.UPDATE_GENERATOR.getPatterns());
+            service.updateGenerator = joiner.join(StatementGenerators.UPDATE_GENERATOR.getPatterns());
         }
         if (service.deleteGenerator == null) {
-            service.deleteGenerator = joiner.join(AbstractStatementGenerator.DELETE_GENERATOR.getPatterns());
+            service.deleteGenerator = joiner.join(StatementGenerators.DELETE_GENERATOR.getPatterns());
         }
         if (service.selectGenerator == null) {
-            service.selectGenerator = joiner.join(AbstractStatementGenerator.SELECT_GENERATOR.getPatterns());
+            service.selectGenerator = joiner.join(StatementGenerators.SELECT_GENERATOR.getPatterns());
         }
         if (service.mapperIcon == null) {
             service.mapperIcon = MapperIcon.BIRD.name();
@@ -76,30 +78,6 @@ public class MybatisXSettings implements PersistentStateComponent<MybatisXSettin
     @Override
     public void loadState(@NotNull MybatisXSettings state) {
         XmlSerializerUtil.copyBean(state, this);
-    }
-
-    public void setInsertGenerator(String insertGenerator) {
-        this.insertGenerator = insertGenerator;
-    }
-
-    public void setUpdateGenerator(String updateGenerator) {
-        this.updateGenerator = updateGenerator;
-    }
-
-    public void setDeleteGenerator(String deleteGenerator) {
-        this.deleteGenerator = deleteGenerator;
-    }
-
-    public void setSelectGenerator(String selectGenerator) {
-        this.selectGenerator = selectGenerator;
-    }
-
-    public void setMapperIcon(String mapperIcon) {
-        this.mapperIcon = mapperIcon;
-    }
-
-    public void setForceFindField(Boolean forceFindField) {
-        this.forceFindField = forceFindField;
     }
 
     public enum MapperIcon {

@@ -1,23 +1,16 @@
-//import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
-// 1.x转2.x的参考 https://plugins.jetbrains.com/docs/intellij/plugin-dependencies.html#ids-of-bundled-plugins
 plugins {
-//    id("java") // Java support
-//    alias(libs.plugins.kotlin) apply false // Kotlin support
-//    alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
-    id("org.jetbrains.intellij.platform") version "2.2.1"
-//    id("org.jetbrains.intellij.platform.migration") version "2.1.0"
-    kotlin("jvm") version "1.9.0"
+    id("org.jetbrains.intellij.platform") version "2.18.1"
+    kotlin("jvm") version "2.4.20"
 }
 intellijPlatform{
     pluginConfiguration  {
         ideaVersion {
-            sinceBuild = "232"
+            sinceBuild = "251"
             untilBuild = "263.*"
         }
     }
-
 }
 
 repositories {
@@ -34,7 +27,6 @@ repositories {
     maven { url=uri("https://dl.bintray.com/jetbrains/intellij-third-party-dependencies/") }
     maven("https://maven.aliyun.com/repository/gradle-plugin")
     maven {url=uri("https://oss.sonatype.org/content/repositories/snapshots/")}
-    gradlePluginPortal()
 }
 
 
@@ -45,56 +37,31 @@ version = providers.gradleProperty("pluginVersion").get()
 
 dependencies {
     implementation("com.softwareloop:mybatis-generator-lombok-plugin:1.0")
-    implementation("uk.com.robust-it:cloning:1.9.2")
+    implementation("io.github.kostaskougios:cloning:1.13.0")
     implementation("org.mybatis.generator:mybatis-generator-core:1.4.0")
-    implementation("org.freemarker:freemarker:2.3.30")
+    implementation("org.freemarker:freemarker:2.3.35")
     implementation("com.itranswarp:compiler:1.0")
 // https://mvnrepository.com/artifact/commons-lang/commons-lang
-    implementation("commons-lang:commons-lang:2.6")
+    implementation("org.apache.commons:commons-lang3:3.20.0")
 
+    implementation("org.jetbrains:annotations:26.1.0")
 
     testImplementation("junit:junit:4.13.1")
-    testImplementation("commons-io:commons-io:2.18.0")
-    compileOnly("org.projectlombok:lombok:1.18.24")
-    annotationProcessor ("org.projectlombok:lombok:1.18.24")
+    testImplementation("commons-io:commons-io:2.22.0")
+    compileOnly("org.projectlombok:lombok:1.18.48")
+    annotationProcessor ("org.projectlombok:lombok:1.18.48")
 
     intellijPlatform {
-        // 依赖版本  https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html#default-target-platforms
-        intellijIdeaUltimate( providers.gradleProperty("platformVersion"), useInstaller = true)
-//        intellijIdeaCommunity( providers.gradleProperty("platformVersion"), useInstaller = true)
-        // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
+        intellijIdeaUltimate("2025.1")
+        bundledModule("org.intellij.intelliLang")
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
-        // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file for plugin from JetBrains Marketplace.
         plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
 
-//        instrumentationTools()
         pluginVerifier()
         zipSigner()
         testFramework(TestFrameworkType.Platform)
         testFramework(TestFrameworkType.Plugin.Java)
     }
-    compileOnly(libs.intellij.structure.base) {
-        exclude("org.jetbrains.kotlin")
-    }
-    compileOnly(libs.intellij.structure.intellij) {
-        exclude("org.jetbrains.kotlin")
-        exclude("org.jetbrains.kotlinx")
-    }
-//    implementation(libs.annotations)
-//    implementation(libs.undertow)
-
-//    implementation(libs.intellij.structure.base) {
-//        exclude("org.jetbrains.kotlin")
-//    }
-//    implementation(libs.intellij.structure.intellij) {
-//        exclude("org.jetbrains.kotlin")
-//        exclude("org.jetbrains.kotlinx")
-//    }
-//    implementation(libs.intellij.pluginRepositoryRestClient) {
-//        exclude("org.jetbrains.kotlin")
-//        exclude("org.jetbrains.kotlinx")
-//        exclude("org.slf4j")
-//    }
 }
 
 tasks.withType<JavaCompile> {

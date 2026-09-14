@@ -1,12 +1,16 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
+@Setter
 @Getter
 public class TemplateSettingDTO implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * 配置名称
@@ -42,35 +46,4 @@ public class TemplateSettingDTO implements Serializable {
      */
     private Set<String> existsFileNames;
 
-    public void setConfigFile(String configFile) {
-        this.configFile = configFile;
-    }
-
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    public void setConfigName(String configName) {
-        this.configName = configName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    public void setExistsFileNames(Set<String> existsFileNames) {
-        this.existsFileNames = existsFileNames;
-    }
 }

@@ -69,10 +69,10 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
     }
 
     private SyntaxAppender getLastAppendType(List<SyntaxAppender> splitList) {
-        if (splitList.size() == 0) {
+        if (splitList.isEmpty()) {
             return SyntaxAppender.EMPTY;
         }
-        return splitList.get(splitList.size() - 1);
+        return splitList.getLast();
     }
 
     /**
@@ -88,9 +88,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
 
         for (AppendTypeCommand appendTypeCommand : list) {
             Optional<SyntaxAppender> syntaxAppenderOptional = appendTypeCommand.execute();
-            if (syntaxAppenderOptional.isPresent()) {
-                appendTypes.add(syntaxAppenderOptional.get());
-            }
+            syntaxAppenderOptional.ifPresent(appendTypes::add);
         }
 
 
@@ -98,7 +96,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
         if (!isValid(splitList, appendTypes)) {
             return Optional.empty();
         }
-        String resultStr = appendTypes.stream().map(x -> x.getText()).collect(Collectors.joining());
+        String resultStr = appendTypes.stream().map(SyntaxAppender::getText).collect(Collectors.joining());
         return Optional.of(resultStr);
     }
 
@@ -110,7 +108,7 @@ public abstract class BaseAppenderFactory implements SyntaxAppenderFactory {
      * @return boolean
      */
     protected boolean isValid(List<SyntaxAppender> splitList, List<SyntaxAppender> appendTypes) {
-        if (appendTypes.size() == 0) {
+        if (appendTypes.isEmpty()) {
             return false;
         }
         SyntaxAppender lastAppender = getLastAppendType(splitList);

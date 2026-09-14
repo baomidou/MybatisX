@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix;
 
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
@@ -26,14 +27,10 @@ public class ParamBeforeSuffixOperator implements SuffixOperator {
     }
 
     @Override
-    public String getTemplateText(String columnName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
-
+    public String getTemplateText(String columnName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
         TxParameter parameter = parameters.poll();
-        final String templateText = columnName
-            + " "
-            + operatorName
-            + " "
-            + JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText());
+        final String templateText = "%s %s %s"
+            .formatted(columnName, operatorName, JdbcTypeUtils.wrapperField(parameter.getName(), parameter.getCanonicalTypeText()));
         return conditionFieldWrapper.wrapConditionText(columnName, templateText);
     }
 }

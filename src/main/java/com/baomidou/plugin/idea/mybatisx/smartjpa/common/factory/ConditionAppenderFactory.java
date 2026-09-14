@@ -20,8 +20,7 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -32,14 +31,14 @@ import java.util.Stack;
  * 条件追加区
  * <p>
  * jpa 条件规范:
- * https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation
+ * <a href="https://docs.spring.io/spring-data/jpa/docs/2.3.2.RELEASE/reference/html/#jpa.query-methods.query-creation">jpa.query-methods.query-creation</a>
  */
+@Slf4j
 public class ConditionAppenderFactory extends BaseAppenderFactory {
-    private static final Logger logger = LoggerFactory.getLogger(ConditionAppenderFactory.class);
     /**
      * The Syntax appender array list.
      */
-    List<SyntaxAppender> syntaxAppenderArrayList;
+    final List<SyntaxAppender> syntaxAppenderArrayList;
 
     /**
      * Instantiates a new Condition appender factory.
@@ -165,11 +164,10 @@ public class ConditionAppenderFactory extends BaseAppenderFactory {
                 joinStack.push(templateText);
                 continue;
             }
-            if (appender instanceof CustomFieldAppender) {
+            if (appender instanceof CustomFieldAppender fieldAppender) {
                 if (!joinStack.empty()) {
                     templateText = joinStack.pop() + templateText;
                 }
-                CustomFieldAppender fieldAppender = (CustomFieldAppender) appender;
                 templateText = conditionFieldWrapper.wrapConditionText(fieldAppender.getFieldName(), templateText);
             }
             if (i > 0) {

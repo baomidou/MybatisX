@@ -16,7 +16,8 @@ public abstract class GenericIntention implements IntentionAction {
     /**
      * The Chooser.
      */
-    protected IntentionChooser chooser;
+    @SafeFieldForPreview
+    protected final IntentionChooser chooser;
 
     /**
      * Instantiates a new Generic intention.

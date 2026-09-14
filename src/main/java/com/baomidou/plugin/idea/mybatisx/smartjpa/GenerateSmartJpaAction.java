@@ -5,9 +5,8 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.NeverContainsFie
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +16,9 @@ import java.util.Optional;
  *
  * @author ls9527
  */
+@Slf4j
 public class GenerateSmartJpaAction extends GenerateSmartJpaAdvanceAction {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(GenerateSmartJpaAction.class);
 
     @NotNull
     @Override

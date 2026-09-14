@@ -9,12 +9,10 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.model.AppendTypeEnum;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.util.SyntaxAppenderWrapper;
 import com.intellij.psi.PsiClass;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,13 +21,13 @@ import java.util.Optional;
 /**
  * The type Custom join appender.
  */
+@Slf4j
 public class CustomJoinAppender implements SyntaxAppender {
 
     /**
      * The constant SPACE.
      */
     public static final String SPACE = " ";
-    private static final Logger logger = LoggerFactory.getLogger(CustomJoinAppender.class);
     private final String tipText;
     private final String sqlText;
     private final AreaSequence areaSequence;
@@ -69,8 +67,8 @@ public class CustomJoinAppender implements SyntaxAppender {
 
     @Override
     public Optional<SyntaxAppender> pollLast(LinkedList<SyntaxAppender> splitList) {
-        final Optional<SyntaxAppender> syntaxAppender = Optional.of(splitList.pollLast());
-        if (syntaxAppender.isPresent() && splitList.size() > 0) {
+        final Optional<SyntaxAppender> syntaxAppender = Optional.ofNullable(splitList.pollLast());
+        if (syntaxAppender.isPresent() && !splitList.isEmpty()) {
             final SyntaxAppender last = splitList.getLast();
             return last.pollLast(splitList);
         }
@@ -112,7 +110,6 @@ public class CustomJoinAppender implements SyntaxAppender {
 
     @Override
     public boolean checkAfter(SyntaxAppender secondAppender, AreaSequence areaSequence) {
-        boolean sequenceCheck = getAreaSequence().getSequence() == secondAppender.getAreaSequence().getSequence();
-        return sequenceCheck;
+        return getAreaSequence().getSequence() == secondAppender.getAreaSequence().getSequence();
     }
 }

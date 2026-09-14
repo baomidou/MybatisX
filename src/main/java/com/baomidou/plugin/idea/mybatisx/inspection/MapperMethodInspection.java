@@ -14,16 +14,16 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiType;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
-import com.intellij.psi.PsiClassType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.psi.search.GlobalSearchScope;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  */
 public class MapperMethodInspection extends MapperInspection {
 
-    public static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<String>() {
+    public static final Set<String> MYBATIS_PLUS_BASE_MAPPER_NAMES = new HashSet<>() {
         {
             // mp3
             add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
@@ -53,7 +53,7 @@ public class MapperMethodInspection extends MapperInspection {
     public static final String COLLECTION = "java.util.Collection";
     public static final String LIST = "java.util.List";
     public static final String SET = "java.util.Set";
-    private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<String>() {
+    private static final Set<String> STATEMENT_PROVIDER_NAMES = new HashSet<>() {
         {
             add("org.apache.ibatis.annotations.SelectProvider");
             add("org.apache.ibatis.annotations.UpdateProvider");
@@ -182,9 +182,7 @@ public class MapperMethodInspection extends MapperInspection {
                 }
                 // Check inheritance for Map
                 PsiClass mapClass = JavaPsiFacade.getInstance(psiClass.getProject()).findClass(MAP, GlobalSearchScope.allScope(psiClass.getProject()));
-                if (mapClass != null && psiClass.isInheritor(mapClass, true)) {
-                    return true;
-                }
+                return mapClass != null && psiClass.isInheritor(mapClass, true);
             }
         }
         return false;
@@ -208,7 +206,7 @@ public class MapperMethodInspection extends MapperInspection {
             }
         }
         JavaService instance = JavaService.getInstance(method.getProject());
-        if (!instance.findStatement(method).isPresent() && null != ide) {
+        if (instance.findStatement(method).isEmpty() && null != ide) {
             if (isMybatisPlusMethod(method)) {
                 return Optional.empty();
             }

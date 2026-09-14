@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-import com.baomidou.plugin.idea.mybatisx.setting.config.AbstractStatementGenerator;
+import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppenderFactory;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
@@ -47,7 +47,7 @@ public class SelectOperator extends BaseOperatorManager {
     }
 
     protected Set<String> getPatterns() {
-        Set<String> patterns = AbstractStatementGenerator.SELECT_GENERATOR.getPatterns();
+        Set<String> patterns = StatementGenerators.SELECT_GENERATOR.getPatterns();
         HashSet<String> strings = new HashSet<>(patterns);
         // 1.4.x 支持countBy 语法, 由于历史原因， 查询必须排除count
         strings.remove("count");
@@ -272,7 +272,7 @@ public class SelectOperator extends BaseOperatorManager {
     /**
      * 查询特定的结果追加工厂
      */
-    private class SelectResultAppenderFactory extends ResultAppenderFactory {
+    private static class SelectResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Select result appender factory.
@@ -323,7 +323,7 @@ public class SelectOperator extends BaseOperatorManager {
 
     }
 
-    private class SelectCustomAreaAppender extends CustomAreaAppender {
+    private static class SelectCustomAreaAppender extends CustomAreaAppender {
 
 
         /**
@@ -350,7 +350,7 @@ public class SelectOperator extends BaseOperatorManager {
         }
     }
 
-    private class SelectCompositeAppender extends CompositeAppender {
+    private static class SelectCompositeAppender extends CompositeAppender {
 
         /**
          * Instantiates a new Select composite appender.

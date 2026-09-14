@@ -37,36 +37,29 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class IntellijMyBatisGenerator {
     private final Configuration configuration;
     private final ShellCallback shellCallback;
     @Getter
-    private final List<GeneratedJavaFile> generatedJavaFiles = new ArrayList();
+    private final List<GeneratedJavaFile> generatedJavaFiles = new ArrayList<>();
     @Getter
-    private final List<GeneratedXmlFile> generatedXmlFiles = new ArrayList();
+    private final List<GeneratedXmlFile> generatedXmlFiles = new ArrayList<>();
     @Getter
-    private final List<GeneratedKotlinFile> generatedKotlinFiles = new ArrayList();
+    private final List<GeneratedKotlinFile> generatedKotlinFiles = new ArrayList<>();
     private final List<String> warnings;
-    private final Set<String> projects = new HashSet();
+    private final Set<String> projects = new HashSet<>();
 
     public IntellijMyBatisGenerator(Configuration configuration, ShellCallback shellCallback, List<String> warnings) throws InvalidConfigurationException {
         if (configuration == null) {
             throw new IllegalArgumentException(Messages.getString("RuntimeError.2"));
         } else {
             this.configuration = configuration;
-            if (shellCallback == null) {
-                this.shellCallback = new DefaultShellCallback(false);
-            } else {
-                this.shellCallback = shellCallback;
-            }
+            this.shellCallback = Objects.requireNonNullElseGet(shellCallback, () -> new DefaultShellCallback(false));
 
-            if (warnings == null) {
-                this.warnings = new ArrayList<>();
-            } else {
-                this.warnings = warnings;
-            }
+            this.warnings = Objects.requireNonNullElseGet(warnings, ArrayList::new);
 
             this.configuration.validate();
         }

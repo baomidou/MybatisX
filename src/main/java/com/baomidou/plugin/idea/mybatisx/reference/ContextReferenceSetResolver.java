@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,33 +24,40 @@ import java.util.Optional;
 public abstract class ContextReferenceSetResolver<F extends PsiElement, K extends PsiElement> {
 
     private static final Splitter SPLITTER = Splitter.on(MybatisConstants.DOT_SEPARATOR);
-
-    /**
-     * The Project.
-     * -- GETTER --
-     *  Gets project.
-     *
-     * @return the project
-
-     */
-    @Getter
-    protected Project project;
-
-    /**
-     * The Element.
-     * -- GETTER --
-     *  Gets element.
-     *
-     * @return the element
-
-     */
-    @Getter
-    protected F element;
-
     /**
      * The Texts.
      */
-    protected List<String> texts;
+    protected final List<String> texts;
+    /**
+     * The Project.
+     * -- GETTER --
+     * Gets project.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets project.
+     *
+     * @return the project
+     * @param project the project
+     */
+    @Setter
+    @Getter
+    protected Project project;
+    /**
+     * The Element.
+     * -- GETTER --
+     * Gets element.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets element.
+     *
+     * @return the element
+     * @param element the element
+     */
+    @Setter
+    @Getter
+    protected F element;
 
     /**
      * Instantiates a new Context reference set resolver.
@@ -70,20 +78,25 @@ public abstract class ContextReferenceSetResolver<F extends PsiElement, K extend
      */
     public final Optional<K> resolve(int index) {
         Optional<K> startElement = getStartElement();
-        return startElement.isPresent() ? (texts.size() > 1 ? parseNext(startElement, texts, index) : startElement) : Optional.empty();
+        return startElement.isPresent() ? (texts.size() > 1 ? parseNext(startElement.get(), texts, index) : startElement) : Optional.empty();
     }
 
-    private Optional<K> parseNext(Optional<K> current, List<String> texts, int index) {
+    private Optional<K> parseNext(@NotNull K current, List<String> texts, int index) {
+        K currentElement = current;
         int ind = 1;
-        while (current.isPresent() && ind <= index) {
+        while (ind <= index) {
             String text = texts.get(ind);
             if (text.contains(" ")) {
                 return Optional.empty();
             }
-            current = resolve(current.get(), text);
+            Optional<K> resolved = resolve(current, text);
+            if (resolved.isEmpty()) {
+                return resolved;
+            }
+            currentElement = resolved.get();
             ind++;
         }
-        return current;
+        return Optional.of(currentElement);
     }
 
     /**
@@ -120,25 +133,8 @@ public abstract class ContextReferenceSetResolver<F extends PsiElement, K extend
      * @return the optional
      */
     @NotNull
-    public Optional<K> resolve(K current, String text) {
+    public Optional<K> resolve(@NotNull K current, String text) {
         return Optional.empty();
     }
 
-    /**
-     * Sets element.
-     *
-     * @param element the element
-     */
-    public void setElement(F element) {
-        this.element = element;
-    }
-
-    /**
-     * Sets project.
-     *
-     * @param project the project
-     */
-    public void setProject(Project project) {
-        this.project = project;
-    }
 }

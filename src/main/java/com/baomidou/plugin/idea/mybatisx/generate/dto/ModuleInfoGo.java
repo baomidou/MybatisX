@@ -1,16 +1,20 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
  * @author :ls9527
  * @date : 2021/6/30
  */
+@Setter
 @Getter
 public class ModuleInfoGo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -51,43 +55,4 @@ public class ModuleInfoGo implements Serializable {
 
     private Boolean needJdbcType;
 
-    public void setFileNameWithSuffix(String fileNameWithSuffix) {
-        this.fileNameWithSuffix = fileNameWithSuffix;
-    }
-
-    public void setConfigName(String configName) {
-        this.configName = configName;
-    }
-
-    public void setModulePath(String modulePath) {
-        this.modulePath = modulePath;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    public void setConfigFileName(String configFileName) {
-        this.configFileName = configFileName;
-    }
-
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
-    }
-
-    public void setNeedJdbcType(Boolean needJdbcType) {
-        this.needJdbcType = needJdbcType;
-    }
 }

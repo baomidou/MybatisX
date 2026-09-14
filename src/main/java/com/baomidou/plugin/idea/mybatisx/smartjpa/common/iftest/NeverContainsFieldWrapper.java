@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  */
 public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
     private final Project project;
-    private Mapper mapper;
     private final Map<String, TxField> txFieldMap;
+    private Mapper mapper;
 
     public NeverContainsFieldWrapper(Project project, List<TxField> allFields) {
         this.project = project;
@@ -103,10 +103,9 @@ public class NeverContainsFieldWrapper implements ConditionFieldWrapper {
         if (txField != null) {
             String jdbcType = txField.getJdbcType();
             if (jdbcType != null) {
-                String stringBuilder = "#{" + name +
+                return "#{" + name +
                     ",jdbcType=" + jdbcType +
                     "}";
-                return stringBuilder;
             }
         }
         // 默认jdbcType 映射方式

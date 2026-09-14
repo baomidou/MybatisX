@@ -113,11 +113,11 @@ update t_blog
 where age = false
 </update>
     <update id="updateAgeAndContentByAgeTrue">
-update t_blog
- set age = #{age,jdbcType=NUMERIC}
-, content = #{content,jdbcType=VARCHAR}
-where age = true
-</update>
+        update t_blog
+        set age     = #{age,jdbcType=NUMERIC}
+          , content = #{content,jdbcType=VARCHAR}
+        where age = true
+    </update>
     <update id="updateSelective">
         update blog
         <set>

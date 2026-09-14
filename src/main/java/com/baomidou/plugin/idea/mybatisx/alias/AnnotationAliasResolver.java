@@ -38,8 +38,8 @@ public class AnnotationAliasResolver extends AliasResolver {
      * @param project the project
      * @return the instance
      */
-    public static final AnnotationAliasResolver getInstance(@NotNull Project project) {
-        return project.getComponent(AnnotationAliasResolver.class);
+    public static AnnotationAliasResolver getInstance(@NotNull Project project) {
+        return project.getService(AnnotationAliasResolver.class);
     }
 
     @NotNull
@@ -50,7 +50,7 @@ public class AnnotationAliasResolver extends AliasResolver {
             Collection<PsiClass> res = AnnotatedElementsSearch.searchPsiClasses(clazz.get(), GlobalSearchScope.allScope(project)).findAll();
             return res.stream().map(psiClass -> {
                 Optional<String> txt = JavaUtils.getAnnotationValueText(psiClass, Annotation.ALIAS);
-                if (!txt.isPresent()) {
+                if (txt.isEmpty()) {
                     return null;
                 }
                 AliasDesc ad = new AliasDesc();

@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.ui;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -24,16 +25,15 @@ public class SmartJpaAdvanceUI {
     /**
      * The Condition panel.
      * -- GETTER --
-     *  Gets condition panel.
+     * Gets condition panel.
      *
      * @return the condition panel
-
      */
     @Getter
     public JPanel conditionPanel;
     /**
      * -- GETTER --
-     *  Gets root panel.
+     * Gets root panel.
      *
      * @return the root panel
      */
@@ -41,7 +41,7 @@ public class SmartJpaAdvanceUI {
     private JPanel rootPanel;
     /**
      * -- GETTER --
-     *  Gets check all condition field.
+     * Gets check all condition field.
      *
      * @return the check all condition field
      */
@@ -61,7 +61,7 @@ public class SmartJpaAdvanceUI {
     private List<TxField> allFields;
     /**
      * -- GETTER --
-     *  Is result type boolean.
+     * Is result type boolean.
      *
      * @return the boolean
      */
@@ -80,19 +80,16 @@ public class SmartJpaAdvanceUI {
             JCheckBox mainCheck = (JCheckBox) e.getSource();
             Component[] components = conditionPanel.getComponents();
             for (Component component : components) {
-                if (component instanceof JCheckBox) {
-                    JCheckBox itemCheckBox = (JCheckBox) component;
+                if (component instanceof JCheckBox itemCheckBox) {
                     itemCheckBox.setSelected(mainCheck.isSelected());
                 }
             }
         });
-        includeRadioButton.addItemListener(e -> {
-            includeAllResults(BASE_COLUMN_LIST);
-        });
+        includeRadioButton.addItemListener(e -> includeAllResults(BASE_COLUMN_LIST));
 
         allColumnRadioButton.addItemListener(e -> {
             final Object value = splitFieldSpiner.getValue();
-            Integer splitNumber = Integer.valueOf(value.toString());
+            int splitNumber = Integer.parseInt(value.toString());
             // splitNumber = 0 表示不换行
             if (splitNumber <= 0) {
                 splitNumber = 0;
@@ -112,7 +109,7 @@ public class SmartJpaAdvanceUI {
         asFieldRadioButton.addItemListener(e -> {
 
             final Object value = splitFieldSpiner.getValue();
-            Integer splitNumber = Integer.valueOf(value.toString());
+            int splitNumber = Integer.parseInt(value.toString());
             // splitNumber = 0 表示不换行
             if (splitNumber <= 0) {
                 splitNumber = 0;
@@ -120,19 +117,7 @@ public class SmartJpaAdvanceUI {
 
             StringJoiner stringJoiner = new StringJoiner(",");
             for (int i = 0; i < allFields.size(); i++) {
-                final TxField txField = allFields.get(i);
-                String columnName = null;
-                // 没有驼峰命名, 就不需要 as
-                if (txField.getColumnName().equals(txField.getFieldName())) {
-                    columnName = txField.getColumnName();
-                } else {
-                    // column as field
-                    columnName = txField.getColumnName() + " as " + txField.getFieldName();
-                }
-
-                if (splitNumber > 0 && i > 0 && i % splitNumber == 0) {
-                    columnName = "\n" + columnName;
-                }
+                String columnName = getColumnName(i, splitNumber);
                 stringJoiner.add(columnName);
             }
 
@@ -140,17 +125,31 @@ public class SmartJpaAdvanceUI {
             resultType = true;
         });
 
-        radioCreateCustomClass.addItemListener(e -> {
-            resultExecutor = new CustomResultExecutor();
-        });
-        radioUseEntityClass.addItemListener(e -> {
-            resultExecutor = new CommonResultExecutor();
-        });
+        radioCreateCustomClass.addItemListener(e -> resultExecutor = new CustomResultExecutor());
+        radioUseEntityClass.addItemListener(e -> resultExecutor = new CommonResultExecutor());
 
         // 假装执行了选中 includeAllRadio的事件
         includeAllResults(BASE_COLUMN_LIST);
 
         splitFieldSpiner.setValue(3);
+    }
+
+    @NonNull
+    private String getColumnName(int i, int splitNumber) {
+        final TxField txField = allFields.get(i);
+        String columnName;
+        // 没有驼峰命名, 就不需要 as
+        if (txField.getColumnName().equals(txField.getFieldName())) {
+            columnName = txField.getColumnName();
+        } else {
+            // column as field
+            columnName = txField.getColumnName() + " as " + txField.getFieldName();
+        }
+
+        if (splitNumber > 0 && i > 0 && i % splitNumber == 0) {
+            columnName = "\n" + columnName;
+        }
+        return columnName;
     }
 
     @Nullable
@@ -243,7 +242,7 @@ public class SmartJpaAdvanceUI {
         MYBATIS_ANNOTATION,
     }
 
-    private abstract class ResultExecutor {
+    private abstract static class ResultExecutor {
 
         protected abstract String getResultMap();
 
@@ -253,7 +252,7 @@ public class SmartJpaAdvanceUI {
 
     }
 
-    private class CommonResultExecutor extends ResultExecutor {
+    private static class CommonResultExecutor extends ResultExecutor {
         @Override
         public String getResultMap() {
             return BASE_RESULT_MAP;

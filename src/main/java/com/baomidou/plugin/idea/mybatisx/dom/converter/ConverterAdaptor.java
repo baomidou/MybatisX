@@ -19,20 +19,20 @@ public abstract class ConverterAdaptor<T> extends ResolvingConverter<T> {
 
     @NotNull
     @Override
-    public Collection<? extends T> getVariants(ConvertContext context) {
+    public Collection<? extends T> getVariants(@NotNull ConvertContext context) {
         return Collections.emptyList();
     }
 
     @Nullable
     @Override
-    public String toString(@Nullable T t, ConvertContext context) {
+    public String toString(@Nullable T t, @NotNull ConvertContext context) {
 //    throw new UnsupportedOperationException();
         return null;
     }
 
     @Nullable
     @Override
-    public T fromString(@Nullable @NonNls String s, ConvertContext context) {
+    public T fromString(@Nullable @NonNls String s,@NotNull ConvertContext context) {
         return null;
     }
 }

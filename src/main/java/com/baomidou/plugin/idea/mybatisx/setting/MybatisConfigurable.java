@@ -2,6 +2,7 @@ package com.baomidou.plugin.idea.mybatisx.setting;
 
 import com.intellij.openapi.options.SearchableConfigurable;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class MybatisConfigurable implements SearchableConfigurable {
         mybatisXSettings = MybatisXSettings.getInstance();
     }
 
+    @NotNull
     @Override
     public String getId() {
         return "MybatisX";

@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
@@ -62,22 +63,21 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
     @Override
     protected ResultAppenderFactory getResultAppenderFactory(List<TxField> mappingField, String newAreaName) {
-        ResultAppenderFactory appenderFactory = new InsertBatchResultAppenderFactory(newAreaName) {
+        return new InsertBatchResultAppenderFactory(newAreaName) {
             @Override
-            public String getTemplateText(String tableName, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
+            public String getTemplateText(String tableName1, PsiClass entityClass, LinkedList<TxParameter> parameters, LinkedList<SyntaxAppenderWrapper> collector, ConditionFieldWrapper conditionFieldWrapper) {
                 // 定制参数
                 SyntaxAppender suffixOperator = InsertCustomSuffixAppender.createInsertBySuffixOperator("BatchWithAll",
                     getSuffixOperator(mappingField),
                     AreaSequence.RESULT);
                 LinkedList<SyntaxAppenderWrapper> syntaxAppenderWrappers = new LinkedList<>();
                 syntaxAppenderWrappers.add(new SyntaxAppenderWrapper(suffixOperator));
-                return super.getTemplateText(tableName, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
+                return super.getTemplateText(tableName1, entityClass, parameters, syntaxAppenderWrappers, conditionFieldWrapper);
             }
         };
-        return appenderFactory;
     }
 
-    private class InsertBatchResultAppenderFactory extends ResultAppenderFactory {
+    private static class InsertBatchResultAppenderFactory extends ResultAppenderFactory {
 
         /**
          * Instantiates a new Insert batch result appender factory.
@@ -137,13 +137,13 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
          * @param tableName    the table name
          * @param mappingField the mapping field
          */
-        public InsertBatchSuffixOperator(String tableName, List<TxField> mappingField) {
+        public InsertBatchSuffixOperator(String tableName, @NotNull List<TxField> mappingField) {
             this.tableName = tableName;
             this.mappingField = mappingField;
         }
 
         @Override
-        public String getTemplateText(String fieldName, LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             Optional<String> sequenceName = dasTable.findSequenceName(tableName);
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -165,7 +165,7 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
                     String fieldStr = JdbcTypeUtils.wrapperField(itemName + "." + field.getFieldName(), field.getFieldType());
                     // 第一版写死字段变更, 后续重构
                     // 变更主键生成规则为自定义函数
-                    if (sequenceName.isPresent() && dasTable != null) {
+                    if (sequenceName.isPresent()) {
                         DasTableKey primaryKey = dasTable.getPrimaryKey();
                         // 当前字段是主键, 使用自定义函数替换主键
                         if (primaryKey != null && primaryKey.getColumnsRef().size() == 1) {
@@ -192,8 +192,5 @@ public class OracleInsertBatchWithAll extends MysqlInsertBatch {
 
             return stringBuilder.toString();
         }
-
     }
-
-
 }

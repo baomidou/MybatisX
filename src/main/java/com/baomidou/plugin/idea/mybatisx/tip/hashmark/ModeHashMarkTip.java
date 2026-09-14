@@ -13,7 +13,7 @@ import java.util.List;
  * @author ls9527
  */
 public class ModeHashMarkTip implements HashMarkTip {
-    private static final List<String> MODE_LIST = new ArrayList<String>() {
+    private static final List<String> MODE_LIST = new ArrayList<>() {
         {
             add("IN");
             add("OUT");

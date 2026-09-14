@@ -14,10 +14,10 @@ import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -27,20 +27,19 @@ import java.util.Map;
 /**
  * The type Custom field appender.
  */
+@Slf4j
 public class CustomFieldAppender implements SyntaxAppender {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomFieldAppender.class);
     /**
      * The Tip name.
      */
-    protected String tipName;
+    protected final String tipName;
     /**
      * The Field name.
      * -- GETTER --
-     *  Gets field name.
+     * Gets field name.
      *
      * @return the field name
-
      */
     @Getter
     protected String fieldName;
@@ -49,6 +48,13 @@ public class CustomFieldAppender implements SyntaxAppender {
      */
     @Getter
     protected String columnName;
+    /**
+     * -- SETTER --
+     * Sets area sequence.
+     *
+     * @param areaSequence the area sequence
+     */
+    @Setter
     private AreaSequence areaSequence;
 
     /**
@@ -67,15 +73,6 @@ public class CustomFieldAppender implements SyntaxAppender {
     @Override
     public AreaSequence getAreaSequence() {
         return areaSequence;
-    }
-
-    /**
-     * Sets area sequence.
-     *
-     * @param areaSequence the area sequence
-     */
-    public void setAreaSequence(AreaSequence areaSequence) {
-        this.areaSequence = areaSequence;
     }
 
     @Override
@@ -134,7 +131,7 @@ public class CustomFieldAppender implements SyntaxAppender {
         text = StringUtils.lowerCaseFirstChar(text);
         PsiField psiField = fieldMap.get(text);
         if (psiField == null) {
-            logger.info("查找映射字段失败, text: {}", text);
+            log.info("查找映射字段失败, text: {}", text);
             return Collections.emptyList();
         }
         return Collections.singletonList(TxParameter.createByPsiField(psiField, areaSequence));

@@ -29,7 +29,7 @@ public class AliasResolverFactory {
      */
     @NotNull
     public static AliasResolver createAnnotationResolver(@NotNull Project project) {
-        return new AnnotationAliasResolver(project);
+        return AnnotationAliasResolver.getInstance(project);
     }
 
     /**

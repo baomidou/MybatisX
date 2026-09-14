@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
@@ -11,11 +12,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.JavaClassReferenceProvider;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
@@ -62,7 +63,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String value, ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String value, @NonNull ConvertContext context) {
         return matchIdDomElement(selectStrategy(context).getValue(), value, context).orElse(null);
     }
 
@@ -71,7 +72,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         for (IdDomElement idDomElement : idDomElements) {
             if (MapperUtils.getIdSignature(idDomElement).equals(value) ||
                 MapperUtils.getIdSignature(idDomElement, contextMapper).equals(value)) {
-                return Optional.of(idDomElement.getId().getXmlAttributeValue());
+                return Optional.ofNullable(idDomElement.getId().getXmlAttributeValue());
             }
         }
         return Optional.empty();
@@ -79,13 +80,22 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
 
     @Nullable
     @Override
-    public String toString(@Nullable XmlAttributeValue xmlAttribute, ConvertContext context) {
-        DomElement domElement = DomUtil.getDomElement(xmlAttribute.getParent().getParent());
-        if (!(domElement instanceof IdDomElement)) {
+    public String toString(@Nullable XmlAttributeValue xmlAttribute, @NonNull ConvertContext context) {
+        if (xmlAttribute == null) {
             return null;
         }
-        Mapper contextMapper = MapperUtils.getMapper(context.getInvocationElement());
-        return MapperUtils.getIdSignature((IdDomElement) domElement, contextMapper);
+
+        PsiElement fatherElement = xmlAttribute.getParent();
+        if (fatherElement == null) {
+            return null;
+        }
+
+        DomElement domElement = DomUtil.getDomElement(fatherElement.getParent());
+        if (domElement instanceof IdDomElement) {
+            Mapper contextMapper = MapperUtils.getMapper(context.getInvocationElement());
+            return MapperUtils.getIdSignature((IdDomElement) domElement, contextMapper);
+        }
+        return null;
     }
 
     private TraverseStrategy selectStrategy(ConvertContext context) {
@@ -102,17 +112,17 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
     @NotNull
     public abstract Collection<? extends IdDomElement> getComparisons(@Nullable Mapper mapper, ConvertContext context);
 
-    @NotNull
+
     @Override
-    public PsiReference[] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
+    public PsiReference @NotNull [] createReferences(GenericDomValue<XmlAttributeValue> value, PsiElement element, ConvertContext context) {
         return PsiClassConverter.createJavaClassReferenceProvider(value, null, new ValueReferenceProvider(context)).getReferencesByElement(element);
     }
 
-    private abstract class TraverseStrategy {
+    private abstract static class TraverseStrategy {
         /**
          * The Context.
          */
-        protected ConvertContext context;
+        protected final ConvertContext context;
 
         /**
          * Instantiates a new Traverse strategy.
@@ -181,23 +191,23 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
 
         @Nullable
         @Override
-        public GlobalSearchScope getScope(Project project) {
+        public GlobalSearchScope getScope(@NotNull Project project) {
             return GlobalSearchScope.allScope(project);
         }
 
         /**
          * It looks like hacking here, as it's a little hard to handle so many different cases as JetBrains does
          */
-        @NotNull
+
         @Override
-        public PsiReference[] getReferencesByString(String text, @NotNull PsiElement position, int offsetInPosition) {
+        public PsiReference @NotNull [] getReferencesByString(String text, @NotNull PsiElement position, int offsetInPosition) {
             List<PsiReference> refs = Lists.newArrayList(super.getReferencesByString(text, position, offsetInPosition));
             ValueReference vr = new ValueReference(position, getTextRange(position), context, text);
             if (!refs.isEmpty() && 0 != vr.getVariants().length) {
-                refs.remove(refs.size() - 1);
+                refs.removeLast();
                 refs.add(vr);
             }
-            return refs.toArray(new PsiReference[refs.size()]);
+            return refs.toArray(new PsiReference[0]);
         }
 
         private TextRange getTextRange(PsiElement element) {
@@ -236,11 +246,11 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
             return IdBasedTagConverter.this.fromString(text, context);
         }
 
-        @NotNull
+
         @Override
-        public Object[] getVariants() {
+        public Object @NotNull [] getVariants() {
             Set<String> res = getElement().getText().contains(MybatisConstants.DOT_SEPARATOR) ? setupContextIdSignature() : setupGlobalIdSignature();
-            return res.toArray(new String[res.size()]);
+            return res.toArray(new String[0]);
         }
 
         private Set<String> setupContextIdSignature() {
@@ -257,7 +267,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
         private Set<String> setupGlobalIdSignature() {
             Mapper contextMapper = MapperUtils.getMapper(context.getInvocationElement());
             Collection<? extends IdDomElement> idDomElements = selectStrategy(context).getValue();
-            Set<String> res = new HashSet<String>(idDomElements.size());
+            Set<String> res = new HashSet<>(idDomElements.size());
             for (IdDomElement ele : idDomElements) {
                 res.add(MapperUtils.getIdSignature(ele, contextMapper));
             }
@@ -272,8 +282,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
             // We can reuse some logic from OgnlUtils or just implement a quick search here.
             PsiElement current = myElement;
             while (current != null) {
-                if (current instanceof XmlTag) {
-                    XmlTag tag = (XmlTag) current;
+                if (current instanceof XmlTag tag) {
                     if ("foreach".equals(tag.getName())) {
                         String item = tag.getAttributeValue("item");
                         if (item != null) res.add(item);
@@ -284,6 +293,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
                 current = current.getParent();
             }
             // Also add method parameters
+            assert myElement != null;
             PsiMethod method = OgnlUtils.getPsiMethod(myElement);
             if (method != null) {
                 for (PsiParameter parameter : method.getParameterList().getParameters()) {
@@ -292,7 +302,5 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
                 }
             }
         }
-
     }
-
 }

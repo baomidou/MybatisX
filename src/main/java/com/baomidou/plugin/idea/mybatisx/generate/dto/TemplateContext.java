@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 /**
  * 末班上下文配置
  */
+@Setter
 @Getter
 public class TemplateContext {
     /**
@@ -33,27 +35,4 @@ public class TemplateContext {
 
     private GenerateConfig generateConfig;
 
-    public void setGenerateConfig(GenerateConfig generateConfig) {
-        this.generateConfig = generateConfig;
-    }
-
-    public void setProjectPath(String projectPath) {
-        this.projectPath = projectPath;
-    }
-
-    public void setAnnotationType(String annotationType) {
-        this.annotationType = annotationType;
-    }
-
-    public void setTemplateSettingMap(Map<String, ConfigSetting> templateSettingMap) {
-        this.templateSettingMap = templateSettingMap;
-    }
-
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
-    }
-
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
 }

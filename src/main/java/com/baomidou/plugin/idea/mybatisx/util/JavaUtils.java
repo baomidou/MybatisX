@@ -20,8 +20,8 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PropertyUtil;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * The type Java utils.
@@ -121,7 +120,7 @@ public final class JavaUtils {
      * @return the optional
      */
     public static Optional<PsiClass[]> findClasses(@NotNull Project project, @NotNull String clazzName) {
-        return Optional.ofNullable(JavaPsiFacade.getInstance(project).findClasses(clazzName, GlobalSearchScope.allScope(project)));
+        return Optional.of(JavaPsiFacade.getInstance(project).findClasses(clazzName, GlobalSearchScope.allScope(project)));
     }
 
     /**
@@ -136,6 +135,7 @@ public final class JavaUtils {
         if (StringUtils.isBlank(clazzName) && StringUtils.isBlank(methodName)) {
             return Optional.empty();
         }
+        assert clazzName != null;
         Optional<PsiClass> clazz = findClazz(project, clazzName);
         if (clazz.isPresent()) {
             PsiMethod[] methods = clazz.get().findMethodsByName(methodName, true);
@@ -156,13 +156,14 @@ public final class JavaUtils {
         if (StringUtils.isBlank(clazzName) && StringUtils.isBlank(methodName)) {
             return Optional.empty();
         }
+        assert clazzName != null;
         Optional<PsiClass[]> classes = findClasses(project, clazzName);
         if (classes.isPresent()) {
 
             List<PsiMethod> collect = Arrays.stream(classes.get())
                 .map(psiClass -> psiClass.findMethodsByName(methodName, true))
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toList());
+                .toList();
             return collect.isEmpty() ? Optional.empty() : Optional.of(collect.toArray(new PsiMethod[0]));
 
         }
@@ -243,7 +244,7 @@ public final class JavaUtils {
      */
     public static Optional<String> getAnnotationValueText(@NotNull PsiModifierListOwner target, @NotNull Annotation annotation) {
         Optional<PsiAnnotationMemberValue> annotationValue = getAnnotationValue(target, annotation);
-        return annotationValue.map(psiAnnotationMemberValue -> psiAnnotationMemberValue.getText().replaceAll("\"", ""));
+        return annotationValue.map(psiAnnotationMemberValue -> psiAnnotationMemberValue.getText().replace("\"", ""));
     }
 
     /**

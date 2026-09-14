@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.setting.MybatisXSettings;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.ide.IconProvider;
 import com.intellij.lang.Language;
@@ -44,18 +43,16 @@ public class XmlAndMapperIconProvider extends IconProvider {
             return null;
         }
         if (isMapperClass(element)) {
-            return IconLoader.getIcon(IMAGES_STATEMENT_SVG);
+            return IconLoader.getIcon(IMAGES_STATEMENT_SVG, this.getClass());
         }
         if (MapperUtils.isElementWithinMybatisFile(element)) {
-            return IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG);
+            return IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG, this.getClass());
         }
         return null;
     }
 
     /**
      * XML 和 Mapper 都使用默认图标
-     *
-     * @return
      */
     private boolean isDefaultIcon() {
         return getInstance().getMapperIcon() != null &&
@@ -68,17 +65,14 @@ public class XmlAndMapperIconProvider extends IconProvider {
         if (!language.isKindOf(JavaLanguage.INSTANCE)) {
             return false;
         }
-        if (!(element instanceof PsiClass)) {
+        if (!(element instanceof PsiClass mayMapperClass)) {
             return false;
         }
-        PsiClass mayMapperClass = (PsiClass) element;
         if (!mayMapperClass.isInterface()) {
             return false;
         }
 
         Collection<Mapper> mappers = MapperUtils.findMappers(element.getProject(), mayMapperClass);
-        return mappers.size() > 0;
+        return !mappers.isEmpty();
     }
-
-
 }

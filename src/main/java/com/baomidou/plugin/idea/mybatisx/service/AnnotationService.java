@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.service;
 
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
@@ -41,7 +40,7 @@ public class AnnotationService {
      * @return the instance
      */
     public static AnnotationService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, AnnotationService.class);
+        return project.getService(AnnotationService.class);
     }
 
     /**
@@ -70,9 +69,6 @@ public class AnnotationService {
      */
     public void addAnnotationWithParameterNameForMethodParameters(@NotNull PsiMethod method) {
         PsiParameterList parameterList = method.getParameterList();
-        if (null == parameterList) {
-            return;
-        }
         PsiParameter[] parameters = parameterList.getParameters();
         for (PsiParameter param : parameters) {
             addAnnotationWithParameterName(param);
@@ -86,8 +82,7 @@ public class AnnotationService {
      */
     public void addAnnotationWithParameterName(@NotNull PsiParameter parameter) {
         String name = parameter.getName();
-        if (null != name) {
-            AnnotationService.getInstance(parameter.getProject()).addAnnotation(parameter, Annotation.PARAM.withValue(new Annotation.StringValue(name)));
-        }
+        AnnotationService.getInstance(parameter.getProject())
+            .addAnnotation(parameter, Annotation.PARAM.withValue(new Annotation.StringValue(name)));
     }
 }

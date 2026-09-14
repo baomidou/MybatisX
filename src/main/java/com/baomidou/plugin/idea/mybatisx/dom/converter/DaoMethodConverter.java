@@ -1,5 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import androidx.annotation.NonNull;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
@@ -28,7 +29,7 @@ public class DaoMethodConverter extends ConverterAdaptor<Object> {
      */
     @Nullable
     @Override
-    public Object fromString(@Nullable @NonNls String id, ConvertContext context) {
+    public Object fromString(@Nullable @NonNls String id, @NonNull ConvertContext context) {
         Mapper mapper = MapperUtils.getMapper(context.getInvocationElement());
         Optional<PsiMethod> method = JavaUtils.findMethod(context.getProject(), MapperUtils.getNamespace(mapper), id);
         if (method.isPresent()) {

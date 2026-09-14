@@ -1,7 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
 
-
 /**
  * The interface Icons.
  *

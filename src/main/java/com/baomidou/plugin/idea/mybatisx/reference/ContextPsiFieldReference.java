@@ -12,6 +12,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.xml.XmlAttributeValue;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,26 +24,35 @@ import java.util.Optional;
  *
  * @author yanglin
  */
+@Setter
 @Getter
 public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue> {
 
     /**
      * The Resolver.
      * -- GETTER --
-     *  Gets resolver.
+     * Gets resolver.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets resolver.
      *
      * @return the resolver
-
+     * @param resolver the resolver
      */
     protected ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver;
 
     /**
      * The Index.
      * -- GETTER --
-     *  Gets index.
+     * Gets index.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets index.
      *
      * @return the index
-
+     * @param index the index
      */
     protected int index;
 
@@ -59,23 +69,22 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         resolver = ReferenceSetResolverFactory.createPsiFieldResolver(element);
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public PsiElement resolve() {
         Optional<PsiField> resolved = resolver.resolve(index);
-        if (!resolved.isPresent()) {
+        if (resolved.isEmpty()) {
             final Optional<PsiClass> targetClazz = getTargetClazz();
             return targetClazz.orElse(null);
         }
         return resolved.get();
     }
 
-    @NotNull
+
     @Override
-    public Object[] getVariants() {
+    public Object @NotNull[] getVariants() {
         Optional<PsiClass> clazz = getTargetClazz();
-        if (!clazz.isPresent()) {
+        if (clazz.isEmpty()) {
             return PsiReference.EMPTY_ARRAY;
         }
         final PsiClass psiClass = clazz.get();
@@ -84,7 +93,6 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         return setterFields.toArray(new Object[0]);
     }
 
-    @SuppressWarnings("unchecked")
     private Optional<PsiClass> getTargetClazz() {
         if (getElement().getValue().contains(MybatisConstants.DOT_SEPARATOR)) {
             int ind = 0 == index ? 0 : index - 1;
@@ -98,21 +106,4 @@ public class ContextPsiFieldReference extends PsiReferenceBase<XmlAttributeValue
         return Optional.empty();
     }
 
-    /**
-     * Sets resolver.
-     *
-     * @param resolver the resolver
-     */
-    public void setResolver(ContextReferenceSetResolver<XmlAttributeValue, PsiField> resolver) {
-        this.resolver = resolver;
-    }
-
-    /**
-     * Sets index.
-     *
-     * @param index the index
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
 }

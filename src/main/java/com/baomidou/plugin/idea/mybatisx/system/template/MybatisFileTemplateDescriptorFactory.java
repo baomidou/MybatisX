@@ -1,6 +1,5 @@
 package com.baomidou.plugin.idea.mybatisx.system.template;
 
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.ide.fileTemplates.FileTemplateDescriptor;
 import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptor;
 import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptorFactory;
@@ -24,7 +23,7 @@ public class MybatisFileTemplateDescriptorFactory implements FileTemplateGroupDe
 
     @Override
     public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-        Icon icon = IconLoader.getIcon(JAVAEE_PERSISTENCE_ID_PNG);
+        Icon icon = IconLoader.getIcon(JAVAEE_PERSISTENCE_ID_PNG, this.getClass());
         FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor("Mybatis", icon);
         group.addTemplate(new FileTemplateDescriptor(MYBATIS_MAPPER_XML_TEMPLATE, icon));
         return group;

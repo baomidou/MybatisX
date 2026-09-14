@@ -2,7 +2,6 @@ package com.baomidou.plugin.idea.mybatisx.setting.config;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
-import com.baomidou.plugin.idea.mybatisx.intention.GenerateStatementIntention;
 import com.baomidou.plugin.idea.mybatisx.service.EditorService;
 import com.baomidou.plugin.idea.mybatisx.service.JavaService;
 import com.baomidou.plugin.idea.mybatisx.ui.ListSelectionListener;
@@ -11,7 +10,6 @@ import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -26,16 +24,17 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypes;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.CommonProcessors.CollectProcessor;
 import com.intellij.util.xml.DomService;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,36 +51,17 @@ import java.util.Set;
  * @since 2018 -07-30
  */
 
+@Slf4j
+@Setter
 @Getter
 public abstract class AbstractStatementGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(GenerateStatementIntention.class);
-    /**
-     * The constant UPDATE_GENERATOR.
-     */
-    public static final AbstractStatementGenerator UPDATE_GENERATOR = new UpdateGenerator("update", "modify", "set");
-
-    /**
-     * The constant SELECT_GENERATOR.
-     */
-    public static final AbstractStatementGenerator SELECT_GENERATOR = new SelectGenerator("select", "get", "look", "find", "list", "search", "query");
-
-    /**
-     * The constant DELETE_GENERATOR.
-     */
-    public static final AbstractStatementGenerator DELETE_GENERATOR = new DeleteGenerator("del", "delete", "cancel");
-
-    /**
-     * The constant INSERT_GENERATOR.
-     */
-    public static final AbstractStatementGenerator INSERT_GENERATOR = new InsertGenerator("insert", "add", "new");
-
-    /**
-     * The constant ALL.
-     */
-    public static final Set<AbstractStatementGenerator> ALL = ImmutableSet.of(UPDATE_GENERATOR, SELECT_GENERATOR, DELETE_GENERATOR, INSERT_GENERATOR);
 
     private static final Function<Mapper, String> FUN = mapper -> {
-        VirtualFile vf = mapper.getXmlTag().getContainingFile().getVirtualFile();
+        XmlTag xmlTag = mapper.getXmlTag();
+        if (null == xmlTag) {
+            return "";
+        }
+        VirtualFile vf = xmlTag.getContainingFile().getVirtualFile();
         if (null == vf) {
             return "";
         }
@@ -89,9 +69,14 @@ public abstract class AbstractStatementGenerator {
     };
     /**
      * -- GETTER --
-     *  Gets patterns.
+     * Gets patterns.
+     * <p>
      *
-     * @return the patterns
+     * -- SETTER --
+     *  Sets patterns.
+     *
+     @return the patterns
+      * @param patterns the patterns
      */
     private Set<String> patterns;
 
@@ -116,10 +101,9 @@ public abstract class AbstractStatementGenerator {
         }
         PsiType returnType = method.getReturnType();
         // 是基本类型, 并且不是 void
-        if (returnType instanceof PsiPrimitiveType && !PsiType.VOID.equals(returnType)) {
+        if (returnType instanceof PsiPrimitiveType && !PsiTypes.voidType().equals(returnType)) {
             return JavaUtils.findClazz(method.getProject(), Objects.requireNonNull(((PsiPrimitiveType) returnType).getBoxedTypeName()));
-        } else if (returnType instanceof PsiClassReferenceType) {
-            PsiClassReferenceType type = (PsiClassReferenceType) returnType;
+        } else if (returnType instanceof PsiClassReferenceType type) {
             if (type.hasParameters()) {
                 PsiType[] parameters = type.getParameters();
                 // 处理是 List 的返回结果, 将List<T> 的泛型拿出来
@@ -149,19 +133,19 @@ public abstract class AbstractStatementGenerator {
         }
         try {
             final AbstractStatementGenerator[] generators = getGenerators(method);
-        if (1 == generators.length) {
-            generators[0].execute(method, method.getProject());
-        } else {
-            BaseListPopupStep<AbstractStatementGenerator> step = new BaseListPopupStep<AbstractStatementGenerator>("[ Statement type for method: " + method.getName() + "]", generators) {
-                @Override
-                public PopupStep onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
-                    return this.doFinalStep(() -> WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method, project)));
-                }
-            };
-            JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
-        }
+            if (1 == generators.length) {
+                generators[0].execute(method, method.getProject());
+            } else {
+                BaseListPopupStep<AbstractStatementGenerator> step = new BaseListPopupStep<>("[ Statement type for method: " + method.getName() + "]", generators) {
+                    @Override
+                    public @Nullable PopupStep<?> onChosen(AbstractStatementGenerator selectedValue, boolean finalChoice) {
+                        return this.doFinalStep(() -> WriteCommandAction.writeCommandAction(project).run(() -> selectedValue.execute(method, project)));
+                    }
+                };
+                JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
+            }
         } catch (RuntimeException e) {
-            logger.error("生成xml文件声明失败",e);
+            log.error("生成xml文件声明失败", e);
         }
     }
 
@@ -175,7 +159,7 @@ public abstract class AbstractStatementGenerator {
     public static AbstractStatementGenerator[] getGenerators(@NotNull PsiMethod method) {
         String target = method.getName();
         List<AbstractStatementGenerator> result = Lists.newArrayList();
-        for (AbstractStatementGenerator generator : ALL) {
+        for (AbstractStatementGenerator generator : StatementGenerators.ALL) {
             for (String pattern : generator.getPatterns()) {
                 // 一定是以关键字开头
                 if (target.startsWith(pattern)) {
@@ -183,7 +167,7 @@ public abstract class AbstractStatementGenerator {
                 }
             }
         }
-        return CollectionUtils.isNotEmpty(result) ? result.toArray(new AbstractStatementGenerator[result.size()]) : ALL.toArray(new AbstractStatementGenerator[ALL.size()]);
+        return CollectionUtils.isNotEmpty(result) ? result.toArray(new AbstractStatementGenerator[0]) : StatementGenerators.ALL.toArray(new AbstractStatementGenerator[0]);
     }
 
     /**
@@ -209,12 +193,7 @@ public abstract class AbstractStatementGenerator {
                     @Override
                     public void selected(int index) {
                         // 修复多模块生成标签, 修改xml内容不允许在用户线程操作的BUG
-                        WriteCommandAction.runWriteCommandAction(project, new Runnable() {
-                            @Override
-                            public void run() {
-                                setupTag(method, mappers.get(index), method.getProject());
-                            }
-                        });
+                        WriteCommandAction.runWriteCommandAction(project, () -> setupTag(method, mappers.get(index), method.getProject()));
 
                     }
 
@@ -228,7 +207,7 @@ public abstract class AbstractStatementGenerator {
 
     private void setupTag(PsiMethod method, Mapper mapper, Project project) {
         XmlFile containingFile = DomService.getInstance().getContainingFile(mapper);
-        if(containingFile.getFileType().isReadOnly()){
+        if (containingFile.getFileType().isReadOnly()) {
             Messages.showErrorDialog("xml filetype must not be readonly", "Generate Info");
             return;
         }
@@ -274,14 +253,5 @@ public abstract class AbstractStatementGenerator {
      */
     @NotNull
     public abstract String getDisplayText();
-
-    /**
-     * Sets patterns.
-     *
-     * @param patterns the patterns
-     */
-    public void setPatterns(Set<String> patterns) {
-        this.patterns = patterns;
-    }
 
 }

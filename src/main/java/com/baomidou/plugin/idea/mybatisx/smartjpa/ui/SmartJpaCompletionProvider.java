@@ -7,7 +7,6 @@ import com.baomidou.plugin.idea.mybatisx.smartjpa.component.mapping.EntityMappin
 import com.baomidou.plugin.idea.mybatisx.smartjpa.db.adaptor.DbmsAdaptor;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManager;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.operate.manager.AreaOperateManagerFactory;
-import com.baomidou.plugin.idea.mybatisx.util.Icons;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionUtil;
@@ -22,9 +21,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.sql.dialects.SqlLanguageDialect;
 import com.intellij.sql.psi.SqlPsiFacade;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,9 +35,9 @@ import static com.baomidou.plugin.idea.mybatisx.util.Icons.IMAGES_MAPPER_METHOD_
 /**
  * The type Smart jpa completion provider.
  */
+@Slf4j
 public class SmartJpaCompletionProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(SmartJpaCompletionProvider.class);
     /**
      * 是否找到区域管理器
      */
@@ -56,9 +54,7 @@ public class SmartJpaCompletionProvider {
      * @param result      the result
      * @param mapperClass the mapper class
      */
-    public void addCompletion(@NotNull final CompletionParameters parameters,
-                              @NotNull final CompletionResultSet result,
-                              PsiClass mapperClass) {
+    public void addCompletion(@NotNull final CompletionParameters parameters, @NotNull final CompletionResultSet result, PsiClass mapperClass) {
         PsiElement originalPosition = parameters.getOriginalPosition();
         assert originalPosition != null;
 
@@ -66,8 +62,8 @@ public class SmartJpaCompletionProvider {
         String prefix = CompletionUtil.findJavaIdentifierPrefix(parameters);
         // 按照 mybatisplus3 > mybatisplus2 > resultMap 的顺序查找映射关系
         final Optional<AreaOperateManager> operateManagerOptional = getAreaOperateManager(mapperClass, parameters.getEditor());
-        if (!operateManagerOptional.isPresent()) {
-            logger.info("不支持的区域操作管理器, prefix: {} ", prefix);
+        if (operateManagerOptional.isEmpty()) {
+            log.info("不支持的区域操作管理器, prefix: {} ", prefix);
             return;
         }
         AreaOperateManager areaOperateManager = operateManagerOptional.get();
@@ -76,7 +72,7 @@ public class SmartJpaCompletionProvider {
 
         final LinkedList<SyntaxAppender> splitList = areaOperateManager.splitAppenderByText(prefix);
 
-        if (splitList.size() > 0) {
+        if (!splitList.isEmpty()) {
             final SyntaxAppender last = splitList.getLast();
             last.pollLast(splitList);
         }
@@ -87,8 +83,8 @@ public class SmartJpaCompletionProvider {
         completionResultSet = this.getCompletionResultSet(completionResultSet, prefix, splitString);
 
         // 获得提示列表
-        List<String> appendList = null;
-        if (splitList.size() > 0) {
+        List<String> appendList;
+        if (!splitList.isEmpty()) {
             appendList = areaOperateManager.getCompletionContent(splitList);
         } else {
             appendList = areaOperateManager.getCompletionContent();
@@ -102,8 +98,6 @@ public class SmartJpaCompletionProvider {
             .collect(Collectors.toList());
         // 添加到提示
         completionResultSet.addAllElements(lookupElementList);
-
-
     }
 
     /**
@@ -124,8 +118,7 @@ public class SmartJpaCompletionProvider {
         PsiClass entityClass = entityMappingHolder.getEntityClass();
 
         if (entityClass == null) {
-            foundAreaOperateManager = false;
-            editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
+            editor.putUserData(FOUND_OPERATOR_MANAGER, false);
             return Optional.empty();
         }
         // 第一次初始化
@@ -144,9 +137,8 @@ public class SmartJpaCompletionProvider {
             entityClass,
             null,
             null);
-        foundAreaOperateManager = true;
 
-        editor.putUserData(FOUND_OPERATOR_MANAGER, foundAreaOperateManager);
+        editor.putUserData(FOUND_OPERATOR_MANAGER, true);
         editor.putUserData(OPERATOR_MANAGER, areaOperateManager);
 
         return Optional.of(areaOperateManager);
@@ -161,19 +153,16 @@ public class SmartJpaCompletionProvider {
         if (prefix.length() >= splitString.length()) {
             final String newFragmentPrefix = prefix.substring(splitString.length());
             completionResultSet = completionResultSet.withPrefixMatcher(newFragmentPrefix);
-            logger.info("getCompletionResultSet changed prefix: {}", completionResultSet.getPrefixMatcher().getPrefix());
+            log.info("getCompletionResultSet changed prefix: {}", completionResultSet.getPrefixMatcher().getPrefix());
         }
         return completionResultSet;
     }
 
 
-    private LookupElement buildLookupElement(final String str,
-                                             InsertHandler<LookupElement> insertHandler) {
+    private LookupElement buildLookupElement(final String str, InsertHandler<LookupElement> insertHandler) {
         return LookupElementBuilder.create(str)
-            .withIcon(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG))
+            .withIcon(IconLoader.getIcon(IMAGES_MAPPER_METHOD_SVG, this.getClass()))
             .bold()
             .withInsertHandler(insertHandler);
-
     }
-
 }

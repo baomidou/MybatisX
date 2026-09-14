@@ -16,9 +16,6 @@ import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * The type Ui component facade.
  *
@@ -79,23 +76,15 @@ public final class UiComponentFacade {
                                                     @NotNull String clickableTitle,
                                                     @Nullable final ClickableListener clickableListener,
                                                     @NotNull Object[] objs) {
-        PopupChooserBuilder builder = createListPopupBuilder(popupTitle, popupListener, objs);
+        PopupChooserBuilder<?> builder = createListPopupBuilder(popupTitle, popupListener, objs);
         JBCheckBox checkBox = new JBCheckBox(clickableTitle);
         builder.setSouthComponent(checkBox);
         final JBPopup popup = builder.createPopup();
         if (null != clickableListener) {
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    clickableListener.clicked();
-                }
-            };
-            checkBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    popup.dispose();
-                    setActionForExecutableListener(runnable, clickableListener);
-                }
+            final Runnable runnable = clickableListener::clicked;
+            checkBox.addActionListener(e -> {
+                popup.dispose();
+                setActionForExecutableListener(runnable, clickableListener);
             });
         }
         setPositionForShown(popup);
@@ -113,7 +102,7 @@ public final class UiComponentFacade {
     public JBPopup showListPopup(@NotNull String title,
                                  @Nullable final ListSelectionListener listener,
                                  @NotNull Object[] objs) {
-        PopupChooserBuilder builder = createListPopupBuilder(title, listener, objs);
+        PopupChooserBuilder<?> builder = createListPopupBuilder(title, listener, objs);
         JBPopup popup = builder.createPopup();
         setPositionForShown(popup);
         return popup;
@@ -145,25 +134,15 @@ public final class UiComponentFacade {
      * @param objs     the objs
      * @return the popup chooser builder
      */
-    public PopupChooserBuilder createListPopupBuilder(@NotNull String title,
-                                                      @Nullable final ListSelectionListener listener,
-                                                      @NotNull Object... objs) {
+    public PopupChooserBuilder<?> createListPopupBuilder(@NotNull String title,
+                                                         @Nullable final ListSelectionListener listener,
+                                                         @NotNull Object... objs) {
         final JBList<Object> list = new JBList<>(objs);
-        PopupChooserBuilder builder = new PopupChooserBuilder(list);
+        PopupChooserBuilder<?> builder = new PopupChooserBuilder<>(list);
         builder.setTitle(title);
         if (null != listener) {
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    listener.selected(list.getSelectedIndex());
-                }
-            };
-            builder.setItemChoosenCallback(new Runnable() {
-                @Override
-                public void run() {
-                    setActionForExecutableListener(runnable, listener);
-                }
-            });
+            final Runnable runnable = () -> listener.selected(list.getSelectedIndex());
+            builder.setItemChosenCallback(() -> setActionForExecutableListener(runnable, listener));
         }
         return builder;
     }

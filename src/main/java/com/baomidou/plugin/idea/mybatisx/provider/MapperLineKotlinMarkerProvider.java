@@ -48,7 +48,7 @@ public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvide
     /**
      * KtClass过滤器
      */
-    private class KtClassAbstractElementFilter extends AbstractElementFilter {
+    private static class KtClassAbstractElementFilter extends AbstractElementFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {
@@ -63,7 +63,7 @@ public class MapperLineKotlinMarkerProvider extends RelatedItemLineMarkerProvide
     /**
      * KtNamedFunction 过滤器
      */
-    private class KtFunctionAbstractElementFilter extends AbstractElementFilter {
+    private static class KtFunctionAbstractElementFilter extends AbstractElementFilter {
 
         @Override
         protected Collection<? extends DomElement> getResults(@NotNull PsiElement element) {

@@ -3,11 +3,16 @@ package com.baomidou.plugin.idea.mybatisx.provider;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
+import com.intellij.codeInspection.InspectionsBundle;
+import com.intellij.navigation.GotoRelatedItem;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.NotNullFunction;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,7 +22,11 @@ import java.util.Optional;
  * @param <T> the type parameter
  * @author yanglin
  */
-public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends RelatedItemLineMarkerProvider {
+public abstract class SimpleLineMarkerProvider<F extends PsiElement, T extends PsiElement> extends RelatedItemLineMarkerProvider {
+    protected static final NotNullFunction<PsiElement, Collection<? extends PsiElement>> DEFAULT_PSI_CONVERTOR =
+        ContainerUtil::createMaybeSingletonList;
+    protected static final NotNullFunction<PsiElement, Collection<? extends GotoRelatedItem>> PSI_GOTO_RELATED_ITEM_PROVIDER =
+        dom -> List.of(new GotoRelatedItem(dom, InspectionsBundle.message("xml.goto.group")));
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
@@ -28,7 +37,7 @@ public abstract class SimpleLineMarkerProvider<F extends PsiElement, T> extends 
         Optional<? extends T[]> processResult = apply((F) element);
         if (processResult.isPresent()) {
             T[] arrays = processResult.get();
-            NavigationGutterIconBuilder navigationGutterIconBuilder = NavigationGutterIconBuilder.create(getIcon());
+            NavigationGutterIconBuilder<T> navigationGutterIconBuilder = NavigationGutterIconBuilder.create(getIcon(), DEFAULT_PSI_CONVERTOR, PSI_GOTO_RELATED_ITEM_PROVIDER);
             if (arrays.length > 0) {
                 navigationGutterIconBuilder.setTooltipTitle(getTooltip(arrays[0], element));
             }

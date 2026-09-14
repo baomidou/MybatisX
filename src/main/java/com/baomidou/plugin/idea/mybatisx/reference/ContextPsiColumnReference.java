@@ -20,6 +20,7 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.containers.JBIterable;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,27 +36,37 @@ import java.util.Optional;
  */
 public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValue> {
 
+    private final PsiClass mapperClass;
     /**
      * The Resolver.
      * -- GETTER --
-     *  Gets resolver.
+     * Gets resolver.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets resolver.
      *
      * @return the resolver
-
+     * @param resolver the resolver
      */
+    @Setter
     @Getter
     protected PsiColumnReferenceSetResolver resolver;
     /**
      * The Index.
      * -- GETTER --
-     *  Gets index.
+     * Gets index.
+     * <p>
+     * <p>
+     * -- SETTER --
+     * Sets index.
      *
      * @return the index
-
+     * @param index the index
      */
+    @Setter
     @Getter
     protected int index;
-    private final PsiClass mapperClass;
 
     /**
      * Instantiates a new Context psi field reference.
@@ -78,7 +89,6 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
      *
      * @return
      */
-    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public PsiElement resolve() {
@@ -100,9 +110,9 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
      *
      * @return
      */
-    @NotNull
+
     @Override
-    public Object[] getVariants() {
+    public Object @NotNull [] getVariants() {
         Project project = getElement().getProject();
 
         EntityMappingResolverFactory entityMappingResolverFactory
@@ -114,7 +124,7 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
         }
         DbPsiFacade dbPsiFacade = DbPsiFacade.getInstance(project);
         List<DbElement> dbElementList = getDbElements(tableName, dbPsiFacade);
-        return dbElementList.size() > 0 ? dbElementList.toArray() : PsiReference.EMPTY_ARRAY;
+        return !dbElementList.isEmpty() ? dbElementList.toArray() : PsiReference.EMPTY_ARRAY;
     }
 
     @NotNull
@@ -128,9 +138,9 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
                     JBIterable<? extends DasColumn> columns = DasUtil.getColumns(dasTable);
                     for (DasColumn column : columns) {
 
-                    if (column instanceof DbElement) {
-                        dbElementList.add((DbElement) column);
-                    }
+                        if (column instanceof DbElement) {
+                            dbElementList.add((DbElement) column);
+                        }
                     }
                     return dbElementList;
                 }
@@ -140,21 +150,4 @@ public class ContextPsiColumnReference extends PsiReferenceBase<XmlAttributeValu
     }
 
 
-    /**
-     * Sets resolver.
-     *
-     * @param resolver the resolver
-     */
-    public void setResolver(PsiColumnReferenceSetResolver resolver) {
-        this.resolver = resolver;
-    }
-
-    /**
-     * Sets index.
-     *
-     * @param index the index
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
 }

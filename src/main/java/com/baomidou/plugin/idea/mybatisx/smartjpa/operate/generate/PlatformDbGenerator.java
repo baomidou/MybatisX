@@ -48,13 +48,13 @@ public class PlatformDbGenerator extends PlatformSimpleGenerator {
         List<DbDataSource> dataSources = dbPsiFacade.getDataSources();
         // 如果有多个候选值, 就选择长度最长的
         PriorityQueue<String> priorityQueue = new PriorityQueue<>(Comparator.comparing(String::length, Comparator.reverseOrder()));
-        if (dataSources.size() > 0) {
+        if (!dataSources.isEmpty()) {
             for (DbDataSource dataSource : dataSources) {
                 JBIterable<? extends DasTable> tables = DasUtil.getTables(dataSource);
                 for (DasTable table : tables) {
                     String entityTableName = entityClass.getName().toLowerCase();
                     String tableName = table.getName();
-                    String guessTableName = tableName.replaceAll("_", "").toUpperCase();
+                    String guessTableName = tableName.replace("_", "").toUpperCase();
                     // 完全相等的情况下就不用候选了
                     if (guessTableName.equalsIgnoreCase(entityTableName)) {
                         // 第一版的猜测数据源，只做绝对相等的情况
@@ -69,7 +69,7 @@ public class PlatformDbGenerator extends PlatformSimpleGenerator {
             }
         }
         // 存在候选的情况下, 返回表名最长的
-        if (priorityQueue.size() > 0) {
+        if (!priorityQueue.isEmpty()) {
             return priorityQueue.peek();
         }
         return entityClass.getName().toUpperCase();

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiImportStatement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiPackageStatement;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -65,14 +65,12 @@ public class Importer {
      * @param containingFile     the containing file
      * @param document           the document
      */
-    public void addImportToFile(PsiDocumentManager psiDocumentManager,
-                                PsiJavaFile containingFile,
-                                Document document) {
-        if (newImportList.size() > 0) {
+    public void addImportToFile(PsiDocumentManager psiDocumentManager, PsiJavaFile containingFile, Document document) {
+        if (!newImportList.isEmpty()) {
             newImportList.removeIf(u -> u == null || u.startsWith("java.lang"));
         }
 
-        if (newImportList.size() > 0) {
+        if (!newImportList.isEmpty()) {
             PsiImportStatement[] importStatements = containingFile.getImportList().getImportStatements();
             Set<String> containedSet = new HashSet<>();
             for (PsiImportStatement s : importStatements) {

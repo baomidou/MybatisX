@@ -4,7 +4,6 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
@@ -24,6 +23,7 @@ import com.intellij.util.Query;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,6 +37,7 @@ import java.util.Set;
  */
 public class JavaService implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final Project project;
@@ -63,7 +64,7 @@ public class JavaService implements Serializable {
      * @return the instance
      */
     public static JavaService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, JavaService.class);
+        return project.getService(JavaService.class);
     }
 
     /**
@@ -131,7 +132,6 @@ public class JavaService implements Serializable {
      * @param clazz     the clazz
      * @param processor the processor
      */
-    @SuppressWarnings("unchecked")
     public void processClass(@NotNull PsiClass clazz, @NotNull Processor<Mapper> processor) {
         String ns = clazz.getQualifiedName();
         for (Mapper mapper : MapperUtils.findMappers(clazz.getProject())) {

@@ -38,10 +38,9 @@ public class MybatisXmlValidationAnnotator implements Annotator {
 
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-        if (!(element instanceof XmlAttributeValue)) {
+        if (!(element instanceof XmlAttributeValue attributeValue)) {
             return;
         }
-        XmlAttributeValue attributeValue = (XmlAttributeValue) element;
 
         if (TEST_PATTERN.accepts(element)) {
             validateBooleanExpression(attributeValue, holder);
@@ -53,26 +52,26 @@ public class MybatisXmlValidationAnnotator implements Annotator {
     private void validateBooleanExpression(XmlAttributeValue attributeValue, AnnotationHolder holder) {
         String text = attributeValue.getValue(); // Gets value without quotes usually, relying on getBytes? No, getValue is string.
         // XmlAttributeValue.getValue() returns unquoted value.
-        if (text == null || text.trim().isEmpty()) return;
+        if (text.trim().isEmpty()) return;
 
         // 0. Pre-processing: remove strings for syntax checks
         String noStr = text.replaceAll("(['\"])(?:\\\\.|[^\\\\])*?\\1", "");
 
         // 1. Check for ===
         if (noStr.contains("===")) {
-             holder.newAnnotation(HighlightSeverity.ERROR, "Unsupported operator '==='; use '==' or 'eq'")
-                    .range(attributeValue)
-                    .create();
-             return;
+            holder.newAnnotation(HighlightSeverity.ERROR, "Unsupported operator '==='; use '==' or 'eq'")
+                .range(attributeValue)
+                .create();
+            return;
         }
 
-        // 2. Check for assignment = 
+        // 2. Check for assignment =
         // We look for = that is NOT ==, NOT !=, NOT >=, NOT <=.
         if (noStr.matches(".*(?<![=!<>])=(?![=]).*")) {
-             holder.newAnnotation(HighlightSeverity.ERROR, "Assignment operator '=' is not allowed; use '=='")
-                    .range(attributeValue)
-                    .create();
-             return;
+            holder.newAnnotation(HighlightSeverity.ERROR, "Assignment operator '=' is not allowed; use '=='")
+                .range(attributeValue)
+                .create();
+            return;
         }
 
         // 3. Check for missing operator (Word Space Word)
@@ -91,14 +90,16 @@ public class MybatisXmlValidationAnnotator implements Annotator {
 
         // Try to resolve the text as a path
         PsiElement resolved = OgnlUtils.resolveExpression(attributeValue, text);
-        if (resolved != null) {
-            PsiType type = OgnlUtils.getType(resolved);
-            if (type != null && !isBooleanType(type)) {
-                holder.newAnnotation(HighlightSeverity.ERROR, "Expression must verify boolean (found: " + type.getPresentableText() + ")")
-                    .range(attributeValue)
-                    .create();
-            }
+        if (resolved == null) {
+            return;
         }
+        PsiType type = OgnlUtils.getType(resolved);
+        if (type == null || isBooleanType(type)) {
+            return;
+        }
+        holder.newAnnotation(HighlightSeverity.ERROR, "Expression must verify boolean (found: " + type.getPresentableText() + ")")
+            .range(attributeValue)
+            .create();
     }
 
     // List of OGNL keywords that can validly appear adjacent to other tokens as operators
@@ -110,30 +111,30 @@ public class MybatisXmlValidationAnnotator implements Annotator {
     private boolean hasMissingOperator(String text) {
         // 2. Remove balanced content in () [] {}
         String masked = maskBalanced(text);
-        
+
         // 3. Scan for "Token Space Token" pattern
         // Pattern matches:
         // Group 1: Preceding token (word or closing bracket/paren)
         // Group 2: Following token (word starting with alphanum)
         java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("([\\w\\])]+)\\s+([\\w]+)").matcher(masked);
-        
+
         while (matcher.find()) {
             String left = matcher.group(1);
             String right = matcher.group(2);
-            
+
             // If left ends with bracket/paren, we just check the right side.
-            // e.g. "size() 1" -> left=")", right="1". 
+            // e.g. "size() 1" -> left=")", right="1".
             // If right is not an operator, it's missing an operator.
             // e.g. "size() and" -> right="and" (OK).
-            
-            boolean leftIsOp = false;
-            if (left.matches("[\\w]+")) {
+
+            boolean leftIsOp;
+            if (left.matches("\\w+")) {
                 leftIsOp = OGNL_KEYWORDS.contains(left);
             } else {
                 // left is ")" or "]"
-                leftIsOp = false; 
+                leftIsOp = false;
             }
-            
+
             boolean rightIsOp = OGNL_KEYWORDS.contains(right);
 
             // If neither is an operator keyword, we have two adjacent values/identifiers -> Error
@@ -168,14 +169,16 @@ public class MybatisXmlValidationAnnotator implements Annotator {
         if (text == null || text.trim().isEmpty()) return;
 
         PsiElement resolved = OgnlUtils.resolveExpression(attributeValue, text);
-        if (resolved != null) {
-            PsiType type = OgnlUtils.getType(resolved);
-            if (type != null && !isCollectionOrArray(type, attributeValue.getProject())) {
-                 holder.newAnnotation(HighlightSeverity.ERROR, "Expression must be Collection or Array (found: " + type.getPresentableText() + ")")
-                    .range(attributeValue)
-                    .create();
-            }
+        if (resolved == null) {
+            return;
         }
+        PsiType type = OgnlUtils.getType(resolved);
+        if (type == null || isCollectionOrArray(type, attributeValue.getProject())) {
+            return;
+        }
+        holder.newAnnotation(HighlightSeverity.ERROR, "Expression must be Collection or Array (found: " + type.getPresentableText() + ")")
+            .range(attributeValue)
+            .create();
     }
 
     private boolean containsBooleanOperators(String text) {
@@ -186,24 +189,22 @@ public class MybatisXmlValidationAnnotator implements Annotator {
     }
 
     private boolean isBooleanType(PsiType type) {
-        return PsiType.BOOLEAN.equals(type) || "java.lang.Boolean".equals(type.getCanonicalText());
+        return PsiTypes.booleanType().equals(type) || "java.lang.Boolean".equals(type.getCanonicalText());
     }
 
     private boolean isCollectionOrArray(PsiType type, com.intellij.openapi.project.Project project) {
         if (type instanceof PsiArrayType) return true;
-        
+
         PsiClass collectionClass = JavaPsiFacade.getInstance(project).findClass("java.util.Collection", GlobalSearchScope.allScope(project));
         PsiClass mapClass = JavaPsiFacade.getInstance(project).findClass("java.util.Map", GlobalSearchScope.allScope(project));
-        
+
         if (type instanceof PsiClassType) {
             PsiClass psiClass = ((PsiClassType) type).resolve();
             if (psiClass != null) {
                 if (collectionClass != null && (collectionClass.isEquivalentTo(psiClass) || psiClass.isInheritor(collectionClass, true))) {
                     return true;
                 }
-                if (mapClass != null && (mapClass.isEquivalentTo(psiClass) || psiClass.isInheritor(mapClass, true))) {
-                    return true;
-                }
+                return mapClass != null && (mapClass.isEquivalentTo(psiClass) || psiClass.isInheritor(mapClass, true));
             }
         }
         return false;
