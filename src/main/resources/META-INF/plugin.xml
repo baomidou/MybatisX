@@ -145,7 +145,7 @@
         </intentionAction>
         <!-- 生成mybatis mapper.xml文件 -->
         <intentionAction order="first" id="baomidou.GenerateMapperIntention">
-            <language>XML</language>
+            <language>JAVA</language>
             <className>com.baomidou.plugin.idea.mybatisx.intention.GenerateMapperIntention</className>
         </intentionAction>
 
