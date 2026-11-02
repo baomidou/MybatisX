@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
@@ -63,7 +63,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String value, @NonNull ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String value, @NotNull ConvertContext context) {
         return matchIdDomElement(selectStrategy(context).getValue(), value, context).orElse(null);
     }
 
@@ -80,7 +80,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
 
     @Nullable
     @Override
-    public String toString(@Nullable XmlAttributeValue xmlAttribute, @NonNull ConvertContext context) {
+    public String toString(@Nullable XmlAttributeValue xmlAttribute, @NotNull ConvertContext context) {
         if (xmlAttribute == null) {
             return null;
         }

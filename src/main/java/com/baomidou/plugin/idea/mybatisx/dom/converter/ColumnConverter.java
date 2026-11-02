@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.reference.ResultColumnReferenceSet;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.PluginExistsUtils;
@@ -66,7 +66,7 @@ public class ColumnConverter extends ConverterAdaptor<XmlAttributeValue> impleme
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String s, @NonNull ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String s, @NotNull ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
         return ctxElement instanceof GenericAttributeValue ? ((GenericAttributeValue<?>) ctxElement).getXmlAttributeValue() : null;
     }

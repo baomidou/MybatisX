@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperNamespaceNameUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -58,7 +58,7 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
      */
     @Nullable
     @Override
-    public PsiClass fromString(@Nullable @NonNls String id, @NonNull ConvertContext context) {
+    public PsiClass fromString(@Nullable @NonNls String id, @NotNull ConvertContext context) {
         if (StringUtils.isEmpty(id)) {
             return null;
         }

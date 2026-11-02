@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.reference.ResultPropertyReferenceSet;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
@@ -42,7 +42,7 @@ public class PropertyConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String firstText, @NonNull ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String firstText, @NotNull ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
         if (ctxElement instanceof GenericAttributeValue<?> attributeValue) {
             final XmlAttributeValue xmlAttributeValue = attributeValue.getXmlAttributeValue();

@@ -5,6 +5,8 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
+import com.baomidou.plugin.idea.mybatisx.util.OgnlUtils;
+import java.util.List;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.JavaLookupElementBuilder;
@@ -294,54 +296,58 @@ public class CompositeHashMarkTip {
     }
 
     public PsiElement findReference(PsiElement myElement) {
-        IdDomElement domElement = DomUtil.findDomElement(myElement, IdDomElement.class);
-        if (domElement != null) {
-            Object value = domElement.getId().getValue();
-            if (!(value instanceof PsiMethod psiMethod)) {
-                return null;
+        List<PsiMethod> candidateMethods = OgnlUtils.findCandidatePsiMethods(myElement);
+        for (PsiMethod psiMethod : candidateMethods) {
+            PsiElement ref = findReferenceInMethod(psiMethod, myElement);
+            if (ref != null) {
+                return ref;
             }
-            PsiParameterList parameterList = psiMethod.getParameterList();
-            if (parameterList.isEmpty()) {
-                return null;
-            }
-            String fieldName = findFieldName(myElement);
-            // 没有字段名称, 不需要查找引用
-            PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
-            int parametersCount = parameterList.getParametersCount();
-            @NotNull PsiParameter[] parameters = parameterList.getParameters();
-            for (PsiParameter psiParameter : parameters) {
-                PsiAnnotation annotation = psiParameter.getAnnotation(Annotation.PARAM.getQualifiedName());
-                if (annotation != null) {
-                    PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
-                    String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
-                    // 设置了 @Param 但是内容是空, 这种情况不予处理
-                    if (paramValue == null) {
-                        continue;
-                    }
-                    if (paramValue.equals(fieldName)) {
-                        return psiMethod;
-                    }
-                    String prefix = paramValue + ".";
-                    if (fieldName.startsWith(prefix)) {
-                        String fieldSuffix = fieldName.substring(prefix.length());
-                        PsiElement field = getPsiElement(fieldSuffix, psiParameter);
-                        if (field != null) {
-                            return field;
-                        }
-                    }
-                } else {
-                    // @Param 注解一定为空的情况下的跳转处理
+        }
+        return null;
+    }
 
-                    // 兼容java8开启 -parameters 参数的方式，这种方式不需要@Param参数
-                    if (Objects.equals(psiParameter.getName(), fieldName)) {
-                        return psiMethod;
+    private PsiElement findReferenceInMethod(PsiMethod psiMethod, PsiElement myElement) {
+        PsiParameterList parameterList = psiMethod.getParameterList();
+        if (parameterList.isEmpty()) {
+            return null;
+        }
+        String fieldName = findFieldName(myElement);
+        // 没有字段名称, 不需要查找引用
+        PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
+        int parametersCount = parameterList.getParametersCount();
+        @NotNull PsiParameter[] parameters = parameterList.getParameters();
+        for (PsiParameter psiParameter : parameters) {
+            PsiAnnotation annotation = psiParameter.getAnnotation(Annotation.PARAM.getQualifiedName());
+            if (annotation != null) {
+                PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
+                String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
+                // 设置了 @Param 但是内容是空, 这种情况不予处理
+                if (paramValue == null) {
+                    continue;
+                }
+                if (paramValue.equals(fieldName)) {
+                    return psiMethod;
+                }
+                String prefix = paramValue + ".";
+                if (fieldName.startsWith(prefix)) {
+                    String fieldSuffix = fieldName.substring(prefix.length());
+                    PsiElement field = getPsiElement(fieldSuffix, psiParameter);
+                    if (field != null) {
+                        return field;
                     }
+                }
+            } else {
+                // @Param 注解一定为空的情况下的跳转处理
 
-                    if (parametersCount == 1) {
-                        PsiElement field = getPsiElement(fieldName, psiParameter);
-                        if (field != null) {
-                            return field;
-                        }
+                // 兼容java8开启 -parameters 参数的方式，这种方式不需要@Param参数
+                if (Objects.equals(psiParameter.getName(), fieldName)) {
+                    return psiMethod;
+                }
+
+                if (parametersCount == 1) {
+                    PsiElement field = getPsiElement(fieldName, psiParameter);
+                    if (field != null) {
+                        return field;
                     }
                 }
             }

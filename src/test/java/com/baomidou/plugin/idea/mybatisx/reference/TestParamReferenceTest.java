@@ -147,4 +147,119 @@ public class TestParamReferenceTest extends LightJavaCodeInsightFixtureTestCase 
         // Current behavior is likely "getName" without parentheses
         assertContainsElements(lookupElementStrings, "user.getName()");
     }
+
+    @Test
+    public void testSqlIncludeReferenceResolution() {
+        myFixture.configureByText("QueryDTO.java",
+            "package com.baomidou.mybatis3.domain;\n" +
+                "import java.util.List;\n" +
+                "public class QueryDTO {\n" +
+                "    private List<Integer> businessTypes;\n" +
+                "    public List<Integer> getBusinessTypes() { return businessTypes; }\n" +
+                "}\n");
+
+        myFixture.configureByText("ExampleMapper.java",
+            "package com.baomidou.mybatis3.mapper;\n" +
+                "import com.baomidou.mybatis3.domain.QueryDTO;\n" +
+                "import org.apache.ibatis.annotations.Param;\n" +
+                "import java.util.List;\n" +
+                "public interface ExampleMapper {\n" +
+                "    List<?> selectList(@Param(\"param\") QueryDTO param, @Param(\"param2\") String param2);\n" +
+                "}\n");
+
+        myFixture.configureByText("ExampleMapper.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
+                "<mapper namespace=\"com.baomidou.mybatis3.mapper.ExampleMapper\">\n" +
+                "    <sql id=\"commonWhere\">\n" +
+                "        <if test=\"par<caret>am != null\">\n" +
+                "        </if>\n" +
+                "    </sql>\n" +
+                "    <select id=\"selectList\">\n" +
+                "        SELECT * FROM example\n" +
+                "        <include refid=\"commonWhere\"/>\n" +
+                "    </select>\n" +
+                "</mapper>");
+
+        com.intellij.psi.PsiElement element = myFixture.getElementAtCaret();
+        assertTrue(element instanceof com.intellij.psi.PsiParameter);
+        assertEquals("param", ((com.intellij.psi.PsiParameter) element).getName());
+    }
+
+    @Test
+    public void testSqlIncludeFieldResolution() {
+        myFixture.configureByText("QueryDTO.java",
+            "package com.baomidou.mybatis3.domain;\n" +
+                "import java.util.List;\n" +
+                "public class QueryDTO {\n" +
+                "    private List<Integer> businessTypes;\n" +
+                "    public List<Integer> getBusinessTypes() { return businessTypes; }\n" +
+                "}\n");
+
+        myFixture.configureByText("ExampleMapper.java",
+            "package com.baomidou.mybatis3.mapper;\n" +
+                "import com.baomidou.mybatis3.domain.QueryDTO;\n" +
+                "import org.apache.ibatis.annotations.Param;\n" +
+                "import java.util.List;\n" +
+                "public interface ExampleMapper {\n" +
+                "    List<?> selectList(@Param(\"param\") QueryDTO param, @Param(\"param2\") String param2);\n" +
+                "}\n");
+
+        myFixture.configureByText("ExampleMapper.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
+                "<mapper namespace=\"com.baomidou.mybatis3.mapper.ExampleMapper\">\n" +
+                "    <sql id=\"commonWhere\">\n" +
+                "        <if test=\"param.business<caret>Types != null\">\n" +
+                "        </if>\n" +
+                "    </sql>\n" +
+                "    <select id=\"selectList\">\n" +
+                "        SELECT * FROM example\n" +
+                "        <include refid=\"commonWhere\"/>\n" +
+                "    </select>\n" +
+                "</mapper>");
+
+        com.intellij.psi.PsiElement element = myFixture.getElementAtCaret();
+        assertNotNull(element);
+        assertTrue(element instanceof com.intellij.psi.PsiField || element instanceof com.intellij.psi.PsiMethod);
+    }
+
+    @Test
+    public void testSqlIncludeCompletion() {
+        myFixture.configureByText("QueryDTO.java",
+            "package com.baomidou.mybatis3.domain;\n" +
+                "import java.util.List;\n" +
+                "public class QueryDTO {\n" +
+                "    private List<Integer> businessTypes;\n" +
+                "    public List<Integer> getBusinessTypes() { return businessTypes; }\n" +
+                "}\n");
+
+        myFixture.configureByText("ExampleMapper.java",
+            "package com.baomidou.mybatis3.mapper;\n" +
+                "import com.baomidou.mybatis3.domain.QueryDTO;\n" +
+                "import org.apache.ibatis.annotations.Param;\n" +
+                "import java.util.List;\n" +
+                "public interface ExampleMapper {\n" +
+                "    List<?> selectList(@Param(\"param\") QueryDTO param, @Param(\"param2\") String param2);\n" +
+                "}\n");
+
+        myFixture.configureByText("ExampleMapper.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
+                "<mapper namespace=\"com.baomidou.mybatis3.mapper.ExampleMapper\">\n" +
+                "    <sql id=\"commonWhere\">\n" +
+                "        <if test=\"par<caret>\">\n" +
+                "        </if>\n" +
+                "    </sql>\n" +
+                "    <select id=\"selectList\">\n" +
+                "        SELECT * FROM example\n" +
+                "        <include refid=\"commonWhere\"/>\n" +
+                "    </select>\n" +
+                "</mapper>");
+
+        myFixture.completeBasic();
+        java.util.List<String> lookupElementStrings = myFixture.getLookupElementStrings();
+        assertNotNull(lookupElementStrings);
+        assertContainsElements(lookupElementStrings, "param");
+    }
 }

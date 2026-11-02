@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
@@ -198,7 +198,7 @@ public class MysqlUpdateSelective implements CustomStatement {
         }
 
         @Override
-        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<set>").append("\n");
             final TxParameter parameter = parameters.poll();

@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.alias.AliasClassReference;
 import com.baomidou.plugin.idea.mybatisx.alias.AliasFacade;
 import com.baomidou.plugin.idea.mybatisx.util.MybatisConstants;
@@ -30,7 +30,7 @@ public class AliasConverter extends ConverterAdaptor<PsiClass> implements Custom
 
     @Nullable
     @Override
-    public PsiClass fromString(@Nullable @NonNls String s, @NonNull ConvertContext context) {
+    public PsiClass fromString(@Nullable @NonNls String s, @NotNull ConvertContext context) {
         if (StringUtil.isEmptyOrSpaces(s)) {
             return null;
         }

@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate;
 
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.setting.config.StatementGenerators;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
@@ -253,7 +253,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             TxParameter parameter = parameters.poll();
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
@@ -288,7 +288,7 @@ public class InsertOperator extends BaseOperatorManager {
         }
 
         @Override
-        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             StringBuilder stringBuilder = new StringBuilder();
             // 追加列名
             final String columns = mappingField.stream()

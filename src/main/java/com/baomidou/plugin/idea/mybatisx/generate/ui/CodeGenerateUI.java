@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.ui;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
@@ -376,7 +376,7 @@ public class CodeGenerateUI {
 
     }
 
-    @NonNull
+    @NotNull
     private ModuleInfoGo createItemX(ModuleInfoGo item) {
         ModuleInfoGo itemX = new ModuleInfoGo();
         itemX.setModulePath(domainInfo.getModulePath());
@@ -412,7 +412,7 @@ public class CodeGenerateUI {
         initMemoryModuleTable(moduleInfoGoList);
     }
 
-    @NonNull
+    @NotNull
     private static ModuleInfoGo createItem(String modulePath, TemplateSettingDTO templateSettingDTO) {
         ModuleInfoGo item = new ModuleInfoGo();
         item.setConfigName(templateSettingDTO.getConfigName());

@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.ui;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxField;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -134,7 +134,7 @@ public class SmartJpaAdvanceUI {
         splitFieldSpiner.setValue(3);
     }
 
-    @NonNull
+    @NotNull
     private String getColumnName(int i, int splitNumber) {
         final TxField txField = allFields.get(i);
         String columnName;

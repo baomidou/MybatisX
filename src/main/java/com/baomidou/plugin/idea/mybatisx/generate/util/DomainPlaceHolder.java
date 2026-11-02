@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.util;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
 import com.baomidou.plugin.idea.mybatisx.generate.ui.CodeGenerateUI;
 import freemarker.cache.StringTemplateLoader;
@@ -45,7 +45,7 @@ public class DomainPlaceHolder {
         }
     }
 
-    @NonNull
+    @NotNull
     private static Configuration createCfg(String templateText, DomainInfo domainInfo, String defaultTemplateName) {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
         // 设置模板加载器

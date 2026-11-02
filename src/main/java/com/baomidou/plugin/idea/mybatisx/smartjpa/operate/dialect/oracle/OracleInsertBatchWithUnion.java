@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.oracle;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.JdbcTypeUtils;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.operator.suffix.SuffixOperator;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
@@ -68,7 +68,7 @@ public class OracleInsertBatchWithUnion extends MysqlInsertBatch {
         }
 
         @Override
-        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             if (parameters.isEmpty()) {
                 throw new GenerateException("oracle insertBatch 生成失败, parameters为空");
             }

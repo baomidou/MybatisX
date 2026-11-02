@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.dom.converter.PropertySetterFind;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.psi.PsiClass;
@@ -35,9 +35,9 @@ public class PsiFieldReferenceSetResolver extends ContextReferenceSetResolver<Xm
         return getElement().getValue();
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public Optional<PsiField> resolve(@NonNull PsiField current, String text) {
+    public Optional<PsiField> resolve(@NotNull PsiField current, String text) {
         PsiType type = current.getType();
         if (type instanceof PsiClassReferenceType && !((PsiClassReferenceType) type).hasParameters()) {
             PsiClass clazz = ((PsiClassReferenceType) type).resolve();
@@ -48,7 +48,7 @@ public class PsiFieldReferenceSetResolver extends ContextReferenceSetResolver<Xm
         return Optional.empty();
     }
 
-    @NonNull
+    @NotNull
     @Override
     public Optional<PsiField> getStartElement(@Nullable String firstText) {
 

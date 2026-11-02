@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.operate.dialect.mysql;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.SyntaxAppender;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.AreaSequence;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.CustomAreaAppender;
@@ -186,7 +186,7 @@ public class MysqlInsertBatch implements CustomStatement {
         }
 
         @Override
-        public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+        public String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
             // 1. 参数校验
             if (parameters.isEmpty()) {
                 throw new IllegalArgumentException("Parameters list cannot be null or empty");

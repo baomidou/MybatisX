@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -37,7 +37,7 @@ public class TypeHandlerConverter extends ConverterAdaptor<PsiClass>
 
     @Nullable
     @Override
-    public PsiClass fromString(@Nullable String classStr, @NonNull ConvertContext context) {
+    public PsiClass fromString(@Nullable String classStr, @NotNull ConvertContext context) {
         final PsiClass psiClass = psiClassConverter.fromString(classStr, context);
         if (psiClass != null && checkIsTypeHandler(psiClass)) {
             return null;

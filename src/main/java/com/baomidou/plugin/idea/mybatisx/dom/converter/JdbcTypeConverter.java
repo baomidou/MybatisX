@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.reference.ContextReferenceSetResolver;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.intellij.openapi.project.Project;
@@ -49,7 +49,7 @@ public class JdbcTypeConverter extends ConverterAdaptor<XmlAttributeValue> imple
 
     @Nullable
     @Override
-    public XmlAttributeValue fromString(@Nullable @NonNls String s, @NonNull ConvertContext context) {
+    public XmlAttributeValue fromString(@Nullable @NonNls String s, @NotNull ConvertContext context) {
         DomElement ctxElement = context.getInvocationElement();
         if (ctxElement instanceof GenericAttributeValue<?> genericAttributeValue) {
             return genericAttributeValue.getXmlAttributeValue();

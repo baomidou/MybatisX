@@ -2,6 +2,8 @@ package com.baomidou.plugin.idea.mybatisx.util;
 
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.dom.model.Sql;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
@@ -28,7 +30,12 @@ import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Utility for analyzing OGNL expressions in Mybatis XML.
@@ -100,9 +107,14 @@ public class OgnlUtils {
             return current;
         }
 
-        PsiMethod psiMethod = getPsiMethod(contextElement);
-        if (psiMethod == null) return null;
-        return resolveTarget(psiMethod, expression, contextElement.getProject());
+        List<PsiMethod> psiMethods = findCandidatePsiMethods(contextElement);
+        for (PsiMethod psiMethod : psiMethods) {
+            PsiElement target = resolveTarget(psiMethod, expression, contextElement.getProject());
+            if (target != null) {
+                return target;
+            }
+        }
+        return null;
     }
 
     @Nullable
@@ -130,11 +142,116 @@ public class OgnlUtils {
 
     @Nullable
     public static PsiMethod getPsiMethod(@NotNull PsiElement contextElement) {
+        List<PsiMethod> methods = findCandidatePsiMethods(contextElement);
+        return methods.isEmpty() ? null : methods.get(0);
+    }
+
+    @NotNull
+    public static List<PsiMethod> findCandidatePsiMethods(@NotNull PsiElement contextElement) {
         IdDomElement domElement = DomUtil.findDomElement(contextElement, IdDomElement.class);
-        if (domElement == null) return null;
+        if (domElement == null) {
+            return Collections.emptyList();
+        }
         Object idValue = domElement.getId().getValue();
-        if (!(idValue instanceof PsiMethod)) return null;
-        return (PsiMethod) idValue;
+        if (idValue instanceof PsiMethod) {
+            return Collections.singletonList((PsiMethod) idValue);
+        }
+        if (domElement instanceof Sql sql) {
+            return findMethodsIncludingSql(sql, contextElement.getProject());
+        }
+        return Collections.emptyList();
+    }
+
+    @NotNull
+    public static List<PsiMethod> findMethodsIncludingSql(@NotNull Sql sql, @NotNull Project project) {
+        String sqlId = MapperUtils.getId(sql);
+        if (sqlId == null || sqlId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Mapper mapper = MapperUtils.getMapper(sql);
+        String namespace = mapper != null ? MapperUtils.getNamespace(mapper) : null;
+        String fullSqlId = (namespace != null && !namespace.isEmpty()) ? namespace + "." + sqlId : null;
+
+        Set<String> targetIds = new HashSet<>();
+        targetIds.add(sqlId);
+        if (fullSqlId != null) {
+            targetIds.add(fullSqlId);
+        }
+
+        // Handle transitive includes between <sql> tags in the current mapper
+        if (mapper != null) {
+            boolean added;
+            do {
+                added = false;
+                for (Sql otherSql : mapper.getSqls()) {
+                    if (otherSql.equals(sql)) continue;
+                    String otherId = MapperUtils.getId(otherSql);
+                    if (otherId != null && !targetIds.contains(otherId)) {
+                        XmlTag xmlTag = otherSql.getXmlTag();
+                        if (xmlTag != null && includesAny(xmlTag, targetIds)) {
+                            targetIds.add(otherId);
+                            if (namespace != null && !namespace.isEmpty()) {
+                                targetIds.add(namespace + "." + otherId);
+                            }
+                            added = true;
+                        }
+                    }
+                }
+            } while (added);
+        }
+
+        List<PsiMethod> candidateMethods = new ArrayList<>();
+        Set<PsiMethod> visitedMethods = new HashSet<>();
+
+        // 1. Search in current mapper
+        if (mapper != null) {
+            for (IdDomElement daoElement : mapper.getDaoElements()) {
+                XmlTag daoTag = daoElement.getXmlTag();
+                if (daoTag != null && includesAny(daoTag, targetIds)) {
+                    Object value = daoElement.getId().getValue();
+                    if (value instanceof PsiMethod psiMethod) {
+                        if (visitedMethods.add(psiMethod)) {
+                            candidateMethods.add(psiMethod);
+                        }
+                    }
+                }
+            }
+        }
+
+        // 2. If none found in current mapper, search across all mappers in project
+        if (candidateMethods.isEmpty()) {
+            for (Mapper otherMapper : MapperUtils.findMappers(project)) {
+                if (otherMapper.equals(mapper)) continue;
+                for (IdDomElement daoElement : otherMapper.getDaoElements()) {
+                    XmlTag daoTag = daoElement.getXmlTag();
+                    if (daoTag != null && includesAny(daoTag, targetIds)) {
+                        Object value = daoElement.getId().getValue();
+                        if (value instanceof PsiMethod psiMethod) {
+                            if (visitedMethods.add(psiMethod)) {
+                                candidateMethods.add(psiMethod);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return candidateMethods;
+    }
+
+    private static boolean includesAny(@NotNull XmlTag rootTag, @NotNull Set<String> targetIds) {
+        for (XmlTag child : rootTag.getSubTags()) {
+            if ("include".equals(child.getName())) {
+                String refid = child.getAttributeValue("refid");
+                if (refid != null && targetIds.contains(refid)) {
+                    return true;
+                }
+            }
+            if (includesAny(child, targetIds)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Nullable

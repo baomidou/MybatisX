@@ -1,6 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.reference;
 
+import com.baomidou.plugin.idea.mybatisx.dom.model.Sql;
 import com.baomidou.plugin.idea.mybatisx.util.OgnlUtils;
+import com.intellij.util.xml.DomUtil;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -155,10 +157,17 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
     private static class TestParamReference extends PsiReferenceBase<PsiElement> {
         private final String value;
+        private final boolean inSqlFragment;
 
         public TestParamReference(@NotNull PsiElement element, TextRange rangeInElement, String value) {
             super(element, rangeInElement);
             this.value = value;
+            this.inSqlFragment = DomUtil.findDomElement(element, Sql.class) != null;
+        }
+
+        @Override
+        public boolean isSoft() {
+            return inSqlFragment || super.isSoft();
         }
 
         @Override
@@ -219,12 +228,12 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
         @Override
         public Object @NotNull [] getVariants() {
-            PsiMethod psiMethod = getPsiMethod();
-            if (psiMethod == null) return new Object[0];
+            List<PsiMethod> psiMethods = OgnlUtils.findCandidatePsiMethods(myElement);
+            if (psiMethods.isEmpty()) return new Object[0];
 
             int lastDot = value.lastIndexOf('.');
             if (lastDot == -1) {
-                return getTopLevelVariants(psiMethod);
+                return getTopLevelVariants(psiMethods);
             } else {
                 String prefix = value.substring(0, lastDot);
                 String lookupPrefix = value.substring(0, lastDot + 1);
@@ -258,29 +267,34 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
             }
         }
 
-        private Object[] getTopLevelVariants(PsiMethod psiMethod) {
+        private Object[] getTopLevelVariants(List<PsiMethod> psiMethods) {
             List<Object> variants = new ArrayList<>();
-            PsiParameterList parameterList = psiMethod.getParameterList();
+            Set<String> addedNames = new HashSet<>();
             Project project = myElement.getProject();
             PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
 
-            for (PsiParameter psiParameter : parameterList.getParameters()) {
-                PsiAnnotation annotation = psiParameter.getAnnotation(com.baomidou.plugin.idea.mybatisx.annotation.Annotation.PARAM.getQualifiedName());
-                if (annotation != null) {
-                    PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
-                    String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
-                    if (paramValue != null) {
-                        variants.add(LookupElementBuilder.create(paramValue)
-                            .withTypeText(psiParameter.getType().getPresentableText())
-                            .withIcon(psiParameter.getIcon(0)));
-                    }
-                } else {
-                    String name = psiParameter.getName();
-                    variants.add(LookupElementBuilder.create(name)
-                        .withTypeText(psiParameter.getType().getPresentableText())
-                        .withIcon(psiParameter.getIcon(0)));
-                    if (parameterList.getParametersCount() == 1) {
-                        addMemberVariants(variants, psiParameter.getType(), "", project);
+            for (PsiMethod psiMethod : psiMethods) {
+                PsiParameterList parameterList = psiMethod.getParameterList();
+                for (PsiParameter psiParameter : parameterList.getParameters()) {
+                    PsiAnnotation annotation = psiParameter.getAnnotation(com.baomidou.plugin.idea.mybatisx.annotation.Annotation.PARAM.getQualifiedName());
+                    if (annotation != null) {
+                        PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
+                        String paramValue = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
+                        if (paramValue != null && addedNames.add(paramValue)) {
+                            variants.add(LookupElementBuilder.create(paramValue)
+                                .withTypeText(psiParameter.getType().getPresentableText())
+                                .withIcon(psiParameter.getIcon(0)));
+                        }
+                    } else {
+                        String name = psiParameter.getName();
+                        if (addedNames.add(name)) {
+                            variants.add(LookupElementBuilder.create(name)
+                                .withTypeText(psiParameter.getType().getPresentableText())
+                                .withIcon(psiParameter.getIcon(0)));
+                        }
+                        if (parameterList.getParametersCount() == 1) {
+                            addMemberVariants(variants, psiParameter.getType(), "", project);
+                        }
                     }
                 }
             }

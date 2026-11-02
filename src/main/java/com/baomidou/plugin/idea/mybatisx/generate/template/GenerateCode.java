@@ -1,6 +1,6 @@
 package com.baomidou.plugin.idea.mybatisx.generate.template;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ConfigSetting;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.CustomTemplateRoot;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.DomainInfo;
@@ -160,7 +160,7 @@ public class GenerateCode {
             intellijTableInfo);
     }
 
-    @NonNull
+    @NotNull
     private static JavaModelGeneratorConfiguration createJavaModelGeneratorConfiguration(GenerateConfig generateConfig) {
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
         String targetProject = generateConfig.getModulePath() + "/" + generateConfig.getBasePath();

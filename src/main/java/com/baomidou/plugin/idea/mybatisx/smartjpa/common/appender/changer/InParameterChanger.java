@@ -1,7 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.changer;
 
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.appender.MxParameterChanger;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.common.iftest.ConditionFieldWrapper;
 import com.baomidou.plugin.idea.mybatisx.smartjpa.component.TxParameter;
@@ -25,7 +25,7 @@ public class InParameterChanger implements MxParameterChanger {
     }
 
     @Override
-    public String getTemplateText(String fieldName, @NonNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
+    public String getTemplateText(String fieldName, @NotNull LinkedList<TxParameter> parameters, ConditionFieldWrapper conditionFieldWrapper) {
         final TxParameter parameter = parameters.poll();
         if (parameter == null) {
             log.info("parameter is null, can not getTemplateText");
