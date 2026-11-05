@@ -106,6 +106,10 @@ public class MapperMethodInspection extends MapperInspection {
             }
         }
         PsiType returnType = method.getReturnType();
+        if (isWildcardCollection(returnType)) {
+            // 返回类型为 List<?> 等无界通配符集合，允许映射为任意结果类型（如 map 或实体类）
+            found = false;
+        }
         Optional<PsiClass> target = AbstractStatementGenerator.getSelectResultType(method);
         if (found) {
             if (target.isEmpty()) {
@@ -183,6 +187,25 @@ public class MapperMethodInspection extends MapperInspection {
                 // Check inheritance for Map
                 PsiClass mapClass = JavaPsiFacade.getInstance(psiClass.getProject()).findClass(MAP, GlobalSearchScope.allScope(psiClass.getProject()));
                 return mapClass != null && psiClass.isInheritor(mapClass, true);
+            }
+        }
+        return false;
+    }
+
+    private boolean isWildcardCollection(PsiType type) {
+        if (type instanceof PsiClassType classType) {
+            PsiClass psiClass = classType.resolve();
+            if (psiClass != null) {
+                String qName = psiClass.getQualifiedName();
+                if (qName != null && (qName.equals("java.util.List") || qName.equals("java.util.Collection") || qName.equals("java.util.Set"))) {
+                    PsiType[] parameters = classType.getParameters();
+                    if (parameters.length == 1) {
+                        PsiType param = parameters[0];
+                        if (param instanceof com.intellij.psi.PsiWildcardType wildcardType) {
+                            return !wildcardType.isExtends() && !wildcardType.isSuper();
+                        }
+                    }
+                }
             }
         }
         return false;

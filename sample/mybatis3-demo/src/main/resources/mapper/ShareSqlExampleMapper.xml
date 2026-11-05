@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baomidou.mybatis3.mapper.ShareSqlExampleMapper">
+    <sql id="commonWhere">
+        <if test="param.businessTypes != null and param.businessTypes.size > 0">
+            AND business_type IN
+            <foreach collection="param.businessTypes" item="type"
+                     open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="selectList" resultType="map">
+        SELECT * FROM example_table WHERE 1 = 1
+        <include refid="commonWhere"/>
+    </select>
+
+
+</mapper>

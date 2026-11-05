@@ -176,7 +176,28 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
 
         @Override
         public boolean isSoft() {
-            return inSqlFragment || super.isSoft();
+            if (!inSqlFragment) {
+                return super.isSoft();
+            }
+            // 在公共 <sql> 片段中：
+            // 如果能找到候选方法，且表达式的根参数（如 param）在候选方法中能匹配到，
+            // 说明该公共片段针对这些方法有明确的来源。此时不是软引用，需严格校验字段是否存在；
+            // 否则（找不到引用该 sql 的方法，或者根参数都不匹配），保持为软引用，避免误报红。
+            if (value.startsWith("@")) {
+                return super.isSoft();
+            }
+            List<PsiMethod> candidatePsiMethods = OgnlUtils.findCandidatePsiMethods(myElement);
+            if (candidatePsiMethods.isEmpty()) {
+                return true;
+            }
+            String rootParam = value.split("\\.")[0];
+            Project project = myElement.getProject();
+            for (PsiMethod method : candidatePsiMethods) {
+                if (OgnlUtils.hasRootParam(method, rootParam, project)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override

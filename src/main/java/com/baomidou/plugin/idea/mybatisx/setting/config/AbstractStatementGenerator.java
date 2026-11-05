@@ -109,6 +109,13 @@ public abstract class AbstractStatementGenerator {
                 // 处理是 List 的返回结果, 将List<T> 的泛型拿出来
                 if (parameters.length == 1) {
                     PsiType parameter = parameters[0];
+                    if (parameter instanceof com.intellij.psi.PsiWildcardType wildcardType) {
+                        if (wildcardType.isExtends() && wildcardType.getBound() instanceof PsiClassReferenceType boundType) {
+                            return Optional.ofNullable(boundType.resolve());
+                        }
+                        // List<?> 无界通配符不设特定 target 类
+                        return Optional.empty();
+                    }
                     // 通常情况 List<?> 这里一定是引用类型, 但是进入这里的来源还有检查方法,
                     // 不仅仅只是生成xml,  所以这里加一个判断.
                     if (parameter instanceof PsiClassReferenceType) {

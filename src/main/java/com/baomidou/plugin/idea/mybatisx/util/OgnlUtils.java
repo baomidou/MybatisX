@@ -254,6 +254,46 @@ public class OgnlUtils {
         return false;
     }
 
+    /**
+     * 判断给定的方法是否定义了指定名称的参数或属性根对象。
+     * 当处于公共 <sql> 时，可据此判断当前表达式是否针对该方法，
+     * 从而决定是否应当作为硬引用（校验其字段是否存在）。
+     */
+    public static boolean hasRootParam(PsiMethod psiMethod, String rootParamName, Project project) {
+        if (psiMethod == null || rootParamName == null || rootParamName.isEmpty()) return false;
+        PsiParameterList parameterList = psiMethod.getParameterList();
+        PsiConstantEvaluationHelper constantEvaluationHelper = JavaPsiFacade.getInstance(project).getConstantEvaluationHelper();
+        int parametersCount = parameterList.getParametersCount();
+
+        for (PsiParameter psiParameter : parameterList.getParameters()) {
+            PsiAnnotation annotation = psiParameter.getAnnotation(Annotation.PARAM.getQualifiedName());
+            String definedName = null;
+            boolean isAnnotated = false;
+
+            if (annotation != null) {
+                PsiAnnotationMemberValue paramAnnotationValue = annotation.findAttributeValue("value");
+                definedName = (String) constantEvaluationHelper.computeConstantExpression(paramAnnotationValue);
+                isAnnotated = true;
+            }
+            if (definedName == null) definedName = psiParameter.getName();
+
+            if (isAnnotated && Objects.equals(definedName, rootParamName)) {
+                return true;
+            } else if (!isAnnotated) {
+                if (Objects.equals(definedName, rootParamName)) {
+                    return true;
+                } else if (parametersCount == 1) {
+                    PsiElement field = resolveFieldInType(psiParameter.getType(), rootParamName, project);
+                    if (field == null) {
+                        field = resolveMethodInType(psiParameter.getType(), rootParamName, project);
+                    }
+                    if (field != null) return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Nullable
     public static PsiElement resolveTarget(PsiMethod psiMethod, String targetPath, Project project) {
         PsiParameterList parameterList = psiMethod.getParameterList();
@@ -422,6 +462,16 @@ public class OgnlUtils {
         if (psiClass != null) {
             PsiMethod[] methods = psiClass.findMethodsByName(methodName, true);
             if (methods.length > 0) return methods[0];
+
+            // 支持 Java Bean 属性 Getter 解析：如 businessTypes -> getBusinessTypes() / isBusinessTypes()
+            if (!methodName.isEmpty()) {
+                String capitalized = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
+                PsiMethod[] getterMethods = psiClass.findMethodsByName("get" + capitalized, true);
+                if (getterMethods.length > 0) return getterMethods[0];
+
+                PsiMethod[] isMethods = psiClass.findMethodsByName("is" + capitalized, true);
+                if (isMethods.length > 0) return isMethods[0];
+            }
         }
         return null;
     }
