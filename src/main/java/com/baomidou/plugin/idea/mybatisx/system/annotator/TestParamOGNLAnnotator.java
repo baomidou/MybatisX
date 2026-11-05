@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.system.annotator;
 
 import com.baomidou.plugin.idea.mybatisx.reference.TestParamReferenceContributor;
+import com.baomidou.plugin.idea.mybatisx.util.OgnlUtils;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
@@ -35,18 +36,32 @@ public class TestParamOGNLAnnotator implements Annotator {
         }
 
         int offset = 0;
+        char quoteChar = 0;
         if (text.startsWith("\"") || text.startsWith("'")) {
+            quoteChar = text.charAt(0);
             offset = 1;
+        }
+        int end = text.length();
+        if (quoteChar != 0 && text.endsWith(String.valueOf(quoteChar)) && text.length() > 1) {
+            end = text.length() - 1;
         }
 
         StringBuilder sb = new StringBuilder();
         int startCoords = -1;
 
-        for (int i = offset; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if ((c == '"' || c == '\'') && i == text.length() - 1) {
-                break;
+        for (int i = offset; i < end; i++) {
+            int skipEnd = OgnlUtils.skipStringLiteral(text, i, end);
+            if (skipEnd != -1) {
+                if (startCoords != -1) {
+                    highlightIfKeyword(element, holder, sb.toString(), startCoords);
+                    sb = new StringBuilder();
+                    startCoords = -1;
+                }
+                i = skipEnd;
+                continue;
             }
+
+            char c = text.charAt(i);
 
             if (Character.isJavaIdentifierPart(c)) {
                 if (startCoords == -1) {

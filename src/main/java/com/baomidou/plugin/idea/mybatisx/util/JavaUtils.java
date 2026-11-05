@@ -14,6 +14,7 @@ import com.intellij.psi.PsiImportList;
 import com.intellij.psi.PsiImportStatement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiParameter;
@@ -139,7 +140,16 @@ public final class JavaUtils {
         Optional<PsiClass> clazz = findClazz(project, clazzName);
         if (clazz.isPresent()) {
             PsiMethod[] methods = clazz.get().findMethodsByName(methodName, true);
-            return ArrayUtils.isEmpty(methods) ? Optional.empty() : Optional.of(methods[0]);
+            if (ArrayUtils.isEmpty(methods)) {
+                return Optional.empty();
+            }
+            // 优先匹配非 default/非实现的方法 (忽略 default 方法，除非全是 default 方法)
+            for (PsiMethod method : methods) {
+                if (!method.hasModifierProperty(PsiModifier.DEFAULT) && method.getBody() == null) {
+                    return Optional.of(method);
+                }
+            }
+            return Optional.of(methods[0]);
         }
         return Optional.empty();
     }

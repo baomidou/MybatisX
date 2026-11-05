@@ -262,4 +262,38 @@ public class TestParamReferenceTest extends LightJavaCodeInsightFixtureTestCase 
         assertNotNull(lookupElementStrings);
         assertContainsElements(lookupElementStrings, "param");
     }
+
+    @Test
+    public void testStringLiteralIgnoredInTest() {
+        myFixture.configureByText("UserMapper.java",
+            "package com.baomidou.mybatis3.mapper;\n" +
+                "import org.apache.ibatis.annotations.Param;\n" +
+                "import java.util.List;\n" +
+                "public interface UserMapper {\n" +
+                "    List<String> findUser(@Param(\"workshopNo\") String workshopNo);\n" +
+                "}\n");
+
+        myFixture.configureByText("UserMapper.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
+                "<mapper namespace=\"com.baomidou.mybatis3.mapper.UserMapper\">\n" +
+                "    <select id=\"findUser\">\n" +
+                "        <if test='workshopNo != \"FULL\"'>\n" +
+                "        </if>\n" +
+                "    </select>\n" +
+                "</mapper>");
+
+        com.intellij.psi.xml.XmlFile xmlFile = (com.intellij.psi.xml.XmlFile) myFixture.getFile();
+        com.intellij.psi.xml.XmlTag rootTag = xmlFile.getRootTag();
+        assertNotNull(rootTag);
+        com.intellij.psi.xml.XmlTag selectTag = rootTag.findSubTags("select")[0];
+        com.intellij.psi.xml.XmlTag ifTag = selectTag.findSubTags("if")[0];
+        com.intellij.psi.xml.XmlAttribute testAttr = ifTag.getAttribute("test");
+        assertNotNull(testAttr);
+        com.intellij.psi.xml.XmlAttributeValue valueElement = testAttr.getValueElement();
+        assertNotNull(valueElement);
+        com.intellij.psi.PsiReference[] references = valueElement.getReferences();
+        assertEquals(1, references.length);
+        assertEquals("workshopNo", references[0].getCanonicalText());
+    }
 }

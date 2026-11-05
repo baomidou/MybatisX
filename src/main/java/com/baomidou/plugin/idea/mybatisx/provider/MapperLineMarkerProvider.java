@@ -35,8 +35,11 @@ public class MapperLineMarkerProvider extends RelatedItemLineMarkerProvider {
         if (element instanceof PsiClass) {
             filter = new PsiClassAbstractElementFilter();
         }
-        if (filter == null && element instanceof PsiMethod) {
-            filter = new PsiMethodAbstractElementFilter();
+        if (filter == null && element instanceof PsiMethod psiMethod) {
+            // default 方法不产生跳转到 xml 的 marker
+            if (!psiMethod.hasModifierProperty(com.intellij.psi.PsiModifier.DEFAULT) && psiMethod.getBody() == null) {
+                filter = new PsiMethodAbstractElementFilter();
+            }
         }
         if (filter == null) {
             filter = new EmptyAbstractElementFilter();

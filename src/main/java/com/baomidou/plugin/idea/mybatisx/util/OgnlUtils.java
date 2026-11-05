@@ -433,4 +433,42 @@ public class OgnlUtils {
         }
         return null;
     }
+
+    /**
+     * If the character/sequence at {@code currentIndex} starts a string literal
+     * (e.g. {@code "}, {@code '}, {@code &quot;}, or {@code &apos;}), returns the index of the last character
+     * of that literal so the caller can advance past it.
+     * Otherwise returns -1.
+     *
+     * @param text         The full text containing the expression.
+     * @param currentIndex The current index being examined.
+     * @param endLimit     The boundary limit (usually excluding outer attribute quotes).
+     * @return The end index of the literal (inclusive), or -1 if not a literal start.
+     */
+    public static int skipStringLiteral(@NotNull String text, int currentIndex, int endLimit) {
+        if (text.startsWith("&quot;", currentIndex)) {
+            int next = text.indexOf("&quot;", currentIndex + 6);
+            return (next != -1 && next < endLimit) ? next + 5 : endLimit - 1;
+        }
+        if (text.startsWith("&apos;", currentIndex)) {
+            int next = text.indexOf("&apos;", currentIndex + 6);
+            return (next != -1 && next < endLimit) ? next + 5 : endLimit - 1;
+        }
+        char c = text.charAt(currentIndex);
+        if (c == '"' || c == '\'') {
+            int j = currentIndex + 1;
+            while (j < endLimit) {
+                if (text.charAt(j) == '\\') {
+                    j += 2;
+                    continue;
+                }
+                if (text.charAt(j) == c) {
+                    return j;
+                }
+                j++;
+            }
+            return endLimit - 1;
+        }
+        return -1;
+    }
 }

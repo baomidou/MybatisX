@@ -78,10 +78,19 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                     return PsiReference.EMPTY_ARRAY;
                 }
                 String text = element.getText();
+                if (text == null || text.isEmpty()) {
+                    return PsiReference.EMPTY_ARRAY;
+                }
                 List<PsiReference> references = new ArrayList<>();
                 int offset = 0;
+                char quoteChar = 0;
                 if (text.startsWith("\"") || text.startsWith("'")) {
+                    quoteChar = text.charAt(0);
                     offset = 1;
+                }
+                int end = text.length();
+                if (quoteChar != 0 && text.endsWith(String.valueOf(quoteChar)) && text.length() > 1) {
+                    end = text.length() - 1;
                 }
 
                 StringBuilder sb = new StringBuilder();
@@ -93,19 +102,23 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                 // 2. Dots (.)
                 // 3. Method calls ()
                 // 4. Static access @Class@Member
+                // 5. String literals ("...", '...', &quot;...&quot;, &apos;...&apos;)
 
-                // For now, keeping the simple scanner but allowing @ in identifier
-                // Ideally, we should parse tokens properly.
-                // Let's enhance scanner to support @ and dot scanning more robustly.
-
-                for (int i = offset; i < text.length(); i++) {
-                    char c = text.charAt(i);
-                    // Check for closing quote
-                    if ((c == '"' || c == '\'') && i == text.length() - 1) {
-                        break;
+                for (int i = offset; i < end; i++) {
+                    int skipEnd = OgnlUtils.skipStringLiteral(text, i, end);
+                    if (skipEnd != -1) {
+                        if (startCoords != -1) {
+                            addReference(element, references, sb.toString(), startCoords);
+                            sb = new StringBuilder();
+                            startCoords = -1;
+                        }
+                        i = skipEnd;
+                        continue;
                     }
 
-                    if (Character.isJavaIdentifierPart(c) || c == '.' || c == '@') {
+                    char c = text.charAt(i);
+
+                    if (Character.isJavaIdentifierPart(c) || (startCoords != -1 && c == '.') || c == '@') {
                         if (startCoords == -1) {
                             startCoords = i;
                         }
@@ -114,10 +127,6 @@ public class TestParamReferenceContributor extends PsiReferenceContributor {
                         // Method start. If we have a pending token, register it.
                         if (startCoords != -1) {
                             String value = sb.toString();
-                            // Mark as method call? resolve() will check next chars?
-                            // No, resolve() is lazy. We scan here.
-                            // If we encounter '(', the previous token is likely a method name.
-                            // We can just add it as a reference, and the resolver will check context.
                             addReference(element, references, value, startCoords);
                             sb = new StringBuilder();
                             startCoords = -1;
