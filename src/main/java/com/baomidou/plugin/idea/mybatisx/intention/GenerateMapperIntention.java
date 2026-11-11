@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.intention;
 
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
+
 import com.baomidou.plugin.idea.mybatisx.service.EditorService;
 import com.baomidou.plugin.idea.mybatisx.system.template.MybatisFileTemplateDescriptorFactory;
 import com.baomidou.plugin.idea.mybatisx.ui.ClickableListener;
@@ -142,7 +144,7 @@ public class GenerateMapperIntention extends GenericIntention {
         }
         try {
             Properties properties = new Properties();
-            properties.setProperty("NAMESPACE", mapperClass.getQualifiedName());
+            properties.setProperty("NAMESPACE", MapperNamespace.fromPsiClass(mapperClass).getJvmName());
 
             PsiElement psiFile = MapperUtils.createMapperFromFileTemplate(
                 MybatisFileTemplateDescriptorFactory.MYBATIS_MAPPER_XML_TEMPLATE,

@@ -257,7 +257,7 @@ public abstract class IdBasedTagConverter extends ConverterAdaptor<XmlAttributeV
             Set<String> res = Sets.newHashSet();
             String ns = text.substring(0, text.lastIndexOf(MybatisConstants.DOT_SEPARATOR));
             for (IdDomElement ele : selectStrategy(context).getValue()) {
-                if (MapperUtils.getNamespace(ele).equals(ns)) {
+                if (MapperUtils.getNamespace(ele).matches(ns)) {
                     res.add(MapperUtils.getId(ele));
                 }
             }

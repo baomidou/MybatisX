@@ -7,6 +7,7 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Select;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Update;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
 import com.google.common.collect.ImmutableSet;
@@ -69,7 +70,7 @@ public class StatementLineMarkerProvider extends SimpleLineMarkerProvider<XmlTok
             if (StringUtils.isEmpty(namespace)) {
                 return Optional.empty();
             }
-            return JavaUtils.findClasses(from.getProject(), namespace);
+            return MapperNamespace.of(namespace).findClasses(from.getProject());
         }
     }
 

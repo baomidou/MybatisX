@@ -6,6 +6,8 @@ import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Package;
 import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAlias;
 import com.baomidou.plugin.idea.mybatisx.dom.model.TypeAliases;
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
+import com.baomidou.plugin.idea.mybatisx.model.MapperStatementId;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.intellij.ide.fileTemplates.FileTemplate;
@@ -134,7 +136,7 @@ public final class MapperUtils {
      */
     @NotNull
     @NonNls
-    public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull String namespace) {
+    public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull MapperNamespace namespace) {
         List<Mapper> result = Lists.newArrayList();
         for (Mapper mapper : findMappers(project)) {
             if (getNamespace(mapper).equals(namespace)) {
@@ -142,6 +144,12 @@ public final class MapperUtils {
             }
         }
         return result;
+    }
+
+    @NotNull
+    @NonNls
+    public static Collection<Mapper> findMappers(@NotNull Project project, @NotNull String namespace) {
+        return findMappers(project, MapperNamespace.of(namespace));
     }
 
     @NotNull
@@ -174,11 +182,9 @@ public final class MapperUtils {
         if (containingClass == null) {
             return null;
         }
+        MapperNamespace targetNs = MapperNamespace.fromPsiClass(containingClass);
         for (Mapper mapper : findMappers(project)) {
-            final GenericAttributeValue<PsiClass> namespace = mapper.getNamespace();
-            final String namespaceStringValue = namespace.getStringValue();
-            if (namespaceStringValue != null &&
-                namespaceStringValue.equals(containingClass.getQualifiedName())) {
+            if (getNamespace(mapper).equals(targetNs)) {
                 return findTagByMapper(mapper, psiMethod.getName());
             }
         }
@@ -203,17 +209,10 @@ public final class MapperUtils {
      */
     @NotNull
     public static Collection<Mapper> findMappers(Project project, PsiClass clazz) {
-        Collection<Mapper> mappers = null;
-        if (project == null || clazz == null) {
-            mappers = Collections.emptyList();
+        if (project == null || clazz == null || StringUtils.isBlank(clazz.getQualifiedName()) || !JavaUtils.isElementWithinInterface(clazz)) {
+            return Collections.emptyList();
         }
-        if (mappers == null && StringUtils.isNotBlank(clazz.getQualifiedName()) && JavaUtils.isElementWithinInterface(clazz)) {
-            mappers = findMappers(project, Objects.requireNonNull(clazz.getQualifiedName()));
-        }
-        if (mappers == null) {
-            mappers = Collections.emptyList();
-        }
-        return mappers;
+        return findMappers(project, MapperNamespace.fromPsiClass(clazz));
     }
 
     /**
@@ -293,9 +292,8 @@ public final class MapperUtils {
      */
     @NotNull
     @NonNls
-    public static String getNamespace(@NotNull Mapper mapper) {
-        String ns = mapper.getNamespace().getStringValue();
-        return null == ns ? "" : ns;
+    public static MapperNamespace getNamespace(@NotNull Mapper mapper) {
+        return MapperNamespace.fromMapper(mapper);
     }
 
     /**
@@ -306,7 +304,7 @@ public final class MapperUtils {
      */
     @NotNull
     @NonNls
-    public static String getNamespace(@NotNull DomElement element) {
+    public static MapperNamespace getNamespace(@NotNull DomElement element) {
         return getNamespace(getMapper(element));
     }
 
@@ -320,6 +318,21 @@ public final class MapperUtils {
     @NonNls
     public static boolean isMapperWithSameNamespace(@Nullable Mapper mapper, @Nullable Mapper target) {
         return null != mapper && null != target && getNamespace(mapper).equals(getNamespace(target));
+    }
+
+    public static boolean isElementOfMapper(@NotNull Mapper mapper, @NotNull PsiClass clazz) {
+        return getNamespace(mapper).matches(clazz);
+    }
+
+    public static boolean isNamespaceMatches(@Nullable String namespace, @Nullable PsiClass clazz) {
+        return MapperNamespace.of(namespace).matches(clazz);
+    }
+
+    public static boolean isNamespaceMatches(@Nullable String ns1, @Nullable String ns2) {
+        if (ns1 == null || ns2 == null) {
+            return false;
+        }
+        return MapperNamespace.of(ns1).equals(MapperNamespace.of(ns2));
     }
 
     /**
@@ -344,8 +357,8 @@ public final class MapperUtils {
      */
     @NotNull
     @NonNls
-    public static <T extends IdDomElement> String getIdSignature(@NotNull T domElement) {
-        return getNamespace(domElement) + "." + getId(domElement);
+    public static <T extends IdDomElement> MapperStatementId getIdSignature(@NotNull T domElement) {
+        return MapperStatementId.ofDomElement(domElement);
     }
 
     /**
@@ -364,8 +377,7 @@ public final class MapperUtils {
         if (id == null) {
             id = "";
         }
-        String idsignature = getIdSignature(domElement);
-        //getIdSignature(domElement)
+        String idsignature = getIdSignature(domElement).getCanonicalId();
         return isMapperWithSameNamespace(contextMapper, mapper) ? id : idsignature;
     }
 

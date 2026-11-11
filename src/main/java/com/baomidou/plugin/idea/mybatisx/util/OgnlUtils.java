@@ -4,6 +4,7 @@ import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Sql;
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
@@ -169,8 +170,8 @@ public class OgnlUtils {
             return Collections.emptyList();
         }
         Mapper mapper = MapperUtils.getMapper(sql);
-        String namespace = mapper != null ? MapperUtils.getNamespace(mapper) : null;
-        String fullSqlId = (namespace != null && !namespace.isEmpty()) ? namespace + "." + sqlId : null;
+        MapperNamespace namespace = mapper != null ? MapperUtils.getNamespace(mapper) : null;
+        String fullSqlId = (namespace != null && !namespace.isEmpty()) ? namespace.getCanonicalName() + "." + sqlId : null;
 
         Set<String> targetIds = new HashSet<>();
         targetIds.add(sqlId);

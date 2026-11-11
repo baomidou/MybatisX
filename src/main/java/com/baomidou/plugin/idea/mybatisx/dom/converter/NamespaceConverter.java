@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.dom.converter;
 
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
+
 import org.jetbrains.annotations.NotNull;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
 import com.baomidou.plugin.idea.mybatisx.util.MapperNamespaceNameUtils;
@@ -13,6 +15,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.JavaResolveResult;
+import com.intellij.psi.PsiSubstitutor;
+import com.intellij.psi.infos.CandidateInfo;
+import com.intellij.psi.util.ClassUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -69,8 +74,7 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
     @Override
     public void bindReference(GenericDomValue<PsiClass> genericValue, ConvertContext context, PsiElement newTarget) {
         if (newTarget instanceof PsiClass psiClass) {
-            final String qualifiedName = psiClass.getQualifiedName();
-            genericValue.setStringValue(qualifiedName);
+            genericValue.setStringValue(MapperNamespace.fromPsiClass(psiClass).getJvmName());
         }
     }
 
@@ -129,13 +133,38 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
         @Nullable
         @Override
         public PsiElement resolve() {
-            return delegate != null ? delegate.resolve() : null;
+            PsiElement resolved = delegate != null ? delegate.resolve() : null;
+            if (resolved != null) {
+                return resolved;
+            }
+            PsiClass psiClass = value.getValue();
+            if (psiClass != null) {
+                String canonicalText = getCanonicalText();
+                if (canonicalText.contains("$")) {
+                    String subName = canonicalText.substring(canonicalText.lastIndexOf('$') + 1);
+                    if (subName.equals(psiClass.getName())) {
+                        return psiClass;
+                    }
+                    String outerName = canonicalText.substring(0, canonicalText.lastIndexOf('$'));
+                    if (psiClass.getContainingClass() != null && outerName.endsWith(psiClass.getContainingClass().getName())) {
+                        return psiClass.getContainingClass();
+                    }
+                }
+                if (psiClass.getName() != null && (psiClass.getName().equals(canonicalText) || canonicalText.endsWith("." + psiClass.getName()))) {
+                    return psiClass;
+                }
+            }
+            return null;
         }
 
         @NotNull
         @Override
         public String getCanonicalText() {
-            return delegate != null ? delegate.getCanonicalText() : "";
+            if (delegate != null) {
+                return delegate.getCanonicalText();
+            }
+            String rawText = value.getStringValue();
+            return rawText != null ? rawText : "";
         }
 
         @Override
@@ -150,7 +179,11 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
 
         @Override
         public boolean isReferenceTo(@NotNull PsiElement element) {
-            return delegate != null && delegate.isReferenceTo(element);
+            if (delegate != null && delegate.isReferenceTo(element)) {
+                return true;
+            }
+            PsiElement resolved = resolve();
+            return resolved != null && element.getManager().areElementsEquivalent(resolved, element);
         }
 
         @Override
@@ -162,7 +195,14 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
         @Override
         public JavaResolveResult advancedResolve(boolean incompleteCode) {
             if (delegate instanceof PsiJavaReference) {
-                return ((PsiJavaReference) delegate).advancedResolve(incompleteCode);
+                JavaResolveResult result = ((PsiJavaReference) delegate).advancedResolve(incompleteCode);
+                if (result.getElement() != null) {
+                    return result;
+                }
+            }
+            PsiElement fallback = resolve();
+            if (fallback != null) {
+                return new CandidateInfo(fallback, PsiSubstitutor.EMPTY);
             }
             return JavaResolveResult.EMPTY;
         }
@@ -171,7 +211,14 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
         @Override
         public JavaResolveResult[] multiResolve(boolean incompleteCode) {
             if (delegate instanceof PsiJavaReference) {
-                return ((PsiJavaReference) delegate).multiResolve(incompleteCode);
+                JavaResolveResult[] results = ((PsiJavaReference) delegate).multiResolve(incompleteCode);
+                if (results.length > 0 && results[0].getElement() != null) {
+                    return results;
+                }
+            }
+            PsiElement fallback = resolve();
+            if (fallback != null) {
+                return new JavaResolveResult[]{new CandidateInfo(fallback, PsiSubstitutor.EMPTY)};
             }
             return JavaResolveResult.EMPTY_ARRAY;
         }
@@ -243,8 +290,8 @@ public class NamespaceConverter extends ConverterAdaptor<PsiClass> implements Cu
 
             // 3. 构建置顶全限定名提示项并加权
             for (PsiClass psiClass : matchedClasses) {
-                String qualifiedName = psiClass.getQualifiedName();
-                if (qualifiedName == null || !addedQualifiedNames.add(qualifiedName)) {
+                String qualifiedName = MapperNamespace.fromPsiClass(psiClass).getJvmName();
+                if (qualifiedName.isEmpty() || !addedQualifiedNames.add(qualifiedName)) {
                     continue;
                 }
                 Module classModule = ModuleUtilCore.findModuleForPsiElement(psiClass);

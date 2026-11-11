@@ -1,6 +1,8 @@
 package com.baomidou.plugin.idea.mybatisx.locator;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.google.common.collect.Sets;
 import com.intellij.openapi.project.Project;
@@ -30,8 +32,8 @@ public class MapperXmlPackageProvider extends PackageProvider {
         Collection<Mapper> mappers = MapperUtils.findMappers(project);
         JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(project);
         for (Mapper mapper : mappers) {
-            String namespace = MapperUtils.getNamespace(mapper);
-            PsiClass clazz = javaPsiFacade.findClass(namespace, GlobalSearchScope.allScope(project));
+            MapperNamespace namespace = MapperUtils.getNamespace(mapper);
+            PsiClass clazz = namespace.findPsiClass(project).orElse(null);
             if (null != clazz) {
                 PsiFile file = clazz.getContainingFile();
                 if (file instanceof PsiJavaFile) {

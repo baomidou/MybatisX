@@ -2,6 +2,8 @@ package com.baomidou.plugin.idea.mybatisx.service;
 
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
+import com.baomidou.plugin.idea.mybatisx.model.MapperStatementId;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -29,8 +31,9 @@ public class KotlinService {
         String ns = clazz.getName();
         String packageName = KtPsiUtil.getPackageName(clazz);
         ns = packageName + "." + ns;
+        MapperNamespace targetNs = MapperNamespace.of(ns);
         for (Mapper mapper : MapperUtils.findMappers(clazz.getProject())) {
-            if (MapperUtils.getNamespace(mapper).equals(ns)) {
+            if (MapperUtils.getNamespace(mapper).equals(targetNs)) {
                 processor.process(mapper);
             }
         }
@@ -52,12 +55,12 @@ public class KotlinService {
         }
         String packageName = KtPsiUtil.getPackageName(parentClass);
         String id = packageName + "." + parentClass.getName() + "." + ktMethod.getName();
+        MapperStatementId targetId = MapperStatementId.ofSignature(id);
         Collection<Mapper> mappers = MapperUtils.findMappers(ktMethod.getProject());
 
         mappers.stream()
             .flatMap(mapper -> mapper.getDaoElements().stream())
-            .filter(idDom -> MapperUtils.getIdSignature(idDom).equals(id))
+            .filter(idDom -> MapperUtils.getIdSignature(idDom).equals(targetId))
             .forEach(processor::process);
     }
-
 }

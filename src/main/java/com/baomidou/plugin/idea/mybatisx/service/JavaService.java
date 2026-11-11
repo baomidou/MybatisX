@@ -3,6 +3,8 @@ package com.baomidou.plugin.idea.mybatisx.service;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.util.JavaUtils;
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
+import com.baomidou.plugin.idea.mybatisx.model.MapperStatementId;
 import com.baomidou.plugin.idea.mybatisx.util.MapperUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
@@ -17,6 +19,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
+import com.intellij.psi.util.ClassUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
 import com.intellij.util.Query;
@@ -107,15 +110,13 @@ public class JavaService implements Serializable {
         }
         Collection<Mapper> mappers = MapperUtils.findMappers(psiMethod.getProject());
 
-        Set<String> ids = new HashSet<>();
-        String id = psiClass.getQualifiedName() + "." + psiMethod.getName();
-        ids.add(id);
+        Set<MapperStatementId> ids = new HashSet<>();
+        ids.add(MapperStatementId.ofMethod(psiMethod));
         final Query<PsiClass> search = ClassInheritorsSearch.search(psiClass);
         final Collection<PsiClass> allChildren = search.findAll();
 
         for (PsiClass psiElement : allChildren) {
-            String childId = psiElement.getQualifiedName() + "." + psiMethod.getName();
-            ids.add(childId);
+            ids.add(MapperStatementId.of(MapperNamespace.fromPsiClass(psiElement), psiMethod.getName()));
         }
 
         mappers.stream()
@@ -133,9 +134,9 @@ public class JavaService implements Serializable {
      * @param processor the processor
      */
     public void processClass(@NotNull PsiClass clazz, @NotNull Processor<Mapper> processor) {
-        String ns = clazz.getQualifiedName();
+        MapperNamespace targetNs = MapperNamespace.fromPsiClass(clazz);
         for (Mapper mapper : MapperUtils.findMappers(clazz.getProject())) {
-            if (MapperUtils.getNamespace(mapper).equals(ns)) {
+            if (MapperUtils.getNamespace(mapper).equals(targetNs)) {
                 processor.process(mapper);
             }
         }

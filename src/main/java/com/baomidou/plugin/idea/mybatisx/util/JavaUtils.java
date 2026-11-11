@@ -1,5 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.util;
 
+import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
+
 import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.google.common.collect.Lists;
@@ -121,7 +123,11 @@ public final class JavaUtils {
      * @return the optional
      */
     public static Optional<PsiClass[]> findClasses(@NotNull Project project, @NotNull String clazzName) {
-        return Optional.of(JavaPsiFacade.getInstance(project).findClasses(clazzName, GlobalSearchScope.allScope(project)));
+        String classNameNeedFind = clazzName;
+        if (classNameNeedFind.contains("$")) {
+            classNameNeedFind = classNameNeedFind.replace("$", ".");
+        }
+        return Optional.of(JavaPsiFacade.getInstance(project).findClasses(classNameNeedFind, GlobalSearchScope.allScope(project)));
     }
 
     /**
@@ -132,6 +138,20 @@ public final class JavaUtils {
      * @param methodName the method name
      * @return the optional
      */
+    public static Optional<PsiMethod> findMethod(@NotNull Project project, @Nullable MapperNamespace namespace, @Nullable String methodName) {
+        if (namespace == null || namespace.isEmpty() || StringUtils.isBlank(methodName)) {
+            return Optional.empty();
+        }
+        return findMethod(project, namespace.getCanonicalName(), methodName);
+    }
+
+    public static Optional<PsiMethod[]> findMethods(@NotNull Project project, @Nullable MapperNamespace namespace, @Nullable String methodName) {
+        if (namespace == null || namespace.isEmpty() || StringUtils.isBlank(methodName)) {
+            return Optional.empty();
+        }
+        return findMethods(project, namespace.getCanonicalName(), methodName);
+    }
+
     public static Optional<PsiMethod> findMethod(@NotNull Project project, @Nullable String clazzName, @Nullable String methodName) {
         if (StringUtils.isBlank(clazzName) && StringUtils.isBlank(methodName)) {
             return Optional.empty();
