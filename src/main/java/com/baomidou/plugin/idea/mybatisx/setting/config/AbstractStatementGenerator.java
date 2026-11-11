@@ -165,12 +165,13 @@ public abstract class AbstractStatementGenerator {
     @NotNull
     public static AbstractStatementGenerator[] getGenerators(@NotNull PsiMethod method) {
         String target = method.getName();
-        List<AbstractStatementGenerator> result = Lists.newArrayList();
+        Set<AbstractStatementGenerator> result = Sets.newLinkedHashSet();
         for (AbstractStatementGenerator generator : StatementGenerators.ALL) {
             for (String pattern : generator.getPatterns()) {
                 // 一定是以关键字开头
                 if (target.startsWith(pattern)) {
                     result.add(generator);
+                    break;
                 }
             }
         }
@@ -233,6 +234,18 @@ public abstract class AbstractStatementGenerator {
     @Override
     public String toString() {
         return this.getDisplayText();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractStatementGenerator that)) return false;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     /**
