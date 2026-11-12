@@ -1,6 +1,7 @@
 package com.baomidou.plugin.idea.mybatisx.generate.plugin.helper;
 
 
+import com.baomidou.plugin.idea.mybatisx.generate.typemapping.TypeMappingEngine;
 import org.mybatis.generator.api.FullyQualifiedTable;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -176,8 +177,14 @@ public class IntellijIntrospector {
                 }
 
                 if (StringUtility.isTrue(tc.getProperty("useActualColumnAnnotationInject"))) {
+                    String rawTypeName = introspectedColumn.getProperties() == null
+                        ? null
+                        : introspectedColumn.getProperties().getProperty(TypeMappingEngine.RAW_TYPE_NAME);
                     Properties properties = new Properties();
                     properties.setProperty("useActualColumnAnnotationInject", "true");
+                    if (rawTypeName != null) {
+                        properties.setProperty(TypeMappingEngine.RAW_TYPE_NAME, rawTypeName);
+                    }
                     introspectedColumn.setProperties(properties);
                 }
                 if (StringUtility.isTrue(tc.getProperty("useActualColumnNames"))) {
@@ -325,6 +332,14 @@ public class IntellijIntrospector {
             introspectedColumn.setDefaultValue(intellijColumnInfo.getColumnDefaultValue());
             introspectedColumn.setAutoIncrement(intellijColumnInfo.isAutoIncrement());
             introspectedColumn.setGeneratedColumn(intellijColumnInfo.isGeneratedColumn());
+            if (intellijColumnInfo.getTypeName() != null) {
+                Properties columnProperties = introspectedColumn.getProperties();
+                if (columnProperties == null) {
+                    columnProperties = new Properties();
+                    introspectedColumn.setProperties(columnProperties);
+                }
+                columnProperties.setProperty(TypeMappingEngine.RAW_TYPE_NAME, intellijColumnInfo.getTypeName());
+            }
             ActualTableName atn = new ActualTableName(null, null, this.intellijTableInfo.getTableName());
             List<IntrospectedColumn> columns = answer.computeIfAbsent(atn, k -> new ArrayList<>());
 

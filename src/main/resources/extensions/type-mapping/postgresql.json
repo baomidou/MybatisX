@@ -1,0 +1,64 @@
+{
+  "name": "PostgreSQL",
+  "aliases": {
+    "int2": "smallint",
+    "smallserial": "smallint",
+    "int4": "integer",
+    "int": "integer",
+    "serial": "integer",
+    "int8": "bigint",
+    "bigserial": "bigint",
+    "float4": "float",
+    "float8": "double",
+    "double precision": "double",
+    "bool": "boolean",
+    "numeric": "decimal",
+    "dec": "decimal",
+    "character varying": "varchar",
+    "character": "char",
+    "varbit": "bit",
+    "bit varying": "bit",
+    "timestamptz": "timestamp",
+    "timetz": "time",
+    "jsonb": "json"
+  },
+  "rules": [
+    { "type": "smallint", "java": "Integer", "jdbcType": "SMALLINT" },
+    { "type": "integer", "java": "Integer", "jdbcType": "INTEGER" },
+    { "type": "bigint", "java": "Long", "jdbcType": "BIGINT" },
+    { "type": "oid", "java": "Long", "jdbcType": "BIGINT" },
+
+    { "type": "decimal", "when": { "scaleMin": 1 }, "java": "BigDecimal", "jdbcType": "NUMERIC" },
+    { "type": "decimal", "when": { "scale": 0, "precisionMax": 9 }, "java": "Integer", "jdbcType": "NUMERIC" },
+    { "type": "decimal", "when": { "scale": 0, "precisionMax": 18 }, "java": "Long", "jdbcType": "NUMERIC" },
+    { "type": "decimal", "java": "BigDecimal", "jdbcType": "NUMERIC" },
+    { "type": "money", "java": "BigDecimal", "jdbcType": "DECIMAL" },
+
+    { "type": "real", "java": "Float", "jdbcType": "REAL" },
+    { "type": "float", "java": "Float", "jdbcType": "REAL" },
+    { "type": "double", "java": "Double", "jdbcType": "DOUBLE" },
+
+    { "type": "boolean", "java": "Boolean", "jdbcType": "BOOLEAN" },
+    { "type": "bit", "when": { "length": 1 }, "java": "Boolean", "jdbcType": "BIT" },
+    { "type": "bit", "java": "String", "jdbcType": "BIT" },
+
+    { "type": "date", "java": { "jsr310": "LocalDate", "legacy": "Date" }, "jdbcType": "DATE" },
+    { "type": "time", "java": { "jsr310": "LocalTime", "legacy": "Date" }, "jdbcType": "TIME" },
+    { "type": "timestamp", "java": { "jsr310": "LocalDateTime", "legacy": "Timestamp" }, "jdbcType": "TIMESTAMP" },
+
+    { "type": "uuid", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "json", "java": "String", "jdbcType": "LONGVARCHAR" },
+    { "type": "xml", "java": "String", "jdbcType": "LONGVARCHAR" },
+    { "type": "char", "java": "String", "jdbcType": "CHAR" },
+    { "type": "varchar", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "text", "java": "String", "jdbcType": "LONGVARCHAR" },
+    { "type": "name", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "citext", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "inet", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "cidr", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "macaddr", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "interval", "java": "String", "jdbcType": "VARCHAR" },
+
+    { "type": "bytea", "java": "byte[]", "jdbcType": "LONGVARBINARY" }
+  ]
+}

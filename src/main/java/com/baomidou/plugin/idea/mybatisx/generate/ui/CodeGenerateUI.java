@@ -7,6 +7,9 @@ import com.baomidou.plugin.idea.mybatisx.generate.dto.GenerateConfig;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.ModuleInfoGo;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateAnnotationType;
 import com.baomidou.plugin.idea.mybatisx.generate.dto.TemplateSettingDTO;
+import com.baomidou.plugin.idea.mybatisx.generate.typemapping.TypeMappingCatalog;
+import com.baomidou.plugin.idea.mybatisx.generate.typemapping.TypeMappingOption;
+import com.baomidou.plugin.idea.mybatisx.generate.typemapping.TypeMappingSelection;
 import com.baomidou.plugin.idea.mybatisx.generate.util.DomainPlaceHolder;
 import com.baomidou.plugin.idea.mybatisx.util.CollectionUtils;
 import com.baomidou.plugin.idea.mybatisx.util.StringUtils;
@@ -79,6 +82,7 @@ public class CodeGenerateUI {
     private JCheckBox needsModelCheckBox;
     private JCheckBox serializableCheckBox;
     private JCheckBox needJdbcTypeCheckBox;
+    private JComboBox<TypeMappingOption> typeMappingComboBox;
     private Project project;
     private DomainInfo domainInfo;
     private String selectedTemplateName;
@@ -133,6 +137,7 @@ public class CodeGenerateUI {
         if (generateConfig.isUseActualColumnAnnotationInject()) {
             useActualColumnAnnotationInjectCheckBox.setSelected(true);
         }
+        fillTypeMapping(generateConfig.getTypeMapping());
         // 初始化表格, 用于展示要生成的文件模块
         initTemplates(generateConfig, defaultsTemplatesName, templateSettingMap);
         // 如果没有选择过, 就用上次选中的模板名称
@@ -468,6 +473,12 @@ public class CodeGenerateUI {
         generateConfig.setUseActualColumns(actualColumnCheckBox.isSelected());
         generateConfig.setUseActualColumnAnnotationInject(useActualColumnAnnotationInjectCheckBox.isSelected());
         generateConfig.setJsr310Support(JSR310DateAPICheckBox.isSelected());
+        Object selectedMapping = typeMappingComboBox.getSelectedItem();
+        if (selectedMapping instanceof TypeMappingOption option) {
+            generateConfig.setTypeMapping(option.getFileName());
+        } else {
+            generateConfig.setTypeMapping(null);
+        }
 
 
         String annotationTypeName = findAnnotationType();
@@ -484,6 +495,19 @@ public class CodeGenerateUI {
         }
         generateConfig.setTemplatesName(templatesName);
 
+    }
+
+    private void fillTypeMapping(String savedFileName) {
+        List<TypeMappingOption> options = TypeMappingCatalog.listOptions();
+        typeMappingComboBox.removeAllItems();
+        for (TypeMappingOption option : options) {
+            typeMappingComboBox.addItem(option);
+        }
+        TypeMappingOption selected = TypeMappingSelection.choose(options, savedFileName);
+        if (selected != null) {
+            typeMappingComboBox.setSelectedItem(selected);
+        }
+        typeMappingComboBox.setEnabled(!options.isEmpty());
     }
 
     @Nullable

@@ -368,6 +368,9 @@ public class GenerateCode {
         //for JSR310
         javaTypeResolverPlugin.addProperty("supportJsr", String.valueOf(generateConfig.isJsr310Support()));
         javaTypeResolverPlugin.addProperty("supportAutoNumeric", "true");
+        if (generateConfig.getTypeMapping() != null && !generateConfig.getTypeMapping().isBlank()) {
+            javaTypeResolverPlugin.addProperty("typeMapping", generateConfig.getTypeMapping());
+        }
         context.setJavaTypeResolverConfiguration(javaTypeResolverPlugin);
 
         // Lombok 插件

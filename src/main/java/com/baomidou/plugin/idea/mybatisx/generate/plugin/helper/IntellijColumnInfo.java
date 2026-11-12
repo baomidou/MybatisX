@@ -8,6 +8,10 @@ import lombok.Setter;
 @Getter
 public class IntellijColumnInfo {
     private String name;
+    /**
+     * 数据库原始类型名，例如 int unsigned、number(10,0)。
+     */
+    private String typeName;
     private int dataType;
     private boolean generatedColumn;
     private boolean autoIncrement;

@@ -1,0 +1,66 @@
+{
+  "name": "MySQL",
+  "options": {
+    "tinyint1AsBoolean": false
+  },
+  "rewrites": [
+    { "from": "serial", "type": "bigint", "unsigned": true }
+  ],
+  "aliases": {
+    "integer": "int",
+    "int4": "int",
+    "bool": "boolean",
+    "numeric": "decimal",
+    "dec": "decimal",
+    "fixed": "decimal",
+    "real": "double",
+    "double precision": "double",
+    "character varying": "varchar",
+    "character": "char"
+  },
+  "rules": [
+    { "type": "boolean", "java": "Boolean", "jdbcType": "TINYINT" },
+    { "type": "tinyint", "when": { "length": 1 }, "enabledBy": "tinyint1AsBoolean", "java": "Boolean", "jdbcType": "TINYINT" },
+    { "type": "tinyint", "java": "Integer", "jdbcType": "TINYINT" },
+    { "type": "smallint", "java": "Integer", "jdbcType": "SMALLINT" },
+    { "type": "mediumint", "java": "Integer", "jdbcType": "INTEGER" },
+    { "type": "int", "unsigned": true, "java": "Long", "jdbcType": "INTEGER" },
+    { "type": "int", "unsigned": false, "java": "int", "jdbcType": "INTEGER" },
+    { "type": "bigint", "unsigned": true, "java": "BigInteger", "jdbcType": "BIGINT" },
+    { "type": "bigint", "unsigned": false, "java": "Long", "jdbcType": "BIGINT" },
+
+    { "type": "decimal", "when": { "scaleMin": 1 }, "java": "BigDecimal", "jdbcType": "DECIMAL" },
+    { "type": "decimal", "when": { "scale": 0, "precisionMax": 9 }, "java": "Integer", "jdbcType": "DECIMAL" },
+    { "type": "decimal", "when": { "scale": 0, "precisionMax": 18 }, "java": "Long", "jdbcType": "DECIMAL" },
+    { "type": "decimal", "java": "BigDecimal", "jdbcType": "DECIMAL" },
+
+    { "type": "float", "java": "Float", "jdbcType": "REAL" },
+    { "type": "double", "java": "Double", "jdbcType": "DOUBLE" },
+
+    { "type": "date", "java": { "jsr310": "LocalDate", "legacy": "Date" }, "jdbcType": "DATE" },
+    { "type": "time", "java": { "jsr310": "LocalTime", "legacy": "Date" }, "jdbcType": "TIME" },
+    { "type": "datetime", "java": { "jsr310": "LocalDateTime", "legacy": "Date" }, "jdbcType": "TIMESTAMP" },
+    { "type": "timestamp", "java": { "jsr310": "LocalDateTime", "legacy": "Timestamp" }, "jdbcType": "TIMESTAMP" },
+    { "type": "year", "java": "Integer", "jdbcType": "INTEGER" },
+
+    { "type": "bit", "when": { "length": 1 }, "java": "Boolean", "jdbcType": "BIT" },
+    { "type": "bit", "java": "byte[]", "jdbcType": "BIT" },
+
+    { "type": "char", "java": "String", "jdbcType": "CHAR" },
+    { "type": "varchar", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "tinytext", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "text", "java": "String", "jdbcType": "LONGVARCHAR" },
+    { "type": "mediumtext", "java": "String", "jdbcType": "LONGVARCHAR" },
+    { "type": "longtext", "java": "String", "jdbcType": "LONGVARCHAR" },
+    { "type": "enum", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "set", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "json", "java": "String", "jdbcType": "LONGVARCHAR" },
+
+    { "type": "binary", "java": "byte[]", "jdbcType": "BINARY" },
+    { "type": "varbinary", "java": "byte[]", "jdbcType": "VARBINARY" },
+    { "type": "tinyblob", "java": "byte[]", "jdbcType": "VARBINARY" },
+    { "type": "blob", "java": "byte[]", "jdbcType": "BLOB" },
+    { "type": "mediumblob", "java": "byte[]", "jdbcType": "BLOB" },
+    { "type": "longblob", "java": "byte[]", "jdbcType": "LONGVARBINARY" }
+  ]
+}

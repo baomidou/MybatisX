@@ -100,6 +100,11 @@ public class GenerateConfig {
     @Getter
     private boolean jsr310Support;
     /**
+     * 类型映射文件名，例如 mysql.json。空值表示沿用内置解析。
+     */
+    @Getter
+    private String typeMapping;
+    /**
      * 是否生成实体类
      */
     private Boolean needsModel;

@@ -1,0 +1,43 @@
+{
+  "name": "Oracle",
+  "aliases": {
+    "integer": "number",
+    "int": "number",
+    "numeric": "number",
+    "decimal": "number",
+    "dec": "number",
+    "binary_double": "double",
+    "float": "double",
+    "varchar": "varchar2",
+    "nvarchar": "nvarchar2",
+    "timestamp with time zone": "timestamp",
+    "timestamp with local time zone": "timestamp"
+  },
+  "rules": [
+    { "type": "number", "when": { "scaleMin": 1 }, "java": "BigDecimal", "jdbcType": "DECIMAL" },
+    { "type": "number", "when": { "scale": 0, "precisionMax": 9 }, "java": "Integer", "jdbcType": "DECIMAL" },
+    { "type": "number", "when": { "scale": 0, "precisionMax": 18 }, "java": "Long", "jdbcType": "DECIMAL" },
+    { "type": "number", "java": "BigDecimal", "jdbcType": "DECIMAL" },
+
+    { "type": "binary_float", "java": "Float", "jdbcType": "REAL" },
+    { "type": "double", "java": "Double", "jdbcType": "DOUBLE" },
+
+    { "type": "date", "java": { "jsr310": "LocalDateTime", "legacy": "Date" }, "jdbcType": "TIMESTAMP" },
+    { "type": "timestamp", "java": { "jsr310": "LocalDateTime", "legacy": "Date" }, "jdbcType": "TIMESTAMP" },
+
+    { "type": "char", "java": "String", "jdbcType": "CHAR" },
+    { "type": "nchar", "java": "String", "jdbcType": "NCHAR" },
+    { "type": "varchar2", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "nvarchar2", "java": "String", "jdbcType": "NVARCHAR" },
+    { "type": "clob", "java": "String", "jdbcType": "CLOB" },
+    { "type": "nclob", "java": "String", "jdbcType": "NCLOB" },
+    { "type": "long", "java": "String", "jdbcType": "LONGVARCHAR" },
+    { "type": "rowid", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "urowid", "java": "String", "jdbcType": "VARCHAR" },
+    { "type": "xmltype", "java": "String", "jdbcType": "VARCHAR" },
+
+    { "type": "blob", "java": "byte[]", "jdbcType": "BLOB" },
+    { "type": "raw", "java": "byte[]", "jdbcType": "VARBINARY" },
+    { "type": "long raw", "java": "byte[]", "jdbcType": "LONGVARBINARY" }
+  ]
+}
