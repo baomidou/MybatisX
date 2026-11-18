@@ -25,6 +25,9 @@ public class ResultMapHashMarkTip implements HashMarkTip {
      */
     @Override
     public void tipValue(CompletionResultSet completionResultSet, Mapper mapper) {
+        if (mapper == null) {
+            return;
+        }
         CompletionResultSet caseInsensitiveResultSet = completionResultSet.caseInsensitive();
         for (ResultMap resultMap : mapper.getResultMaps()) {
             caseInsensitiveResultSet.addElement(LookupElementBuilder.create(resultMap.getId()));

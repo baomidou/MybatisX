@@ -85,7 +85,20 @@ public class CompositeHashMarkTip {
             log.info("the psiMethod is null");
             return;
         }
-        PsiMethod psiMethod = methodOptional.get();
+        addElementForPsiParameter(result, methodOptional.get(), idDomElement.getXmlTag(),
+            MapperUtils.getMapper(idDomElement), wrappedText, editorCaret, xmlElement);
+    }
+
+    /**
+     * Add element for psi parameter using a resolved Mapper {@link PsiMethod}.
+     */
+    public void addElementForPsiParameter(CompletionResultSet result,
+                                          PsiMethod psiMethod,
+                                          @Nullable XmlTag rootTag,
+                                          @Nullable Mapper mapper,
+                                          String wrappedText,
+                                          int editorCaret,
+                                          @Nullable PsiElement xmlElement) {
         log.info("CompletionContributor xml start");
         // 焦点前面的字段名称
         String fieldFrontOfCaret = wrappedText.substring(0, editorCaret);
@@ -109,7 +122,7 @@ public class CompositeHashMarkTip {
 
             if (xmlElement != null) {
                 PsiElement current = xmlElement;
-                while (current != null && !current.equals(idDomElement.getXmlTag())) {
+                while (current != null && !current.equals(rootTag)) {
                     if (current instanceof XmlTag tag) {
                         if ("foreach".equals(tag.getName())) {
                             String item = tag.getAttributeValue("item");
@@ -131,14 +144,15 @@ public class CompositeHashMarkTip {
         // tip 7 types
         String latestText = findLatestText(wrappedText, editorCaret);
         if (!StringUtils.isEmpty(latestText)) {
-            Mapper mapper = MapperUtils.getMapper(idDomElement);
             for (HashMarkTip hashMarkTip : hashMarkTips) {
                 String tipText = "," + hashMarkTip.getName() + "=";
                 if (latestText.startsWith(tipText)) {
                     tipOfSecondLevel = true;
                     String prefixMatcher = latestText.substring(tipText.length());
                     completionResultSet = result.withPrefixMatcher(prefixMatcher);
-                    hashMarkTip.tipValue(completionResultSet, mapper);
+                    if (mapper != null || !(hashMarkTip instanceof ResultMapHashMarkTip)) {
+                        hashMarkTip.tipValue(completionResultSet, mapper);
+                    }
                     break;
                 }
 
@@ -150,11 +164,12 @@ public class CompositeHashMarkTip {
             if (!StringUtils.isEmpty(latestText)) {
                 completionResultSet = result.withPrefixMatcher(latestText);
             }
+            PsiElement contextElement = rootTag != null ? rootTag : psiMethod;
             for (HashMarkTip hashMarkTip : hashMarkTips) {
                 String tipText = "," + hashMarkTip.getName() + "=";
                 LookupElementBuilder element = LookupElementBuilder.create(tipText)
                     .withInsertHandler(hashMarkTipInsertHandler)
-                    .withPsiElement(idDomElement.getXmlTag());
+                    .withPsiElement(contextElement);
                 completionResultSet.addElement(element);
             }
         }
@@ -326,7 +341,7 @@ public class CompositeHashMarkTip {
                     continue;
                 }
                 if (paramValue.equals(fieldName)) {
-                    return psiMethod;
+                    return psiParameter;
                 }
                 String prefix = paramValue + ".";
                 if (fieldName.startsWith(prefix)) {
@@ -341,7 +356,7 @@ public class CompositeHashMarkTip {
 
                 // 兼容java8开启 -parameters 参数的方式，这种方式不需要@Param参数
                 if (Objects.equals(psiParameter.getName(), fieldName)) {
-                    return psiMethod;
+                    return psiParameter;
                 }
 
                 if (parametersCount == 1) {

@@ -1,35 +1,3 @@
 <LanguageInjectionConfiguration>
-    <!-- 支持 @Select 注解写SQL语句 -->
-    <injection language="SQL" injector-id="java">
-        <display-name>MybatisX Select.value (org.apache.ibatis.annotations)</display-name>
-        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
-        <single-file />
-        <place><![CDATA[
-        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Select")
-]]></place>
-    </injection>
-    <injection language="SQL" injector-id="java">
-        <display-name>MybatisX Insert.value (org.apache.ibatis.annotations)</display-name>
-        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
-        <single-file />
-        <place><![CDATA[
-        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Insert")
-]]></place>
-    </injection>
-    <injection language="SQL" injector-id="java">
-        <display-name>MybatisX Update.value (org.apache.ibatis.annotations)</display-name>
-        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
-        <single-file />
-        <place><![CDATA[
-        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Update")
-]]></place>
-    </injection>
-    <injection language="SQL" injector-id="java">
-        <display-name>MybatisX Delete.value (org.apache.ibatis.annotations)</display-name>
-        <value-pattern>(?:&lt;script&gt;)?(.+?)(?:&lt;\/script&gt;)?</value-pattern>
-        <single-file />
-        <place><![CDATA[
-        psiMethod().withName("value").withParameters().definedInClass("org.apache.ibatis.annotations.Delete")
-]]></place>
-    </injection>
+    <!-- 注解 SQL / <script> XML 注入已迁移至 MapperAnnotationInjector，避免与多行 <script> 规则冲突 -->
 </LanguageInjectionConfiguration>

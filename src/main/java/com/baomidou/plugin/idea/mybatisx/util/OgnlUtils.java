@@ -4,7 +4,9 @@ import com.baomidou.plugin.idea.mybatisx.annotation.Annotation;
 import com.baomidou.plugin.idea.mybatisx.dom.model.IdDomElement;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Mapper;
 import com.baomidou.plugin.idea.mybatisx.dom.model.Sql;
+import com.baomidou.plugin.idea.mybatisx.injection.MapperAnnotationInjector;
 import com.baomidou.plugin.idea.mybatisx.model.MapperNamespace;
+import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
@@ -15,6 +17,7 @@ import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiConstantEvaluationHelper;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
@@ -23,6 +26,7 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypes;
 import com.intellij.psi.PsiVariable;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
@@ -149,6 +153,10 @@ public class OgnlUtils {
 
     @NotNull
     public static List<PsiMethod> findCandidatePsiMethods(@NotNull PsiElement contextElement) {
+        PsiMethod annotationMethod = findAnnotationMethod(contextElement);
+        if (annotationMethod != null) {
+            return Collections.singletonList(annotationMethod);
+        }
         IdDomElement domElement = DomUtil.findDomElement(contextElement, IdDomElement.class);
         if (domElement == null) {
             return Collections.emptyList();
@@ -161,6 +169,28 @@ public class OgnlUtils {
             return findMethodsIncludingSql(sql, contextElement.getProject());
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * Resolves the enclosing Mapper {@link PsiMethod} when {@code contextElement} resides inside
+     * an injected XML or nested SQL fragment on a MyBatis statement annotation.
+     */
+    @Nullable
+    public static PsiMethod findAnnotationMethod(@NotNull PsiElement contextElement) {
+        InjectedLanguageManager manager = InjectedLanguageManager.getInstance(contextElement.getProject());
+        PsiElement current = contextElement;
+        for (int depth = 0; depth < 3; depth++) {
+            PsiLanguageInjectionHost host = manager.getInjectionHost(current);
+            if (host == null) {
+                return null;
+            }
+            PsiAnnotation annotation = PsiTreeUtil.getParentOfType(host, PsiAnnotation.class);
+            if (MapperAnnotationInjector.isStatementAnnotation(annotation)) {
+                return PsiTreeUtil.getParentOfType(annotation, PsiMethod.class);
+            }
+            current = host;
+        }
+        return null;
     }
 
     @NotNull

@@ -100,6 +100,9 @@
         <completion.contributor id="baomidou.SqlParamCompletionContributor" language="SQL"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.system.contributor.SqlParamCompletionContributor"
                                 order="first"/>
+        <completion.contributor id="baomidou.XmlSqlParamCompletionContributor" language="XML"
+                                implementationClass="com.baomidou.plugin.idea.mybatisx.system.contributor.SqlParamCompletionContributor"
+                                order="first"/>
         <!-- jpa规范提示, 在mapper类声明方法提示, 提示字符串完成后, 后续可以根据字符串生成方法参数和XML内容 -->
         <completion.contributor id="baomidou.MapperMethodCompletionContributor" language="JAVA"
                                 implementationClass="com.baomidou.plugin.idea.mybatisx.system.contributor.MapperMethodCompletionContributor"/>
@@ -170,6 +173,10 @@
         <psi.referenceContributor id="hashMarkerReferenceContributor"
                                   implementation="com.baomidou.plugin.idea.mybatisx.reference.ContextHashMarkReferenceContributor"
                                   language="XML"/>
+        <!-- SQL(注解及XML内嵌SQL) #{} 区域的 Ctrl+Click 跳转 -->
+        <gotoDeclarationHandler implementation="com.baomidou.plugin.idea.mybatisx.reference.HashMarkGotoDeclarationHandler"/>
+        <!-- Java Mapper 参数反向查找注解中的 #{}/ ${} 引用 -->
+        <referencesSearch implementation="com.baomidou.plugin.idea.mybatisx.reference.MapperParameterReferenceSearch"/>
         <!-- mapper.xml文件 <if test> <when test> 区域的引用跳转 -->
         <psi.referenceContributor id="testParamReferenceContributor"
                                   implementation="com.baomidou.plugin.idea.mybatisx.reference.TestParamReferenceContributor"
@@ -190,6 +197,11 @@
                                          implementation="com.baomidou.plugin.idea.mybatisx.system.refactoring.MapperMethodSafeDeleteProcessor"/>
 
         <projectService serviceImplementation="com.baomidou.plugin.idea.mybatisx.alias.AnnotationAliasResolver"/>
+
+        <!-- Mapper 注解(@Select/@Insert/@Update/@Delete) 多行 SQL / <script> XML 语言注入 -->
+        <concatenationAwareInjector id="baomidou.MapperAnnotationInjector"
+                                    implementation="com.baomidou.plugin.idea.mybatisx.injection.MapperAnnotationInjector"
+                                    order="first"/>
 
         <notificationGroup displayType="BALLOON" id="MybatisX Notification" isLogByDefault="true"/>
     </extensions>
